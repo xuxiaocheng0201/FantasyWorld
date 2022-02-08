@@ -1,4 +1,4 @@
-package HeadLibs.Configuration;
+package HeadLibs.Configuration.SimpleMode;
 
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
@@ -9,13 +9,13 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HConfigurations {
+public class HConfigurationsSimple {
     public static final String CURRENT_VERSION = "1.0.0";
 
     private File file;
-    public final List<HConfig> date = new ArrayList<>();
+    public final List<HConfigSimple> date = new ArrayList<>();
 
-    public HConfigurations(String path) throws IllegalArgumentException {
+    public HConfigurationsSimple(String path) throws IllegalArgumentException {
         this.setPath(path);
         this.read();
     }
@@ -33,19 +33,19 @@ public class HConfigurations {
         this.read();
     }
 
-    public void add(HConfig config) throws IllegalArgumentException {
+    public void add(HConfigSimple config) throws IllegalArgumentException {
         if (this.getByName(config.getName()) != null)
             throw new IllegalArgumentException("Configuration name has existed.");
         this.date.add(config);
     }
 
-    public HConfig getByName(String name) {
-        for (HConfig i: this.date) {
+    public HConfigSimple getByName(String name) {
+        for (HConfigSimple i: this.date) {
             if (i.getName() == null)
                 if (name == null)
                     return i;
-            else
-                continue;
+                else
+                    continue;
             if (i.getName().equals(name))
                 return i;
         }
@@ -99,21 +99,16 @@ public class HConfigurations {
     }
 
     public void read() {
-        this.date.clear();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(this.file));
             String temp = reader.readLine();
-            HConfig config = new HConfig(null, null);
+            HConfigSimple config = new HConfigSimple(null, null);
             while (temp != null) {
-                if (temp.startsWith("name:"))
-                    config.setName(temp.substring(6));
-                if (temp.startsWith("note:"))
-                    config.setNote(temp.substring(6));
-                if (temp.startsWith("type:"))
-                    config.setType(HEConfigType.getTypeByName(temp.substring(6)));
-                if (temp.startsWith("value:")) {
-                    config.setValue(temp.substring(7));
-                    HConfig check = this.getByName(config.getName());
+                if (temp.contains("=")) {
+                    String[] s = temp.split("=");
+                    config.setName(s[0]);
+                    config.setValue(temp.substring(s[0].length() + 1));
+                    HConfigSimple check = this.getByName(s[0]);
                     if (check != null)
                         if (check.equals(config))
                             HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
@@ -121,8 +116,9 @@ public class HConfigurations {
                             HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                     else
                         this.add(config);
-                    config = new HConfig(null, null);
-                }
+                    config = new HConfigSimple(null, null);
+                } else
+                    HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Illegal configuration format! [line='", temp, "']"));
                 temp = reader.readLine();
             }
             reader.close();
@@ -134,19 +130,10 @@ public class HConfigurations {
     public void write() {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
-            for (HConfig i: this.date) {
-                writer.write("name: ");
+            for (HConfigSimple i: this.date) {
                 writer.write(i.getName());
-                writer.newLine();
-                writer.write("note: ");
-                writer.write(i.getNote());
-                writer.newLine();
-                writer.write("type: ");
-                writer.write(i.getType().toString());
-                writer.newLine();
-                writer.write("value: ");
+                writer.write("=");
                 writer.write(i.getValue());
-                writer.newLine();
                 writer.newLine();
             }
             writer.close();
@@ -157,7 +144,7 @@ public class HConfigurations {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("HConfigurations{",
+        return HStringHelper.merge("HConfigurationsSimple{",
                 "file=", file,
                 ", date=", date,
                 '}');
@@ -165,9 +152,9 @@ public class HConfigurations {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof HConfigurations))
+        if (!(a instanceof HConfigurationsSimple))
             return false;
-        return this.getPath().equals(((HConfigurations) a).getPath()) && this.date.equals(((HConfigurations) a).date);
+        return this.getPath().equals(((HConfigurationsSimple) a).getPath()) && this.date.equals(((HConfigurationsSimple) a).date);
     }
 
     @Override
