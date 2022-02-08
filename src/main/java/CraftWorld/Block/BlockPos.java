@@ -23,34 +23,28 @@ public class BlockPos {
         this.setZ(z);
     }
 
-    public BlockPos setX(int x) {
+    public void setX(int x) {
         this.x = BigInteger.valueOf(x);
-        return this;
     }
 
-    public BlockPos setX(BigInteger x) {
+    public void setX(BigInteger x) {
         this.x = x;
-        return this;
     }
 
-    public BlockPos setY(int y) {
+    public void setY(int y) {
         this.y = BigInteger.valueOf(y);
-        return this;
     }
 
-    public BlockPos setY(BigInteger y) {
+    public void setY(BigInteger y) {
         this.y = y;
-        return this;
     }
 
-    public BlockPos setZ(int z) {
+    public void setZ(int z) {
         this.z = BigInteger.valueOf(z);
-        return this;
     }
 
-    public BlockPos setZ(BigInteger z) {
+    public void setZ(BigInteger z) {
         this.z = z;
-        return this;
     }
 
     public int getX() {
@@ -77,40 +71,46 @@ public class BlockPos {
         return z;
     }
 
-    public BlockPos addX(int x) {
-        return this.setX(this.x.add(BigInteger.valueOf(x)));
+    public void addX(int x) {
+        this.setX(this.x.add(BigInteger.valueOf(x)));
     }
 
-    public BlockPos addX(BigInteger x) {
-        return this.setX(this.x.add(x));
+    public void addX(BigInteger x) {
+        this.setX(this.x.add(x));
     }
 
-    public BlockPos addY(int y) {
-        return this.setY(this.y.add(BigInteger.valueOf(y)));
+    public void addY(int y) {
+        this.setY(this.y.add(BigInteger.valueOf(y)));
     }
 
-    public BlockPos addY(BigInteger y) {
-        return this.setY(this.y.add(y));
+    public void addY(BigInteger y) {
+        this.setY(this.y.add(y));
     }
 
-    public BlockPos addZ(int z) {
-        return this.setZ(this.z.add(BigInteger.valueOf(z)));
+    public void addZ(int z) {
+        this.setZ(this.z.add(BigInteger.valueOf(z)));
     }
 
-    public BlockPos addZ(BigInteger z) {
-        return this.setZ(this.z.add(z));
+    public void addZ(BigInteger z) {
+        this.setZ(this.z.add(z));
     }
 
-    public BlockPos add(int x, int y, int z) {
-        return this.addX(x).addY(y).addZ(z);
+    public void add(int x, int y, int z) {
+        this.addX(x);
+        this.addY(y);
+        this.addZ(z);
     }
 
-    public BlockPos add(BigInteger x, BigInteger y, BigInteger z) {
-        return this.addX(x).addY(y).addZ(z);
+    public void add(BigInteger x, BigInteger y, BigInteger z) {
+        this.addX(x);
+        this.addY(y);
+        this.addZ(z);
     }
 
-    public BlockPos add(BlockPos pos) {
-        return this.addX(pos.x).addY(pos.y).addZ(pos.y);
+    public void add(BlockPos pos) {
+        this.addX(pos.x);
+        this.addY(pos.y);
+        this.addZ(pos.z);
     }
 
     @Override
