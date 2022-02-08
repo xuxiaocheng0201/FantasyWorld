@@ -17,16 +17,16 @@ public class HFileHelper {
                     throw new IOException("Creating file failed.");
             }
             if (!file.isFile())
-                throw new IOException("Argument path is invalid. [path=" + path + "]");
+                throw new IOException(HStringHelper.merge("Argument path is invalid. [path='", path, "']"));
             if (!file.canRead()) {
                 if (!file.setReadable(true))
-                    throw new IOException("File in path can't be read. [path=" + path + "]");
-                HLog.logger(HELogLevel.CONFIGURATION, "File in path has been set to readable. [path=" + path + "]");
+                    throw new IOException(HStringHelper.merge("File in path can't be read. [path='", path, "']"));
+                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("File in path has been set to readable. [path='", path, "']"));
             }
             if (!file.canWrite()) {
                 if (!file.setWritable(true))
-                    throw new IOException("File in path can't be written. [path=" + path + "]");
-                HLog.logger(HELogLevel.CONFIGURATION, "File in path has been set to writable. [path=" + path + "]");
+                    throw new IOException(HStringHelper.merge("File in path can't be written. [path='", path, "']"));
+                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("File in path has been set to writable. [path='", path, "']"));
             }
             return true;
         } catch (IOException exception) {

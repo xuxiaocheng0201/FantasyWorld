@@ -2,16 +2,15 @@ package CraftWorld;
 
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
+import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class CraftWorld {
     public static final String CURRENT_VERSION = "0.0.0";
-    public static final String RUNTIME_PATH = "CraftWorld\\" + CURRENT_VERSION + "\\";
-    public static final String LOG_PATH = RUNTIME_PATH + "log\\" + (new SimpleDateFormat("yyyy-MM-dd")).format(new Date()) + ".log";
+    public static final String RUNTIME_PATH = HStringHelper.merge("CraftWorld\\", CURRENT_VERSION, "\\");
+    public static final String LOG_PATH = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), ".log");
     public static String CURRENT_LANGUAGE = "zh_cn";
 
     public static boolean isClient = true;
@@ -23,7 +22,7 @@ public class CraftWorld {
         Thread.currentThread().setName("CraftWorldMain");
         HLog.logger("Hello World!");
         try {
-            GLOBAL_CONFIGURATIONS = new HConfigurations(RUNTIME_PATH + "global.cfg");
+            GLOBAL_CONFIGURATIONS = new HConfigurations(HStringHelper.merge(RUNTIME_PATH, "global.cfg"));
             HConfig cfg_version = GLOBAL_CONFIGURATIONS.getByName("cfg_version");
             HConfig language = GLOBAL_CONFIGURATIONS.getByName("language");
 

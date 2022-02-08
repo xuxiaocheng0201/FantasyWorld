@@ -1,6 +1,7 @@
 package HeadLibs.Logger;
 
 import HeadLibs.Helper.HFileHelper;
+import HeadLibs.Helper.HStringHelper;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -35,10 +36,10 @@ public class HLog {
 
     public void log(HELogLevel level, String message) {
         Date date = new Date();
-        String log = "[" + (new SimpleDateFormat(DATE_FORMAT)).format(date) + "]" +
-                "[" + this.name + "]" +
-                "[" + level.getName() + "]" +
-                message;
+        String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
+                "[", this.name, "]",
+                "[", level.getName(), "]",
+                message);
         logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
         System.out.println(level.getPrefix() + log);
     }

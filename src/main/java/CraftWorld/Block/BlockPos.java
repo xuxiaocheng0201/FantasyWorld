@@ -1,5 +1,7 @@
 package CraftWorld.Block;
 
+import HeadLibs.Helper.HStringHelper;
+
 import java.math.BigInteger;
 
 public class BlockPos {
@@ -113,7 +115,18 @@ public class BlockPos {
 
     @Override
     public String toString() {
-        return "BlockPos:[x=" + this.getBigX().toString() + ", y=" + this.getBigY().toString() + ", z=" + this.getBigZ().toString() + "]";
+        return HStringHelper.merge("BlockPos{",
+                "x=", x,
+                ", y=", y,
+                ", z=", z,
+                '}');
+    }
+
+    @Override
+    public boolean equals(Object a) {
+        if (!(a instanceof BlockPos))
+            return false;
+        return this.x.equals(((BlockPos) a).x) && this.y.equals(((BlockPos) a).y) && this.z.equals(((BlockPos) a).z);
     }
 
     @Override

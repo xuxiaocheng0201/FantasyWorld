@@ -1,6 +1,7 @@
 package CraftWorld;
 
 import HeadLibs.Configuration.HConfigurations;
+import HeadLibs.Helper.HStringHelper;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,12 +17,12 @@ public class LanguageI18N {
         return get(name, CraftWorld.CURRENT_LANGUAGE);
     }
 
-    public static String get(String name, String lang) throws IllegalArgumentException{
+    public static String get(String name, String lang) throws IllegalArgumentException {
         if (lang == null)
-            throw new IllegalArgumentException("Translate failed! lang is null! [name=" + name + "]");
+            throw new IllegalArgumentException(HStringHelper.merge("Translate failed! lang is null! [name='", name, "']"));
         lang = lang.toLowerCase();
         try {
-            HConfigurations language = new HConfigurations(LANGUAGE_DIRECTORY + lang + ".lang");
+            HConfigurations language = new HConfigurations(HStringHelper.merge(LANGUAGE_DIRECTORY, lang, ".lang"));
             if (!languages.containsKey(lang))
                 languages.put(lang, language);
             if (language.getByName(name) != null)

@@ -1,5 +1,7 @@
 package HeadLibs.Configuration;
 
+import HeadLibs.Helper.HStringHelper;
+
 public enum HEConfigType {
     BOOLEAN, BOOLEAN_ARRAY,
     BYTE, BYTE_ARRAY,
@@ -79,12 +81,12 @@ public enum HEConfigType {
                             part = String.valueOf(value.charAt(i));
                             continue;
                         }
-                        throw new NumberFormatException("Array value error in " + i + "(th) char.");
+                        throw new NumberFormatException(HStringHelper.merge("Array value error in ", i, "(th) char."));
                     }
                     part += value.charAt(i);
                 }
                 if (!"]".equals(part) && !type.checkString(part))
-                    throw new NumberFormatException("Array value error in " + (value.length() - 2) + "(th) char.");
+                    throw new NumberFormatException(HStringHelper.merge("Array value error in ", value.length() - 2, "(th) char."));
             }
             return true;
         } catch (NumberFormatException exception) {

@@ -1,5 +1,7 @@
 package HeadLibs.Logger;
 
+import HeadLibs.Helper.HStringHelper;
+
 public enum HELogLevel {
     FINEST("FINEST", 0),
     FINER("FINER", 10),
@@ -47,7 +49,7 @@ public enum HELogLevel {
     HELogLevel(String name, int priority, String prefix) {
         this.name = name;
         this.PRIORITY = priority;
-        this.PREFIX = "\033[" + prefix + "m";
+        this.PREFIX = HStringHelper.merge("\033[", prefix, "m");
     }
 
     public String getName() {
@@ -64,8 +66,8 @@ public enum HELogLevel {
 
     @Override
     public String toString() {
-        return "HELogLevel{" +
-                "name='" + name + '\'' +
-                '}';
+        return HStringHelper.merge("HELogLevel{",
+                "name='", name, '\'',
+                '}');
     }
 }

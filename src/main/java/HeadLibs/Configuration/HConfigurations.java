@@ -1,6 +1,7 @@
 package HeadLibs.Configuration;
 
 import HeadLibs.Helper.HFileHelper;
+import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
@@ -27,7 +28,7 @@ public class HConfigurations {
         if (path == null)
             throw new IllegalArgumentException("Argument path is null.");
         if (!HFileHelper.createNewFile(path))
-            throw new IllegalArgumentException("Can't create the new file in path=" + path);
+            throw new IllegalArgumentException(HStringHelper.merge("Can't create the new file in path='", path, '\''));
         this.file = (new File(path)).getAbsoluteFile();
         this.read();
     }
@@ -115,9 +116,9 @@ public class HConfigurations {
                     HConfig check = this.getByName(config.getName());
                     if (check != null)
                         if (check.equals(config))
-                            HLog.logger(HELogLevel.CONFIGURATION, "The completely same Configuration! [name=" + config.getName() + ", path=" + this.getPath() + "]. Drop the second!");
+                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                         else
-                            HLog.logger(HELogLevel.CONFIGURATION, "The same Configuration name! But different Configuration value [name=" + config.getName() + ", path=" + this.getPath() + "]. Drop the second!");
+                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                     else
                         this.add(config);
                     config = new HConfig(null, null);
@@ -134,13 +135,17 @@ public class HConfigurations {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
             for (HConfig i: this.date) {
-                writer.write("name: " + i.getName());
+                writer.write("name: ");
+                writer.write(i.getName());
                 writer.newLine();
-                writer.write("note: " + i.getNote());
+                writer.write("note: ");
+                writer.write(i.getNote());
                 writer.newLine();
-                writer.write("type: " + i.getType());
+                writer.write("type: ");
+                writer.write(i.getType().toString());
                 writer.newLine();
-                writer.write("value: " + i.getValue());
+                writer.write("value: ");
+                writer.write(i.getValue());
                 writer.newLine();
                 writer.newLine();
             }
@@ -152,7 +157,10 @@ public class HConfigurations {
 
     @Override
     public String toString() {
-        return "HConfigurations:[" + this.date + "]";
+        return HStringHelper.merge("HConfigurations{",
+                "file=", file,
+                ", date=", date,
+                '}');
     }
 
     @Override

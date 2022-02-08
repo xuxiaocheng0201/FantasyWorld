@@ -1,5 +1,7 @@
 package HeadLibs.Configuration;
 
+import HeadLibs.Helper.HStringHelper;
+
 public class HConfig {
     private String name;
     private String note;
@@ -60,7 +62,12 @@ public class HConfig {
 
     @Override
     public String toString() {
-        return "HConfig:[name=" + this.name + ", note=" + this.note + ", type=" + this.type.toString() + ", value=" + this.value + "]";
+        return HStringHelper.merge("HConfig{",
+                "name='", name, '\'',
+                ", note='", note, '\'',
+                ", type=", type,
+                ", value='", value, '\'',
+                '}');
     }
 
     @Override
