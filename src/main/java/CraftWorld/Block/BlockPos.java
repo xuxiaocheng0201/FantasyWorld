@@ -1,6 +1,8 @@
 package CraftWorld.Block;
 
+import HeadLibs.Helper.HHashCodeHelper;
 import HeadLibs.Helper.HStringHelper;
+import oracle.jrockit.jfr.events.Bits;
 
 import java.math.BigInteger;
 
@@ -131,7 +133,8 @@ public class BlockPos {
 
     @Override
     public int hashCode() {
-        // TODO: BlockPos hashCode
-        return this.getX() << 16 | this.getY() << 4 | this.getZ();
+        return Long.hashCode(HHashCodeHelper.getLong(x.intValue(), 22, 22)
+                | HHashCodeHelper.getLong(y.intValue(), 20, 44)
+                | HHashCodeHelper.getLong(z.intValue(), 22, 0));
     }
 }
