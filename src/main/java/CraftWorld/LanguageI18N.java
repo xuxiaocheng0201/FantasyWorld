@@ -1,5 +1,6 @@
 package CraftWorld;
 
+import HeadLibs.Configuration.SimpleMode.HConfigSimple;
 import HeadLibs.Configuration.SimpleMode.HConfigurationsSimple;
 import HeadLibs.Helper.HStringHelper;
 
@@ -16,17 +17,20 @@ public class LanguageI18N {
         return get(name, CraftWorld.CURRENT_LANGUAGE);
     }
 
-    public static String get(String name, String lang) throws IllegalArgumentException {
+    public static String get(String name, String lang) {
         if (lang == null)
-            throw new IllegalArgumentException(HStringHelper.merge("Translate failed! lang is null! [name='", name, "']"));
+            return get(name, DEFAULT_LANGUAGE);
         lang = lang.toLowerCase();
         HConfigurationsSimple language = new HConfigurationsSimple(HStringHelper.merge(LANGUAGE_DIRECTORY, lang, ".lang"));
         if (!languages.containsKey(lang))
             languages.put(lang, language);
         if (language.getByName(name) != null)
             return language.getByName(name).getValue();
-        if (lang.equals(DEFAULT_LANGUAGE))
+        if (lang.equals(DEFAULT_LANGUAGE)) {
+            HConfigurationsSimple todo = new HConfigurationsSimple(HStringHelper.merge(LANGUAGE_DIRECTORY, "TODO.lang"));
+            todo.add(new HConfigSimple(name, null));
             return name;
+        }
         return get(name, DEFAULT_LANGUAGE);
     }
 }

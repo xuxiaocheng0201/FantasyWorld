@@ -34,7 +34,7 @@ public class HLog {
         log(HELogLevel.INFO, message);
     }
 
-    public void log(HELogLevel level, String message) {
+    public synchronized void log(HELogLevel level, String message) {
         Date date = new Date();
         String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
                 "[", this.name, "]",
@@ -52,7 +52,7 @@ public class HLog {
         (new HLog(Thread.currentThread().getName())).log(level, message);
     }
 
-    public static void saveLogs(String path) {
+    public static synchronized void saveLogs(String path) {
         logs.sort((a, b) ->
         {
             int compare_date = a.getKey().getKey().compareTo(b.getKey().getKey());

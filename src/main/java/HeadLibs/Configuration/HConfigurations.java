@@ -39,6 +39,10 @@ public class HConfigurations {
         this.date.add(config);
     }
 
+    public void clear() {
+        this.date.clear();
+    }
+
     public HConfig getByName(String name) {
         for (HConfig i: this.date) {
             if (i.getName() == null)
