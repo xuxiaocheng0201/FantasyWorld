@@ -2,7 +2,6 @@ package CraftWorld.Block;
 
 import HeadLibs.Helper.HHashCodeHelper;
 import HeadLibs.Helper.HStringHelper;
-import oracle.jrockit.jfr.events.Bits;
 
 import java.math.BigInteger;
 
@@ -14,15 +13,15 @@ public class BlockPos {
     }
 
     public BlockPos(int x, int y, int z) {
-        this.setX(x);
-        this.setY(y);
-        this.setZ(z);
+        this.x = BigInteger.valueOf(x);
+        this.y = BigInteger.valueOf(y);
+        this.z = BigInteger.valueOf(z);
     }
 
     public BlockPos(BigInteger x, BigInteger y, BigInteger z) {
-        this.setX(x);
-        this.setY(y);
-        this.setZ(z);
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public void setX(int x) {
@@ -74,45 +73,87 @@ public class BlockPos {
     }
 
     public void addX(int x) {
-        this.setX(this.x.add(BigInteger.valueOf(x)));
+        this.x = this.x.add(BigInteger.valueOf(x));
     }
 
     public void addX(BigInteger x) {
-        this.setX(this.x.add(x));
+        this.x = this.x.add(x);
     }
 
     public void addY(int y) {
-        this.setY(this.y.add(BigInteger.valueOf(y)));
+        this.y = this.y.add(BigInteger.valueOf(y));
     }
 
     public void addY(BigInteger y) {
-        this.setY(this.y.add(y));
+        this.y = this.y.add(y);
     }
 
     public void addZ(int z) {
-        this.setZ(this.z.add(BigInteger.valueOf(z)));
+        this.z = this.z.add(BigInteger.valueOf(z));
     }
 
     public void addZ(BigInteger z) {
-        this.setZ(this.z.add(z));
+        this.z = this.z.add(z);
     }
 
     public void add(int x, int y, int z) {
-        this.addX(x);
-        this.addY(y);
-        this.addZ(z);
+        this.x = this.x.add(BigInteger.valueOf(x));
+        this.y = this.y.add(BigInteger.valueOf(y));
+        this.z = this.z.add(BigInteger.valueOf(z));
     }
 
     public void add(BigInteger x, BigInteger y, BigInteger z) {
-        this.addX(x);
-        this.addY(y);
-        this.addZ(z);
+        this.x = this.x.add(x);
+        this.y = this.y.add(y);
+        this.z = this.z.add(z);
     }
 
     public void add(BlockPos pos) {
-        this.addX(pos.x);
-        this.addY(pos.y);
-        this.addZ(pos.z);
+        this.x = this.x.add(pos.x);
+        this.y = this.y.add(pos.y);
+        this.z = this.z.add(pos.z);
+    }
+
+    public void subtractX(int x) {
+        this.x = this.x.subtract(BigInteger.valueOf(x));
+    }
+
+    public void subtractX(BigInteger x) {
+        this.x = this.x.subtract(x);
+    }
+
+    public void subtractY(int y) {
+        this.y = this.y.subtract(BigInteger.valueOf(y));
+    }
+
+    public void subtractY(BigInteger y) {
+        this.y = this.y.subtract(y);
+    }
+
+    public void subtractZ(int z) {
+        this.z = this.z.subtract(BigInteger.valueOf(z));
+    }
+
+    public void subtractZ(BigInteger z) {
+        this.z = this.z.subtract(z);
+    }
+
+    public void subtract(int x, int y, int z) {
+        this.x = this.x.subtract(BigInteger.valueOf(x));
+        this.y = this.y.subtract(BigInteger.valueOf(y));
+        this.z = this.z.subtract(BigInteger.valueOf(z));
+    }
+
+    public void subtract(BigInteger x, BigInteger y, BigInteger z) {
+        this.x = this.x.subtract(x);
+        this.y = this.y.subtract(y);
+        this.z = this.z.subtract(z);
+    }
+
+    public void subtract(BlockPos pos) {
+        this.x = this.x.subtract(pos.x);
+        this.y = this.y.subtract(pos.y);
+        this.z = this.z.subtract(pos.z);
     }
 
     @Override
