@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Add more method in BlockPos.java">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Add more project information.">
       <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTBase.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTMetaCompound.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Exception/RegisteredException.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +130,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644378756391</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Add more project information.">
+      <created>1644386335575</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1644386335575</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -149,7 +158,8 @@
     <MESSAGE value="Add simple configuration mode." />
     <MESSAGE value="Small things fix." />
     <MESSAGE value="Add more method in BlockPos.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add more method in BlockPos.java" />
+    <MESSAGE value="Add more project information." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add more project information." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
