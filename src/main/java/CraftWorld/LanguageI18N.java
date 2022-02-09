@@ -21,11 +21,13 @@ public class LanguageI18N {
         if (lang == null)
             return get(name, DEFAULT_LANGUAGE);
         lang = lang.toLowerCase();
-        HConfigurationsSimple language = new HConfigurationsSimple(HStringHelper.merge(LANGUAGE_DIRECTORY, lang, ".lang"));
-        if (!languages.containsKey(lang))
+        if (!languages.containsKey(lang)) {
+            HConfigurationsSimple language = new HConfigurationsSimple(HStringHelper.merge(LANGUAGE_DIRECTORY, lang, ".lang"));
             languages.put(lang, language);
-        if (language.getByName(name) != null)
-            return language.getByName(name).getValue();
+        }
+        HConfigSimple translation = languages.get(lang).getByName(name);
+        if (translation != null)
+            return translation.getValue();
         if (lang.equals(DEFAULT_LANGUAGE)) {
             HConfigurationsSimple todo = new HConfigurationsSimple(HStringHelper.merge(LANGUAGE_DIRECTORY, "TODO.lang"));
             todo.add(new HConfigSimple(name, null));

@@ -7,29 +7,25 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Objects;
 
-public class DSTTagInt implements IDSTBase {
-    public static final String id = "Int";
+public class DSTTagString implements IDSTBase {
+    public static final String id = "String";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, DSTTagInt.class);
+        DSTUtils.register(id, DSTTagString.class);
     }
 
     private String name = "";
-    private int data = 0;
+    private String data = "";
 
-    public DSTTagInt() {
+    public DSTTagString() {
         super();
     }
 
-    public DSTTagInt(String name) {
-        this.name = name;
-    }
-
-    public DSTTagInt(int data) {
+    public DSTTagString(String data) {
         this.data = data;
     }
 
-    public DSTTagInt(String name, int data) {
+    public DSTTagString(String name, String data) {
         this.name = name;
         this.data = data;
     }
@@ -37,14 +33,14 @@ public class DSTTagInt implements IDSTBase {
     @Override
     public void read(DataInput input) throws IOException {
         this.name = input.readUTF();
-        this.data = input.readInt();
+        this.data = input.readUTF();
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        output.writeInt(this.data);
+        output.writeUTF(this.data);
     }
 
     public String getName() {
@@ -55,28 +51,28 @@ public class DSTTagInt implements IDSTBase {
         this.name = name;
     }
 
-    public int getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(int data) {
+    public void setData(String data) {
         this.data = data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagInt{",
+        return HStringHelper.merge("DSTTagString{",
                 "name='", name, '\'',
-                ", data=", data,
+                ", data='", data, '\'',
                 '}');
     }
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagInt))
+        if (!(a instanceof DSTTagString))
             return false;
-        return Objects.equals(this.name, ((DSTTagInt) a).name) &&
-                this.data == ((DSTTagInt) a).data;
+        return Objects.equals(this.name, ((DSTTagString) a).name) &&
+                Objects.equals(this.data, ((DSTTagString) a).data);
     }
 
     @Override

@@ -4,16 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Try to add dst(Data Save Tree) Compound">
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagInt.java" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Add dst(Data Save Tree) Tag Int">
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagString.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockPos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTBase.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTMetaCompound.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTMetaCompound.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagInt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagInt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/LanguageI18N.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/LanguageI18N.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HHashCodeHelper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigurations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigurations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/SimpleMode/HConfigurationsSimple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/SimpleMode/HConfigurationsSimple.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,16 +80,29 @@
       <recent name="temp" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="应用程序.CraftWorld Server">
     <configuration name="CraftWorld Client" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="CraftWorld.CraftWorld" />
-      <module name="CraftWorld" />
+      <module name="CraftWorld.main" />
       <option name="PROGRAM_PARAMETERS" value="runClient" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CraftWorldClient" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="CraftWorld Server" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="CraftWorld.CraftWorld" />
+      <module name="CraftWorld.main" />
+      <option name="PROGRAM_PARAMETERS" value="runServer" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CraftWorldServer" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="应用程序.CraftWorld Client" />
+      <item itemvalue="应用程序.CraftWorld Server" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -153,7 +169,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644389114567</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Add dst(Data Save Tree) Tag Int">
+      <created>1644411223079</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1644411223079</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -176,7 +199,8 @@
     <MESSAGE value="Add more method in BlockPos.java" />
     <MESSAGE value="Add more project information." />
     <MESSAGE value="Try to add dst(Data Save Tree) Compound" />
-    <option name="LAST_COMMIT_MESSAGE" value="Try to add dst(Data Save Tree) Compound" />
+    <MESSAGE value="Add dst(Data Save Tree) Tag Int" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add dst(Data Save Tree) Tag Int" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

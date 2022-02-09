@@ -38,6 +38,14 @@ public class HLog {
         log(HELogLevel.INFO, message);
     }
 
+    public void log(String ...message) {
+        log(HELogLevel.INFO, message);
+    }
+
+    public void log(Object ...message) {
+        log(HELogLevel.INFO, message);
+    }
+
     public synchronized void log(HELogLevel level, String message) {
         Date date = new Date();
         String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
@@ -45,11 +53,22 @@ public class HLog {
                 "[", level.getName(), "]",
                 message);
         logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
-        System.out.println(level.getPrefix() + log);
+        System.out.println(level.getPrefix() + log + "\033[0m");
+    }
+
+    public void log(HELogLevel level, String ...message) {
+        log(level, HStringHelper.merge(message));
     }
 
     public void log(HELogLevel level, Object message) {
-        log(level, message.toString());
+        if (message == null)
+            log(level, "Object null!");
+        else
+            log(level, HStringHelper.merge(message));
+    }
+
+    public void log(HELogLevel level, Object ...message) {
+        log(level, HStringHelper.merge(message));
     }
 
     public static void logger(String message) {
@@ -65,6 +84,22 @@ public class HLog {
     }
 
     public static void logger(HELogLevel level, Object message) {
+        (new HLog(Thread.currentThread().getName())).log(level, message);
+    }
+
+    public static void logger(String ...message) {
+        (new HLog(Thread.currentThread().getName())).log(message);
+    }
+
+    public static void logger(HELogLevel level, String ...message) {
+        (new HLog(Thread.currentThread().getName())).log(level, message);
+    }
+
+    public static void logger(Object ...message) {
+        (new HLog(Thread.currentThread().getName())).log(message);
+    }
+
+    public static void logger(HELogLevel level, Object ...message) {
         (new HLog(Thread.currentThread().getName())).log(level, message);
     }
 

@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DSTUtils {
-    private static final Map<String, Class<? extends DSTBase>> dst = new HashMap<>();
+    private static final Map<String, Class<? extends IDSTBase>> dst = new HashMap<>();
 
-    public static void register(String name, Class<? extends DSTBase> dstClass) {
+    public static void register(String name, Class<? extends IDSTBase> dstClass) {
         try {
             if (dst.containsKey(name))
                 throw new RegisteredException("Registered name");
@@ -21,7 +21,7 @@ public class DSTUtils {
         }
     }
 
-    public static DSTBase get(String name) {
+    public static IDSTBase get(String name) {
         try {
             if (!dst.containsKey(name))
                 throw new IllegalArgumentException("Type is not registered!");

@@ -1,7 +1,6 @@
 package CraftWorld.DST;
 
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HLog;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -10,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public final class DSTMetaCompound extends DSTBase {
+public final class DSTMetaCompound implements IDSTBase {
     public static final String id = "Compound";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
@@ -19,14 +18,14 @@ public final class DSTMetaCompound extends DSTBase {
     }
 
     private String name;
-    private final Map<String, DSTBase> dstMap = new HashMap<>();
+    private final Map<String, IDSTBase> dstMap = new HashMap<>();
 
     @Override
     public void read(DataInput input) throws IOException {
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            DSTBase dst = DSTUtils.get(input.readUTF());
+            IDSTBase dst = DSTUtils.get(input.readUTF());
             if (dst != null)
                 dst.read(input);
             dstMap.put(name, dst);
@@ -39,7 +38,7 @@ public final class DSTMetaCompound extends DSTBase {
         output.writeUTF(prefix);
         output.writeUTF(name);
         for (String name: dstMap.keySet()) {
-            DSTBase dst = dstMap.get(name);
+            IDSTBase dst = dstMap.get(name);
             output.writeUTF(name);
             dst.write(output);
         }
@@ -54,7 +53,7 @@ public final class DSTMetaCompound extends DSTBase {
         return name;
     }
 
-    public Map<String, DSTBase> getDstMap() {
+    public Map<String, IDSTBase> getDstMap() {
         return dstMap;
     }
 

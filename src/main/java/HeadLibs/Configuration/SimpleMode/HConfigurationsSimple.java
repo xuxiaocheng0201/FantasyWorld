@@ -13,11 +13,10 @@ public class HConfigurationsSimple {
     public static final String CURRENT_VERSION = "1.0.0";
 
     private File file;
-    public final List<HConfigSimple> date = new ArrayList<>();
+    public final List<HConfigSimple> data = new ArrayList<>();
 
     public HConfigurationsSimple(String path) throws IllegalArgumentException {
         this.setPath(path);
-        this.read();
     }
 
     public String getPath() {
@@ -36,11 +35,11 @@ public class HConfigurationsSimple {
     public void add(HConfigSimple config) throws IllegalArgumentException {
         if (this.getByName(config.getName()) != null)
             throw new IllegalArgumentException("Configuration name has existed.");
-        this.date.add(config);
+        this.data.add(config);
     }
 
     public HConfigSimple getByName(String name) {
-        for (HConfigSimple i: this.date) {
+        for (HConfigSimple i: this.data) {
             if (i.getName() == null)
                 if (name == null)
                     return i;
@@ -53,52 +52,53 @@ public class HConfigurationsSimple {
     }
 
     public void deleteByName(String name) {
-        for (int i = 0; i < this.date.size(); ++i) {
-            if (this.date.get(i).getName() == null) {
+        for (int i = 0; i < this.data.size(); ++i) {
+            if (this.data.get(i).getName() == null) {
                 if (name == null) {
-                    this.date.remove(i);
+                    this.data.remove(i);
                     return;
                 }
                 continue;
             }
-            if (this.date.get(i).getName().equals(name)) {
-                this.date.remove(i);
+            if (this.data.get(i).getName().equals(name)) {
+                this.data.remove(i);
                 return;
             }
         }
     }
 
     public void deleteByValue(String value) {
-        for (int i = 0; i < this.date.size(); ++i) {
-            if (this.date.get(i).getValue() == null) {
+        for (int i = 0; i < this.data.size(); ++i) {
+            if (this.data.get(i).getValue() == null) {
                 if (value == null) {
-                    this.date.remove(i);
+                    this.data.remove(i);
                     return;
                 }
                 continue;
             }
-            if (this.date.get(i).getValue().equals(value)) {
-                this.date.remove(i);
+            if (this.data.get(i).getValue().equals(value)) {
+                this.data.remove(i);
                 return;
             }
         }
     }
 
     public void deleteAllByValue(String value) {
-        for (int i = 0; i < this.date.size(); ++i) {
-            if (this.date.get(i).getValue() == null) {
+        for (int i = 0; i < this.data.size(); ++i) {
+            if (this.data.get(i).getValue() == null) {
                 if (value == null) {
-                    this.date.remove(i);
+                    this.data.remove(i);
                     --i;
                 }
                 continue;
             }
-            if (this.date.get(i).getValue().equals(value))
-                this.date.remove(i);
+            if (this.data.get(i).getValue().equals(value))
+                this.data.remove(i);
         }
     }
 
     public void read() {
+        this.data.clear();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(this.file));
             String temp = reader.readLine();
@@ -107,7 +107,7 @@ public class HConfigurationsSimple {
                 if (temp.contains("=")) {
                     String[] s = temp.split("=");
                     config.setName(s[0]);
-                    config.setValue(temp.substring(s[0].length() + 1));
+                    config.setValue(temp.substring(s[0].length() + 1, temp.length() - 1));
                     HConfigSimple check = this.getByName(s[0]);
                     if (check != null)
                         if (check.equals(config))
@@ -130,7 +130,7 @@ public class HConfigurationsSimple {
     public void write() {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
-            for (HConfigSimple i: this.date) {
+            for (HConfigSimple i: this.data) {
                 writer.write(i.getName());
                 writer.write("=");
                 writer.write(i.getValue());
@@ -146,7 +146,7 @@ public class HConfigurationsSimple {
     public String toString() {
         return HStringHelper.merge("HConfigurationsSimple{",
                 "file=", file,
-                ", date=", date,
+                ", date=", data,
                 '}');
     }
 
@@ -154,7 +154,7 @@ public class HConfigurationsSimple {
     public boolean equals(Object a) {
         if (!(a instanceof HConfigurationsSimple))
             return false;
-        return this.getPath().equals(((HConfigurationsSimple) a).getPath()) && this.date.equals(((HConfigurationsSimple) a).date);
+        return this.getPath().equals(((HConfigurationsSimple) a).getPath()) && this.data.equals(((HConfigurationsSimple) a).data);
     }
 
     @Override

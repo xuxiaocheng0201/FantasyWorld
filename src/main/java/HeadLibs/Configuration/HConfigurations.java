@@ -13,11 +13,10 @@ public class HConfigurations {
     public static final String CURRENT_VERSION = "1.0.0";
 
     private File file;
-    public final List<HConfig> date = new ArrayList<>();
+    public final List<HConfig> data = new ArrayList<>();
 
     public HConfigurations(String path) throws IllegalArgumentException {
         this.setPath(path);
-        this.read();
     }
 
     public String getPath() {
@@ -36,15 +35,15 @@ public class HConfigurations {
     public void add(HConfig config) throws IllegalArgumentException {
         if (this.getByName(config.getName()) != null)
             throw new IllegalArgumentException("Configuration name has existed.");
-        this.date.add(config);
+        this.data.add(config);
     }
 
     public void clear() {
-        this.date.clear();
+        this.data.clear();
     }
 
     public HConfig getByName(String name) {
-        for (HConfig i: this.date) {
+        for (HConfig i: this.data) {
             if (i.getName() == null)
                 if (name == null)
                     return i;
@@ -57,53 +56,53 @@ public class HConfigurations {
     }
 
     public void deleteByName(String name) {
-        for (int i = 0; i < this.date.size(); ++i) {
-            if (this.date.get(i).getName() == null) {
+        for (int i = 0; i < this.data.size(); ++i) {
+            if (this.data.get(i).getName() == null) {
                 if (name == null) {
-                    this.date.remove(i);
+                    this.data.remove(i);
                     return;
                 }
                 continue;
             }
-            if (this.date.get(i).getName().equals(name)) {
-                this.date.remove(i);
+            if (this.data.get(i).getName().equals(name)) {
+                this.data.remove(i);
                 return;
             }
         }
     }
 
     public void deleteByValue(String value) {
-        for (int i = 0; i < this.date.size(); ++i) {
-            if (this.date.get(i).getValue() == null) {
+        for (int i = 0; i < this.data.size(); ++i) {
+            if (this.data.get(i).getValue() == null) {
                 if (value == null) {
-                    this.date.remove(i);
+                    this.data.remove(i);
                     return;
                 }
                 continue;
             }
-            if (this.date.get(i).getValue().equals(value)) {
-                this.date.remove(i);
+            if (this.data.get(i).getValue().equals(value)) {
+                this.data.remove(i);
                 return;
             }
         }
     }
 
     public void deleteAllByValue(String value) {
-        for (int i = 0; i < this.date.size(); ++i) {
-            if (this.date.get(i).getValue() == null) {
+        for (int i = 0; i < this.data.size(); ++i) {
+            if (this.data.get(i).getValue() == null) {
                 if (value == null) {
-                    this.date.remove(i);
+                    this.data.remove(i);
                     --i;
                 }
                 continue;
             }
-            if (this.date.get(i).getValue().equals(value))
-                this.date.remove(i);
+            if (this.data.get(i).getValue().equals(value))
+                this.data.remove(i);
         }
     }
 
     public void read() {
-        this.date.clear();
+        this.data.clear();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(this.file));
             String temp = reader.readLine();
@@ -138,7 +137,7 @@ public class HConfigurations {
     public void write() {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
-            for (HConfig i: this.date) {
+            for (HConfig i: this.data) {
                 writer.write("name: ");
                 writer.write(i.getName());
                 writer.newLine();
@@ -163,7 +162,7 @@ public class HConfigurations {
     public String toString() {
         return HStringHelper.merge("HConfigurations{",
                 "file=", file,
-                ", date=", date,
+                ", date=", data,
                 '}');
     }
 
@@ -171,7 +170,7 @@ public class HConfigurations {
     public boolean equals(Object a) {
         if (!(a instanceof HConfigurations))
             return false;
-        return this.getPath().equals(((HConfigurations) a).getPath()) && this.date.equals(((HConfigurations) a).date);
+        return this.getPath().equals(((HConfigurations) a).getPath()) && this.data.equals(((HConfigurations) a).data);
     }
 
     @Override
