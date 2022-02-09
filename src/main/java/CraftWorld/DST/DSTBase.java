@@ -10,6 +10,10 @@ public abstract class DSTBase {
         DSTUtils.register(id, DSTBase.class);
     }
 
+    public DSTBase() {
+        super();
+    }
+
     public abstract void write(DataOutput output) throws IOException;
     public abstract void read(DataInput input) throws IOException;
 }

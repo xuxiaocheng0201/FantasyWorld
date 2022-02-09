@@ -1,9 +1,9 @@
 package CraftWorld.Block;
 
-import HeadLibs.Helper.HHashCodeHelper;
 import HeadLibs.Helper.HStringHelper;
 
 import java.math.BigInteger;
+import java.util.Objects;
 
 public class BlockPos {
     private BigInteger x, y, z;
@@ -169,13 +169,13 @@ public class BlockPos {
     public boolean equals(Object a) {
         if (!(a instanceof BlockPos))
             return false;
-        return this.x.equals(((BlockPos) a).x) && this.y.equals(((BlockPos) a).y) && this.z.equals(((BlockPos) a).z);
+        return Objects.equals(this.x, ((BlockPos) a).x) &&
+                Objects.equals(this.y, ((BlockPos) a).y) &&
+                Objects.equals(this.z, ((BlockPos) a).z);
     }
 
     @Override
     public int hashCode() {
-        return Long.hashCode(HHashCodeHelper.getLong(x.intValue(), 22, 22)
-                | HHashCodeHelper.getLong(y.intValue(), 20, 44)
-                | HHashCodeHelper.getLong(z.intValue(), 22, 0));
+        return Objects.hash(x, y, z);
     }
 }

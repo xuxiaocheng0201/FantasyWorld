@@ -1,6 +1,7 @@
 package CraftWorld.DST;
 
 import CraftWorld.Exception.RegisteredException;
+import HeadLibs.Helper.HStringHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,5 +30,13 @@ public class DSTUtils {
             exception.printStackTrace();
         }
         return null;
+    }
+
+    public static String prefix(String name) {
+        return HStringHelper.merge("start", name);
+    }
+
+    public static String suffix(String name) {
+        return HStringHelper.merge("end", name);
     }
 }

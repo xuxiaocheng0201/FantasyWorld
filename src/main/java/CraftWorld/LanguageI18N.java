@@ -29,6 +29,7 @@ public class LanguageI18N {
         if (lang.equals(DEFAULT_LANGUAGE)) {
             HConfigurationsSimple todo = new HConfigurationsSimple(HStringHelper.merge(LANGUAGE_DIRECTORY, "TODO.lang"));
             todo.add(new HConfigSimple(name, null));
+            todo.write();
             return name;
         }
         return get(name, DEFAULT_LANGUAGE);

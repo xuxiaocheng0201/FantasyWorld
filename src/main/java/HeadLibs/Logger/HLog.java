@@ -34,6 +34,10 @@ public class HLog {
         log(HELogLevel.INFO, message);
     }
 
+    public void log(Object message) {
+        log(HELogLevel.INFO, message);
+    }
+
     public synchronized void log(HELogLevel level, String message) {
         Date date = new Date();
         String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
@@ -44,11 +48,23 @@ public class HLog {
         System.out.println(level.getPrefix() + log);
     }
 
+    public void log(HELogLevel level, Object message) {
+        log(level, message.toString());
+    }
+
     public static void logger(String message) {
         (new HLog(Thread.currentThread().getName())).log(message);
     }
 
     public static void logger(HELogLevel level, String message) {
+        (new HLog(Thread.currentThread().getName())).log(level, message);
+    }
+
+    public static void logger(Object message) {
+        (new HLog(Thread.currentThread().getName())).log(message);
+    }
+
+    public static void logger(HELogLevel level, Object message) {
         (new HLog(Thread.currentThread().getName())).log(level, message);
     }
 
