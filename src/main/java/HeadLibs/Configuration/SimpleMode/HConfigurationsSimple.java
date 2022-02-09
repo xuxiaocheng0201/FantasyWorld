@@ -32,9 +32,11 @@ public class HConfigurationsSimple {
         this.read();
     }
 
-    public void add(HConfigSimple config) throws IllegalArgumentException {
-        if (this.getByName(config.getName()) != null)
-            throw new IllegalArgumentException("Configuration name has existed.");
+    public void add(HConfigSimple config) {
+        if (this.getByName(config.getName()) != null) {
+            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']. Drop the first!"));
+            this.deleteByName(config.getName());
+        }
         this.data.add(config);
     }
 

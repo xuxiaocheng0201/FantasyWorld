@@ -53,11 +53,11 @@ public class CraftWorld {
         System.gc();
         try {
             if (isClient) {
-                Thread client = new Thread(new CraftWorldClient(), "CraftWorldClient");
+                Thread client = new Thread(new CraftWorldClient());
                 client.start();
                 client.join();
             } else {
-                Thread server = new Thread(new CraftWorldServer(), "CraftWorldServer");
+                Thread server = new Thread(new CraftWorldServer());
                 server.start();
                 server.join();
             }
