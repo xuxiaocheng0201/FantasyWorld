@@ -25,7 +25,7 @@ public class DSTUtils {
         try {
             if (!dst.containsKey(name))
                 throw new IllegalArgumentException("Type is not registered!");
-            return dst.get(name).newInstance();
+            return dst.get(name).getDeclaredConstructor().newInstance();
         } catch (Exception exception) {
             exception.printStackTrace();
         }

@@ -24,24 +24,16 @@ public enum HEConfigType {
     }
 
     public HEConfigType withoutArray() {
-        switch (this) {
-            case BOOLEAN_ARRAY:
-                return BOOLEAN;
-            case BYTE_ARRAY:
-                return BYTE;
-            case SHORT_ARRAY:
-                return SHORT;
-            case INT_ARRAY:
-                return INT;
-            case LONG_ARRAY:
-                return LONG;
-            case FLOAT_ARRAY:
-                return FLOAT;
-            case DOUBLE_ARRAY:
-                return DOUBLE;
-            default:
-                return STRING;
-        }
+        return switch (this) {
+            case BOOLEAN_ARRAY -> BOOLEAN;
+            case BYTE_ARRAY -> BYTE;
+            case SHORT_ARRAY -> SHORT;
+            case INT_ARRAY -> INT;
+            case LONG_ARRAY -> LONG;
+            case FLOAT_ARRAY -> FLOAT;
+            case DOUBLE_ARRAY -> DOUBLE;
+            default -> STRING;
+        };
     }
 
     public boolean checkString(String value) {
@@ -96,78 +88,45 @@ public enum HEConfigType {
     }
 
     public static HEConfigType getTypeByName(String name) {
-        switch (name) {
-            case "BOOLEAN":
-                return BOOLEAN;
-            case "BOOLEAN_ARRAY":
-                return BOOLEAN_ARRAY;
-            case "BYTE":
-                return BYTE;
-            case "BYTE_ARRAY":
-                return BYTE_ARRAY;
-            case "SHORT":
-                return SHORT;
-            case "SHORT_ARRAY":
-                return SHORT_ARRAY;
-            case "INT":
-                return INT;
-            case "INT_ARRAY":
-                return INT_ARRAY;
-            case "LONG":
-                return LONG;
-            case "LONG_ARRAY":
-                return LONG_ARRAY;
-            case "FLOAT":
-                return FLOAT;
-            case "FLOAT_ARRAY":
-                return FLOAT_ARRAY;
-            case "DOUBLE":
-                return DOUBLE;
-            case "DOUBLE_ARRAY":
-                return DOUBLE_ARRAY;
-            case "STRING_ARRAY":
-                return STRING_ARRAY;
-            default:
-                return STRING;
-        }
+        return switch (name) {
+            case "BOOLEAN" -> BOOLEAN;
+            case "BOOLEAN_ARRAY" -> BOOLEAN_ARRAY;
+            case "BYTE" -> BYTE;
+            case "BYTE_ARRAY" -> BYTE_ARRAY;
+            case "SHORT" -> SHORT;
+            case "SHORT_ARRAY" -> SHORT_ARRAY;
+            case "INT" -> INT;
+            case "INT_ARRAY" -> INT_ARRAY;
+            case "LONG" -> LONG;
+            case "LONG_ARRAY" -> LONG_ARRAY;
+            case "FLOAT" -> FLOAT;
+            case "FLOAT_ARRAY" -> FLOAT_ARRAY;
+            case "DOUBLE" -> DOUBLE;
+            case "DOUBLE_ARRAY" -> DOUBLE_ARRAY;
+            case "STRING_ARRAY" ->  STRING_ARRAY;
+            default -> STRING;
+        };
     }
 
     @Override
     public String toString() {
-        switch (this) {
-            case BOOLEAN:
-                return "BOOLEAN";
-            case BOOLEAN_ARRAY:
-                return "BOOLEAN_ARRAY";
-            case BYTE:
-                return "BYTE";
-            case BYTE_ARRAY:
-                return "BYTE_ARRAY";
-            case SHORT:
-                return "SHORT";
-            case SHORT_ARRAY:
-                return "SHORT_ARRAY";
-            case INT:
-                return "INT";
-            case INT_ARRAY:
-                return "INT_ARRAY";
-            case LONG:
-                return "LONG";
-            case LONG_ARRAY:
-                return "LONG_ARRAY";
-            case FLOAT:
-                return "FLOAT";
-            case FLOAT_ARRAY:
-                return "FLOAT_ARRAY";
-            case DOUBLE:
-                return "DOUBLE";
-            case DOUBLE_ARRAY:
-                return "DOUBLE_ARRAY";
-            case STRING:
-                return "STRING";
-            case STRING_ARRAY:
-                return "STRING_ARRAY";
-        }
-        return "UNDEFINED";
+        return switch (this) {
+            case BOOLEAN -> "BOOLEAN";
+            case BOOLEAN_ARRAY -> "BOOLEAN_ARRAY";
+            case BYTE -> "BYTE";
+            case BYTE_ARRAY -> "BYTE_ARRAY";
+            case SHORT -> "SHORT";
+            case SHORT_ARRAY -> "SHORT_ARRAY";
+            case INT -> "INT";
+            case INT_ARRAY -> "INT_ARRAY";
+            case LONG -> "LONG";
+            case LONG_ARRAY -> "LONG_ARRAY";
+            case FLOAT -> "FLOAT";
+            case FLOAT_ARRAY -> "FLOAT_ARRAY";
+            case DOUBLE -> "DOUBLE";
+            case DOUBLE_ARRAY -> "DOUBLE_ARRAY";
+            case STRING -> "STRING";
+            case STRING_ARRAY -> "STRING_ARRAY";
+        };
     }
 }

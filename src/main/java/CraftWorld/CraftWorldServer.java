@@ -13,7 +13,15 @@ public class CraftWorldServer implements Runnable {
         HLog.logger(HELogLevel.FINEST, "Server Thread has started.");
 
         //TODO: register
-
+        new DSTTagShort();
+        new DSTTagString();
+        new DSTTagBoolean();
+        new DSTTagByte();
+        new DSTTagInt();
+        new DSTTagChar();
+        new DSTTagLong();
+        new DSTTagDouble();
+        new DSTTagFloat();
 
         HLog.logger(HELogLevel.FINEST, "Server Thread exits.");
     }

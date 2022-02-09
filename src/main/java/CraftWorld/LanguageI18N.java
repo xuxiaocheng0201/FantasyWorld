@@ -11,7 +11,7 @@ public class LanguageI18N {
     public static final String DEFAULT_LANGUAGE = "en_us";
     public static final String LANGUAGE_DIRECTORY = CraftWorld.RUNTIME_PATH + "lang\\";
 
-    public static Map<String, HConfigurationsSimple> languages = new HashMap<>();
+    public static final Map<String, HConfigurationsSimple> languages = new HashMap<>();
 
     public static String get(String name) {
         return get(name, CraftWorld.CURRENT_LANGUAGE);
