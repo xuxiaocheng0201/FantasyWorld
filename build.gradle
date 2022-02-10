@@ -2,14 +2,25 @@ plugins {
     id 'java'
 }
 
-apply plugin: 'application'
-mainClassName = 'CraftWorld.CraftWorld'
-
-group 'CraftWorld'
-version '0.0.0'
+group = "CraftWorld"
+version = "0.0.0"
+description = "Craft world!"
 
 repositories {
     mavenCentral()
+}
+
+java {
+    archivesBaseName = "gradle-project"
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+jar {
+    baseName("CraftWorld")
+    version("0.0.0")
+    manifest() {
+        attributes "Main-Class": "CraftWorld.CraftWorld"
+    }
 }
 
 dependencies {

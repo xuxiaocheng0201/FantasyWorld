@@ -1,11 +1,16 @@
 package CraftWorld.Block;
 
+import CraftWorld.DST.DSTUtils;
+import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Objects;
 
-public class BlockPos {
+public class BlockPos implements IDSTBase {
     private BigInteger x, y, z;
 
     public BlockPos() {
@@ -22,6 +27,27 @@ public class BlockPos {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public static final String id = "BlockPos";
+    public static final String prefix = id;
+    static {
+        DSTUtils.register(id, BlockPos.class);
+    }
+
+    @Override
+    public void read(DataInput input) throws IOException {
+        this.x = new BigInteger(input.readUTF());
+        this.y = new BigInteger(input.readUTF());
+        this.z = new BigInteger(input.readUTF());
+    }
+
+    @Override
+    public void write(DataOutput output) throws IOException {
+        output.writeUTF(prefix);
+        output.writeUTF(this.x.toString());
+        output.writeUTF(this.y.toString());
+        output.writeUTF(this.z.toString());
     }
 
     public void setX(int x) {
@@ -48,6 +74,24 @@ public class BlockPos {
         this.z = z;
     }
 
+    public void set(int x, int y, int z) {
+        this.x = BigInteger.valueOf(x);
+        this.y = BigInteger.valueOf(y);
+        this.z = BigInteger.valueOf(z);
+    }
+
+    public void set(BigInteger x, BigInteger y, BigInteger z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public void set(BlockPos pos) {
+        this.x = pos.x;
+        this.y = pos.y;
+        this.z = pos.z;
+    }
+
     public int getX() {
         return x.intValue();
     }
@@ -70,6 +114,10 @@ public class BlockPos {
 
     public BigInteger getBigZ() {
         return z;
+    }
+
+    public BigInteger getDistanceSq(BlockPos pos) {
+        return this.x.multiply(pos.x).add(this.y.multiply(pos.y)).add(this.z.multiply(pos.z));
     }
 
     public void addX(int x) {
@@ -154,6 +202,115 @@ public class BlockPos {
         this.x = this.x.subtract(pos.x);
         this.y = this.y.subtract(pos.y);
         this.z = this.z.subtract(pos.z);
+    }
+
+    public void up() {
+        this.y = this.y.add(BigInteger.ONE);
+    }
+
+    public void up(int n) {
+        this.y = this.y.add(BigInteger.valueOf(n));
+    }
+
+    public void up(BigInteger n) {
+        this.y = this.y.add(n);
+    }
+
+    public void down() {
+        this.y = this.y.subtract(BigInteger.ONE);
+    }
+
+    public void down(int n) {
+        this.y = this.y.subtract(BigInteger.valueOf(n));
+    }
+
+    public void down(BigInteger n) {
+        this.y = this.y.subtract(n);
+    }
+
+    public void north() {
+        this.x = this.x.add(BigInteger.ONE);
+    }
+
+    public void north(int n) {
+        this.x = this.x.add(BigInteger.valueOf(n));
+    }
+
+    public void north(BigInteger n) {
+        this.x = this.x.add(n);
+    }
+
+    public void south() {
+        this.x = this.x.subtract(BigInteger.ONE);
+    }
+
+    public void south(int n) {
+        this.x = this.x.subtract(BigInteger.valueOf(n));
+    }
+
+    public void south(BigInteger n) {
+        this.x = this.x.subtract(n);
+    }
+
+    public void east() {
+        this.z = this.z.add(BigInteger.ONE);
+    }
+
+    public void east(int n) {
+        this.z = this.z.add(BigInteger.valueOf(n));
+    }
+
+    public void east(BigInteger n) {
+        this.z = this.z.add(n);
+    }
+
+    public void west() {
+        this.z = this.z.subtract(BigInteger.ONE);
+    }
+
+    public void west(int n) {
+        this.z = this.z.subtract(BigInteger.valueOf(n));
+    }
+
+    public void west(BigInteger n) {
+        this.z = this.z.subtract(n);
+    }
+
+    public void offset(EFacing facing) {
+        switch (facing) {
+            case UP -> up();
+            case DOWN -> down();
+            case EAST -> east();
+            case WEST -> west();
+            case NORTH -> north();
+            case SOUTH -> south();
+        }
+    }
+
+    public void offset(EFacing facing, int n) {
+        switch (facing) {
+            case UP -> up(n);
+            case DOWN -> down(n);
+            case EAST -> east(n);
+            case WEST -> west(n);
+            case NORTH -> north(n);
+            case SOUTH -> south(n);
+        }
+    }
+
+    public void offset(EFacing facing, BigInteger n) {
+        switch (facing) {
+            case UP -> up(n);
+            case DOWN -> down(n);
+            case EAST -> east(n);
+            case WEST -> west(n);
+            case NORTH -> north(n);
+            case SOUTH -> south(n);
+        }
+    }
+
+    public enum EFacing {
+        NORTH, SOUTH, WEST, EAST, UP, DOWN
     }
 
     @Override

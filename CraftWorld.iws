@@ -4,23 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Update to Java 17">
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagBooleanArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagByteArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagCharArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagDoubleArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagFloatArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagIntArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagLongArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagShortArray.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTTagStringArray.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Complete DST Types (Arrays).&#10;Update to Java 17.&#10;Fix Language.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockPos.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTMetaCompound.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTMetaCompound.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HELogLevel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HELogLevel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Facing/EFacing.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -205,7 +195,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644423774008</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Complete DST Types (Arrays).&#10;Update to Java 17.&#10;Fix Language.">
+      <created>1644472897467</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1644472897467</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -233,7 +230,8 @@
     <MESSAGE value="Add Basic DST types" />
     <MESSAGE value="Add Basic DST types." />
     <MESSAGE value="Update to Java 17" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update to Java 17" />
+    <MESSAGE value="Complete DST Types (Arrays).&#10;Update to Java 17.&#10;Fix Language." />
+    <option name="LAST_COMMIT_MESSAGE" value="Complete DST Types (Arrays).&#10;Update to Java 17.&#10;Fix Language." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
