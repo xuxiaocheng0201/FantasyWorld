@@ -2,6 +2,7 @@ package CraftWorld;
 
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
+import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 
@@ -11,6 +12,7 @@ public class CraftWorld {
     public static final String CURRENT_VERSION = "0.0.0";
     public static final String RUNTIME_PATH = HStringHelper.merge("CraftWorld\\", CURRENT_VERSION, "\\");
     public static final String GLOBAL_CONFIGURATION_PATH = HStringHelper.merge(RUNTIME_PATH, "global.cfg");
+    public static final String ASSETS_PATH = HStringHelper.merge(RUNTIME_PATH, "assets\\CraftWorld\\");
     public static final String LOG_PATH;
     static {
         String log_path = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), ".log");
@@ -27,6 +29,8 @@ public class CraftWorld {
     public static void main(String[] args) {
         Thread.currentThread().setName("CraftWorldMain");
         HLog.logger("Hello CraftWorld!");
+
+        HFileHelper.extractFilesFromJar("assets", ASSETS_PATH);
 
         GLOBAL_CONFIGURATIONS = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
         HConfig language = GLOBAL_CONFIGURATIONS.getByName("language");

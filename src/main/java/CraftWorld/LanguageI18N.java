@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class LanguageI18N {
     public static final String DEFAULT_LANGUAGE = "en_us";
-    public static final String LANGUAGE_DIRECTORY = CraftWorld.RUNTIME_PATH + "lang\\";
+    public static final String LANGUAGE_DIRECTORY = CraftWorld.ASSETS_PATH + "lang\\";
 
     public static final Map<String, HConfigurationsSimple> languages = new HashMap<>();
 

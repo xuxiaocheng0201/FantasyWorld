@@ -4,6 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class HStringHelper {
+    public static boolean isBlank(String a) {
+        if (a == null)
+            return true;
+        for (byte i: a.getBytes())
+            if (i != (byte) ' ' && i != (byte) '\n' && i != (byte) '\t')
+                return false;
+        return true;
+    }
+
     public static String merge(Object... objects) {
         if (objects.length == 0)
             return "";
