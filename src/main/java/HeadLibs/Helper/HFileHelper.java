@@ -12,6 +12,24 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class HFileHelper {
+    public static boolean deleteDirectories(String path) {
+        File file = new File(path);
+        if (!file.exists() || !file.isDirectory())
+            return false;
+        File[] files = file.listFiles();
+        if (files == null)
+            return file.delete();
+        for (File i: files)
+            if (i.isDirectory()) {
+                if (!deleteDirectories(i.getPath()))
+                    return false;
+            }
+            else
+                if (!i.delete())
+                    return false;
+        return file.delete();
+    }
+
     public static boolean createNewFile(String path) {
         try {
             File file = new File(path).getAbsoluteFile();

@@ -30,7 +30,8 @@ public class LanguageI18N {
             return translation.getValue();
         if (lang.equals(DEFAULT_LANGUAGE)) {
             HConfigurationsSimple todo = new HConfigurationsSimple(HStringHelper.merge(LANGUAGE_DIRECTORY, "TODO.lang"));
-            todo.add(new HConfigSimple(name, null));
+            if (todo.getByName(name) == null)
+                todo.add(new HConfigSimple(name, null));
             todo.write();
             return name;
         }

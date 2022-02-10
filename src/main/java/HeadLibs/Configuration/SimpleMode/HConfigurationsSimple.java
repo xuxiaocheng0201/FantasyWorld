@@ -109,7 +109,7 @@ public class HConfigurationsSimple {
                 if (temp.contains("=")) {
                     String[] s = temp.split("=");
                     config.setName(s[0]);
-                    config.setValue(temp.substring(s[0].length() + 1, temp.length() - 1));
+                    config.setValue(temp.substring(s[0].length() + 1));
                     HConfigSimple check = this.getByName(s[0]);
                     if (check != null)
                         if (check.equals(config))

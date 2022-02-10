@@ -52,7 +52,10 @@ public class HLog {
                 "[", level.getName(), "]",
                 message);
         logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
-        System.out.println(level.getPrefix() + log + "\033[0m");
+        if (System.console() != null)
+            System.out.println(log);
+        else
+            System.out.println(level.getPrefix() + log + "\033[0m");
     }
 
     public void log(HELogLevel level, String ...message) {
