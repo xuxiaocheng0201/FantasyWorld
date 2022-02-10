@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.lang.management.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 public class HSystemHelp {
     public static boolean isJVM64Bit() {
@@ -27,26 +28,22 @@ public class HSystemHelp {
         if (temp.contains("solaris"))
             return "SOLARIS";
         if (temp.contains("sunos"))
-            return "SOLARIS";
+            return "SUNOS";
         if (temp.contains("linux"))
             return "LINUX";
         if (temp.contains("unix"))
-            return "LINUX";
+            return "UNIX";
         return "UNKNOWN";
     }
 
     public static void outputSystemDetail(Writer output) throws IOException {
         output.write("System Detail:\n");
-
         output.write(HStringHelper.merge("\tOperating Machine: ", getRunningType(), "\n"));
-
         output.write(HStringHelper.merge("\tConsole: ", System.console(), "\n"));
-
         output.write("\tMemory:\n");
         output.write(HStringHelper.merge("\t\t\tMax Memory: ", Runtime.getRuntime().maxMemory(), "Bytes (", Runtime.getRuntime().maxMemory() / 1024 / 1024, "MB)\n"));
         output.write(HStringHelper.merge("\t\t\tTotal Memory: ", Runtime.getRuntime().totalMemory(), "Bytes (", Runtime.getRuntime().totalMemory() / 1024 / 1024, "MB)\n"));
         output.write(HStringHelper.merge("\t\t\tFree Memory: ", Runtime.getRuntime().freeMemory(), "Bytes (", Runtime.getRuntime().freeMemory() / 1024 / 1024, "MB)\n"));
-
         MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
         output.write("\tHeap:\n");
         MemoryUsage heapMemory = memoryMXBean.getHeapMemoryUsage();
@@ -63,7 +60,6 @@ public class HSystemHelp {
         output.write(HStringHelper.merge("\t\t\tCommitted Heap: ", nonHeapMemory.getCommitted(), "Bytes (", nonHeapMemory.getCommitted() / 1024 / 1024, "MB)\n"));
         output.write(HStringHelper.merge("\t\tVerbose", memoryMXBean.isVerbose(), "\n"));
         output.write(HStringHelper.merge("\t\tObject Pending Finalization Count", memoryMXBean.getObjectPendingFinalizationCount(), "\n"));
-
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
         output.write("\tRuntime:\n");
         output.write(HStringHelper.merge("\t\tPid: ", runtimeMXBean.getPid(), "\n"));
@@ -83,7 +79,6 @@ public class HSystemHelp {
         output.write(HStringHelper.merge("\t\tInput Arguments: ", runtimeMXBean.getInputArguments(), "\n"));
         output.write(HStringHelper.merge("\t\tUptime: ", runtimeMXBean.getUptime(), "\n"));
         output.write(HStringHelper.merge("\t\tStart Time: ", runtimeMXBean.getStartTime(), "(", new Date(runtimeMXBean.getStartTime()), ")\n"));
-
         OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
         output.write("\tOperating System:\n");
         output.write(HStringHelper.merge("\t\tName: ", operatingSystemMXBean.getName(), "\n"));
@@ -91,7 +86,6 @@ public class HSystemHelp {
         output.write(HStringHelper.merge("\t\tVersion: ", operatingSystemMXBean.getVersion(), "\n"));
         output.write(HStringHelper.merge("\t\tAvailable Processors: ", operatingSystemMXBean.getAvailableProcessors(), "\n"));
         output.write(HStringHelper.merge("\t\tSystem Load Average: ", operatingSystemMXBean.getSystemLoadAverage(), "\n"));
-
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
         output.write("\tThread:\n");
         output.write(HStringHelper.merge("\t\tThread Count: ", threadMXBean.getThreadCount(), "\n"));
@@ -110,13 +104,11 @@ public class HSystemHelp {
             output.write(HStringHelper.merge("\t\tThread Cpu Time Enabled: ", threadMXBean.isThreadCpuTimeEnabled(), "\n"));
         output.write(HStringHelper.merge("\t\tObject Monitor Usage Supported: ", threadMXBean.isObjectMonitorUsageSupported(), "\n"));
         output.write(HStringHelper.merge("\t\tSynchronizer Usage Supported: ", threadMXBean.isSynchronizerUsageSupported(), "\n"));
-
         CompilationMXBean compilationMXBean = ManagementFactory.getCompilationMXBean();
         output.write("\tCompilation:\n");
         output.write(HStringHelper.merge("\t\tName: ", compilationMXBean.getName(), "\n"));
         output.write(HStringHelper.merge("\t\tCompilation Time Monitoring Supported: ", compilationMXBean.isCompilationTimeMonitoringSupported(), "\n"));
         output.write(HStringHelper.merge("\t\tTotal Compilation Time: ", compilationMXBean.getTotalCompilationTime(), "\n"));
-
         List<MemoryPoolMXBean> memoryPoolMXBeans = ManagementFactory.getMemoryPoolMXBeans();
         output.write("\tMemory Pool MX Beans:\n");
         for (MemoryPoolMXBean memoryPoolMXBean: memoryPoolMXBeans) {
@@ -154,13 +146,18 @@ public class HSystemHelp {
                 output.write(HStringHelper.merge("\t\t\t\tCommitted Heap: ", memoryPoolCollectionUsage.getCommitted(), "Bytes (", memoryPoolCollectionUsage.getCommitted() / 1024 / 1024, "MB)\n"));
             }
         }
-
         List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
         output.write("\tGarbage Collector MX Beans:\n");
         for (GarbageCollectorMXBean garbageCollectorMXBean: garbageCollectorMXBeans) {
             output.write(HStringHelper.merge("\t\tName: ", garbageCollectorMXBean.getName(), "\n"));
             output.write(HStringHelper.merge("\t\t\tCollection Count: ", garbageCollectorMXBean.getCollectionCount(), "\n"));
             output.write(HStringHelper.merge("\t\t\tCollection Time: ", garbageCollectorMXBean.getCollectionTime(), "\n"));
+        }
+        Properties properties = System.getProperties();
+        output.write("\tSystem Properties:\n");
+        for (String name: properties.stringPropertyNames()) {
+            output.write(HStringHelper.merge("\t\tName: ", name, "\n"));
+            output.write(HStringHelper.merge("\t\t\tValue: ", properties.getProperty(name), "\n"));
         }
     }
 }
