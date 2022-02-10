@@ -20,15 +20,14 @@ public enum HELogLevel {
     private final int PRIORITY;
     /**
      * From https://www.cnblogs.com/gzj03/p/14425860.html
-     * 首先，说下输出格式："\033[数字;.....;数字;数字m"
-     * 数字代码：
-     * 0 恢复控制台本身的格式；
-     * 1 加粗；2 正常；3 斜体；4 下划线；9 划线；
-     * 前景色 30-37；背景色 40-47；
-     * 可以在里面加上无数的分号写上相应的代码，但是不建议这么做，全是数字，理解起来太麻烦了，如下：
-     * * System.out.println("\033[31;0;42;30;1;2;3;4;41m" + "显示");
+     * Format: "\033[number;.....;number;number m"
+     * number:
+     * 0 Default; 1 Wider; 2 Normal; 3 Italic; 4 underline; 9 line!
+     * Foreground color 30-37; Background color 40-47.
      *
-     * 前景色和后景色大致预览：
+     * eg. System.out.println("\033[31;0;42;30;1;2;3;4;41m" + "Hello");
+     *
+     * Colour meanings.
      * 0 -> Black
      * 1 -> Red
      * 2 -> Green

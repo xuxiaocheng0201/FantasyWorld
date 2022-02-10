@@ -11,7 +11,7 @@
       <entry name="!?*.groovy" />
       <entry name="!?*.java" />
     </wildcardResourcePatterns>
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="17" />
   </component>
   <component name="CopyrightManager" default="" />
   <component name="DependencyValidationManager">

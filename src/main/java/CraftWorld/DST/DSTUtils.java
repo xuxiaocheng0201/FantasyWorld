@@ -24,7 +24,7 @@ public class DSTUtils {
     public static IDSTBase get(String name) {
         try {
             if (!dst.containsKey(name))
-                throw new IllegalArgumentException("Type is not registered!");
+                throw new IllegalArgumentException(HStringHelper.merge("Type is not registered! [name='", name, "']"));
             return dst.get(name).getDeclaredConstructor().newInstance();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -34,6 +34,14 @@ public class DSTUtils {
 
     public static String prefix(String name) {
         return HStringHelper.merge("start", name);
+    }
+
+    public static String dePrefix(String prefix) {
+        if (prefix == null)
+            return "null";
+        if (prefix.startsWith("start"))
+            return prefix.substring(5);
+        return prefix;
     }
 
     public static String suffix(String name) {
