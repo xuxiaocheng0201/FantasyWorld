@@ -17,11 +17,12 @@
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
-  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
@@ -264,6 +265,32 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.opentest4j/opentest4j/1.2.0/41d55b3c2254de9837b4ec8923cbd371b8a7eab5/opentest4j-1.2.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="lib">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/gluegen-rt-natives-windows-amd64.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/gluegen-rt.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/gson-2.8.9.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/joal-natives-windows-amd64.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/joal.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jocl-natives-windows-amd64.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jocl.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jogl-all-noawt-natives-windows-amd64.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jogl-all.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$PROJECT_DIR$/lib/gluegen-javadoc.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/joal-javadoc.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jocl-javadoc.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jogl-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/gluegen-java-src.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/gson-2.8.9-sources.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/joal-java-src.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jocl-java-src.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jogl-java-src.jar!/" />
       </SOURCES>
     </library>
   </component>

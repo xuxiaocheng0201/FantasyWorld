@@ -12,6 +12,9 @@ public class CraftWorldClient implements Runnable {
         HLog.logger(HELogLevel.FINEST, "Client Thread has started.");
 
         //TODO: Client
+
+
+
         try {
             Thread server = new Thread(new CraftWorldServer());
             server.start();

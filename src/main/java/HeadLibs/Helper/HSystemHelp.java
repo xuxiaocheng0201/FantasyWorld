@@ -1,5 +1,6 @@
 package HeadLibs.Helper;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.management.*;
@@ -152,6 +153,14 @@ public class HSystemHelp {
             output.write(HStringHelper.merge("\t\tName: ", garbageCollectorMXBean.getName(), "\n"));
             output.write(HStringHelper.merge("\t\t\tCollection Count: ", garbageCollectorMXBean.getCollectionCount(), "\n"));
             output.write(HStringHelper.merge("\t\t\tCollection Time: ", garbageCollectorMXBean.getCollectionTime(), "\n"));
+        }
+        File[] disks = File.listRoots();
+        output.write("\tDisks:\n");
+        for (File disk: disks) {
+            output.write(HStringHelper.merge("\t\tPath: ", disk.getPath(), "\n"));
+            output.write(HStringHelper.merge("\t\t\tTotal Space: ", disk.getTotalSpace(), "Bytes (", disk.getTotalSpace() / 1024 / 1024 / 1024, "GB\n"));
+            output.write(HStringHelper.merge("\t\t\tFree Space: ", disk.getFreeSpace(), "Bytes (", disk.getFreeSpace() / 1024 / 1024 / 1024, "GB\n"));
+            output.write(HStringHelper.merge("\t\t\tUsable Space: ", disk.getUsableSpace(), "Bytes (", disk.getUsableSpace() / 1024 / 1024 / 1024, "GB\n"));
         }
         Properties properties = System.getProperties();
         output.write("\tSystem Properties:\n");

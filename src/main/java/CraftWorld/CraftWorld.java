@@ -1,17 +1,13 @@
 package CraftWorld;
 
+import CraftWorld.DST.*;
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Helper.HSystemHelp;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 
 public class CraftWorld {
     public static final String CURRENT_VERSION = "0.0.0";
@@ -34,20 +30,6 @@ public class CraftWorld {
     public static void main(String[] args)  {
         Thread.currentThread().setName("CraftWorldMain");
         HLog.logger("Hello CraftWorld!");
-        HLog.logger(HELogLevel.DEBUG, "Running at ", HSystemHelp.getRunningType(), "." +
-                " Max memory is ", (double) Runtime.getRuntime().maxMemory() / 1024 / 1024, "MB.");
-
-        HFileHelper.createNewFile(RUNTIME_PATH + "test.txt");
-        try {
-            Writer writer = new FileWriter(RUNTIME_PATH + "test.txt");
-            HSystemHelp.outputSystemDetail(writer);
-            writer.close();
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-
-        if (!HSystemHelp.isJVM64Bit() || Runtime.getRuntime().maxMemory() < 128 * 1024 * 1024)
-            HLog.logger(HELogLevel.WARN, "Memory may be lack! Now is ", (double) Runtime.getRuntime().maxMemory() / 1024 / 1024, "MB.");
         if (!(new File(ASSETS_PATH)).exists())
             HFileHelper.extractFilesFromJar("assets", ASSETS_PATH);
         GetConfigurations();
@@ -59,6 +41,26 @@ public class CraftWorld {
             if (i.equals("runServer"))
                 isClient = false;
         }
+        /* Register DST types */
+        new DSTTagBoolean();
+        new DSTTagByte();
+        new DSTTagChar();
+        new DSTTagShort();
+        new DSTTagInt();
+        new DSTTagLong();
+        new DSTTagFloat();
+        new DSTTagDouble();
+        new DSTTagString();
+        new DSTTagBooleanArray();
+        new DSTTagByteArray();
+        new DSTTagCharArray();
+        new DSTTagShortArray();
+        new DSTTagIntArray();
+        new DSTTagLongArray();
+        new DSTTagFloatArray();
+        new DSTTagDoubleArray();
+        new DSTTagStringArray();
+        new DSTMetaCompound();
         HLog.saveLogs(LOG_PATH);
         System.gc();
         try {
