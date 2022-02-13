@@ -222,6 +222,42 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apiguardian/apiguardian-api/1.1.2/e0787a997746ac32639e0bf3cb27af8dce8a3428/apiguardian-api-1.1.2-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Gradle: org.jogamp.gluegen:gluegen-rt:2.3.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jogamp.gluegen/gluegen-rt/2.3.2/edc35ccfc13d4a4ad02c50d580874c18bf48bbef/gluegen-rt-2.3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jogamp.gluegen/gluegen-rt/2.3.2/1e6c7836f978e8c96734b12600f800dff20c628b/gluegen-rt-2.3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.jogamp.joal:joal:2.3.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jogamp.joal/joal/2.3.2/ffabe724688a48b2e0b6795d5701f1309869eeb7/joal-2.3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jogamp.joal/joal/2.3.2/57516fee4bfcdb5268b340e62c8b9002eafb03d7/joal-2.3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.jogamp.jocl:jocl:2.3.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jogamp.jocl/jocl/2.3.2/35b24de2b5a0b22601a59676f036b6c9429e68d1/jocl-2.3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jogamp.jocl/jocl/2.3.2/ab7886e76a48d3b6291b8704c26c5c3d8f733a5/jocl-2.3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.jogamp.jogl:jogl-all:2.3.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jogamp.jogl/jogl-all/2.3.2/99e0f64bb8882f054825ae4a8a527a17b544a0b5/jogl-all-2.3.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jogamp.jogl/jogl-all/2.3.2/677f26584c8860b8ac2091a09b08b5facedc6d68/jogl-all-2.3.2-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: org.junit.jupiter:junit-jupiter-api:5.8.2">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-api/5.8.2/4c21029217adf07e4c0d0c5e192b6bf610c94bdc/junit-jupiter-api-5.8.2.jar!/" />

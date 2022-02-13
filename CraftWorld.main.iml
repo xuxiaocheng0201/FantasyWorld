@@ -10,6 +10,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.9" level="project" />
-    <orderEntry type="module" module-name="CraftWorld" />
+    <orderEntry type="library" name="Gradle: org.jogamp.gluegen:gluegen-rt:2.3.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jogamp.joal:joal:2.3.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jogamp.jocl:jocl:2.3.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jogamp.jogl:jogl-all:2.3.2" level="project" />
   </component>
 </module>

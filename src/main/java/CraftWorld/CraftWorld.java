@@ -5,6 +5,7 @@ import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
 import java.io.File;
@@ -21,6 +22,12 @@ public class CraftWorld {
         while ((new File(log_path)).exists())
             log_path = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), "_", ++i, ".log");
         LOG_PATH = log_path;
+
+        if (System.console() != null)
+            if (!(new File(ASSETS_PATH)).exists())
+                HFileHelper.extractFilesFromJar("assets", ASSETS_PATH);
+        if (System.console() != null)
+            HFileHelper.extractFilesFromJar("natives", "natives");
     }
 
     public static boolean isClient = true;
@@ -30,8 +37,6 @@ public class CraftWorld {
     public static void main(String[] args)  {
         Thread.currentThread().setName("CraftWorldMain");
         HLog.logger("Hello CraftWorld!");
-        if (!(new File(ASSETS_PATH)).exists())
-            HFileHelper.extractFilesFromJar("assets", ASSETS_PATH);
         GetConfigurations();
         for (String i: args) {
             if (i == null)
@@ -61,6 +66,7 @@ public class CraftWorld {
         new DSTTagDoubleArray();
         new DSTTagStringArray();
         new DSTMetaCompound();
+        HLog.logger(HELogLevel.DEBUG, HStringHelper.merge("Registered ", DSTUtils.getRegisteredCount(), " DST types."));
         HLog.saveLogs(LOG_PATH);
         System.gc();
         try {

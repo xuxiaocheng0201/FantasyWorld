@@ -21,6 +21,10 @@ public class DSTUtils {
         }
     }
 
+    public static int getRegisteredCount() {
+        return dst.size();
+    }
+
     public static IDSTBase get(String name) {
         try {
             if (!dst.containsKey(name))

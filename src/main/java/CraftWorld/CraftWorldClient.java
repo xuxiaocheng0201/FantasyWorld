@@ -1,5 +1,6 @@
 package CraftWorld;
 
+import CraftWorld.Jogl.InitUI;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
@@ -13,15 +14,16 @@ public class CraftWorldClient implements Runnable {
 
         //TODO: Client
 
-
-
         try {
             Thread server = new Thread(new CraftWorldServer());
             server.start();
             server.join();
+            (new InitUI()).run();
+            wait(3600000);
         } catch (InterruptedException exception) {
             exception.printStackTrace();
         }
+
 
         HLog.logger(HELogLevel.FINEST, "Client Thread exits.");
     }
