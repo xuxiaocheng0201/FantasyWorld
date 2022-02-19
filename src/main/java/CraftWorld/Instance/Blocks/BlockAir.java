@@ -6,7 +6,7 @@ import CraftWorld.Block.IBlockBase;
 import CraftWorld.Instance.DST.DSTMetaCompound;
 
 public class BlockAir implements IBlockBase {
-    private String name = "air";
+    private String name = "Air";
     private BlockPos pos = new BlockPos();
     private DSTMetaCompound dst = new DSTMetaCompound();
 

@@ -1,12 +1,9 @@
 package CraftWorld;
 
-import CraftWorld.DST.DSTUtils;
-import CraftWorld.Instance.DST.*;
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
 import java.io.File;
@@ -47,27 +44,6 @@ public class CraftWorld {
             if (i.equals("runServer"))
                 isClient = false;
         }
-        /* Register DST types */
-        new DSTTagBoolean();
-        new DSTTagByte();
-        new DSTTagChar();
-        new DSTTagShort();
-        new DSTTagInt();
-        new DSTTagLong();
-        new DSTTagFloat();
-        new DSTTagDouble();
-        new DSTTagString();
-        new DSTTagBooleanArray();
-        new DSTTagByteArray();
-        new DSTTagCharArray();
-        new DSTTagShortArray();
-        new DSTTagIntArray();
-        new DSTTagLongArray();
-        new DSTTagFloatArray();
-        new DSTTagDoubleArray();
-        new DSTTagStringArray();
-        new DSTMetaCompound();
-        HLog.logger(HELogLevel.DEBUG, HStringHelper.merge("Registered ", DSTUtils.getRegisteredCount(), " DST types."));
         HLog.saveLogs(LOG_PATH);
         System.gc();
         try {

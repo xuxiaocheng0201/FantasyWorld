@@ -3,6 +3,7 @@ package CraftWorld.Block;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Exception.DSTFormatException;
+import CraftWorld.Instance.Blocks.BlockAir;
 import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Helper.HStringHelper;
 
@@ -27,9 +28,11 @@ public class Block implements IDSTBase {
             instance = null;
             return;
         }
-        instance = BlockUtils.get(BlockUtils.deSuffix(name));
-        if (instance == null)
+        instance = BlockUtils.get(BlockUtils.dePrefix(name));
+        if (instance == null) {
+            instance = new BlockAir();
             return;
+        }
         if (!BlockPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         instance.getPos().read(input);
