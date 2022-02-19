@@ -4,7 +4,7 @@ import CraftWorld.DST.DSTMetaCompound;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Exception.DSTFormatException;
-import CraftWorld.Utils.IDResource;
+import CraftWorld.Instance.Blocks.BlockAir;
 import HeadLibs.Helper.HStringHelper;
 
 import java.io.DataInput;
@@ -15,7 +15,7 @@ import java.util.Objects;
 public class Block implements IDSTBase {
     private BlockPos pos = new BlockPos();
     private DSTMetaCompound dst = new DSTMetaCompound();
-    private IDResource model = new IDResource();
+    private Block instance = new BlockAir();
 
     public static final String id = "Block";
     public static final String prefix = id;
@@ -31,9 +31,9 @@ public class Block implements IDSTBase {
         if (!DSTMetaCompound.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         dst.read(input);
-        if (!IDResource.prefix.equals(input.readUTF()))
+        if (!Block.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
-        model.read(input);
+        instance.read(input);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Block implements IDSTBase {
         output.writeUTF(prefix);
         pos.write(output);
         dst.write(output);
-        model.write(output);
+        instance.write(output);
     }
 
     public BlockPos getPos() {
@@ -60,12 +60,12 @@ public class Block implements IDSTBase {
         this.dst = dst;
     }
 
-    public IDResource getModel() {
-        return model;
+    public Block getInstance() {
+        return instance;
     }
 
-    public void setModel(IDResource model) {
-        this.model = model;
+    public void setInstance(Block instance) {
+        this.instance = instance;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class Block implements IDSTBase {
             return false;
         return Objects.equals(this.pos, ((Block) a).pos) &&
                 Objects.equals(this.dst, ((Block) a).dst) &&
-                Objects.equals(this.model, ((Block) a).model);
+                Objects.equals(this.instance, ((Block) a).instance);
     }
 
     @Override
