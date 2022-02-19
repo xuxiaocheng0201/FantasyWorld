@@ -1,5 +1,7 @@
-package CraftWorld.DST;
+package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.DSTUtils;
+import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
 
 import java.io.DataInput;
@@ -9,32 +11,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DSTTagIntArray implements IDSTBase {
-    public static final String id = "IntArray";
+public final class DSTMetaCompound implements IDSTBase {
+    public static final String id = "Compound";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
-        DSTUtils.register(id, DSTTagIntArray.class);
+        DSTUtils.register(id, DSTMetaCompound.class);
     }
 
     private String name = "";
-    private final Map<String, Integer> data = new HashMap<>();
+    private final Map<String, IDSTBase> dstMap = new HashMap<>();
 
-    public DSTTagIntArray() {
+    public DSTMetaCompound() {
         super();
     }
 
-    public DSTTagIntArray(String name) {
+    public DSTMetaCompound(String name) {
         this.name = name;
     }
 
     @Override
     public void read(DataInput input) throws IOException {
-        data.clear();
+        dstMap.clear();
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            data.put(name, input.readInt());
+            IDSTBase dst = DSTUtils.get(DSTUtils.dePrefix(input.readUTF()));
+            if (dst != null)
+                dst.read(input);
+            dstMap.put(name, dst);
             name = input.readUTF();
         }
     }
@@ -42,44 +47,44 @@ public class DSTTagIntArray implements IDSTBase {
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(this.name);
-        for (String name: data.keySet()) {
+        output.writeUTF(name);
+        for (String name: dstMap.keySet()) {
             output.writeUTF(name);
-            output.writeInt(data.get(name));
+            dstMap.get(name).write(output);
         }
         output.writeUTF(suffix);
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public Map<String, Integer> getData() {
-        return data;
+    public String getName() {
+        return name;
+    }
+
+    public Map<String, IDSTBase> getDstMap() {
+        return dstMap;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagIntArray{",
+        return HStringHelper.merge("DSTMetaCompound{",
                 "name='", name, '\'',
-                ", data=", data,
+                ", dstMap=", dstMap,
                 '}');
     }
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagIntArray))
+        if (!(a instanceof DSTMetaCompound))
             return false;
-        return Objects.equals(this.name, ((DSTTagIntArray) a).name) &&
-                Objects.equals(this.data, ((DSTTagIntArray) a).data);
+        return Objects.equals(this.name, ((DSTMetaCompound) a).name) &&
+                Objects.equals(this.dstMap, ((DSTMetaCompound) a).dstMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, data);
+        return Objects.hash(name, dstMap);
     }
 }

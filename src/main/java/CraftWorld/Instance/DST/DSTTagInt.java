@@ -1,5 +1,7 @@
-package CraftWorld.DST;
+package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.DSTUtils;
+import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
 
 import java.io.DataInput;
@@ -7,29 +9,29 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Objects;
 
-public class DSTTagDouble implements IDSTBase {
-    public static final String id = "Double";
+public class DSTTagInt implements IDSTBase {
+    public static final String id = "Int";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, DSTTagDouble.class);
+        DSTUtils.register(id, DSTTagInt.class);
     }
 
     private String name = "";
-    private double data = 0;
+    private int data = 0;
 
-    public DSTTagDouble() {
+    public DSTTagInt() {
         super();
     }
 
-    public DSTTagDouble(String name) {
+    public DSTTagInt(String name) {
         this.name = name;
     }
 
-    public DSTTagDouble(double data) {
+    public DSTTagInt(int data) {
         this.data = data;
     }
 
-    public DSTTagDouble(String name, double data) {
+    public DSTTagInt(String name, int data) {
         this.name = name;
         this.data = data;
     }
@@ -37,14 +39,14 @@ public class DSTTagDouble implements IDSTBase {
     @Override
     public void read(DataInput input) throws IOException {
         this.name = input.readUTF();
-        this.data = input.readDouble();
+        this.data = input.readInt();
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        output.writeDouble(this.data);
+        output.writeInt(this.data);
     }
 
     public String getName() {
@@ -55,17 +57,17 @@ public class DSTTagDouble implements IDSTBase {
         this.name = name;
     }
 
-    public double getData() {
+    public int getData() {
         return data;
     }
 
-    public void setData(double data) {
+    public void setData(int data) {
         this.data = data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagDouble{",
+        return HStringHelper.merge("DSTTagInt{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -73,10 +75,10 @@ public class DSTTagDouble implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagDouble))
+        if (!(a instanceof DSTTagInt))
             return false;
-        return Objects.equals(this.name, ((DSTTagDouble) a).name) &&
-                this.data == ((DSTTagDouble) a).data;
+        return Objects.equals(this.name, ((DSTTagInt) a).name) &&
+                this.data == ((DSTTagInt) a).data;
     }
 
     @Override

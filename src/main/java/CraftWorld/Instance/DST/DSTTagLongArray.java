@@ -1,5 +1,7 @@
-package CraftWorld.DST;
+package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.DSTUtils;
+import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
 
 import java.io.DataInput;
@@ -9,22 +11,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DSTTagShortArray implements IDSTBase {
-    public static final String id = "ShortArray";
+public class DSTTagLongArray implements IDSTBase {
+    public static final String id = "LongArray";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
-        DSTUtils.register(id, DSTTagShortArray.class);
+        DSTUtils.register(id, DSTTagLongArray.class);
     }
 
     private String name = "";
-    private final Map<String, Short> data = new HashMap<>();
+    private final Map<String, Long> data = new HashMap<>();
 
-    public DSTTagShortArray() {
+    public DSTTagLongArray() {
         super();
     }
 
-    public DSTTagShortArray(String name) {
+    public DSTTagLongArray(String name) {
         this.name = name;
     }
 
@@ -34,7 +36,7 @@ public class DSTTagShortArray implements IDSTBase {
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            data.put(name, input.readShort());
+            data.put(name, input.readLong());
             name = input.readUTF();
         }
     }
@@ -45,7 +47,7 @@ public class DSTTagShortArray implements IDSTBase {
         output.writeUTF(this.name);
         for (String name: data.keySet()) {
             output.writeUTF(name);
-            output.writeShort(data.get(name));
+            output.writeLong(data.get(name));
         }
         output.writeUTF(suffix);
     }
@@ -58,13 +60,13 @@ public class DSTTagShortArray implements IDSTBase {
         this.name = name;
     }
 
-    public Map<String, Short> getData() {
+    public Map<String, Long> getData() {
         return data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagShortArray{",
+        return HStringHelper.merge("DSTTagLongArray{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -72,10 +74,10 @@ public class DSTTagShortArray implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagShortArray))
+        if (!(a instanceof DSTTagLongArray))
             return false;
-        return Objects.equals(this.name, ((DSTTagShortArray) a).name) &&
-                Objects.equals(this.data, ((DSTTagShortArray) a).data);
+        return Objects.equals(this.name, ((DSTTagLongArray) a).name) &&
+                Objects.equals(this.data, ((DSTTagLongArray) a).data);
     }
 
     @Override

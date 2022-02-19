@@ -1,5 +1,7 @@
-package CraftWorld.DST;
+package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.DSTUtils;
+import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
 
 import java.io.DataInput;
@@ -9,22 +11,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DSTTagBooleanArray implements IDSTBase {
-    public static final String id = "BooleanArray";
+public class DSTTagIntArray implements IDSTBase {
+    public static final String id = "IntArray";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
-        DSTUtils.register(id, DSTTagBooleanArray.class);
+        DSTUtils.register(id, DSTTagIntArray.class);
     }
 
     private String name = "";
-    private final Map<String, Boolean> data = new HashMap<>();
+    private final Map<String, Integer> data = new HashMap<>();
 
-    public DSTTagBooleanArray() {
+    public DSTTagIntArray() {
         super();
     }
 
-    public DSTTagBooleanArray(String name) {
+    public DSTTagIntArray(String name) {
         this.name = name;
     }
 
@@ -34,7 +36,7 @@ public class DSTTagBooleanArray implements IDSTBase {
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            data.put(name, input.readBoolean());
+            data.put(name, input.readInt());
             name = input.readUTF();
         }
     }
@@ -45,7 +47,7 @@ public class DSTTagBooleanArray implements IDSTBase {
         output.writeUTF(this.name);
         for (String name: data.keySet()) {
             output.writeUTF(name);
-            output.writeBoolean(data.get(name));
+            output.writeInt(data.get(name));
         }
         output.writeUTF(suffix);
     }
@@ -58,13 +60,13 @@ public class DSTTagBooleanArray implements IDSTBase {
         this.name = name;
     }
 
-    public Map<String, Boolean> getData() {
+    public Map<String, Integer> getData() {
         return data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagBooleanArray{",
+        return HStringHelper.merge("DSTTagIntArray{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -72,10 +74,10 @@ public class DSTTagBooleanArray implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagBooleanArray))
+        if (!(a instanceof DSTTagIntArray))
             return false;
-        return Objects.equals(this.name, ((DSTTagBooleanArray) a).name) &&
-                Objects.equals(this.data, ((DSTTagBooleanArray) a).data);
+        return Objects.equals(this.name, ((DSTTagIntArray) a).name) &&
+                Objects.equals(this.data, ((DSTTagIntArray) a).data);
     }
 
     @Override

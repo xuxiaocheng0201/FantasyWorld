@@ -1,10 +1,9 @@
 package CraftWorld.Block;
 
-import CraftWorld.DST.DSTMetaCompound;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Exception.DSTFormatException;
-import CraftWorld.Instance.Blocks.BlockAir;
+import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Helper.HStringHelper;
 
 import java.io.DataInput;
@@ -13,9 +12,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Block implements IDSTBase {
-    private BlockPos pos = new BlockPos();
-    private DSTMetaCompound dst = new DSTMetaCompound();
-    private Block instance = new BlockAir();
+    private IBlockBase instance = null;
 
     public static final String id = "Block";
     public static final String prefix = id;
@@ -25,54 +22,48 @@ public class Block implements IDSTBase {
 
     @Override
     public void read(DataInput input) throws IOException {
+        String name = input.readUTF();
+        if (name.equals("null")) {
+            instance = null;
+            return;
+        }
+        instance = BlockUtils.get(BlockUtils.deSuffix(name));
+        if (instance == null)
+            return;
         if (!BlockPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
-        pos.read(input);
+        instance.getPos().read(input);
         if (!DSTMetaCompound.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
-        dst.read(input);
-        if (!Block.prefix.equals(input.readUTF()))
-            throw new DSTFormatException();
-        instance.read(input);
+        instance.getDst().read(input);
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        pos.write(output);
-        dst.write(output);
-        instance.write(output);
+        if (instance == null) {
+            output.writeUTF("null");
+            return;
+        }
+        output.writeUTF(instance.getName());
+        instance.getPos().write(output);
+        instance.getDst().write(output);
     }
 
-    public BlockPos getPos() {
-        return pos;
-    }
-
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
-    }
-
-    public DSTMetaCompound getDst() {
-        return dst;
-    }
-
-    public void setDst(DSTMetaCompound dst) {
-        this.dst = dst;
-    }
-
-    public Block getInstance() {
+    public IBlockBase getInstance() {
         return instance;
     }
 
-    public void setInstance(Block instance) {
+    public void setInstance(IBlockBase instance) {
         this.instance = instance;
     }
 
     @Override
     public String toString() {
         return HStringHelper.merge("Block{",
-                "pos=", pos,
-                ", dst=", dst,
+                ", name=", (instance == null) ? "null" : instance.getName(),
+                ", pos=", (instance == null) ? "null" : instance.getPos(),
+                ", dst=", (instance == null) ? "null" : instance.getDst(),
                 '}');
     }
 
@@ -80,13 +71,11 @@ public class Block implements IDSTBase {
     public boolean equals(Object a) {
         if (!(a instanceof Block))
             return false;
-        return Objects.equals(this.pos, ((Block) a).pos) &&
-                Objects.equals(this.dst, ((Block) a).dst) &&
-                Objects.equals(this.instance, ((Block) a).instance);
+        return Objects.equals(this.instance, ((Block) a).instance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pos, dst);
+        return Objects.hash(instance);
     }
 }

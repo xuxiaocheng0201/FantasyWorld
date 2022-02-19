@@ -1,4 +1,4 @@
-package CraftWorld.DST;
+package CraftWorld.Block;
 
 import CraftWorld.Exception.RegisteredException;
 import HeadLibs.Helper.HStringHelper;
@@ -6,30 +6,30 @@ import HeadLibs.Helper.HStringHelper;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DSTUtils {
-    private static final Map<String, Class<? extends IDSTBase>> dst = new HashMap<>();
+public class BlockUtils {
+    private static final Map<String, Class<? extends IBlockBase>> blocks = new HashMap<>();
 
-    public static void register(String name, Class<? extends IDSTBase> dstClass) {
+    public static void register(String name, Class<? extends IBlockBase> blockClass) {
         try {
-            if (dst.containsKey(name))
+            if (blocks.containsKey(name))
                 throw new RegisteredException("Registered name");
-            if (dst.containsValue(dstClass))
+            if (blocks.containsValue(blockClass))
                 throw new RegisteredException("Registered class");
-            dst.put(name, dstClass);
+            blocks.put(name, blockClass);
         } catch (RegisteredException exception) {
             exception.printStackTrace();
         }
     }
 
     public static int getRegisteredCount() {
-        return dst.size();
+        return blocks.size();
     }
 
-    public static IDSTBase get(String name) {
+    public static IBlockBase get(String name) {
         try {
-            if (!dst.containsKey(name))
+            if (!blocks.containsKey(name))
                 throw new IllegalArgumentException(HStringHelper.merge("Type is not registered! [name='", name, "']"));
-            return dst.get(name).getDeclaredConstructor().newInstance();
+            return blocks.get(name).getDeclaredConstructor().newInstance();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
