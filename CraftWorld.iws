@@ -4,20 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Normalize DST system.&#10;Prepare block system.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/Dimension.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/DimensionUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/IDimensionBase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimension/DimensionEarthSurface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/World.java" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Dimension System.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/HClassFinder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Mod/ModLoader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Mod/NewElementImplement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Mod/NewElementUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/IBlockBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/IBlockBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Chunk/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Chunk/Chunk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Blocks/BlockAir.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Blocks/BlockAir.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorldClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorldServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/LanguageI18N.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/LanguageI18N.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +50,7 @@
       <list>
         <option value="JavaFXApplication" />
         <option value="Interface" />
+        <option value="AnnotationType" />
         <option value="Class" />
       </list>
     </option>
@@ -58,6 +60,13 @@
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="userSettingsFile" value="C:\Users\admin\.m2\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -78,12 +87,12 @@
     <property name="Repository.Attach.Sources" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/jogl-javadoc.jar" />
-    <property name="project.structure.last.edited" value="模块" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib" />
+    <property name="project.structure.last.edited" value="库" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.21609196" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -93,6 +102,9 @@
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets\CraftWorld\lang" />
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets.CraftWorld.lang" />
     </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="CraftWorld.Dimension" />
       <recent name="CraftWorld.DST" />
@@ -100,7 +112,7 @@
   </component>
   <component name="RunManager" selected="应用程序.CraftWorld Server">
     <configuration name="CraftWorld Client" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="CraftWorld.CraftWorld" />
+      <option name="MAIN_CLASS_NAME" value="CraftWorld" />
       <module name="CraftWorld.main" />
       <option name="PROGRAM_PARAMETERS" value="runClient" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CraftWorldClient" />
@@ -109,7 +121,7 @@
       </method>
     </configuration>
     <configuration name="CraftWorld Server" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="CraftWorld.CraftWorld" />
+      <option name="MAIN_CLASS_NAME" value="CraftWorld" />
       <module name="CraftWorld.main" />
       <option name="PROGRAM_PARAMETERS" value="runServer" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CraftWorldServer" />
@@ -299,7 +311,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645270112500</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Dimension System.">
+      <created>1645287719843</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1645287719843</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -339,7 +358,8 @@
     <MESSAGE value="Create ChunkPos.java" />
     <MESSAGE value="Create Chunk.java" />
     <MESSAGE value="Normalize DST system.&#10;Prepare block system." />
-    <option name="LAST_COMMIT_MESSAGE" value="Normalize DST system.&#10;Prepare block system." />
+    <MESSAGE value="Dimension System." />
+    <option name="LAST_COMMIT_MESSAGE" value="Dimension System." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

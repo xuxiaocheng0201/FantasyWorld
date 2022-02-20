@@ -1,5 +1,3 @@
-package CraftWorld;
-
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 

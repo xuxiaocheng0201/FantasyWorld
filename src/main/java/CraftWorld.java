@@ -1,5 +1,3 @@
-package CraftWorld;
-
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Helper.HFileHelper;

@@ -1,5 +1,3 @@
-package CraftWorld;
-
 import CraftWorld.Block.Block;
 import CraftWorld.Block.BlockPos;
 import CraftWorld.Block.BlockUtils;
@@ -11,6 +9,7 @@ import CraftWorld.Dimension.DimensionUtils;
 import CraftWorld.Instance.Blocks.BlockAir;
 import CraftWorld.Instance.DST.*;
 import CraftWorld.Instance.Dimension.DimensionEarthSurface;
+import HeadLibs.HClassFinder;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
@@ -53,6 +52,8 @@ public class CraftWorldServer implements Runnable {
         HLog.logger(HELogLevel.DEBUG, HStringHelper.merge("Registered ", BlockUtils.getRegisteredCount(), " Blocks."));
         new DimensionEarthSurface();
         HLog.logger(HELogLevel.DEBUG, HStringHelper.merge("Registered ", DimensionUtils.getRegisteredCount(), " Dimensions."));
+
+        HLog.logger((new HClassFinder()).getClassList());
 
         HLog.logger(HELogLevel.FINEST, "Server Thread exits.");
     }
