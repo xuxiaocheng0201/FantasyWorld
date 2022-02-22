@@ -151,9 +151,7 @@ public class HClassFinder {
 
     private void addClass(String packagePath, String packageName) {
         try {
-            File[] files = new File(packagePath).listFiles((File file) -> {
-                return (file.isFile() && file.getName().endsWith(".class")) || file.isDirectory();
-            });
+            File[] files = new File(packagePath).listFiles((File file) -> (file.isFile() && file.getName().endsWith(".class")) || file.isDirectory());
             if (files != null) {
                 for (File file: files) {
                     String fileName = file.getName();
