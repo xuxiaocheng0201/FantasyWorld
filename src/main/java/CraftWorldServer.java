@@ -53,7 +53,8 @@ public class CraftWorldServer implements Runnable {
         new DimensionEarthSurface();
         HLog.logger(HELogLevel.DEBUG, HStringHelper.merge("Registered ", DimensionUtils.getRegisteredCount(), " Dimensions."));
 
-        HLog.logger((new HClassFinder()).getClassList());
+        HClassFinder classFinder = new HClassFinder();
+        HLog.logger(classFinder.getClassList());
 
         HLog.logger(HELogLevel.FINEST, "Server Thread exits.");
     }

@@ -1,6 +1,5 @@
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
-import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 
@@ -19,11 +18,11 @@ public class CraftWorld {
             log_path = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), "_", ++i, ".log");
         LOG_PATH = log_path;
 
-        if (System.console() != null)
-            if (!(new File(ASSETS_PATH)).exists())
-                HFileHelper.extractFilesFromJar("assets", ASSETS_PATH);
-        if (System.console() != null)
-            HFileHelper.extractFilesFromJar("natives", "natives");
+//        if (System.console() != null)
+//            if (!(new File(ASSETS_PATH)).exists())
+//                HFileHelper.extractFilesFromJar("assets", ASSETS_PATH);
+//        if (System.console() != null)
+//            HFileHelper.extractFilesFromJar("natives", "natives");
     }
 
     public static boolean isClient = true;
