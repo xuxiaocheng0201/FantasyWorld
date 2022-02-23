@@ -2,10 +2,12 @@ package CraftWorld.DST;
 
 import CraftWorld.Exception.RegisteredException;
 import HeadLibs.Helper.HStringHelper;
+import Mod.NewElementUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@NewElementUtil(name = "DST")
 public class DSTUtils {
     private static final Map<String, Class<? extends IDSTBase>> dst = new HashMap<>();
 

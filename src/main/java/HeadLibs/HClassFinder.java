@@ -1,6 +1,7 @@
 package HeadLibs;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,94 +12,18 @@ import java.util.jar.JarFile;
 
 public class HClassFinder {
     private String PACKAGE_PATH;
-    private Class<?> superClass = Object.class;
     private ClassLoader classLoader = HClassFinder.class.getClassLoader();
+    private final List<Class<?>> superClass = new ArrayList<>();
+    private final List<Class<? extends Annotation>> annotationClass = new ArrayList<>();
     private boolean recursive = true;
     private final List<Class<?>> classList = new ArrayList<>();
 
     public HClassFinder() {
         PACKAGE_PATH = "";
-        startFind();
-    }
-
-    public HClassFinder(Class<?> superClass) {
-        setSuperClass(superClass);
-        startFind();
-    }
-
-    public HClassFinder(ClassLoader classLoader) {
-        setClassLoader(classLoader);
-        startFind();
-    }
-
-    public HClassFinder(Class<?> superClass, ClassLoader classLoader) {
-        setSuperClass(superClass);
-        setClassLoader(classLoader);
-        startFind();
     }
 
     public HClassFinder(String PACKAGE_PATH) {
         setPACKAGE_PATH(PACKAGE_PATH);
-        startFind();
-    }
-
-    public HClassFinder(String PACKAGE_PATH, Class<?> superClass) {
-        setPACKAGE_PATH(PACKAGE_PATH);
-        setSuperClass(superClass);
-        startFind();
-    }
-
-    public HClassFinder(String PACKAGE_PATH, ClassLoader classLoader) {
-        setPACKAGE_PATH(PACKAGE_PATH);
-        setClassLoader(classLoader);
-        startFind();
-    }
-
-    public HClassFinder(String PACKAGE_PATH, Class<?> superClass, ClassLoader classLoader) {
-        setPACKAGE_PATH(PACKAGE_PATH);
-        setSuperClass(superClass);
-        setClassLoader(classLoader);
-        startFind();
-    }
-
-    public Class<?> getSuperClass() {
-        return superClass;
-    }
-
-    public void setSuperClass(Class<?> superClass) {
-        if (superClass == null) {
-            this.superClass = Object.class;
-            return;
-        }
-        this.superClass = superClass;
-    }
-
-    public List<Class<?>> getClassList() {
-        return classList;
-    }
-
-    public void clearClassList() {
-        classList.clear();
-    }
-
-    public ClassLoader getClassLoader() {
-        return classLoader;
-    }
-
-    public void setClassLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
-            this.classLoader = HClassFinder.class.getClassLoader();
-            return;
-        }
-        this.classLoader = classLoader;
-    }
-
-    public boolean isRecursive() {
-        return recursive;
-    }
-
-    public void setRecursive(boolean recursive) {
-        this.recursive = recursive;
     }
 
     public String getPACKAGE_PATH() {
@@ -113,12 +38,85 @@ public class HClassFinder {
         this.PACKAGE_PATH = PACKAGE_PATH;
     }
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        if (classLoader == null) {
+            this.classLoader = HClassFinder.class.getClassLoader();
+            return;
+        }
+        this.classLoader = classLoader;
+    }
+
+    public List<Class<?>> getSuperClass() {
+        return superClass;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void addSuperClass(Class<?> superClass) {
+        if (superClass == null || this.superClass.contains(superClass))
+            return;
+        if (superClass.isAnnotation()) {
+            addAnnotationClass((Class<? extends Annotation>) superClass);
+            return;
+        }
+        this.superClass.add(superClass);
+    }
+
+    public List<Class<? extends Annotation>> getAnnotationClass() {
+        return annotationClass;
+    }
+
+    public void addAnnotationClass(Class<? extends Annotation> annotation) {
+        if (annotation == null || this.annotationClass.contains(annotation))
+            return;
+        this.annotationClass.add(annotation);
+    }
+
+    public boolean isRecursive() {
+        return recursive;
+    }
+
+    public void setRecursive(boolean recursive) {
+        this.recursive = recursive;
+    }
+
+    public List<Class<?>> getClassList() {
+        return classList;
+    }
+
+    public void clearClassList() {
+        classList.clear();
+    }
+
     private void checkAndAddClass(Class<?> aClass) {
-        //TODO
-        classList.add(aClass);
+        if (checkSuper(aClass) && checkAnnotation(aClass))
+            classList.add(aClass);
+    }
+
+    private boolean checkSuper(Class<?> aClass) {
+        if (this.superClass.isEmpty())
+            return true;
+        for (Class<?> Super: this.superClass)
+            if (!Super.isAssignableFrom(aClass))
+                return false;
+        return true;
+    }
+
+    private boolean checkAnnotation(Class<?> aClass) {
+        if (this.annotationClass.isEmpty())
+            return true;
+        Annotation[] annotations = aClass.getDeclaredAnnotations();
+        for (Annotation annotation: annotations)
+            if (this.annotationClass.contains(annotation.annotationType()))
+                return true;
+        return false;
     }
 
     public void startFind() {
+        clearClassList();
         try {
             Enumeration<URL> urls = this.classLoader.getResources(this.PACKAGE_PATH.replaceAll("\\.", "/"));
             while (urls.hasMoreElements()) {

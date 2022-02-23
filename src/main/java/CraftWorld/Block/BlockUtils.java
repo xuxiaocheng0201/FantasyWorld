@@ -2,10 +2,12 @@ package CraftWorld.Block;
 
 import CraftWorld.Exception.RegisteredException;
 import HeadLibs.Helper.HStringHelper;
+import Mod.NewElementUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@NewElementUtil(name = "Block")
 public class BlockUtils {
     private static final Map<String, Class<? extends IBlockBase>> blocks = new HashMap<>();
 
