@@ -1,3 +1,5 @@
+package Core;
+
 import HeadLibs.Configuration.SimpleMode.HConfigSimple;
 import HeadLibs.Configuration.SimpleMode.HConfigurationsSimple;
 import HeadLibs.Helper.HStringHelper;

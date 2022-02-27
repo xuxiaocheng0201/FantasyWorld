@@ -4,15 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Test ClassFinder">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Add more functions in HClassFinder">
+      <change afterPath="$PROJECT_DIR$/CraftWorldClient/CraftWorld/0.0.0/mods/gson-2.8.9.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/IBlockBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/IBlockBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/DimensionUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/DimensionUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/IDimensionBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/IDimensionBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorldServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorldClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorldServer.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/HClassFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/HClassFinder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/LanguageI18N.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Mod/ModLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Mod/ModLoader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,8 +45,8 @@
       <list>
         <option value="JavaFXApplication" />
         <option value="Interface" />
-        <option value="AnnotationType" />
         <option value="Class" />
+        <option value="AnnotationType" />
       </list>
     </option>
   </component>
@@ -83,7 +83,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindow运行.ShowToolbar" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/CraftWorldClient/CraftWorld/0.0.0/mods" />
     <property name="project.structure.last.edited" value="库" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.21609196" />
@@ -93,6 +93,9 @@
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="temp" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\admin\Desktop\CraftWorld\CraftWorldClient\CraftWorld\0.0.0\mods" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets\CraftWorld\lang" />
@@ -106,9 +109,9 @@
       <recent name="CraftWorld.DST" />
     </key>
   </component>
-  <component name="RunManager" selected="应用程序.CraftWorld Server">
+  <component name="RunManager" selected="应用程序.CraftWorld Client">
     <configuration name="CraftWorld Client" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="CraftWorld" />
+      <option name="MAIN_CLASS_NAME" value="Core.CraftWorld" />
       <module name="CraftWorld.main" />
       <option name="PROGRAM_PARAMETERS" value="runClient" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CraftWorldClient" />
@@ -117,7 +120,7 @@
       </method>
     </configuration>
     <configuration name="CraftWorld Server" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="CraftWorld" />
+      <option name="MAIN_CLASS_NAME" value="Core.CraftWorld" />
       <module name="CraftWorld.main" />
       <option name="PROGRAM_PARAMETERS" value="runServer" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CraftWorldServer" />
@@ -342,8 +345,26 @@
       <option name="project" value="LOCAL" />
       <updated>1645546316438</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Register things by ClassFinder">
+      <created>1645632276039</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1645632276039</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -358,7 +379,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Add the hashCode of BlockPos" />
     <MESSAGE value="Add simple configuration mode." />
     <MESSAGE value="Small things fix." />
     <MESSAGE value="Add more method in BlockPos.java" />
@@ -383,7 +403,8 @@
     <MESSAGE value="Dimension System." />
     <MESSAGE value="ClassFinder" />
     <MESSAGE value="Test ClassFinder" />
-    <option name="LAST_COMMIT_MESSAGE" value="Test ClassFinder" />
+    <MESSAGE value="Register things by ClassFinder" />
+    <option name="LAST_COMMIT_MESSAGE" value="Register things by ClassFinder" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -399,5 +420,8 @@
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
     <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/CraftWorld$CraftWorld_Client.ic" NAME="CraftWorld Client 覆盖结果" MODIFIED="1645804841478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

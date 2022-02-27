@@ -1,9 +1,13 @@
 package HeadLibs;
 
+import HeadLibs.Helper.HStringHelper;
+
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.net.JarURLConnection;
+import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -12,18 +16,22 @@ import java.util.jar.JarFile;
 
 public class HClassFinder {
     private String PACKAGE_PATH;
-    private ClassLoader classLoader = HClassFinder.class.getClassLoader();
+    private final List<File> jarFiles = new ArrayList<>();
     private final List<Class<?>> superClass = new ArrayList<>();
     private final List<Class<? extends Annotation>> annotationClass = new ArrayList<>();
     private boolean recursive = true;
     private final List<Class<?>> classList = new ArrayList<>();
 
+    public static final File thisCodePath = new File(HClassFinder.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+
     public HClassFinder() {
         PACKAGE_PATH = "";
+        addJarFile(thisCodePath);
     }
 
     public HClassFinder(String PACKAGE_PATH) {
         setPACKAGE_PATH(PACKAGE_PATH);
+        addJarFile(thisCodePath);
     }
 
     public String getPACKAGE_PATH() {
@@ -38,16 +46,28 @@ public class HClassFinder {
         this.PACKAGE_PATH = PACKAGE_PATH;
     }
 
-    public ClassLoader getClassLoader() {
-        return classLoader;
+    public List<File> getJarFiles() {
+        return jarFiles;
     }
 
-    public void setClassLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
-            this.classLoader = HClassFinder.class.getClassLoader();
+    public void addJarFile(File jarFile) {
+        if (jarFile == null || !jarFile.exists() || jarFiles.contains(jarFile))
             return;
+        jarFiles.add(jarFile);
+    }
+
+    public void addJarFilesInDirectory(File directory) {
+        if (directory == null || !directory.exists())
+            return;
+        if (directory.isFile())
+            addJarFile(directory);
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files == null)
+                return;
+            for (File file: files)
+                addJarFile(file);
         }
-        this.classLoader = classLoader;
     }
 
     public List<Class<?>> getSuperClass() {
@@ -91,9 +111,14 @@ public class HClassFinder {
         classList.clear();
     }
 
-    private void checkAndAddClass(Class<?> aClass) {
-        if (checkSuper(aClass) && checkAnnotation(aClass))
-            classList.add(aClass);
+    private void checkAndAddClass(String className) {
+        try {
+            Class<?> aClass = Class.forName(className);
+            if (checkSuper(aClass) && checkAnnotation(aClass))
+                classList.add(aClass);
+        } catch (ClassNotFoundException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private boolean checkSuper(Class<?> aClass) {
@@ -116,79 +141,76 @@ public class HClassFinder {
     }
 
     public void startFind() {
-        clearClassList();
-        try {
-            Enumeration<URL> urls = this.classLoader.getResources(this.PACKAGE_PATH.replaceAll("\\.", "/"));
-            while (urls.hasMoreElements()) {
-                URL url = urls.nextElement();
-                if (url == null)
-                    continue;
-                String protocol = url.getProtocol();
-                if ("file".equals(protocol)) {
-                    addClass(url.getPath(), this.PACKAGE_PATH);
+        this.classList.clear();
+        for (File file : this.jarFiles) {
+            if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".zip"))
+                try {
+                    loadJar(file);
+                    findInJar(new JarFile(file));
+                } catch (IOException exception) {
+                    exception.printStackTrace();
                 }
-                if ("jar".equals(protocol)) {
-                    JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
-                    JarFile jarFile = jarURLConnection.getJarFile();
-                    Enumeration<JarEntry> jarEntries = jarFile.entries();
-                    while (jarEntries.hasMoreElements()) {
-                        JarEntry jarEntry = jarEntries.nextElement();
-                        String jarEntryName = jarEntry.getName();
-                        if (jarEntryName.endsWith(".class")) {
-                            String className = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replaceAll("/", ".");
-                            if (this.recursive || className.substring(0, className.lastIndexOf(".")).equals(this.PACKAGE_PATH))
-                                checkAndAddClass(Class.forName(className));
-                        }
-                    }
+            else
+                findInFile(file, "");
+        }
+    }
+
+    private void findInJar(JarFile jarFile) {
+        Enumeration<JarEntry> entryEnumeration = jarFile.entries();
+        while (entryEnumeration.hasMoreElements()) {
+            JarEntry jarEntry = entryEnumeration.nextElement();
+            String classFullName = jarEntry.getName();
+            if (classFullName.contains("META-INF"))
+                continue;
+            if (!classFullName.endsWith(".class"))
+                continue;
+            String className = classFullName.substring(0, classFullName.length() - 6).replace('\\', '.').replace('/', '.');
+            checkAndAddClass(className);
+        }
+    }
+
+    private void findInFile(File jarFile, String packageName) {
+        if (jarFile.isDirectory()) {
+            File[] files = jarFile.listFiles();
+            if (files == null)
+                return;
+            for (File file: files) {
+                String subPackageName = "".equals(packageName) ? "" : HStringHelper.merge(packageName, ".");
+                String filePath = file.getAbsolutePath().replace('\\', '.').replace('/', '.');
+                String subClassName = filePath.substring(filePath.lastIndexOf('.') + 1);
+                if (subClassName.equals("class")) {
+                    String filePathWithoutSuffix = filePath.substring(0, filePath.lastIndexOf('.'));
+                    subClassName = filePathWithoutSuffix.substring(filePathWithoutSuffix.lastIndexOf('.') + 1);
                 }
+                findInFile(file, HStringHelper.merge(subPackageName, subClassName));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return;
         }
+        String subClassName = jarFile.getAbsolutePath().substring(jarFile.getParentFile().getAbsolutePath().length() + 1)
+                .replace('\\', '.').replace('/', '.');
+        if (subClassName.contains("META-INF"))
+            return;
+        if (!subClassName.endsWith(".class"))
+            return;
+        checkAndAddClass(packageName);
     }
 
-    private void addClass(String packagePath, String packageName) {
+    public static void loadJar(File jarFile) {
+        if (jarFile == null || !jarFile.exists())
+            return;
+        Method method;
         try {
-            File[] files = new File(packagePath).listFiles((File file) -> (file.isFile() && file.getName().endsWith(".class")) || file.isDirectory());
-            if (files != null) {
-                for (File file: files) {
-                    String fileName = file.getName();
-                    if (file.isFile()) {
-                        String className = getClassName(packageName, fileName);
-                        checkAndAddClass(Class.forName(className));
-                    } else {
-                        if (this.recursive) {
-                            String subPackagePath = getSubPackagePath(packagePath, fileName);
-                            String subPackageName = getSubPackageName(packageName, fileName);
-                            addClass(subPackagePath, subPackageName);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+        } catch (NoSuchMethodException exception) {
+            exception.printStackTrace();
+            return;
         }
-    }
-
-    private static String getClassName(String packageName, String fileName) {
-        String className = fileName.substring(0, fileName.lastIndexOf("."));
-        if (packageName != null && !packageName.isBlank()) {
-            className = packageName + "." + className;
+        try {
+            URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+            URL url = jarFile.toURI().toURL();
+            method.invoke(classLoader, url);
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
-        return className;
-    }
-
-    private static String getSubPackagePath(String packagePath, String filePath) {
-        String subPackagePath = filePath;
-        if (packagePath != null && !packagePath.isBlank())
-            subPackagePath = packagePath + "/" + subPackagePath;
-        return subPackagePath;
-    }
-
-    private static String getSubPackageName(String packageName, String filePath) {
-        String subPackageName = filePath;
-        if (packageName != null && !packageName.isBlank())
-            subPackageName = packageName + "." + subPackageName;
-        return subPackageName;
     }
 }

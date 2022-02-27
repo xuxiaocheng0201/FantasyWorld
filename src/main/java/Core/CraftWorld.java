@@ -1,6 +1,9 @@
+package Core;
+
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
 import java.io.File;
@@ -31,7 +34,7 @@ public class CraftWorld {
 
     public static void main(String[] args)  {
         Thread.currentThread().setName("CraftWorldMain");
-        HLog.logger("Hello CraftWorld!");
+        HLog.logger(HELogLevel.INFO, "Hello CraftWorld!");
         GetConfigurations();
         for (String i: args) {
             if (i == null)
@@ -56,7 +59,7 @@ public class CraftWorld {
         } catch (InterruptedException exception) {
             exception.printStackTrace();
         }
-        HLog.logger("Welcome to play again!");
+        HLog.logger(HELogLevel.INFO, "Welcome to play again!");
         HLog.saveLogs(LOG_PATH);
     }
 

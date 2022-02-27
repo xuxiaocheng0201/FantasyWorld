@@ -30,19 +30,19 @@ public class HLog {
     }
 
     public void log(String message) {
-        log(HELogLevel.INFO, message);
+        log(HELogLevel.DEBUG, message);
     }
 
     public void log(Object message) {
-        log(HELogLevel.INFO, message);
+        log(HELogLevel.DEBUG, message);
     }
 
     public void log(String ...message) {
-        log(HELogLevel.INFO, message);
+        log(HELogLevel.DEBUG, message);
     }
 
     public void log(Object ...message) {
-        log(HELogLevel.INFO, message);
+        log(HELogLevel.DEBUG, message);
     }
 
     public synchronized void log(HELogLevel level, String message) {
