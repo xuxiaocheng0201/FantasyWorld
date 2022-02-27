@@ -1,7 +1,7 @@
 package Mod;
 
 import Core.CraftWorld;
-import HeadLibs.HClassFinder;
+import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
@@ -24,8 +24,9 @@ public class ModLoader {
         HClassFinder modsFinder = new HClassFinder();
         modsFinder.getJarFiles().clear();
         modsFinder.addJarFilesInDirectory(modPath);
-        //modsFinder.addAnnotationClass(Mod.class);
+        modsFinder.addAnnotationClass(Mod.class);
         modsFinder.startFind();
         HLog.logger(modsFinder.getClassList());
+        //TODO
     }
 }

@@ -1,13 +1,13 @@
-package HeadLibs;
+package HeadLibs.ClassFinder;
 
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
+import HeadLibs.Logger.HLog;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -16,6 +16,7 @@ import java.util.jar.JarFile;
 
 public class HClassFinder {
     private String PACKAGE_PATH;
+    private File doingJar = null;
     private final List<File> jarFiles = new ArrayList<>();
     private final List<Class<?>> superClass = new ArrayList<>();
     private final List<Class<? extends Annotation>> annotationClass = new ArrayList<>();
@@ -112,13 +113,19 @@ public class HClassFinder {
     }
 
     private void checkAndAddClass(String className) {
+        Class<?> aClass;
         try {
-            Class<?> aClass = Class.forName(className);
-            if (checkSuper(aClass) && checkAnnotation(aClass))
-                classList.add(aClass);
-        } catch (ClassNotFoundException exception) {
-            exception.printStackTrace();
+            aClass = Class.forName(className);
+        } catch (ClassNotFoundException classNotFoundException) {
+            try {
+                aClass = loadClassInJar(this.doingJar, className);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return;
+            }
         }
+        if (aClass != null && checkSuper(aClass) && checkAnnotation(aClass))
+            classList.add(aClass);
     }
 
     private boolean checkSuper(Class<?> aClass) {
@@ -143,9 +150,9 @@ public class HClassFinder {
     public void startFind() {
         this.classList.clear();
         for (File file : this.jarFiles) {
+            doingJar = file;
             if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".zip"))
                 try {
-                    loadJar(file);
                     findInJar(new JarFile(file));
                 } catch (IOException exception) {
                     exception.printStackTrace();
@@ -153,6 +160,7 @@ public class HClassFinder {
             else
                 findInFile(file, "");
         }
+        doingJar = null;
     }
 
     private void findInJar(JarFile jarFile) {
@@ -195,22 +203,18 @@ public class HClassFinder {
         checkAndAddClass(packageName);
     }
 
-    public static void loadJar(File jarFile) {
-        if (jarFile == null || !jarFile.exists())
-            return;
-        Method method;
+    public static Class<?> loadClassInJar(File jarFile, String className) throws ClassNotFoundException, IOException {
+        if (jarFile == null || !jarFile.exists() || !jarFile.isFile() ||
+                !(jarFile.getAbsolutePath().endsWith(".zip") || jarFile.getAbsolutePath().endsWith(".jar")))
+            return null;
         try {
-            method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-        } catch (NoSuchMethodException exception) {
+            HDynamicJarClassLoader classLoader = new HDynamicJarClassLoader(new JarFile(jarFile));
+            return classLoader.loadClass(className);
+        } catch (MalformedURLException exception) {
             exception.printStackTrace();
-            return;
+        } catch (NoClassDefFoundError error) {
+            HLog.logger(HELogLevel.MISTAKE, error.getMessage());
         }
-        try {
-            URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-            URL url = jarFile.toURI().toURL();
-            method.invoke(classLoader, url);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+        return null;
     }
 }
