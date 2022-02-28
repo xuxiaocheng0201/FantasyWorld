@@ -213,6 +213,15 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apiguardian/apiguardian-api/1.1.2/e0787a997746ac32639e0bf3cb27af8dce8a3428/apiguardian-api-1.1.2-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Gradle: org.greenrobot:eventbus-java:3.3.1">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.greenrobot/eventbus-java/3.3.1/74487b0caceca6fcd1aff45d41a9cdc6910d7f5a/eventbus-java-3.3.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.greenrobot/eventbus-java/3.3.1/d59e3be28ebbbc065159aabfa9e066edb584baf2/eventbus-java-3.3.1-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: org.junit.jupiter:junit-jupiter-api:5.8.2">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-api/5.8.2/4c21029217adf07e4c0d0c5e192b6bf610c94bdc/junit-jupiter-api-5.8.2.jar!/" />
@@ -258,22 +267,12 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.opentest4j/opentest4j/1.2.0/41d55b3c2254de9837b4ec8923cbd371b8a7eab5/opentest4j-1.2.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="lib">
-      <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib" />
-        <root url="file://$PROJECT_DIR$/lib" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$PROJECT_DIR$/lib/gson-2.8.9-javadoc.jar!/" />
-      </JAVADOC>
+    <library name="eventbus-3.3.1-sources">
+      <CLASSES />
+      <JAVADOC />
       <SOURCES>
-        <root url="file://$PROJECT_DIR$/lib" />
-        <root url="file://$PROJECT_DIR$/lib" />
+        <root url="jar://$PROJECT_DIR$/lib/eventbus-3.3.1-sources.jar!/" />
       </SOURCES>
-      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
-      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
-      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" type="SOURCES" />
-      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" type="SOURCES" />
     </library>
   </component>
   <component name="masterDetails">

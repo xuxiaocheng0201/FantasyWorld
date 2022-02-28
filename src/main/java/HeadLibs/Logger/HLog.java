@@ -12,10 +12,10 @@ import java.util.Date;
 import java.util.List;
 
 public class HLog {
-    public static final String DATE_FORMAT = "HH:mm:ss";
-
-    private String name;
     private static final List<Pair<Pair<Date, Integer>, String>> logs = new ArrayList<>();
+
+    public String DATE_FORMAT = "HH:mm:ss";
+    private String name;
 
     public HLog() {
         this("main");
@@ -23,6 +23,22 @@ public class HLog {
 
     public HLog(String name) {
         this.name = name;
+    }
+
+    public HLog(String name, String parent) {
+        this.name = HStringHelper.merge(parent, "/", name);
+    }
+
+    public HLog(String name, HLog parent) {
+        if (parent == null) {
+            this.name = name;
+            return;
+        }
+        this.name = HStringHelper.merge(parent.getName(), "/", name);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {

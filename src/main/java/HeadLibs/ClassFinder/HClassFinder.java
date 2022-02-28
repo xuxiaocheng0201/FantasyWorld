@@ -71,6 +71,10 @@ public class HClassFinder {
         }
     }
 
+    public void clearJarFile() {
+        this.jarFiles.clear();
+    }
+
     public List<Class<?>> getSuperClass() {
         return superClass;
     }
@@ -86,6 +90,10 @@ public class HClassFinder {
         this.superClass.add(superClass);
     }
 
+    public void clearSuperClass() {
+        this.superClass.clear();
+    }
+
     public List<Class<? extends Annotation>> getAnnotationClass() {
         return annotationClass;
     }
@@ -94,6 +102,10 @@ public class HClassFinder {
         if (annotation == null || this.annotationClass.contains(annotation))
             return;
         this.annotationClass.add(annotation);
+    }
+
+    public void clearAnnotationClass() {
+        this.annotationClass.clear();
     }
 
     public boolean isRecursive() {

@@ -5,9 +5,11 @@ import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import Mod.Mod;
 
 import java.io.File;
 
+@Mod(name = "1", version = "0.0.0")
 public class CraftWorld {
     public static final String CURRENT_VERSION = "0.0.0";
     public static final String RUNTIME_PATH = HStringHelper.merge("CraftWorld\\", CURRENT_VERSION, "\\");
