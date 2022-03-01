@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Mod {
     String name();
-    String version() default "0.0.0";
+    String version() default "1.0";
 }

@@ -62,6 +62,8 @@ public class HLog {
     }
 
     public synchronized void log(HELogLevel level, String message) {
+        if (level == null)
+            level = HELogLevel.DEBUG;
         Date date = new Date();
         String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
                 "[", this.name, "]",

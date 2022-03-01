@@ -12,8 +12,9 @@ public enum HELogLevel {
     MISTAKE("MISTAKE", 250, "1;3;34"),
     ERROR("ERROR", 300, "1;4;34;41"),
     BUG("BUG", 400, "1;4;41"),
-    NORMAL("NORMAL", 0),
-    DEBUG("DEBUG", 500, "1;3;4;30;44");
+    FAULT("FAULT", 500, "1;3;30;41"),
+    NORMAL("NORMAL", 0, "0"),
+    DEBUG("DEBUG", 600, "1;4;30;44");
 
     private final String name;
     // Higher priority means higher chance to be logged.
@@ -25,7 +26,7 @@ public enum HELogLevel {
      * 0 Default; 1 Wider; 2 Normal; 3 Italic; 4 underline; 9 line!
      * Foreground color 30-37; Background color 40-47.
      *
-     * eg. System.out.println("\033[31;0;42;30;1;2;3;4;41m" + "Hello");
+     * example. System.out.println("\033[31;0;42;30;1;2;3;4;41m" + "Hello");
      *
      * Colour meanings.
      * 0 -> Black

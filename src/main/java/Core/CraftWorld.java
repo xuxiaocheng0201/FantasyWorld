@@ -9,7 +9,7 @@ import Mod.Mod;
 
 import java.io.File;
 
-@Mod(name = "1", version = "0.0.0")
+@Mod(name = "CraftWorld", version = "0.0.0")
 public class CraftWorld {
     public static final String CURRENT_VERSION = "0.0.0";
     public static final String RUNTIME_PATH = HStringHelper.merge("CraftWorld\\", CURRENT_VERSION, "\\");
@@ -47,6 +47,13 @@ public class CraftWorld {
                 isClient = false;
         }
         HLog.saveLogs(LOG_PATH);
+        Runtime.getRuntime().addShutdownHook(new Thread(Thread.currentThread().getName()) {
+            @Override
+            public void run() {
+                HLog.logger(HELogLevel.INFO, "Welcome to play again!");
+                HLog.saveLogs(LOG_PATH);
+            }
+        });
         System.gc();
         try {
             if (isClient) {
@@ -61,8 +68,6 @@ public class CraftWorld {
         } catch (InterruptedException exception) {
             exception.printStackTrace();
         }
-        HLog.logger(HELogLevel.INFO, "Welcome to play again!");
-        HLog.saveLogs(LOG_PATH);
     }
 
     public static void GetConfigurations() {

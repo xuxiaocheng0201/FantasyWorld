@@ -2,9 +2,7 @@ package Core;
 
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
-import Mod.Mod;
 
-@Mod(name = "1")
 public class CraftWorldClient implements Runnable {
     public volatile static boolean isRunning = false;
 
