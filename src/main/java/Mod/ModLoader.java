@@ -25,25 +25,41 @@ public class ModLoader {
             HLog.logger(HELogLevel.ERROR, "Creating MODS_PATH directory failed. MODS_PATH='", MODS_FILE.getPath(), "'.");
     }
 
+    public static final EventBus DEFAULT_EVENT_BUS = EventBus.getDefault();
+
     public static final List<Class<?>> modList = new ArrayList<>();
     public static final List<Pair<Class<?>, Class<?>>> elementList = new ArrayList<>();
-    public static final EventBus DEFAULT_EVENT_BUS = EventBus.getDefault();
+
+    private static final List<Class<?>> implementList = new ArrayList<>();
+    private static final List<Class<?>> utilList = new ArrayList<>();
 
     private static final List<Class<?>> mods = new ArrayList<>();
     private static final List<Class<?>> elementImplements = new ArrayList<>();
     private static final List<Class<?>> elementUtils = new ArrayList<>();
 
     private static final List<List<Class<?>>> sameMods = new ArrayList<>();
+    private static final List<List<Class<?>>> sameImplements = new ArrayList<>();
+    private static final List<List<Class<?>>> sameUtils = new ArrayList<>();
 
-    public static void loadMods() {
+    public static boolean loadMods() {
         if (!MODS_FILE.exists() || !MODS_FILE.isDirectory())
-            return;
+            return true;
         searchingMods();
         DEFAULT_EVENT_BUS.post(new ElementsCheckingEvent());
         checkingMods();
+        if (!sameMods.isEmpty())
+            return true;
+        checkingImplements();
+        if (!sameImplements.isEmpty())
+            return true;
+        checkingUtils();
+        if (!sameUtils.isEmpty())
+            return true;
+        checkingElements();
         DEFAULT_EVENT_BUS.post(new ElementsCheckedEvent());
         //TODO
         HLog.logger(sameMods);
+        return false;
     }
 
     private static void searchingMods() {
@@ -102,6 +118,99 @@ public class ModLoader {
             }
             if (not_found)
                 modList.add(classClass);
+        }
+    }
+
+    private static void checkingImplements() {
+        for (Class<?> classClass: elementImplements) {
+            NewElementImplement classImplement = classClass.getAnnotation(NewElementImplement.class);
+            String className = classImplement.name();
+            if (className == null) {
+                logger.log(HELogLevel.WARN, "Null element implement name!");
+                className = "null";
+            }
+            boolean not_found = true;
+            for (Class<?> savedClass: implementList) {
+                NewElementImplement savedImplement = savedClass.getAnnotation(NewElementImplement.class);
+                if (className.equals(savedImplement.name())) {
+                    not_found = false;
+                    logger.log(HELogLevel.FAULT, "Same element implement name '", savedImplement.name(), "'.");
+                    boolean found = false;
+                    for (List<Class<?>> sameImplementFound: sameImplements) {
+                        if (sameImplementFound.isEmpty())
+                            continue;
+                        NewElementImplement implement = sameImplementFound.get(0).getAnnotation(NewElementImplement.class);
+                        if (className.equals(implement.name())) {
+                            found = true;
+                            sameImplementFound.add(classClass);
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        List<Class<?>> temp = new ArrayList<>();
+                        temp.add(classClass);
+                        temp.add(savedClass);
+                        sameImplements.add(temp);
+                    }
+                    break;
+                }
+            }
+            if (not_found)
+                implementList.add(classClass);
+        }
+    }
+
+    private static void checkingUtils() {
+        for (Class<?> classClass: elementUtils) {
+            NewElementUtil classMod = classClass.getAnnotation(NewElementUtil.class);
+            String className = classMod.name();
+            if (className == null) {
+                logger.log(HELogLevel.WARN, "Null element util name!");
+                className = "null";
+            }
+            boolean not_found = true;
+            for (Class<?> savedClass: utilList) {
+                NewElementUtil savedUtil = savedClass.getAnnotation(NewElementUtil.class);
+                if (className.equals(savedUtil.name())) {
+                    not_found = false;
+                    logger.log(HELogLevel.FAULT, "Same element util name '", savedUtil.name(), "'.");
+                    boolean found = false;
+                    for (List<Class<?>> sameUtilFound: sameUtils) {
+                        if (sameUtilFound.isEmpty())
+                            continue;
+                        NewElementUtil util = sameUtilFound.get(0).getAnnotation(NewElementUtil.class);
+                        if (className.equals(util.name())) {
+                            found = true;
+                            sameUtilFound.add(classClass);
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        List<Class<?>> temp = new ArrayList<>();
+                        temp.add(classClass);
+                        temp.add(savedClass);
+                        sameUtils.add(temp);
+                    }
+                    break;
+                }
+            }
+            if (not_found)
+                utilList.add(classClass);
+        }
+    }
+
+    private static void checkingElements() {
+        for (Class<?> implement: elementImplements) {
+            NewElementImplement elementImplement = implement.getAnnotation(NewElementImplement.class);
+            NewElementUtil elementUtil = null;
+            for (Class<?> util: elementUtils) {
+                NewElementUtil tempUtil = util.getAnnotation(NewElementUtil.class);
+                if (elementUtil.name().equals(tempUtil.name())) {
+                    if (elementUtil == null)
+                        elementUtil = tempUtil;
+
+                }
+            }
         }
     }
 }

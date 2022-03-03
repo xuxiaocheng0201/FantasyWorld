@@ -16,7 +16,8 @@ public class CraftWorldServer implements Runnable {
         Thread.currentThread().setName("CraftWorldServer");
         HLog.logger(HELogLevel.FINEST, "Server Thread has started.");
 
-        ModLoader.loadMods();
+        if (ModLoader.loadMods())
+            HLog.logger(HELogLevel.BUG, "ERROR!");
         HLog.logger(HStringHelper.merge("Registered ", DSTUtils.getRegisteredCount(), " DST types."));
         HLog.logger(HStringHelper.merge("Registered ", BlockUtils.getRegisteredCount(), " Blocks."));
         HLog.logger(HStringHelper.merge("Registered ", DimensionUtils.getRegisteredCount(), " Dimensions."));
