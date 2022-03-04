@@ -1,4 +1,4 @@
-package Mod;
+package Core.Mod.NewElement;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NewElementUtil {
+public @interface NewElementImplement {
     String name();
 }

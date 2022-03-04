@@ -1,12 +1,11 @@
 package CraftWorld.Block;
 
+import Core.Mod.NewElement.ElementImplement;
+import Core.Mod.NewElement.NewElementImplement;
 import CraftWorld.Instance.DST.DSTMetaCompound;
-import Mod.NewElementImplement;
 
 @NewElementImplement(name = "Block")
-public interface IBlockBase {
-    String getName();
-    void setName(String name);
+public interface IBlockBase extends ElementImplement {
     BlockPos getPos();
     void setPos(BlockPos pos);
     DSTMetaCompound getDst();

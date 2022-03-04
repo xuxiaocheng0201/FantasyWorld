@@ -1,14 +1,15 @@
 package CraftWorld.Block;
 
+import Core.Mod.NewElement.ElementUtil;
+import Core.Mod.NewElement.NewElementUtil;
 import CraftWorld.Exception.RegisteredException;
 import HeadLibs.Helper.HStringHelper;
-import Mod.NewElementUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @NewElementUtil(name = "Block")
-public class BlockUtils {
+public class BlockUtils implements ElementUtil<IBlockBase> {
     private static final Map<String, Class<? extends IBlockBase>> blocks = new HashMap<>();
 
     public static void register(String name, Class<? extends IBlockBase> blockClass) {

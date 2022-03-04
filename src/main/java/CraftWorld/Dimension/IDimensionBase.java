@@ -1,6 +1,6 @@
 package CraftWorld.Dimension;
 
-import Mod.NewElementImplement;
+import Core.Mod.NewElement.NewElementImplement;
 
 @NewElementImplement(name = "Dimension")
 public interface IDimensionBase {

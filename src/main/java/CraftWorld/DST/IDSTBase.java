@@ -1,6 +1,6 @@
 package CraftWorld.DST;
 
-import Mod.NewElementImplement;
+import Core.Mod.NewElement.NewElementImplement;
 
 import java.io.DataInput;
 import java.io.DataOutput;

@@ -1,12 +1,12 @@
 package Core;
 
+import Core.Mod.ModLoader;
 import CraftWorld.Block.BlockUtils;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.Dimension.DimensionUtils;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
-import Mod.ModLoader;
 
 public class CraftWorldServer implements Runnable {
     public volatile static boolean isRunning = false;

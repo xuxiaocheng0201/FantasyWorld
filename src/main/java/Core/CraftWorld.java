@@ -1,11 +1,11 @@
 package Core;
 
+import Core.Mod.Mod;
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
-import Mod.Mod;
 
 import java.io.File;
 

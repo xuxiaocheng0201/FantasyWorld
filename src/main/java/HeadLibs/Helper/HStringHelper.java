@@ -4,6 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class HStringHelper {
+    public static String noNull(String a) {
+        if (a == null)
+            return "null";
+        return a;
+    }
+
     public static boolean isBlank(String a) {
         if (a == null)
             return true;

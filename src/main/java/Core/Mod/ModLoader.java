@@ -1,8 +1,12 @@
-package Mod;
+package Core.Mod;
 
 import Core.CraftWorld;
 import Core.Event.ElementsCheckedEvent;
 import Core.Event.ElementsCheckingEvent;
+import Core.Mod.NewElement.ElementImplement;
+import Core.Mod.NewElement.ElementUtil;
+import Core.Mod.NewElement.NewElementImplement;
+import Core.Mod.NewElement.NewElementUtil;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
@@ -11,7 +15,6 @@ import HeadLibs.Pair;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,15 +70,23 @@ public class ModLoader {
         HClassFinder modsFinder = new HClassFinder();
         modsFinder.addJarFilesInDirectory(MODS_FILE);
         modsFinder.startFind();
-        for (Class<?> aClass: modsFinder.getClassList())
-            for (Annotation annotation: aClass.getAnnotations()) {
-                if (annotation.annotationType().equals(Mod.class))
-                    mods.add(aClass);
-                if (annotation.annotationType().equals(NewElementImplement.class))
-                    elementImplements.add(aClass);
-                if (annotation.annotationType().equals(NewElementUtil.class))
-                    elementUtils.add(aClass);
-            }
+        HClassFinder modFilter = new HClassFinder();
+        modFilter.addAnnotationClass(Mod.class);
+        modFilter.addSuperClass(ModImplement.class);
+        HClassFinder implementFilter = new HClassFinder();
+        implementFilter.addAnnotationClass(NewElementImplement.class);
+        implementFilter.addSuperClass(ElementImplement.class);
+        HClassFinder utilFilter = new HClassFinder();
+        utilFilter.addAnnotationClass(NewElementUtil.class);
+        utilFilter.addSuperClass(ElementUtil.class);
+        for (Class<?> aClass: modsFinder.getClassList()) {
+            if (modFilter.checkAnnotation(aClass) && modFilter.checkSuper(aClass))
+                mods.add(aClass);
+            if (implementFilter.checkAnnotation(aClass) && implementFilter.checkSuper(aClass))
+                elementImplements.add(aClass);
+            if (utilFilter.checkAnnotation(aClass) && utilFilter.checkSuper(aClass))
+                elementUtils.add(aClass);
+        }
         logger.log(HELogLevel.DEBUG, "Found @Mod in classes: ", mods);
         logger.log(HELogLevel.DEBUG, "Found @NewElementImplement in classes: ", elementImplements);
         logger.log(HELogLevel.DEBUG, "Found @NewElementUtil in classes: ", elementUtils);
@@ -84,15 +95,11 @@ public class ModLoader {
     private static void checkingMods() {
         for (Class<?> classClass: mods) {
             Mod classMod = classClass.getAnnotation(Mod.class);
-            String className = classMod.name();
-            if (className == null) {
-                logger.log(HELogLevel.WARN, "Null mod name!");
-                className = "null";
-            }
+            String className = HStringHelper.noNull(classMod.name());
             boolean not_found = true;
             for (Class<?> savedClass: modList) {
                 Mod savedMod = savedClass.getAnnotation(Mod.class);
-                if (className.equals(savedMod.name())) {
+                if (className.equals(HStringHelper.noNull(savedMod.name()))) {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same mod name '", savedMod.name(), "'. " +
                             "With versions are: '", savedMod.version(), "' and '", classMod.version(), "'.");
@@ -101,7 +108,7 @@ public class ModLoader {
                         if (sameModFound.isEmpty())
                             continue;
                         Mod mod = sameModFound.get(0).getAnnotation(Mod.class);
-                        if (className.equals(mod.name())) {
+                        if (className.equals(HStringHelper.noNull(mod.name()))) {
                             found = true;
                             sameModFound.add(classClass);
                             break;
@@ -124,15 +131,11 @@ public class ModLoader {
     private static void checkingImplements() {
         for (Class<?> classClass: elementImplements) {
             NewElementImplement classImplement = classClass.getAnnotation(NewElementImplement.class);
-            String className = classImplement.name();
-            if (className == null) {
-                logger.log(HELogLevel.WARN, "Null element implement name!");
-                className = "null";
-            }
+            String className = HStringHelper.noNull(classImplement.name());
             boolean not_found = true;
             for (Class<?> savedClass: implementList) {
                 NewElementImplement savedImplement = savedClass.getAnnotation(NewElementImplement.class);
-                if (className.equals(savedImplement.name())) {
+                if (className.equals(HStringHelper.noNull(savedImplement.name()))) {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same element implement name '", savedImplement.name(), "'.");
                     boolean found = false;
@@ -140,7 +143,7 @@ public class ModLoader {
                         if (sameImplementFound.isEmpty())
                             continue;
                         NewElementImplement implement = sameImplementFound.get(0).getAnnotation(NewElementImplement.class);
-                        if (className.equals(implement.name())) {
+                        if (className.equals(HStringHelper.noNull(implement.name()))) {
                             found = true;
                             sameImplementFound.add(classClass);
                             break;
@@ -163,15 +166,11 @@ public class ModLoader {
     private static void checkingUtils() {
         for (Class<?> classClass: elementUtils) {
             NewElementUtil classMod = classClass.getAnnotation(NewElementUtil.class);
-            String className = classMod.name();
-            if (className == null) {
-                logger.log(HELogLevel.WARN, "Null element util name!");
-                className = "null";
-            }
+            String className = HStringHelper.noNull(classMod.name());
             boolean not_found = true;
             for (Class<?> savedClass: utilList) {
                 NewElementUtil savedUtil = savedClass.getAnnotation(NewElementUtil.class);
-                if (className.equals(savedUtil.name())) {
+                if (className.equals(HStringHelper.noNull(savedUtil.name()))) {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same element util name '", savedUtil.name(), "'.");
                     boolean found = false;
@@ -179,7 +178,7 @@ public class ModLoader {
                         if (sameUtilFound.isEmpty())
                             continue;
                         NewElementUtil util = sameUtilFound.get(0).getAnnotation(NewElementUtil.class);
-                        if (className.equals(util.name())) {
+                        if (className.equals(HStringHelper.noNull(util.name()))) {
                             found = true;
                             sameUtilFound.add(classClass);
                             break;
@@ -202,15 +201,24 @@ public class ModLoader {
     private static void checkingElements() {
         for (Class<?> implement: elementImplements) {
             NewElementImplement elementImplement = implement.getAnnotation(NewElementImplement.class);
-            NewElementUtil elementUtil = null;
+            String tempName = HStringHelper.noNull(elementImplement.name());
+            Class<?> elementUtil = null;
             for (Class<?> util: elementUtils) {
                 NewElementUtil tempUtil = util.getAnnotation(NewElementUtil.class);
-                if (elementUtil.name().equals(tempUtil.name())) {
-                    if (elementUtil == null)
-                        elementUtil = tempUtil;
-
+                if (tempUtil == null)
+                    continue;
+                if (tempName.equals(HStringHelper.noNull(tempUtil.name()))) {
+                    elementUtil = util;
+                    break;
                 }
             }
+            if (elementUtil == null) {
+                logger.log(HELogLevel.ERROR, "No pair util for implement '", tempName, "'.");
+
+                continue;
+            }
+            Pair<Class<?>, Class<?>> pair = new Pair<>(implement, elementUtil);
+            elementList.add(pair);
         }
     }
 }

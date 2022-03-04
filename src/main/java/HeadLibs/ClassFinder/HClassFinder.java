@@ -140,7 +140,7 @@ public class HClassFinder {
             classList.add(aClass);
     }
 
-    private boolean checkSuper(Class<?> aClass) {
+    public boolean checkSuper(Class<?> aClass) {
         if (this.superClass.isEmpty())
             return true;
         for (Class<?> Super: this.superClass)
@@ -149,7 +149,7 @@ public class HClassFinder {
         return true;
     }
 
-    private boolean checkAnnotation(Class<?> aClass) {
+    public boolean checkAnnotation(Class<?> aClass) {
         if (this.annotationClass.isEmpty())
             return true;
         Annotation[] annotations = aClass.getDeclaredAnnotations();
