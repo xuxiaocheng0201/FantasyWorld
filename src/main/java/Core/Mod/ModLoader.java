@@ -3,6 +3,7 @@ package Core.Mod;
 import Core.CraftWorld;
 import Core.Event.ElementsCheckedEvent;
 import Core.Event.ElementsCheckingEvent;
+import Core.Event.EventSubscribe;
 import Core.Mod.NewElement.ElementImplement;
 import Core.Mod.NewElement.ElementUtil;
 import Core.Mod.NewElement.NewElementImplement;
@@ -28,6 +29,7 @@ public class ModLoader {
             HLog.logger(HELogLevel.ERROR, "Creating MODS_PATH directory failed. MODS_PATH='", MODS_FILE.getPath(), "'.");
     }
 
+    public static List<Class<?>> allClasses;
     public static final EventBus DEFAULT_EVENT_BUS = EventBus.getDefault();
 
     public static final List<Class<?>> modList = new ArrayList<>();
@@ -44,10 +46,28 @@ public class ModLoader {
     private static final List<List<Class<?>>> sameImplements = new ArrayList<>();
     private static final List<List<Class<?>>> sameUtils = new ArrayList<>();
 
-    public static boolean loadMods() {
+    private static final List<Class<?>> singleImplements = new ArrayList<>();
+    private static final List<Class<?>> singleUtils = new ArrayList<>();
+
+    public static boolean loadClasses() {
         if (!MODS_FILE.exists() || !MODS_FILE.isDirectory())
             return true;
+        logger.log(HELogLevel.INFO, "Searching mods in '", MODS_FILE.getPath(), "'.");
         searchingMods();
+        logger.log(HELogLevel.DEBUG, "Found @Mod in classes: ", mods);
+        logger.log(HELogLevel.DEBUG, "Found @NewElementImplement in classes: ", elementImplements);
+        logger.log(HELogLevel.DEBUG, "Found @NewElementUtil in classes: ", elementUtils);
+        HClassFinder eventFilter = new HClassFinder();
+        eventFilter.addAnnotationClass(EventSubscribe.class);
+        for (Class<?> aClass: allClasses)
+            if (eventFilter.checkAnnotation(aClass)) {
+                EventSubscribe subscribe = aClass.getAnnotation(EventSubscribe.class);
+                if (subscribe == null)
+                    continue;
+                EventBus eventBus = getEventBusByName(subscribe.eventBus());
+                if (registerEvent(aClass, eventBus))
+                    logger.log(HELogLevel.ERROR, "Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'.");
+            }
         DEFAULT_EVENT_BUS.post(new ElementsCheckingEvent());
         checkingMods();
         if (!sameMods.isEmpty())
@@ -59,17 +79,21 @@ public class ModLoader {
         if (!sameUtils.isEmpty())
             return true;
         checkingElements();
+        if (!singleImplements.isEmpty())
+            return true;
+        if (!singleUtils.isEmpty())
+            return true;
+        logger.log(HELogLevel.DEBUG, "Checked mods: ", modList);
+        logger.log(HELogLevel.DEBUG, "Checked elements: ", elementList);
         DEFAULT_EVENT_BUS.post(new ElementsCheckedEvent());
-        //TODO
-        HLog.logger(sameMods);
         return false;
     }
 
     private static void searchingMods() {
-        logger.log(HELogLevel.INFO, "Searching mods in '", MODS_FILE.getPath(), "'.");
         HClassFinder modsFinder = new HClassFinder();
         modsFinder.addJarFilesInDirectory(MODS_FILE);
         modsFinder.startFind();
+        allClasses = modsFinder.getClassList();
         HClassFinder modFilter = new HClassFinder();
         modFilter.addAnnotationClass(Mod.class);
         modFilter.addSuperClass(ModImplement.class);
@@ -87,9 +111,6 @@ public class ModLoader {
             if (utilFilter.checkAnnotation(aClass) && utilFilter.checkSuper(aClass))
                 elementUtils.add(aClass);
         }
-        logger.log(HELogLevel.DEBUG, "Found @Mod in classes: ", mods);
-        logger.log(HELogLevel.DEBUG, "Found @NewElementImplement in classes: ", elementImplements);
-        logger.log(HELogLevel.DEBUG, "Found @NewElementUtil in classes: ", elementUtils);
     }
 
     private static void checkingMods() {
@@ -213,12 +234,149 @@ public class ModLoader {
                 }
             }
             if (elementUtil == null) {
-                logger.log(HELogLevel.ERROR, "No pair util for implement '", tempName, "'.");
-
+                logger.log(HELogLevel.ERROR, "No pair util for implement '", tempName, "'. Ignore it!");
+                singleImplements.add(implement);
                 continue;
             }
             Pair<Class<?>, Class<?>> pair = new Pair<>(implement, elementUtil);
             elementList.add(pair);
         }
+        for (Class<?> util: elementUtils) {
+            NewElementUtil elementUtil = util.getAnnotation(NewElementUtil.class);
+            String tempName = HStringHelper.noNull(elementUtil.name());
+            Class<?> elementImplement = null;
+            for (Class<?> implement: elementImplements) {
+                NewElementImplement tempImplement = implement.getAnnotation(NewElementImplement.class);
+                if (tempImplement == null)
+                    continue;
+                if (tempName.equals(HStringHelper.noNull(tempImplement.name()))) {
+                    elementImplement = implement;
+                    break;
+                }
+            }
+            if (elementImplement == null) {
+                logger.log(HELogLevel.ERROR, "No pair implement for util '", tempName, "'. Ignore it!");
+                singleUtils.add(util);
+            }
+        }
+    }
+
+    public static EventBus getEventBusByName(String name) {
+        //TODO
+        return DEFAULT_EVENT_BUS;
+    }
+
+    public static boolean registerEvent(Class<?> aClass, EventBus eventBus) {
+        boolean need_registered;
+        try {
+            need_registered = false;
+            eventBus.register(aClass.getDeclaredConstructor().newInstance());
+        } catch (NoSuchMethodException exception) {
+            need_registered = true;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return true;
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(String.class).newInstance(""));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(String.class, String.class).newInstance("", ""));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(String.class, String.class, String.class).newInstance("", "", ""));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(int.class).newInstance(0));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(int.class, int.class).newInstance(0, 0));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(int.class, int.class, int.class).newInstance(0, 0, 0));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(Integer.class).newInstance(0));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(Integer.class, Integer.class).newInstance(0, 0));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(Integer.class, Integer.class, Integer.class).newInstance(0, 0, 0));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        //todo: Add more common constructors
+        return false;
     }
 }

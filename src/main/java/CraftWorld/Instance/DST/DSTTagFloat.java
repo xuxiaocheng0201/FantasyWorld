@@ -13,7 +13,7 @@ public class DSTTagFloat implements IDSTBase {
     public static final String id = "Float";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, DSTTagFloat.class);
+        DSTUtils.getInstance().register(id, DSTTagFloat.class);
     }
 
     private String name = "";

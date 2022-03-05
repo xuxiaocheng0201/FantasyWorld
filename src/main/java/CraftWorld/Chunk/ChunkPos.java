@@ -33,7 +33,19 @@ public class ChunkPos implements IDSTBase {
     public static final String id = "ChunkPos";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, ChunkPos.class);
+        DSTUtils.getInstance().register(id, ChunkPos.class);
+    }
+
+    private String name = id;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

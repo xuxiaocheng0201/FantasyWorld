@@ -32,7 +32,19 @@ public class BlockPos implements IDSTBase {
     public static final String id = "BlockPos";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, BlockPos.class);
+        DSTUtils.getInstance().register(id, BlockPos.class);
+    }
+
+    private String name = id;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

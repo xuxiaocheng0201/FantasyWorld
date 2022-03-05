@@ -13,7 +13,7 @@ public class DSTTagLong implements IDSTBase {
     public static final String id = "Long";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, DSTTagLong.class);
+        DSTUtils.getInstance().register(id, DSTTagLong.class);
     }
 
     private String name = "";

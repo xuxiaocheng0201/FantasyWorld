@@ -7,7 +7,7 @@ public class DimensionEarthSurface implements IDimensionBase {
     private String name = "EarthSurface";
 
     static {
-        DimensionUtils.register("DimensionEarthSurface", DimensionEarthSurface.class);
+        DimensionUtils.getInstance().register("DimensionEarthSurface", DimensionEarthSurface.class);
     }
 
     public DimensionEarthSurface() {

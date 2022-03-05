@@ -16,7 +16,7 @@ public final class DSTMetaCompound implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
-        DSTUtils.register(id, DSTMetaCompound.class);
+        DSTUtils.getInstance().register(id, DSTMetaCompound.class);
     }
 
     private String name = "";
@@ -36,7 +36,7 @@ public final class DSTMetaCompound implements IDSTBase {
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            IDSTBase dst = DSTUtils.get(DSTUtils.dePrefix(input.readUTF()));
+            IDSTBase dst = DSTUtils.getInstance().get(DSTUtils.dePrefix(input.readUTF()));
             if (dst != null)
                 dst.read(input);
             dstMap.put(name, dst);
@@ -55,12 +55,12 @@ public final class DSTMetaCompound implements IDSTBase {
         output.writeUTF(suffix);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Map<String, IDSTBase> getDstMap() {

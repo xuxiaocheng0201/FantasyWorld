@@ -18,7 +18,19 @@ public class Block implements IDSTBase {
     public static final String id = "Block";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, Block.class);
+        DSTUtils.getInstance().register(id, Block.class);
+    }
+
+    private String name = id;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -28,7 +40,7 @@ public class Block implements IDSTBase {
             instance = null;
             return;
         }
-        instance = BlockUtils.get(BlockUtils.dePrefix(name));
+        instance = BlockUtils.getInstance().get(BlockUtils.dePrefix(name));
         if (instance == null) {
             instance = new BlockAir();
             return;

@@ -13,7 +13,7 @@ public class DSTTagInt implements IDSTBase {
     public static final String id = "Int";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, DSTTagInt.class);
+        DSTUtils.getInstance().register(id, DSTTagInt.class);
     }
 
     private String name = "";

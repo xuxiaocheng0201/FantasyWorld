@@ -13,7 +13,7 @@ public class DSTTagBoolean implements IDSTBase {
     public static final String id = "Boolean";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, DSTTagBoolean.class);
+        DSTUtils.getInstance().register(id, DSTTagBoolean.class);
     }
 
     private String name = "";

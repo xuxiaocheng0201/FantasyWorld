@@ -9,7 +9,10 @@ public class CraftWorldClient implements Runnable {
     @Override
     public void run() {
         Thread.currentThread().setName("CraftWorldClient");
-        HLog.logger(HELogLevel.FINEST, "Client Thread has started.");
+        HLog logger = new HLog(Thread.currentThread().getName());
+        isRunning = true;
+        logger.log(HELogLevel.FINEST, "Client Thread has started.");
+
 
         //TODO: Client
 
@@ -22,6 +25,7 @@ public class CraftWorldClient implements Runnable {
         }
 
 
-        HLog.logger(HELogLevel.FINEST, "Client Thread exits.");
+
+        logger.log(HELogLevel.FINEST, "Client Thread exits.");
     }
 }

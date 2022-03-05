@@ -16,7 +16,7 @@ public class DSTTagIntArray implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
-        DSTUtils.register(id, DSTTagIntArray.class);
+        DSTUtils.getInstance().register(id, DSTTagIntArray.class);
     }
 
     private String name = "";

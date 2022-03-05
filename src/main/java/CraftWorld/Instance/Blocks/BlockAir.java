@@ -11,7 +11,7 @@ public class BlockAir implements IBlockBase {
     private DSTMetaCompound dst = new DSTMetaCompound();
 
     static {
-        BlockUtils.register("BlockAir", BlockAir.class);
+        BlockUtils.getInstance().register("BlockAir", BlockAir.class);
     }
 
     public BlockAir() {

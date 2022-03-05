@@ -16,7 +16,7 @@ public class DSTTagDoubleArray implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
-        DSTUtils.register(id, DSTTagDoubleArray.class);
+        DSTUtils.getInstance().register(id, DSTTagDoubleArray.class);
     }
 
     private String name = "";

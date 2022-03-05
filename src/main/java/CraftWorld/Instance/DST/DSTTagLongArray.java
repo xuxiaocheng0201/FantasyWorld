@@ -16,7 +16,7 @@ public class DSTTagLongArray implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
-        DSTUtils.register(id, DSTTagLongArray.class);
+        DSTUtils.getInstance().register(id, DSTTagLongArray.class);
     }
 
     private String name = "";

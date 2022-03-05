@@ -16,7 +16,19 @@ public class Dimension implements IDSTBase {
     public static final String id = "Dimension";
     public static final String prefix = id;
     static {
-        DSTUtils.register(id, Dimension.class);
+        DSTUtils.getInstance().register(id, Dimension.class);
+    }
+
+    private String name = id;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -26,11 +38,9 @@ public class Dimension implements IDSTBase {
             instance = null;
             return;
         }
-        instance = DimensionUtils.get(DimensionUtils.dePrefix(name));
-        if (instance == null) {
+        instance = DimensionUtils.getInstance().get(DimensionUtils.dePrefix(name));
+        if (instance == null)
             instance = new DimensionEarthSurface();
-            return;
-        }
     }
 
     @Override
