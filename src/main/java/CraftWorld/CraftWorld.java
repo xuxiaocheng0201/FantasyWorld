@@ -1,7 +1,7 @@
 package CraftWorld;
 
-import Core.Mod.Mod;
-import Core.Mod.ModImplement;
+import Core.Mod.New.Mod;
+import Core.Mod.New.ModImplement;
 
 @Mod(name = "CraftWorld", version = "0.0.0")
 public class CraftWorld implements ModImplement {

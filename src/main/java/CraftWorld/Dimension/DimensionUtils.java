@@ -1,7 +1,7 @@
 package CraftWorld.Dimension;
 
-import Core.Mod.NewElement.ElementUtil;
-import Core.Mod.NewElement.NewElementUtil;
+import Core.Mod.New.ElementUtil;
+import Core.Mod.New.NewElementUtil;
 
 @NewElementUtil(name = "Dimension")
 public class DimensionUtils extends ElementUtil<IDimensionBase> {

@@ -1,4 +1,4 @@
-package Core.Mod.NewElement;
+package Core.Mod.New;
 
 public interface ElementImplement {
     String getName();

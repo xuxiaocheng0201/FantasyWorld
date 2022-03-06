@@ -204,6 +204,15 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
   <component name="libraryTable">
+    <library name="Gradle: javassist:javassist:3.12.1.GA">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javassist/javassist/3.12.1.GA/526633327faa61aee448a519e8a4d53ec3057885/javassist-3.12.1.GA.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javassist/javassist/3.12.1.GA/cc64c85182743e0e8166cfc072a4359e54bbc7e9/javassist-3.12.1.GA-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: org.apiguardian:apiguardian-api:1.1.2">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apiguardian/apiguardian-api/1.1.2/a231e0d844d2721b0fa1b238006d15c6ded6842a/apiguardian-api-1.1.2.jar!/" />
@@ -220,6 +229,15 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.greenrobot/eventbus-java/3.3.1/d59e3be28ebbbc065159aabfa9e066edb584baf2/eventbus-java-3.3.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.jetbrains:annotations:20.1.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/20.1.0/2fcd1f3225bca0c4a7bc931142076f8c1e80993f/annotations-20.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/20.1.0/ffdf5f82454276113cc294e557017ad5fe2d4015/annotations-20.1.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.junit.jupiter:junit-jupiter-api:5.8.2">
@@ -272,6 +290,18 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/lib/eventbus-3.3.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="javassist" type="repository">
+      <properties maven-id="javassist:javassist:3.12.1.GA" />
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/javassist-3.12.1.GA.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$PROJECT_DIR$/lib/javassist-3.12.1.GA-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/javassist-3.12.1.GA-sources.jar!/" />
       </SOURCES>
     </library>
   </component>

@@ -1,4 +1,4 @@
-package Core.Mod.NewElement;
+package Core.Mod.New;
 
 import CraftWorld.Exception.RegisteredException;
 import HeadLibs.Helper.HStringHelper;

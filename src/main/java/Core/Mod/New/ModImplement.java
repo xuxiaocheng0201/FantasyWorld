@@ -1,4 +1,4 @@
-package Core.Mod;
+package Core.Mod.New;
 
 public interface ModImplement {
 }

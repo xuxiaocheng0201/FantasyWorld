@@ -1,7 +1,7 @@
 package CraftWorld.Block;
 
-import Core.Mod.NewElement.ElementImplement;
-import Core.Mod.NewElement.NewElementImplement;
+import Core.Mod.New.ElementImplement;
+import Core.Mod.New.NewElementImplement;
 import CraftWorld.Instance.DST.DSTMetaCompound;
 
 @NewElementImplement(name = "Block")

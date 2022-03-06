@@ -4,10 +4,7 @@ import Core.CraftWorld;
 import Core.Event.ElementsCheckedEvent;
 import Core.Event.ElementsCheckingEvent;
 import Core.Event.EventSubscribe;
-import Core.Mod.NewElement.ElementImplement;
-import Core.Mod.NewElement.ElementUtil;
-import Core.Mod.NewElement.NewElementImplement;
-import Core.Mod.NewElement.NewElementUtil;
+import Core.Mod.New.*;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
@@ -16,11 +13,13 @@ import HeadLibs.Pair;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModLoader {
-    private static final HLog logger = new HLog("ModLoader", Thread.currentThread().getName());
+public class ModClassesLoader {
+    private static HLog logger;
     public static final File MODS_FILE = (new File(HStringHelper.merge(CraftWorld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
     static {
         if (MODS_FILE.exists() && !MODS_FILE.isDirectory())
@@ -29,11 +28,11 @@ public class ModLoader {
             HLog.logger(HELogLevel.ERROR, "Creating MODS_PATH directory failed. MODS_PATH='", MODS_FILE.getPath(), "'.");
     }
 
-    public static List<Class<?>> allClasses;
-    public static final EventBus DEFAULT_EVENT_BUS = EventBus.getDefault();
+    private static List<Class<?>> allClasses;
+    private static final EventBus DEFAULT_EVENT_BUS = EventBus.getDefault();
 
-    public static final List<Class<?>> modList = new ArrayList<>();
-    public static final List<Pair<Class<?>, Class<?>>> elementList = new ArrayList<>();
+    private static final List<Class<?>> modList = new ArrayList<>();
+    private static final List<Pair<Class<?>, Class<?>>> elementList = new ArrayList<>();
 
     private static final List<Class<?>> implementList = new ArrayList<>();
     private static final List<Class<?>> utilList = new ArrayList<>();
@@ -49,9 +48,42 @@ public class ModLoader {
     private static final List<Class<?>> singleImplements = new ArrayList<>();
     private static final List<Class<?>> singleUtils = new ArrayList<>();
 
+    public static List<Class<?>> getAllClasses() {
+        return allClasses;
+    }
+
+    public static List<Class<?>> getModList() {
+        return modList;
+    }
+
+    public static List<Pair<Class<?>, Class<?>>> getElementList() {
+        return elementList;
+    }
+
+    public static List<List<Class<?>>> getSameMods() {
+        return sameMods;
+    }
+
+    public static List<List<Class<?>>> getSameImplements() {
+        return sameImplements;
+    }
+
+    public static List<List<Class<?>>> getSameUtils() {
+        return sameUtils;
+    }
+
+    public static List<Class<?>> getSingleImplements() {
+        return singleImplements;
+    }
+
+    public static List<Class<?>> getSingleUtils() {
+        return singleUtils;
+    }
+
     public static boolean loadClasses() {
         if (!MODS_FILE.exists() || !MODS_FILE.isDirectory())
             return true;
+        logger = new HLog("ModClassesLoader", Thread.currentThread().getName());
         logger.log(HELogLevel.INFO, "Searching mods in '", MODS_FILE.getPath(), "'.");
         searchingMods();
         logger.log(HELogLevel.DEBUG, "Found @Mod in classes: ", mods);
@@ -83,9 +115,9 @@ public class ModLoader {
             return true;
         if (!singleUtils.isEmpty())
             return true;
+        DEFAULT_EVENT_BUS.post(new ElementsCheckedEvent());
         logger.log(HELogLevel.DEBUG, "Checked mods: ", modList);
         logger.log(HELogLevel.DEBUG, "Checked elements: ", elementList);
-        DEFAULT_EVENT_BUS.post(new ElementsCheckedEvent());
         return false;
     }
 
@@ -261,6 +293,10 @@ public class ModLoader {
         }
     }
 
+    public static EventBus getDefaultEventBus() {
+        return DEFAULT_EVENT_BUS;
+    }
+
     public static EventBus getEventBusByName(String name) {
         //TODO
         return DEFAULT_EVENT_BUS;
@@ -376,7 +412,151 @@ public class ModLoader {
                 return true;
             }
         }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(double.class).newInstance(0));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(double.class, double.class).newInstance(0, 0));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(double.class, double.class, double.class).newInstance(0, 0, 0));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(Double.class).newInstance(0D));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(Double.class, Double.class).newInstance(0D, 0D));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(Double.class, Double.class, Double.class).newInstance(0D, 0D, 0D));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(BigInteger.class).newInstance(BigInteger.ZERO));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(BigInteger.class, BigInteger.class).newInstance(BigInteger.ZERO, BigInteger.ZERO));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(BigInteger.class, BigInteger.class, BigInteger.class).newInstance(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(BigDecimal.class).newInstance(BigDecimal.ZERO));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(BigDecimal.class, BigDecimal.class).newInstance(BigDecimal.ZERO, BigDecimal.ZERO));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
+        if (need_registered) {
+            try {
+                need_registered = false;
+                eventBus.register(aClass.getDeclaredConstructor(BigDecimal.class, BigDecimal.class, BigDecimal.class).newInstance(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
+            } catch (NoSuchMethodException exception) {
+                need_registered = true;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return true;
+            }
+        }
         //todo: Add more common constructors
+
+//        Constructor<?>[] constructors = aClass.getDeclaredConstructors();
+//        for (Constructor<?> constructor: constructors) {
+//            Type[] types = constructor.getGenericParameterTypes();
+//            Object[] args = new Object[types.length];
+//            for (Type type: types) {
+//                if (type.getTypeName().equals("String"))
+//                    args
+//            }
+//            constructor.newInstance();
+//        }
+
         return false;
     }
 }
