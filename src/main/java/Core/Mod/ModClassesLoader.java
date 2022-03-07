@@ -16,7 +16,9 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModClassesLoader {
     private static HLog logger;
@@ -78,6 +80,15 @@ public class ModClassesLoader {
 
     public static List<Class<?>> getSingleUtils() {
         return singleUtils;
+    }
+
+    public static EventBus getDefaultEventBus() {
+        return DEFAULT_EVENT_BUS;
+    }
+
+    public static EventBus getEventBusByName(String name) {
+        //TODO
+        return DEFAULT_EVENT_BUS;
     }
 
     public static boolean loadClasses() {
@@ -293,13 +304,25 @@ public class ModClassesLoader {
         }
     }
 
-    public static EventBus getDefaultEventBus() {
-        return DEFAULT_EVENT_BUS;
+    private static final Map<String, List<Class<?>>> allElements = new HashMap<>();
+
+    public static Map<String, List<Class<?>>> getAllElements() {
+        return allElements;
     }
 
-    public static EventBus getEventBusByName(String name) {
-        //TODO
-        return DEFAULT_EVENT_BUS;
+    public static void registerElements() {
+        for (Pair<Class<?>, Class<?>> pair: elementList) {
+            String name = HStringHelper.noNull(pair.getKey().getAnnotation(NewElementImplement.class).name());
+            List<Class<?>> instances = new ArrayList<>();
+            HClassFinder classFilter = new HClassFinder();
+            classFilter.addSuperClass(pair.getKey());
+            for (Class<?> aClass: allClasses)
+                if (classFilter.checkSuper(aClass) && !aClass.equals(pair.getKey()))
+                    instances.add(aClass);
+            if (instances.isEmpty())
+                logger.log(HELogLevel.WARN, "No instance registered for element '", name, "'.");
+            allElements.put(name, instances);
+        }
     }
 
     public static boolean registerEvent(Class<?> aClass, EventBus eventBus) {

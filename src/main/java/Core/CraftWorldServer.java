@@ -1,7 +1,6 @@
 package Core;
 
 import Core.Mod.ModClassesLoader;
-import Core.Mod.ModElementRegisterer;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
@@ -19,8 +18,8 @@ public class CraftWorldServer implements Runnable {
             if (!CraftWorldClient.isRunning)
                 return;
         }
-        ModElementRegisterer.registerElements();
-        logger.log(ModElementRegisterer.getAllElements());
+        ModClassesLoader.registerElements();
+        logger.log(ModClassesLoader.getAllElements());
         //TODO
         logger.log(HELogLevel.FINEST, "Server Thread exits.");
     }
