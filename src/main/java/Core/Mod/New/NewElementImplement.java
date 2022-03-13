@@ -10,5 +10,4 @@ import java.lang.annotation.Target;
 public @interface NewElementImplement {
     String mod() default "default";
     String name();
-    String required() default "";
 }

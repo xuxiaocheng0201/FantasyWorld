@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Mod {
     String name();
     String version() default "1.0";
+    String require() default "";
 }

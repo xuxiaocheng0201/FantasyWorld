@@ -33,52 +33,52 @@ public class ModClassesLoader {
     private static List<Class<?>> allClasses;
     private static final EventBus DEFAULT_EVENT_BUS = EventBus.getDefault();
 
-    private static final List<Class<?>> modList = new ArrayList<>();
-    private static final List<Pair<Class<?>, Class<?>>> elementList = new ArrayList<>();
+    private static final List<Class<? extends ModImplement>> modList = new ArrayList<>();
+    private static final List<Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementList = new ArrayList<>();
 
-    private static final List<Class<?>> implementList = new ArrayList<>();
-    private static final List<Class<?>> utilList = new ArrayList<>();
+    private static final List<Class<? extends ElementImplement>> implementList = new ArrayList<>();
+    private static final List<Class<? extends ElementUtil<?>>> utilList = new ArrayList<>();
 
-    private static final List<Class<?>> mods = new ArrayList<>();
-    private static final List<Class<?>> elementImplements = new ArrayList<>();
-    private static final List<Class<?>> elementUtils = new ArrayList<>();
+    private static final List<Class<? extends ModImplement>> mods = new ArrayList<>();
+    private static final List<Class<? extends ElementImplement>> elementImplements = new ArrayList<>();
+    private static final List<Class<? extends ElementUtil<?>>> elementUtils = new ArrayList<>();
 
-    private static final List<List<Class<?>>> sameMods = new ArrayList<>();
-    private static final List<List<Class<?>>> sameImplements = new ArrayList<>();
-    private static final List<List<Class<?>>> sameUtils = new ArrayList<>();
+    private static final List<List<Class<? extends ModImplement>>> sameMods = new ArrayList<>();
+    private static final List<List<Class<? extends ElementImplement>>> sameImplements = new ArrayList<>();
+    private static final List<List<Class<? extends ElementUtil<?>>>> sameUtils = new ArrayList<>();
 
-    private static final List<Class<?>> singleImplements = new ArrayList<>();
-    private static final List<Class<?>> singleUtils = new ArrayList<>();
+    private static final List<Class<? extends ElementImplement>> singleImplements = new ArrayList<>();
+    private static final List<Class<? extends ElementUtil<?>>> singleUtils = new ArrayList<>();
 
     public static List<Class<?>> getAllClasses() {
         return allClasses;
     }
 
-    public static List<Class<?>> getModList() {
+    public static List<Class<? extends ModImplement>> getModList() {
         return modList;
     }
 
-    public static List<Pair<Class<?>, Class<?>>> getElementList() {
+    public static List<Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementList() {
         return elementList;
     }
 
-    public static List<List<Class<?>>> getSameMods() {
+    public static List<List<Class<? extends ModImplement>>> getSameMods() {
         return sameMods;
     }
 
-    public static List<List<Class<?>>> getSameImplements() {
+    public static List<List<Class<? extends ElementImplement>>> getSameImplements() {
         return sameImplements;
     }
 
-    public static List<List<Class<?>>> getSameUtils() {
+    public static List<List<Class<? extends ElementUtil<?>>>> getSameUtils() {
         return sameUtils;
     }
 
-    public static List<Class<?>> getSingleImplements() {
+    public static List<Class<? extends ElementImplement>> getSingleImplements() {
         return singleImplements;
     }
 
-    public static List<Class<?>> getSingleUtils() {
+    public static List<Class<? extends ElementUtil<?>>> getSingleUtils() {
         return singleUtils;
     }
 
@@ -132,6 +132,7 @@ public class ModClassesLoader {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     private static void searchingMods() {
         HClassFinder modsFinder = new HClassFinder();
         modsFinder.addJarFilesInDirectory(MODS_FILE);
@@ -148,27 +149,27 @@ public class ModClassesLoader {
         utilFilter.addSuperClass(ElementUtil.class);
         for (Class<?> aClass: modsFinder.getClassList()) {
             if (modFilter.checkAnnotation(aClass) && modFilter.checkSuper(aClass))
-                mods.add(aClass);
+                mods.add((Class<? extends ModImplement>) aClass);
             if (implementFilter.checkAnnotation(aClass) && implementFilter.checkSuper(aClass))
-                elementImplements.add(aClass);
+                elementImplements.add((Class<? extends ElementImplement>) aClass);
             if (utilFilter.checkAnnotation(aClass) && utilFilter.checkSuper(aClass))
-                elementUtils.add(aClass);
+                elementUtils.add((Class<? extends ElementUtil<?>>) aClass);
         }
     }
 
     private static void checkingMods() {
-        for (Class<?> classClass: mods) {
+        for (Class<? extends ModImplement> classClass: mods) {
             Mod classMod = classClass.getAnnotation(Mod.class);
             String className = HStringHelper.noNull(classMod.name());
             boolean not_found = true;
-            for (Class<?> savedClass: modList) {
+            for (Class<? extends ModImplement> savedClass: modList) {
                 Mod savedMod = savedClass.getAnnotation(Mod.class);
                 if (className.equals(HStringHelper.noNull(savedMod.name()))) {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same mod name '", savedMod.name(), "'. " +
                             "With versions are: '", savedMod.version(), "' and '", classMod.version(), "'.");
                     boolean found = false;
-                    for (List<Class<?>> sameModFound: sameMods) {
+                    for (List<Class<? extends ModImplement>> sameModFound: sameMods) {
                         if (sameModFound.isEmpty())
                             continue;
                         Mod mod = sameModFound.get(0).getAnnotation(Mod.class);
@@ -179,7 +180,7 @@ public class ModClassesLoader {
                         }
                     }
                     if (!found) {
-                        List<Class<?>> temp = new ArrayList<>();
+                        List<Class<? extends ModImplement>> temp = new ArrayList<>();
                         temp.add(classClass);
                         temp.add(savedClass);
                         sameMods.add(temp);
@@ -193,17 +194,17 @@ public class ModClassesLoader {
     }
 
     private static void checkingImplements() {
-        for (Class<?> classClass: elementImplements) {
+        for (Class<? extends ElementImplement> classClass: elementImplements) {
             NewElementImplement classImplement = classClass.getAnnotation(NewElementImplement.class);
             String className = HStringHelper.noNull(classImplement.name());
             boolean not_found = true;
-            for (Class<?> savedClass: implementList) {
+            for (Class<? extends ElementImplement> savedClass: implementList) {
                 NewElementImplement savedImplement = savedClass.getAnnotation(NewElementImplement.class);
                 if (className.equals(HStringHelper.noNull(savedImplement.name()))) {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same element implement name '", savedImplement.name(), "'.");
                     boolean found = false;
-                    for (List<Class<?>> sameImplementFound: sameImplements) {
+                    for (List<Class<? extends ElementImplement>> sameImplementFound: sameImplements) {
                         if (sameImplementFound.isEmpty())
                             continue;
                         NewElementImplement implement = sameImplementFound.get(0).getAnnotation(NewElementImplement.class);
@@ -214,7 +215,7 @@ public class ModClassesLoader {
                         }
                     }
                     if (!found) {
-                        List<Class<?>> temp = new ArrayList<>();
+                        List<Class<? extends ElementImplement>> temp = new ArrayList<>();
                         temp.add(classClass);
                         temp.add(savedClass);
                         sameImplements.add(temp);
@@ -228,17 +229,17 @@ public class ModClassesLoader {
     }
 
     private static void checkingUtils() {
-        for (Class<?> classClass: elementUtils) {
+        for (Class<? extends ElementUtil<?>> classClass: elementUtils) {
             NewElementUtil classMod = classClass.getAnnotation(NewElementUtil.class);
             String className = HStringHelper.noNull(classMod.name());
             boolean not_found = true;
-            for (Class<?> savedClass: utilList) {
+            for (Class<? extends ElementUtil<?>> savedClass: utilList) {
                 NewElementUtil savedUtil = savedClass.getAnnotation(NewElementUtil.class);
                 if (className.equals(HStringHelper.noNull(savedUtil.name()))) {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same element util name '", savedUtil.name(), "'.");
                     boolean found = false;
-                    for (List<Class<?>> sameUtilFound: sameUtils) {
+                    for (List<Class<? extends ElementUtil<?>>> sameUtilFound: sameUtils) {
                         if (sameUtilFound.isEmpty())
                             continue;
                         NewElementUtil util = sameUtilFound.get(0).getAnnotation(NewElementUtil.class);
@@ -249,7 +250,7 @@ public class ModClassesLoader {
                         }
                     }
                     if (!found) {
-                        List<Class<?>> temp = new ArrayList<>();
+                        List<Class<? extends ElementUtil<?>>> temp = new ArrayList<>();
                         temp.add(classClass);
                         temp.add(savedClass);
                         sameUtils.add(temp);
@@ -263,11 +264,11 @@ public class ModClassesLoader {
     }
 
     private static void checkingElements() {
-        for (Class<?> implement: elementImplements) {
+        for (Class<? extends ElementImplement> implement: elementImplements) {
             NewElementImplement elementImplement = implement.getAnnotation(NewElementImplement.class);
             String tempName = HStringHelper.noNull(elementImplement.name());
-            Class<?> elementUtil = null;
-            for (Class<?> util: elementUtils) {
+            Class<? extends ElementUtil<?>> elementUtil = null;
+            for (Class<? extends ElementUtil<?>> util: elementUtils) {
                 NewElementUtil tempUtil = util.getAnnotation(NewElementUtil.class);
                 if (tempUtil == null)
                     continue;
@@ -281,14 +282,14 @@ public class ModClassesLoader {
                 singleImplements.add(implement);
                 continue;
             }
-            Pair<Class<?>, Class<?>> pair = new Pair<>(implement, elementUtil);
+            Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>> pair = new Pair<>(implement, elementUtil);
             elementList.add(pair);
         }
-        for (Class<?> util: elementUtils) {
+        for (Class<? extends ElementUtil<?>> util: elementUtils) {
             NewElementUtil elementUtil = util.getAnnotation(NewElementUtil.class);
             String tempName = HStringHelper.noNull(elementUtil.name());
-            Class<?> elementImplement = null;
-            for (Class<?> implement: elementImplements) {
+            Class<? extends ElementImplement> elementImplement = null;
+            for (Class<? extends ElementImplement> implement: elementImplements) {
                 NewElementImplement tempImplement = implement.getAnnotation(NewElementImplement.class);
                 if (tempImplement == null)
                     continue;
@@ -311,7 +312,7 @@ public class ModClassesLoader {
     }
 
     public static void registerElements() {
-        for (Pair<Class<?>, Class<?>> pair: elementList) {
+        for (Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>> pair: elementList) {
             String name = HStringHelper.noNull(pair.getKey().getAnnotation(NewElementImplement.class).name());
             List<Class<?>> instances = new ArrayList<>();
             HClassFinder classFilter = new HClassFinder();

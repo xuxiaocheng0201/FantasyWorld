@@ -1,9 +1,18 @@
 package Core;
 
+import Core.Mod.New.Mod;
+import Core.Mod.New.ModImplement;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
-public class CraftWorldClient implements Runnable {
+@Mod(name = "testC", require = "after:testS@[0.0.0,)")
+public class CraftWorldClient implements Runnable, ModImplement {
+
+    @Override
+    public void main() {
+
+    }
+
     public volatile static boolean isRunning = false;
 
     @Override
