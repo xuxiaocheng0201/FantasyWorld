@@ -7,7 +7,7 @@ import Core.Mod.New.ModImplement;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
-@Mod(name = "testS", require = "before:CraftWorld@(,);after:*")
+@Mod(name = "testS", require = "before:CraftWorld@(,);")
 public class CraftWorldServer implements Runnable, ModImplement {
 
     @Override

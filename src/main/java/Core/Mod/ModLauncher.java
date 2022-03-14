@@ -8,11 +8,14 @@ import HeadLibs.HVersionComparator;
 import HeadLibs.Helper.HStringHelper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ModLauncher {
     private static List<Class<? extends ModImplement>> sortedMods = new ArrayList<>();
     private static final List<ModRequirementsException> exceptions = new ArrayList<>();
+    private static final Set<Class<? extends ModImplement>> exceptions_flag = new HashSet<>();
 
     public static List<Class<? extends ModImplement>> getSortedMods() {
         return sortedMods;
@@ -131,15 +134,17 @@ public class ModLauncher {
         }
         String[] interval = require.substring(1, require.length() - 1).split(",");
         boolean is_error = true;
+        if (interval.length == 0)
+            return false;
         if (interval.length == 1) {
             if (require.charAt(1) == ',') {
                 int compare = HVersionComparator.compareVersion(interval[0], version);
-                if ((compare == 0 && can_equal_right == 1) || compare < 0)
+                if ((compare == 0 && can_equal_right == 1) || compare > 0)
                     is_error = false;
             }
             if (require.charAt(require.length() - 2) == ',') {
                 int compare = HVersionComparator.compareVersion(interval[0], version);
-                if ((compare == 0 && can_equal_left == 1) || compare > 0)
+                if ((compare == 0 && can_equal_left == 1) || compare < 0)
                     is_error = false;
             }
         }
