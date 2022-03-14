@@ -170,6 +170,13 @@
       </item>
     </group>
   </component>
+  <component name="ProjectDictionaryState">
+    <dictionary name="admin">
+      <words>
+        <w>craftworld</w>
+      </words>
+    </dictionary>
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CraftWorld.iml" filepath="$PROJECT_DIR$/CraftWorld.iml" />

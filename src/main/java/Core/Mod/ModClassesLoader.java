@@ -1,11 +1,12 @@
 package Core.Mod;
 
-import Core.CraftWorld;
+import Core.Craftworld;
 import Core.Event.ElementsCheckedEvent;
 import Core.Event.ElementsCheckingEvent;
 import Core.Event.EventSubscribe;
 import Core.Mod.New.*;
 import HeadLibs.ClassFinder.HClassFinder;
+import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
@@ -13,8 +14,6 @@ import HeadLibs.Pair;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 public class ModClassesLoader {
     private static HLog logger;
-    public static final File MODS_FILE = (new File(HStringHelper.merge(CraftWorld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
+    public static final File MODS_FILE = (new File(HStringHelper.merge(Craftworld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
     static {
         if (MODS_FILE.exists() && !MODS_FILE.isDirectory())
             HLog.logger(HELogLevel.ERROR, "Mods path is a file! MODS_PATH='", MODS_FILE.getPath(), "'.");
@@ -108,8 +107,12 @@ public class ModClassesLoader {
                 if (subscribe == null)
                     continue;
                 EventBus eventBus = getEventBusByName(subscribe.eventBus());
-                if (registerEvent(aClass, eventBus))
+
+                Object instance = HClassHelper.getInstance(aClass);
+                if (instance == null)
                     logger.log(HELogLevel.ERROR, "Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'.");
+                else
+                    eventBus.register(HClassHelper.getInstance(aClass));
             }
         DEFAULT_EVENT_BUS.post(new ElementsCheckingEvent());
         checkingMods();
@@ -324,263 +327,5 @@ public class ModClassesLoader {
                 logger.log(HELogLevel.WARN, "No instance registered for element '", name, "'.");
             allElements.put(name, instances);
         }
-    }
-
-    public static boolean registerEvent(Class<?> aClass, EventBus eventBus) {
-        boolean need_registered;
-        try {
-            need_registered = false;
-            eventBus.register(aClass.getDeclaredConstructor().newInstance());
-        } catch (NoSuchMethodException exception) {
-            need_registered = true;
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return true;
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(String.class).newInstance(""));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(String.class, String.class).newInstance("", ""));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(String.class, String.class, String.class).newInstance("", "", ""));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(int.class).newInstance(0));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(int.class, int.class).newInstance(0, 0));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(int.class, int.class, int.class).newInstance(0, 0, 0));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(Integer.class).newInstance(0));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(Integer.class, Integer.class).newInstance(0, 0));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(Integer.class, Integer.class, Integer.class).newInstance(0, 0, 0));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(double.class).newInstance(0));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(double.class, double.class).newInstance(0, 0));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(double.class, double.class, double.class).newInstance(0, 0, 0));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(Double.class).newInstance(0D));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(Double.class, Double.class).newInstance(0D, 0D));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(Double.class, Double.class, Double.class).newInstance(0D, 0D, 0D));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(BigInteger.class).newInstance(BigInteger.ZERO));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(BigInteger.class, BigInteger.class).newInstance(BigInteger.ZERO, BigInteger.ZERO));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(BigInteger.class, BigInteger.class, BigInteger.class).newInstance(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(BigDecimal.class).newInstance(BigDecimal.ZERO));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(BigDecimal.class, BigDecimal.class).newInstance(BigDecimal.ZERO, BigDecimal.ZERO));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        if (need_registered) {
-            try {
-                need_registered = false;
-                eventBus.register(aClass.getDeclaredConstructor(BigDecimal.class, BigDecimal.class, BigDecimal.class).newInstance(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
-            } catch (NoSuchMethodException exception) {
-                need_registered = true;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return true;
-            }
-        }
-        //todo: Add more common constructors
-
-//        Constructor<?>[] constructors = aClass.getDeclaredConstructors();
-//        for (Constructor<?> constructor: constructors) {
-//            Type[] types = constructor.getGenericParameterTypes();
-//            Object[] args = new Object[types.length];
-//            for (Type type: types) {
-//                if (type.getTypeName().equals("String"))
-//                    args
-//            }
-//            constructor.newInstance();
-//        }
-
-        return false;
     }
 }

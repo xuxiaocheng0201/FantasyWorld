@@ -9,12 +9,12 @@ import java.util.Map;
 
 public class LanguageI18N {
     public static final String DEFAULT_LANGUAGE = "en_us";
-    public static final String LANGUAGE_DIRECTORY = CraftWorld.ASSETS_PATH + "lang\\";
+    public static final String LANGUAGE_DIRECTORY = Craftworld.ASSETS_PATH + "lang\\";
 
     public static final Map<String, HConfigurationsSimple> languages = new HashMap<>();
 
     public static String get(String name) {
-        return get(name, CraftWorld.CURRENT_LANGUAGE);
+        return get(name, Craftworld.CURRENT_LANGUAGE);
     }
 
     public static String get(String name, String lang) {
