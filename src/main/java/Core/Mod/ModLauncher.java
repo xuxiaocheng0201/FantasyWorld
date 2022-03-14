@@ -3,9 +3,11 @@ package Core.Mod;
 import Core.Exception.ModRequirementsException;
 import Core.Exception.ModRequirementsFormatException;
 import Core.Exception.ModVersionUnmatchedException;
+import Core.Exception.NoCommonConstructorException;
 import Core.Mod.New.Mod;
 import Core.Mod.New.ModImplement;
 import HeadLibs.HVersionComparator;
+import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
 
 import java.util.ArrayList;
@@ -197,5 +199,16 @@ public class ModLauncher {
             exceptions.add(new ModVersionUnmatchedException(HStringHelper.merge("Version '", version, "' is out of range ", require)));
         }
         return false;
+    }
+
+    public static void launcherMods() {
+        for (Class<? extends ModImplement> aClass: sortedMods) {
+            ModImplement instance = HClassHelper.getInstance(aClass);
+            if (instance == null) {
+                (new NoCommonConstructorException(aClass.toString())).printStackTrace();
+                continue;
+            }
+            instance.main();
+        }
     }
 }
