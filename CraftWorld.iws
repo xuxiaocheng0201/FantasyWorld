@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix a small amount of bugs...">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exception/NoCommonConstructorException.java" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Add More Exceptions.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exception/ModMissingException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exception/WrongCraftworldVersionException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftWorldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftWorldServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exception/NoCommonConstructorException.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -432,7 +434,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647270820499</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Complete partly Core.">
+      <created>1647274453033</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1647274453033</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -459,8 +468,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Add more methods to BlockPos.java" />
-    <MESSAGE value="Create abstract class Block.java" />
     <MESSAGE value="Use assets for files" />
     <MESSAGE value="Add System details reporter" />
     <MESSAGE value="Add System Properties reporter." />
@@ -484,7 +491,9 @@
     <MESSAGE value="Mod Launcher sorting mods." />
     <MESSAGE value="Fix a small of bugs..." />
     <MESSAGE value="Fix a small amount of bugs..." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix a small amount of bugs..." />
+    <MESSAGE value="Complete partly Core." />
+    <MESSAGE value="Add More Exceptions." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add More Exceptions." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

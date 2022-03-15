@@ -25,7 +25,7 @@ public class CraftWorldServer implements Runnable, ModImplement {
         isRunning = true;
         logger.log(HELogLevel.FINEST, "Server Thread has started.");
         if (ModClassesLoader.loadClasses()) {
-            HLog.logger(HELogLevel.BUG, "Mod Loading Error! Server Thread exits.");
+            HLog.logger(HELogLevel.BUG, "Mod Loading Error in loading! Server Thread exits.");
             isRunning = false;
             return;
         }
@@ -39,10 +39,15 @@ public class CraftWorldServer implements Runnable, ModImplement {
         });
         /* ********** \<Special Modifier> ********** */
         ModClassesLoader.registerElements();
-        logger.log(ModClassesLoader.getModList());
+logger.log(ModClassesLoader.getModList());
         ModLauncher.sortMods();
-        logger.log(ModLauncher.getSortedMods());
-        logger.log(ModLauncher.getExceptions());
+        if (!ModLauncher.getExceptions().isEmpty()) {
+            HLog.logger(HELogLevel.BUG, "Mod Loading Error in sorting! Server Thread exits.");
+            isRunning = false;
+            return;
+        }
+logger.log(ModLauncher.getSortedMods());
+logger.log(ModLauncher.getExceptions());
         ModLauncher.launcherMods();
         logger.log(HELogLevel.FINEST, "Server Thread exits.");
     }

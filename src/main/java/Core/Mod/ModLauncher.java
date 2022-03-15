@@ -3,12 +3,13 @@ package Core.Mod;
 import Core.Exception.ModRequirementsException;
 import Core.Exception.ModRequirementsFormatException;
 import Core.Exception.ModVersionUnmatchedException;
-import Core.Exception.NoCommonConstructorException;
 import Core.Mod.New.Mod;
 import Core.Mod.New.ModImplement;
 import HeadLibs.HVersionComparator;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
+import HeadLibs.Logger.HLog;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public class ModLauncher {
     private static List<Class<? extends ModImplement>> sortedMods = new ArrayList<>();
     private static final List<ModRequirementsException> exceptions = new ArrayList<>();
     private static final Set<Class<? extends ModImplement>> exceptions_flag = new HashSet<>();
+    private static HLog logger;
 
     public static List<Class<? extends ModImplement>> getSortedMods() {
         return sortedMods;
@@ -29,6 +31,8 @@ public class ModLauncher {
     }
 
     public static void sortMods() {
+        logger = new HLog("ModLauncher", Thread.currentThread().getName());
+        //TODO: Need recode!
         sortedMods = ModClassesLoader.getModList();
         sortedMods.sort((o1, o2) -> {
             int result1 = 0;
@@ -143,6 +147,7 @@ public class ModLauncher {
                 return -2;
             return 0;
         });
+        logger.log(HELogLevel.DEBUG, "Sorted Mod list: ", sortedMods);
     }
 
     private static boolean checkVersionSort(String require, String version) {
@@ -205,7 +210,7 @@ public class ModLauncher {
         for (Class<? extends ModImplement> aClass: sortedMods) {
             ModImplement instance = HClassHelper.getInstance(aClass);
             if (instance == null) {
-                (new NoCommonConstructorException(aClass.toString())).printStackTrace();
+                logger.log(HELogLevel.ERROR, "No Common Constructor for creating Mod class: ", aClass);
                 continue;
             }
             instance.main();
