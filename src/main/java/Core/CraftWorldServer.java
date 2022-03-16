@@ -37,7 +37,7 @@ public class CraftWorldServer implements Runnable, ModImplement {
                 return 1;
             return 0;
         });
-        /* ********** \<Special Modifier> ********** */
+        /* ********** \Special Modifier ********** */
         ModClassesLoader.registerElements();
 logger.log(ModClassesLoader.getModList());
         ModLauncher.sortMods();
@@ -49,6 +49,9 @@ logger.log(ModClassesLoader.getModList());
 logger.log(ModLauncher.getSortedMods());
 logger.log(ModLauncher.getExceptions());
         ModLauncher.launcherMods();
+        /* ********** Special Modifier ********** */
+        CraftWorld.getInstance().start();
+        /* ********** \Special Modifier ********** */
         logger.log(HELogLevel.FINEST, "Server Thread exits.");
     }
 }

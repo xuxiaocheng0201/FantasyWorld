@@ -20,12 +20,6 @@ public class Craftworld {
         while ((new File(log_path)).exists())
             log_path = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), "_", ++i, ".log");
         LOG_PATH = log_path;
-
-//        if (System.console() != null)
-//            if (!(new File(ASSETS_PATH)).exists())
-//                HFileHelper.extractFilesFromJar("assets", ASSETS_PATH);
-//        if (System.console() != null)
-//            HFileHelper.extractFilesFromJar("natives", "natives");
     }
 
     public static boolean isClient = true;

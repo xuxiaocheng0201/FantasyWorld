@@ -34,7 +34,7 @@ public class CraftWorldClient implements Runnable, ModImplement {
         }
 
 
-
+        isRunning = false;
         logger.log(HELogLevel.FINEST, "Client Thread exits.");
     }
 }

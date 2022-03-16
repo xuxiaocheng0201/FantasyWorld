@@ -33,6 +33,122 @@ public class ModLauncher {
     public static void sortMods() {
         logger = new HLog("ModLauncher", Thread.currentThread().getName());
         //TODO: Need recode!
+        /*
+        List<WrongMinecraftVersionException> wrongMinecraftExceptions = new ArrayList<>();
+        List<MissingModsException> missingModsExceptions = new ArrayList<>();
+        try
+        {
+            BiMap<String, ArtifactVersion> modVersions = HashBiMap.create();
+            for (ModContainer mod : Iterables.concat(getActiveModList(), ModAPIManager.INSTANCE.getAPIList()))
+            {
+                modVersions.put(mod.getModId(), mod.getProcessedVersion());
+            }
+
+            ArrayListMultimap<String, String> reqList = ArrayListMultimap.create();
+            for (ModContainer mod : getActiveModList())
+            {
+                if (!mod.acceptableMinecraftVersionRange().containsVersion(minecraft.getProcessedVersion()))
+                {
+                    FMLLog.log.fatal("The mod {} does not wish to run in Minecraft version {}. You will have to remove it to play.", mod.getModId(), getMCVersionString());
+                    WrongMinecraftVersionException ret = new WrongMinecraftVersionException(mod, getMCVersionString());
+                    FMLLog.log.fatal(ret.getMessage());
+                    wrongMinecraftExceptions.add(ret);
+                    continue;
+                }
+
+                reqList.putAll(mod.getModId(), Iterables.transform(mod.getRequirements(), ArtifactVersion::getLabel));
+
+                Set<ArtifactVersion> allDeps = Sets.newHashSet();
+
+                allDeps.addAll(mod.getDependants());
+                allDeps.addAll(mod.getDependencies());
+                allDeps.addAll(mod.getRequirements());
+
+                MissingModsException missingModsException = new MissingModsException(mod.getModId(), mod.getName());
+                for (ArtifactVersion acceptedVersion : allDeps)
+                {
+                    boolean required = mod.getRequirements().contains(acceptedVersion);
+                    if (required || modVersions.containsKey(acceptedVersion.getLabel()))
+                    {
+                        ArtifactVersion currentVersion = modVersions.get(acceptedVersion.getLabel());
+                        if (currentVersion == null || !acceptedVersion.containsVersion(currentVersion))
+                        {
+                            missingModsException.addMissingMod(acceptedVersion, currentVersion, required);
+                        }
+                    }
+                }
+                if (!missingModsException.getMissingModInfos().isEmpty())
+                {
+                    FMLLog.log.fatal(missingModsException.toString());
+                    missingModsExceptions.add(missingModsException);
+                }
+            }
+
+            if (wrongMinecraftExceptions.isEmpty() && missingModsExceptions.isEmpty())
+            {
+                FMLLog.log.trace("All mod requirements are satisfied");
+            }
+            else if (missingModsExceptions.size()==1 && wrongMinecraftExceptions.isEmpty())
+            {
+                throw missingModsExceptions.get(0);
+            }
+            else if (wrongMinecraftExceptions.size()==1 && missingModsExceptions.isEmpty())
+            {
+                throw wrongMinecraftExceptions.get(0);
+            }
+            else
+            {
+                throw new MultipleModsErrored(wrongMinecraftExceptions, missingModsExceptions);
+            }
+
+            reverseDependencies = Multimaps.invertFrom(reqList, ArrayListMultimap.create());
+            ModSorter sorter = new ModSorter(getActiveModList(), namedMods);
+
+            try
+            {
+                FMLLog.log.trace("Sorting mods into an ordered list");
+                List<ModContainer> sortedMods = sorter.sort();
+                // Reset active list to the sorted list
+                modController.getActiveModList().clear();
+                modController.getActiveModList().addAll(sortedMods);
+                // And inject the sorted list into the overall list
+                mods.removeAll(sortedMods);
+                sortedMods.addAll(mods);
+                mods = sortedMods;
+                FMLLog.log.trace("Mod sorting completed successfully");
+            }
+            catch (ModSortingException sortException)
+            {
+                FMLLog.log.fatal("A dependency cycle was detected in the input mod set so an ordering cannot be determined");
+                SortingExceptionData<ModContainer> exceptionData = sortException.getExceptionData();
+                FMLLog.log.fatal("The first mod in the cycle is {}", exceptionData.getFirstBadNode());
+                FMLLog.log.fatal("The mod cycle involves");
+                for (ModContainer mc : exceptionData.getVisitedNodes())
+                {
+                    FMLLog.log.fatal("{} : before: {}, after: {}", mc.toString(), mc.getDependants(), mc.getDependencies());
+                }
+                FMLLog.log.error("The full error", sortException);
+                throw sortException;
+            }
+        }
+        finally
+        {
+            FMLLog.log.debug("Mod sorting data");
+            int unprintedMods = mods.size();
+            for (ModContainer mod : getActiveModList())
+            {
+                if (!mod.isImmutable())
+                {
+                    FMLLog.log.debug("\t{}({}:{}): {} ({})", mod.getModId(), mod.getName(), mod.getVersion(), mod.getSource().getName(), mod.getSortingRules());
+                    unprintedMods--;
+                }
+            }
+            if (unprintedMods == mods.size())
+            {
+                FMLLog.log.debug("No user mods found to sort");
+            }
+        }
+         */
         sortedMods = ModClassesLoader.getModList();
         sortedMods.sort((o1, o2) -> {
             int result1 = 0;
