@@ -25,6 +25,11 @@ public class Pair<K, V> implements Serializable {
         Value = value;
     }
 
+    public Pair() {
+        this.Key = null;
+        this.Value = null;
+    }
+
     public Pair(K key, V value) {
         this.Key = key;
         this.Value = value;

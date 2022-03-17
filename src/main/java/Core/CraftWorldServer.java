@@ -40,6 +40,7 @@ public class CraftWorldServer implements Runnable, ModImplement {
         /* ********** \Special Modifier ********** */
         ModClassesLoader.registerElements();
 logger.log(ModClassesLoader.getModList());
+        ModLauncher.buildModContainer();
         ModLauncher.sortMods();
         if (!ModLauncher.getExceptions().isEmpty()) {
             HLog.logger(HELogLevel.BUG, "Mod Loading Error in sorting! Server Thread exits.");
@@ -48,7 +49,7 @@ logger.log(ModClassesLoader.getModList());
         }
 logger.log(ModLauncher.getSortedMods());
 logger.log(ModLauncher.getExceptions());
-        ModLauncher.launcherMods();
+        ModLauncher.launchMods();
         /* ********** Special Modifier ********** */
         CraftWorld.getInstance().start();
         /* ********** \Special Modifier ********** */

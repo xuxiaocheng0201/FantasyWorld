@@ -10,6 +10,13 @@ public class HStringHelper {
         return a;
     }
 
+    public static String[] noNull(String[] a) {
+        String[] b = new String[a.length];
+        for (int i = 0; i < a.length; ++i)
+            b[i] = noNull(a[i]);
+        return b;
+    }
+
     public static boolean isBlank(String a) {
         if (a == null)
             return true;
@@ -39,6 +46,13 @@ public class HStringHelper {
         if (left < 0)
             return "";
         return a.substring(left, right + 1);
+    }
+
+    public static String[] delBlankHeadAndTail(String[] a) {
+        String[] b = new String[a.length];
+        for (int i = 0; i < a.length; ++i)
+            b[i] = delBlankHeadAndTail(a[i]);
+        return b;
     }
 
     public static String merge(Object... objects) {
