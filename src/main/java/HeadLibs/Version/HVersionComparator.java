@@ -1,11 +1,18 @@
-package HeadLibs;
+package HeadLibs.Version;
 
 import HeadLibs.Helper.HStringHelper;
 
 public class HVersionComparator {
     public static int compareVersion(String a, String b) {
-        String[] versionArray1 = HStringHelper.delBlankHeadAndTail(a).split("\\.");
-        String[] versionArray2 = HStringHelper.delBlankHeadAndTail(b).split("\\.");
+        if (a == null) {
+            if (b == null)
+                return 0;
+            return -1;
+        }
+        if (b == null)
+            return 1;
+        String[] versionArray1 = HStringHelper.delBlankHeadAndTail(a.split("\\."));
+        String[] versionArray2 = HStringHelper.delBlankHeadAndTail(b.split("\\."));
         int idx = 0;
         int minLength = Math.min(versionArray1.length, versionArray2.length);
         int diff = 0;

@@ -41,6 +41,7 @@ public class CraftWorldServer implements Runnable, ModImplement {
         ModClassesLoader.registerElements();
 logger.log(ModClassesLoader.getModList());
         ModLauncher.buildModContainer();
+        ModLauncher.checkModContainer();
         ModLauncher.sortMods();
         if (!ModLauncher.getExceptions().isEmpty()) {
             HLog.logger(HELogLevel.BUG, "Mod Loading Error in sorting! Server Thread exits.");
