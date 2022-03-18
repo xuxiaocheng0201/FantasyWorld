@@ -3,10 +3,7 @@ package Core.Mod;
 import Core.Craftworld;
 import Core.Event.PostInitializationModsEvent;
 import Core.Event.PreInitializationModsEvent;
-import Core.Exception.ModMissingException;
-import Core.Exception.ModRequirementsException;
-import Core.Exception.ModRequirementsFormatException;
-import Core.Exception.WrongCraftworldVersionException;
+import Core.Exception.*;
 import Core.Mod.New.Mod;
 import Core.Mod.New.ModImplement;
 import HeadLibs.Helper.HClassHelper;
@@ -161,6 +158,25 @@ public class ModLauncher {
                 if (requestAfterModName.contains(requirements.getValue().getKey()))
                     exceptions.add(new ModRequirementsException(HStringHelper.merge("Request after and before the same mod '", requirements.getValue().getKey(), "'.",
                             " At class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
+            //mod version check
+            for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getKey())
+                for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, HVersionRange>>>,
+                        Pair<Pair<Set<Pair<Boolean, Pair<String, HVersionRange>>>, Set<Pair<Boolean, Pair<String, HVersionRange>>>>,
+                                Pair<Boolean, Boolean>>> b: modContainer)
+                    if (requirements.getValue().getKey().equals(b.getKey().getValue().getKey())) {
+                        if (!requirements.getValue().getValue().versionInRange(b.getKey().getValue().getValue().getKey()))
+                            exceptions.add(new ModVersionUnmatchedException(HStringHelper.merge("Have had mod '", b.getKey().getValue().getKey(), "@", b.getKey().getValue().getValue(), "' but need version '", requirements.getValue().getValue(), "'.",
+                                    " At class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
+                    }
+            for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getValue())
+                for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, HVersionRange>>>,
+                        Pair<Pair<Set<Pair<Boolean, Pair<String, HVersionRange>>>, Set<Pair<Boolean, Pair<String, HVersionRange>>>>,
+                                Pair<Boolean, Boolean>>> b: modContainer)
+                    if (requirements.getValue().getKey().equals(b.getKey().getValue().getKey())) {
+                        if (!requirements.getValue().getValue().versionInRange(b.getKey().getValue().getValue().getKey()))
+                            exceptions.add(new ModVersionUnmatchedException(HStringHelper.merge("Have had mod '", b.getKey().getValue().getKey(), "@", b.getKey().getValue().getValue(), "' but need version '", requirements.getValue().getValue(), "'.",
+                                    " At class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
+                    }
         }
     }
     
@@ -190,12 +206,13 @@ public class ModLauncher {
         for (Pair<Pair<Class<? extends ModImplement>, String>,
                 Pair<Pair<Set<String>, Set<String>>, Pair<Boolean, Boolean>>> mod: simpleModContainer) {
             sortHasSearchedMods.clear();
-            addSortMod(mod.getKey().getKey(), mod.getKey().getValue(), mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue());
+            addSortMod(mod.getKey().getKey(), mod.getKey().getValue(),
+                    mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue(), mod.getValue().getValue());
         }
-        logger.log(HELogLevel.DEBUG, "Sorted Mod list: ", sortedMods);
     }
 
-    private static void addSortMod(Class<? extends ModImplement> modClass, String modName, Set<String> requireAfter, Set<String> requireBefore) {
+    private static void addSortMod(Class<? extends ModImplement> modClass, String modName,
+                                   Set<String> requireAfter, Set<String> requireBefore, Pair<Boolean, Boolean> requireAll) {
         if (sortedMods.contains(modClass))
             return;
         if (sortHasSearchedMods.contains(modName))
@@ -205,14 +222,16 @@ public class ModLauncher {
             for (Pair<Pair<Class<? extends ModImplement>, String>,
                     Pair<Pair<Set<String>, Set<String>>, Pair<Boolean, Boolean>>> mod: simpleModContainer)
                 if (after.equals(mod.getKey().getValue())) {
-                    addSortMod(mod.getKey().getKey(), mod.getKey().getValue(), mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue());
+                    addSortMod(mod.getKey().getKey(), mod.getKey().getValue(),
+                            mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue(), mod.getValue().getValue());
                     break;
                 }
         for (String before: requireBefore)
             for (Pair<Pair<Class<? extends ModImplement>, String>,
                     Pair<Pair<Set<String>, Set<String>>, Pair<Boolean, Boolean>>> mod: simpleModContainer)
                 if (before.equals(mod.getKey().getValue())) {
-                    addSortMod(mod.getKey().getKey(), mod.getKey().getValue(), mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue());
+                    addSortMod(mod.getKey().getKey(), mod.getKey().getValue(),
+                            mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue(), mod.getValue().getValue());
                     break;
                 }
         int left = 0;
@@ -233,7 +252,10 @@ public class ModLauncher {
             exceptions.add(new ModRequirementsException(HStringHelper.merge("Mod sort error! left=", left, ", right=", right, ", sortedMod=", sortedMods,
                     " At class: '", modClass, "' name: '", modName, "'.")));
         else
-            sortedMods.add(right, modClass);
+            if (requireAll.getValue())
+                sortedMods.add(left, modClass);
+            else
+                sortedMods.add(right, modClass);
     }
 
     public static void launchMods() {

@@ -1,13 +1,16 @@
 package Core;
 
+import Core.Event.EventSubscribe;
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 
+@EventSubscribe(eventBus = "*")
 public class Craftworld {
     public static final String CURRENT_VERSION = "0.0.0";
     public static final String RUNTIME_PATH = HStringHelper.merge("Craftworld\\", CURRENT_VERSION, "\\");
@@ -75,5 +78,10 @@ public class Craftworld {
         GLOBAL_CONFIGURATIONS.clear();
         GLOBAL_CONFIGURATIONS.add(language);
         GLOBAL_CONFIGURATIONS.write();
+    }
+
+    @Subscribe
+    public void onEvent(Object event) {
+        HLog.logger(HELogLevel.DEBUG, "Posted Event: ", event.getClass().getName());
     }
 }

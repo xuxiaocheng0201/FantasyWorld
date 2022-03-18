@@ -3,20 +3,11 @@ package Core;
 import Core.Exception.ModRequirementsException;
 import Core.Mod.ModClassesLoader;
 import Core.Mod.ModLauncher;
-import Core.Mod.New.Mod;
-import Core.Mod.New.ModImplement;
 import CraftWorld.CraftWorld;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
-@Mod(name = "testS", require = "before:CraftWorld@(,)")
-public class CraftWorldServer implements Runnable, ModImplement {
-
-    @Override
-    public void main() {
-
-    }
-
+public class CraftWorldServer implements Runnable {
     public volatile static boolean isRunning = false;
 
     @Override
@@ -30,17 +21,7 @@ public class CraftWorldServer implements Runnable, ModImplement {
             isRunning = false;
             return;
         }
-        /* ********** Special Modifier ********** */
-//        ModClassesLoader.getModList().sort((o1, o2) -> {
-//            if (o1.equals(CraftWorld.class))
-//                return -1;
-//            if (o2.equals(CraftWorld.class))
-//                return 1;
-//            return 0;
-//        });
-        /* ********** \Special Modifier ********** */
         ModClassesLoader.registerElements();
-logger.log(ModClassesLoader.getModList());
         ModLauncher.buildModContainer();
         ModLauncher.checkModContainer();
         if (!ModLauncher.getExceptions().isEmpty()) {
@@ -62,6 +43,7 @@ logger.log(ModClassesLoader.getModList());
             isRunning = false;
             return;
         }
+        logger.log(HELogLevel.FINEST, "Sorted Mod list: ", ModLauncher.getSortedMods());
         ModLauncher.launchMods();
         /* ********** Special Modifier ********** */
         CraftWorld.getInstance().start();

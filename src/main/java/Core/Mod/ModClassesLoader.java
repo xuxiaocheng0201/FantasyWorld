@@ -29,8 +29,13 @@ public class ModClassesLoader {
             HLog.logger(HELogLevel.ERROR, "Creating MODS_PATH directory failed. MODS_PATH='", MODS_FILE.getPath(), "'.");
     }
 
-    private static List<Class<?>> allClasses;
     private static final EventBus DEFAULT_EVENT_BUS = EventBus.getDefault();
+    private static final List<EventBus> ALL_EVENT_BUS = new ArrayList<>();
+    static {
+        ALL_EVENT_BUS.add(DEFAULT_EVENT_BUS);
+    }
+
+    private static List<Class<?>> allClasses;
 
     private static final List<Class<? extends ModImplement>> modList = new ArrayList<>();
     private static final List<Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementList = new ArrayList<>();
@@ -90,6 +95,10 @@ public class ModClassesLoader {
         return DEFAULT_EVENT_BUS;
     }
 
+    public static List<EventBus> getAllEventBus() {
+        return ALL_EVENT_BUS;
+    }
+
     public static boolean loadClasses() {
         if (!MODS_FILE.exists() || !MODS_FILE.isDirectory())
             return true;
@@ -106,13 +115,20 @@ public class ModClassesLoader {
                 EventSubscribe subscribe = aClass.getAnnotation(EventSubscribe.class);
                 if (subscribe == null)
                     continue;
+                if (subscribe.eventBus().equals("*")) {
+                    Object instance = HClassHelper.getInstance(aClass);
+                    if (instance == null)
+                        logger.log(HELogLevel.ERROR, "Get instance failed. Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'.");
+                    else for (EventBus eventBus: getAllEventBus())
+                        eventBus.register(instance);
+                    continue;
+                }
                 EventBus eventBus = getEventBusByName(subscribe.eventBus());
-
                 Object instance = HClassHelper.getInstance(aClass);
                 if (instance == null)
-                    logger.log(HELogLevel.ERROR, "Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'.");
+                    logger.log(HELogLevel.ERROR, "Get instance failed. Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'.");
                 else
-                    eventBus.register(HClassHelper.getInstance(aClass));
+                    eventBus.register(instance);
             }
         DEFAULT_EVENT_BUS.post(new ElementsCheckingEvent());
         checkingMods();

@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Mod version checking.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Mod sort function finished.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftWorldClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftWorldClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftWorldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftWorldServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/VersionRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -471,7 +470,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647498823758</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="Mod sort function finished.">
+      <created>1647590046210</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1647590046211</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -498,7 +504,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Buckup." />
     <MESSAGE value="Unknown error." />
     <MESSAGE value="Create ChunkPos.java" />
     <MESSAGE value="Create Chunk.java" />
@@ -523,7 +528,8 @@
     <MESSAGE value="Package." />
     <MESSAGE value="build mod container" />
     <MESSAGE value="Mod version checking." />
-    <option name="LAST_COMMIT_MESSAGE" value="Mod version checking." />
+    <MESSAGE value="Mod sort function finished." />
+    <option name="LAST_COMMIT_MESSAGE" value="Mod sort function finished." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
