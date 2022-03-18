@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Objects;
 
 /* Version form: [,]&(,]&{,,} */
-public class VersionRange {
+public class HVersionRange {
     private final List<SingleVersionRange> versionRanges = new ArrayList<>();
     private final List<String> versionSingles = new ArrayList<>();
 
-    public VersionRange() {
+    public HVersionRange() {
         super();
     }
 
-    public VersionRange(String version) throws IllegalArgumentException {
+    public HVersionRange(String version) throws IllegalArgumentException {
         addVersions(version);
     }
 
@@ -32,7 +32,10 @@ public class VersionRange {
             versionSingles.addAll(Arrays.asList(versionS));
             return;
         }
-        this.versionRanges.add(new SingleVersionRange(version));
+        if ((version.charAt(0) == '(' || version.charAt(0) == '[') && (version.charAt(version.length() - 1) == ')' || version.charAt(version.length() - 1) == ']'))
+            this.versionRanges.add(new SingleVersionRange(version));
+        else
+            this.versionSingles.add(version);
     }
 
     public List<SingleVersionRange> getVersionRanges() {
@@ -75,7 +78,7 @@ public class VersionRange {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < versionRanges.size(); ++i) {
             builder.append((versionRanges.get(i).toString()));
-            if (i != versionSingles.size() - 1)
+            if (i != versionRanges.size() - 1)
                 builder.append(" & ");
         }
         if (versionSingles.isEmpty())
@@ -95,7 +98,7 @@ public class VersionRange {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        VersionRange that = (VersionRange) o;
+        HVersionRange that = (HVersionRange) o;
 
         if (!versionRanges.equals(that.versionRanges))
             return false;
@@ -178,8 +181,8 @@ public class VersionRange {
             if (result > 0 || (result == 0 && !leftEquable && !rightEquable))
                 return;
             if (result == 0) {
-                this.leftEquable = false;
-                this.rightEquable = false;
+                this.leftEquable = true;
+                this.rightEquable = true;
             }
             if (result < 0) {
                 String temp = versionLeft;

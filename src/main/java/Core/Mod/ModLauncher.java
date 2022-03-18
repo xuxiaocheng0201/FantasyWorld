@@ -1,10 +1,12 @@
 package Core.Mod;
 
+import Core.Craftworld;
 import Core.Event.PostInitializationModsEvent;
 import Core.Event.PreInitializationModsEvent;
 import Core.Exception.ModMissingException;
 import Core.Exception.ModRequirementsException;
 import Core.Exception.ModRequirementsFormatException;
+import Core.Exception.WrongCraftworldVersionException;
 import Core.Mod.New.Mod;
 import Core.Mod.New.ModImplement;
 import HeadLibs.Helper.HClassHelper;
@@ -12,21 +14,27 @@ import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Pair;
-import HeadLibs.Version.VersionRange;
+import HeadLibs.Version.HVersionRange;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ModLauncher {
     private static final List<Class<? extends ModImplement>> sortedMods = new ArrayList<>();
     private static final List<ModRequirementsException> exceptions = new ArrayList<>();
     private static HLog logger;
     //                                  class                               name         version available_Craftworld_version
-    private static final List<Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, VersionRange>>>,
-                //        after     required      name    version_range    before
-                Pair<Pair<List<Pair<Boolean, Pair<String, VersionRange>>>, List<Pair<Boolean, Pair<String, VersionRange>>>>,
+    private static final Set<Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, HVersionRange>>>,
+            //        after     required      name    version_range    before
+            Pair<Pair<Set<Pair<Boolean, Pair<String, HVersionRange>>>, Set<Pair<Boolean, Pair<String, HVersionRange>>>>,
                     //   afterAll beforeAll
-                    Pair<Boolean, Boolean>>>> modContainer = new ArrayList<>();
+                    Pair<Boolean, Boolean>>>> modContainer = new HashSet<>();
+    //                                  class                          name
+    private static final Set<Pair<Pair<Class<? extends ModImplement>, String>,
+            //        after        before             afterAll beforeAll
+            Pair<Pair<Set<String>, Set<String>>, Pair<Boolean, Boolean>>>> simpleModContainer = new HashSet<>();
 
     public static List<Class<? extends ModImplement>> getSortedMods() {
         return sortedMods;
@@ -45,9 +53,9 @@ public class ModLauncher {
             String modName = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.name()));
             String modVersion = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.version()));
             String modAvailable = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.availableCraftworldVersion()));
-            VersionRange availableCraftworldVersion = new VersionRange(modAvailable);
-            List<Pair<Boolean, Pair<String, VersionRange>>> after = new ArrayList<>();
-            List<Pair<Boolean, Pair<String, VersionRange>>> before = new ArrayList<>();
+            HVersionRange availableCraftworldVersion = new HVersionRange(modAvailable);
+            Set<Pair<Boolean, Pair<String, HVersionRange>>> after = new HashSet<>();
+            Set<Pair<Boolean, Pair<String, HVersionRange>>> before = new HashSet<>();
             boolean afterAll = false;
             boolean beforeAll = false;
             String[] modRequirements = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.require().split(";")));
@@ -67,7 +75,7 @@ public class ModLauncher {
                 String requirementInformation = modRequirement.substring(locationColon + 1);
                 int locationAt = requirementInformation.indexOf("@");
                 String requirementName;
-                VersionRange versionRange;
+                HVersionRange versionRange;
                 if (locationAt == -1 || locationAt == requirementInformation.length() - 1) {
                     if (requirementInformation.equals("*")) {
                         switch (requirementModification) {
@@ -79,12 +87,12 @@ public class ModLauncher {
                         continue;
                     }
                     requirementName = requirementInformation;
-                    versionRange = new VersionRange();
+                    versionRange = new HVersionRange();
                 }
                 else {
                     requirementName = requirementInformation.substring(0, locationAt);
                     String requirementVersion = requirementInformation.substring(locationAt + 1);
-                    versionRange = new VersionRange(requirementVersion);
+                    versionRange = new HVersionRange(requirementVersion);
                 }
                 switch (requirementModification) {
                     case "after" -> after.add(new Pair<>(false, new Pair<>(requirementName, versionRange)));
@@ -98,20 +106,23 @@ public class ModLauncher {
             modContainer.add(new Pair<>(new Pair<>(modClass, new Pair<>(modName, new Pair<>(modVersion, availableCraftworldVersion))),
                     new Pair<>(new Pair<>(after, before), new Pair<>(afterAll, beforeAll))));
         }
-logger.log(modContainer);
     }
 
     public static void checkModContainer() {
-        for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, VersionRange>>>,
-                Pair<Pair<List<Pair<Boolean, Pair<String, VersionRange>>>, List<Pair<Boolean, Pair<String, VersionRange>>>>,
+        for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, HVersionRange>>>,
+                Pair<Pair<Set<Pair<Boolean, Pair<String, HVersionRange>>>, Set<Pair<Boolean, Pair<String, HVersionRange>>>>,
                         Pair<Boolean, Boolean>>> mod: modContainer) {
+            //available in current Craftworld version
+            if (!mod.getKey().getValue().getValue().getValue().versionInRange(Craftworld.CURRENT_VERSION))
+                exceptions.add(new WrongCraftworldVersionException(HStringHelper.merge("Current version '", Craftworld.CURRENT_VERSION, "' is not in range '", mod.getKey().getValue().getValue().getValue(), "'.",
+                        " At class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
             //force requirement check
-            for (Pair<Boolean, Pair<String, VersionRange>> requirements: mod.getValue().getKey().getKey()) {
+            for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getKey()) {
                 if (requirements.getKey()) {
                     String requireModName = requirements.getValue().getKey();
                     boolean flag = true;
-                    for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, VersionRange>>>,
-                            Pair<Pair<List<Pair<Boolean, Pair<String, VersionRange>>>, List<Pair<Boolean, Pair<String, VersionRange>>>>,
+                    for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, HVersionRange>>>,
+                            Pair<Pair<Set<Pair<Boolean, Pair<String, HVersionRange>>>, Set<Pair<Boolean, Pair<String, HVersionRange>>>>,
                                     Pair<Boolean, Boolean>>> i : modContainer)
                         if (requireModName.equals(i.getKey().getValue().getKey())) {
                             flag = false;
@@ -122,12 +133,12 @@ logger.log(modContainer);
                                 " for class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
                 }
             }
-            for (Pair<Boolean, Pair<String, VersionRange>> requirements: mod.getValue().getKey().getValue()) {
+            for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getValue()) {
                 if (requirements.getKey()) {
                     String requireModName = requirements.getValue().getKey();
                     boolean flag = true;
-                    for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, VersionRange>>>,
-                            Pair<Pair<List<Pair<Boolean, Pair<String, VersionRange>>>, List<Pair<Boolean, Pair<String, VersionRange>>>>,
+                    for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, HVersionRange>>>,
+                            Pair<Pair<Set<Pair<Boolean, Pair<String, HVersionRange>>>, Set<Pair<Boolean, Pair<String, HVersionRange>>>>,
                                     Pair<Boolean, Boolean>>> i : modContainer)
                         if (requireModName.equals(i.getKey().getValue().getKey())) {
                             flag = false;
@@ -143,29 +154,86 @@ logger.log(modContainer);
                 exceptions.add(new ModRequirementsException(HStringHelper.merge("Both after:* and before:*",
                         " for class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
             //request after and before the same mod
-            List<String> requestAfterModName = new ArrayList<>();
-            for (Pair<Boolean, Pair<String, VersionRange>> requirements: mod.getValue().getKey().getKey())
-                if (!requestAfterModName.contains(requirements.getValue().getKey()))
-                    requestAfterModName.add(requirements.getValue().getKey());
-            for (Pair<Boolean, Pair<String, VersionRange>> requirements: mod.getValue().getKey().getValue())
+            Set<String> requestAfterModName = new HashSet<>();
+            for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getKey())
+                requestAfterModName.add(requirements.getValue().getKey());
+            for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getValue())
                 if (requestAfterModName.contains(requirements.getValue().getKey()))
                     exceptions.add(new ModRequirementsException(HStringHelper.merge("Request after and before the same mod '", requirements.getValue().getKey(), "'.",
                             " At class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
-            //available in current Craftworld version
-//TODO
         }
     }
+    
+    public static void toSimpleModContainer() {
+        simpleModContainer.clear();
+        for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, HVersionRange>>>,
+                Pair<Pair<Set<Pair<Boolean, Pair<String, HVersionRange>>>, Set<Pair<Boolean, Pair<String, HVersionRange>>>>,
+                        Pair<Boolean, Boolean>>> mod: modContainer) {
+            Class<? extends ModImplement> modClass = mod.getKey().getKey();
+            String modName = mod.getKey().getValue().getKey();
+            Set<String> modRequireAfter = new HashSet<>();
+            for (Pair<Boolean, Pair<String, HVersionRange>> pair: mod.getValue().getKey().getKey())
+                modRequireAfter.add(pair.getValue().getKey());
+            Set<String> modRequireBefore = new HashSet<>();
+            for (Pair<Boolean, Pair<String, HVersionRange>> pair: mod.getValue().getKey().getValue())
+                modRequireBefore.add(pair.getValue().getKey());
+            Pair<Boolean, Boolean> modRequireAll = mod.getValue().getValue();
+            simpleModContainer.add(new Pair<>(new Pair<>(modClass, modName), new Pair<>(new Pair<>(modRequireAfter, modRequireBefore), modRequireAll)));
+        }
+        modContainer.clear(); //GC
+    }
+
+    private static final Set<String> sortHasSearchedMods = new HashSet<>();
 
     public static void sortMods() {
-        //TODO: sort
-
         sortedMods.clear();
-        for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, VersionRange>>>,
-                Pair<Pair<List<Pair<Boolean, Pair<String, VersionRange>>>, List<Pair<Boolean, Pair<String, VersionRange>>>>,
-                        Pair<Boolean, Boolean>>> pair: modContainer)
-            sortedMods.add(pair.getKey().getKey());
+        for (Pair<Pair<Class<? extends ModImplement>, String>,
+                Pair<Pair<Set<String>, Set<String>>, Pair<Boolean, Boolean>>> mod: simpleModContainer) {
+            sortHasSearchedMods.clear();
+            addSortMod(mod.getKey().getKey(), mod.getKey().getValue(), mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue());
+        }
         logger.log(HELogLevel.DEBUG, "Sorted Mod list: ", sortedMods);
+    }
 
+    private static void addSortMod(Class<? extends ModImplement> modClass, String modName, Set<String> requireAfter, Set<String> requireBefore) {
+        if (sortedMods.contains(modClass))
+            return;
+        if (sortHasSearchedMods.contains(modName))
+            return;
+        sortHasSearchedMods.add(modName);
+        for (String after: requireAfter)
+            for (Pair<Pair<Class<? extends ModImplement>, String>,
+                    Pair<Pair<Set<String>, Set<String>>, Pair<Boolean, Boolean>>> mod: simpleModContainer)
+                if (after.equals(mod.getKey().getValue())) {
+                    addSortMod(mod.getKey().getKey(), mod.getKey().getValue(), mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue());
+                    break;
+                }
+        for (String before: requireBefore)
+            for (Pair<Pair<Class<? extends ModImplement>, String>,
+                    Pair<Pair<Set<String>, Set<String>>, Pair<Boolean, Boolean>>> mod: simpleModContainer)
+                if (before.equals(mod.getKey().getValue())) {
+                    addSortMod(mod.getKey().getKey(), mod.getKey().getValue(), mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue());
+                    break;
+                }
+        int left = 0;
+        for (int i = 0; i < sortedMods.size(); ++i)
+            if (requireAfter.contains(sortedMods.get(i).getAnnotation(Mod.class).name()))
+                if (left == 0)
+                    left = i + 1;
+                else
+                    left = Math.min(left, i + 1);
+        int right = sortedMods.size();
+        for (int i = 0; i < sortedMods.size(); ++i)
+            if (requireBefore.contains(sortedMods.get(i).getAnnotation(Mod.class).name()))
+                if (right == sortedMods.size())
+                    right = i;
+                else
+                    right = Math.max(right, i);
+        if (left > right)
+            exceptions.add(new ModRequirementsException(HStringHelper.merge("Mod sort error! left=", left, ", right=", right, ", sortedMod=", sortedMods,
+                    " At class: '", modClass, "' name: '", modName, "'.")));
+        else
+            sortedMods.add(right, modClass);
     }
 
     public static void launchMods() {

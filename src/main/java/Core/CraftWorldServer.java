@@ -1,5 +1,6 @@
 package Core;
 
+import Core.Exception.ModRequirementsException;
 import Core.Mod.ModClassesLoader;
 import Core.Mod.ModLauncher;
 import Core.Mod.New.Mod;
@@ -30,26 +31,37 @@ public class CraftWorldServer implements Runnable, ModImplement {
             return;
         }
         /* ********** Special Modifier ********** */
-        ModClassesLoader.getModList().sort((o1, o2) -> {
-            if (o1.equals(CraftWorld.class))
-                return -1;
-            if (o2.equals(CraftWorld.class))
-                return 1;
-            return 0;
-        });
+//        ModClassesLoader.getModList().sort((o1, o2) -> {
+//            if (o1.equals(CraftWorld.class))
+//                return -1;
+//            if (o2.equals(CraftWorld.class))
+//                return 1;
+//            return 0;
+//        });
         /* ********** \Special Modifier ********** */
         ModClassesLoader.registerElements();
 logger.log(ModClassesLoader.getModList());
         ModLauncher.buildModContainer();
         ModLauncher.checkModContainer();
-        ModLauncher.sortMods();
         if (!ModLauncher.getExceptions().isEmpty()) {
-            HLog.logger(HELogLevel.BUG, "Mod Loading Error in sorting! Server Thread exits.");
+            logger.log(HELogLevel.BUG, "Mod Loading Error in checking requirements! Server Thread exits.");
+            logger.log(HELogLevel.ERROR, ModLauncher.getExceptions());
+            for (ModRequirementsException exception: ModLauncher.getExceptions())
+                exception.printStackTrace();
             isRunning = false;
             return;
         }
-logger.log(ModLauncher.getSortedMods());
-logger.log(ModLauncher.getExceptions());
+        ModLauncher.toSimpleModContainer();
+        System.gc();
+        ModLauncher.sortMods();
+        if (!ModLauncher.getExceptions().isEmpty()) {
+            logger.log(HELogLevel.BUG, "Mod Loading Error in shorting! Server Thread exits.");
+            logger.log(HELogLevel.ERROR, ModLauncher.getExceptions());
+            for (ModRequirementsException exception: ModLauncher.getExceptions())
+                exception.printStackTrace();
+            isRunning = false;
+            return;
+        }
         ModLauncher.launchMods();
         /* ********** Special Modifier ********** */
         CraftWorld.getInstance().start();

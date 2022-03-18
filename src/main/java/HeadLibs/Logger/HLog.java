@@ -13,8 +13,8 @@ import java.util.List;
 
 public class HLog {
     private static final List<Pair<Pair<Date, Integer>, String>> logs = new ArrayList<>();
+    public static String DATE_FORMAT = "HH:mm:ss";
 
-    public String DATE_FORMAT = "HH:mm:ss";
     private String name;
 
     public HLog() {
