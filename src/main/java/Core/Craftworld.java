@@ -3,12 +3,15 @@ package Core;
 import Core.Event.EventSubscribe;
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
+import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 @EventSubscribe(eventBus = "*")
 public class Craftworld {
@@ -23,6 +26,18 @@ public class Craftworld {
         while ((new File(log_path)).exists())
             log_path = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), "_", ++i, ".log");
         LOG_PATH = log_path;
+        if (!(new File(Craftworld.ASSETS_PATH)).exists())
+            if (System.console() != null)
+                HFileHelper.extractFilesFromJar("assets", Craftworld.ASSETS_PATH);
+            else
+                try {
+                    Files.copy((new File("../src/main/resources/assets")).getAbsoluteFile().toPath(),
+                            (new File(Craftworld.ASSETS_PATH)).getParentFile().getAbsoluteFile().toPath());
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+//        if (System.console() != null)
+//            HFileHelper.extractFilesFromJar("natives", "natives");
     }
 
     public static boolean isClient = true;
@@ -70,9 +85,9 @@ public class Craftworld {
         HConfig language = GLOBAL_CONFIGURATIONS.getByName("language");
 
         if (language == null)
-            language = new HConfig("language", LanguageI18N.get("THE LANGUAGE"), CURRENT_LANGUAGE);
+            language = new HConfig("language", LanguageI18N.get("Core.configuration.language.name"), CURRENT_LANGUAGE);
         else
-            language.setNote(LanguageI18N.get("THE LANGUAGE"));
+            language.setNote(LanguageI18N.get("Core.configuration.language.name"));
         CURRENT_LANGUAGE = language.getValue();
 
         GLOBAL_CONFIGURATIONS.clear();

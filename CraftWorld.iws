@@ -4,13 +4,126 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Mod sort function finished.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix some bugs.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftWorldClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftWorldClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftWorldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftWorldServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/New/ElementUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/New/ElementUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/World.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang/en_us.lang" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang/en_us.lang" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang/zh_cn.lang" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang/zh_cn.lang" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-aarch64/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-aarch64/libgluegen-rt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-aarch64/libjoal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-aarch64/libjocl.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-aarch64/libjogl_mobile.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-aarch64/libnewt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-aarch64/libopenal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-armv6/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-armv6/libgluegen-rt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-armv6/libjoal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-armv6/libjocl.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-armv6/libjogl_mobile.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-armv6/libnewt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/android-armv6/libopenal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libgluegen-rt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libjoal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libjocl.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libjogl_cg.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libjogl_desktop.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libjogl_mobile.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libnativewindow_awt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libnativewindow_x11.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libnewt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-amd64/libopenal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libgluegen-rt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libjoal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libjocl.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libjogl_cg.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libjogl_desktop.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libjogl_mobile.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libnativewindow_awt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libnativewindow_x11.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libnewt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6/libopenal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libgluegen-rt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libjoal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libjocl.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libjogl_cg.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libjogl_desktop.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libjogl_mobile.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libnativewindow_awt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libnativewindow_x11.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libnewt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-armv6hf/libopenal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libgluegen-rt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libjoal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libjocl.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libjogl_cg.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libjogl_desktop.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libjogl_mobile.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libnativewindow_awt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libnativewindow_x11.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libnewt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/linux-i586/libopenal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libgluegen-rt.jnilib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libjoal.jnilib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libjocl.jnilib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libjogl_cg.jnilib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libjogl_desktop.jnilib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libjogl_mobile.jnilib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libnativewindow_awt.jnilib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libnativewindow_macosx.jnilib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libnewt.jnilib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/macosx-universal/libopenal.dylib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/libgluegen-rt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/libjoal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/libjocl.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/libjogl_cg.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/libjogl_desktop.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/libjogl_mobile.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/libnativewindow_awt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/libnativewindow_x11.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-amd64/libnewt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/libgluegen-rt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/libjoal.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/libjocl.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/libjogl_cg.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/libjogl_desktop.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/libjogl_mobile.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/libnativewindow_awt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/libnativewindow_x11.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/solaris-i586/libnewt.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/gluegen-rt.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/joal.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/jocl.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/jogl_cg.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/jogl_desktop.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/jogl_mobile.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/nativewindow_awt.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/nativewindow_win32.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/newt.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-amd64/soft_oal.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/gluegen-rt.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/joal.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/jocl.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/jogl_cg.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/jogl_desktop.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/jogl_mobile.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/nativewindow_awt.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/nativewindow_win32.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/newt.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/natives/windows-i586/soft_oal.dll" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +206,7 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.21609196" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="leetcode.id" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -477,7 +590,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647590046211</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="Fix some bugs.">
+      <created>1647619919069</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1647619919070</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -504,7 +624,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Unknown error." />
     <MESSAGE value="Create ChunkPos.java" />
     <MESSAGE value="Create Chunk.java" />
     <MESSAGE value="Normalize DST system.&#10;Prepare block system." />
@@ -529,7 +648,8 @@
     <MESSAGE value="build mod container" />
     <MESSAGE value="Mod version checking." />
     <MESSAGE value="Mod sort function finished." />
-    <option name="LAST_COMMIT_MESSAGE" value="Mod sort function finished." />
+    <MESSAGE value="Fix some bugs." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix some bugs." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
