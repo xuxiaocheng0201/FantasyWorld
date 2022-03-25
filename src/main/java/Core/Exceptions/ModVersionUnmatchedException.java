@@ -1,4 +1,4 @@
-package Core.Exception;
+package Core.Exceptions;
 
 public class ModVersionUnmatchedException extends ModRequirementsException {
     public ModVersionUnmatchedException() {

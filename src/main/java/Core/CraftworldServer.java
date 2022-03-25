@@ -1,18 +1,18 @@
 package Core;
 
-import Core.Exception.ModRequirementsException;
+import Core.Events.ServerStoppingEvent;
+import Core.Exceptions.ModRequirementsException;
 import Core.Mod.ModClassesLoader;
 import Core.Mod.ModLauncher;
-import CraftWorld.CraftWorld;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
-public class CraftWorldServer implements Runnable {
+public class CraftworldServer implements Runnable {
     public volatile static boolean isRunning = false;
 
     @Override
     public void run() {
-        Thread.currentThread().setName("CraftWorldServer");
+        Thread.currentThread().setName("CraftworldServer");
         HLog logger = new HLog(Thread.currentThread().getName());
         isRunning = true;
         logger.log(HELogLevel.FINEST, "Server Thread has started.");
@@ -46,8 +46,10 @@ public class CraftWorldServer implements Runnable {
         logger.log(HELogLevel.FINEST, "Sorted Mod list: ", ModLauncher.getSortedMods());
         ModLauncher.launchMods();
         /* ********** Special Modifier ********** */
-        CraftWorld.getInstance().start();
+        CraftWorld.CraftWorld.getInstance().start();
         /* ********** \Special Modifier ********** */
+        ModClassesLoader.getDefaultEventBus().post(new ServerStoppingEvent());
+        isRunning = false;
         logger.log(HELogLevel.FINEST, "Server Thread exits.");
     }
 }

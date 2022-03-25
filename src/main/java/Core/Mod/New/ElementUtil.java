@@ -1,6 +1,6 @@
 package Core.Mod.New;
 
-import CraftWorld.Exception.RegisteredException;
+import Core.Exceptions.ElementRegisteredException;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
 
@@ -13,11 +13,11 @@ public abstract class ElementUtil<T extends ElementImplement> {
     public void register(String name, Class<? extends T> aClass) {
         try {
             if (map.containsKey(name))
-                throw new RegisteredException(HStringHelper.merge("Registered name. name='", name, "' aClass=", aClass));
+                throw new ElementRegisteredException(HStringHelper.merge("Registered name. name='", name, "' aClass=", aClass));
             if (map.containsValue(aClass))
-                throw new RegisteredException(HStringHelper.merge("Registered class. name='", name, "' aClass=", aClass));
+                throw new ElementRegisteredException(HStringHelper.merge("Registered class. name='", name, "' aClass=", aClass));
             map.put(name, aClass);
-        } catch (RegisteredException exception) {
+        } catch (ElementRegisteredException exception) {
             exception.printStackTrace();
         }
     }

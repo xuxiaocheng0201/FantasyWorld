@@ -2,7 +2,7 @@ package CraftWorld.Dimension;
 
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Instance.Dimension.DimensionEarthSurface;
+import CraftWorld.Instance.Dimensions.EarthSurfaceDimension;
 import HeadLibs.Helper.HStringHelper;
 
 import java.io.DataInput;
@@ -40,7 +40,7 @@ public class Dimension implements IDSTBase {
         }
         instance = DimensionUtils.getInstance().get(DimensionUtils.dePrefix(name));
         if (instance == null)
-            instance = new DimensionEarthSurface();
+            instance = new EarthSurfaceDimension();
     }
 
     @Override

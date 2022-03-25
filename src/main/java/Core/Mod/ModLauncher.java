@@ -1,9 +1,9 @@
 package Core.Mod;
 
 import Core.Craftworld;
-import Core.Event.PostInitializationModsEvent;
-import Core.Event.PreInitializationModsEvent;
-import Core.Exception.*;
+import Core.Events.PostInitializationModsEvent;
+import Core.Events.PreInitializationModsEvent;
+import Core.Exceptions.*;
 import Core.Mod.New.Mod;
 import Core.Mod.New.ModImplement;
 import HeadLibs.Helper.HClassHelper;

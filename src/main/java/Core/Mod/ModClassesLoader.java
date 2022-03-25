@@ -1,9 +1,9 @@
 package Core.Mod;
 
 import Core.Craftworld;
-import Core.Event.ElementsCheckedEvent;
-import Core.Event.ElementsCheckingEvent;
-import Core.Event.EventSubscribe;
+import Core.EventSubscribe;
+import Core.Events.ElementsCheckedEvent;
+import Core.Events.ElementsCheckingEvent;
 import Core.Mod.New.*;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HClassHelper;

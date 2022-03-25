@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = "CraftWorld"
+group = "Craftworld"
 version = "0.0.0"
 description = "Craft world!"
 
@@ -16,10 +16,10 @@ java {
 }
 
 jar {
-    baseName("CraftWorld")
+    baseName("Craftworld")
     version("0.0.0")
     manifest() {
-        attributes "Main-Class": "CraftWorld"
+        attributes "Main-Class": "Core.Craftworld"
     }
 }
 

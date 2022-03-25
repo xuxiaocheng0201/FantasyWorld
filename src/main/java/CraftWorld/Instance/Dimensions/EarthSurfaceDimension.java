@@ -1,16 +1,16 @@
-package CraftWorld.Instance.Dimension;
+package CraftWorld.Instance.Dimensions;
 
 import CraftWorld.Dimension.DimensionUtils;
 import CraftWorld.Dimension.IDimensionBase;
 
-public class DimensionEarthSurface implements IDimensionBase {
+public class EarthSurfaceDimension implements IDimensionBase {
     private String name = "EarthSurface";
 
     static {
-        DimensionUtils.getInstance().register("DimensionEarthSurface", DimensionEarthSurface.class);
+        DimensionUtils.getInstance().register("EarthSurfaceDimension", EarthSurfaceDimension.class);
     }
 
-    public DimensionEarthSurface() {
+    public EarthSurfaceDimension() {
 
     }
 

@@ -1,8 +1,5 @@
 package Core;
 
-import Core.Event.EventSubscribe;
-import Core.Mod.ModClassesLoader;
-import Core.Mod.New.ModImplement;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
@@ -15,8 +12,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
 
 @EventSubscribe(eventBus = "*")
@@ -42,33 +37,33 @@ public class Craftworld {
     public static boolean OVERWRITE_FILES_WHEN_EXTRACTING = false;
 
     public static void main(String[] args)  {
-        Thread.currentThread().setName("CraftWorldMain");
+        Thread.currentThread().setName("CraftworldMain");
         HLog.logger(HELogLevel.INFO, "Hello Craftworld!");
-        File targetFilePath = new File(HStringHelper.merge(RUNTIME_PATH, "assets")).getAbsoluteFile();
         try {
+            File runtimeFile = new File(Craftworld.RUNTIME_PATH).getAbsoluteFile();
+            String targetAssetsPath = HStringHelper.merge(runtimeFile.getPath(), "\\assets");
             HConfigurations canOverwrite = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
             HConfig overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
             if (overwrite_when_extracting != null)
                 OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
             if (System.console() == null) {
-                File srcResource = new File(HStringHelper.merge((new File(Craftworld.RUNTIME_PATH).getAbsoluteFile()
-                        .getParentFile().getParentFile().getParentFile().getPath()), "\\src\\main\\resources\\assets"));
-                HFileHelper.copyFiles(srcResource.getPath(), targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+                String srcResourcePath = HStringHelper.merge(runtimeFile.getParentFile().getParentFile().getParentFile().getPath(), "\\src\\main\\resources");
+                HFileHelper.copyFiles(HStringHelper.merge(srcResourcePath, "\\assets"), targetAssetsPath, Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
             } else {
                 HFileHelper.extractFilesFromJar(new JarFile(HClassFinder.thisCodePath), "assets", Craftworld.EXTRACT_TEMP_FILE);
-                HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+                HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetAssetsPath, Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
                 HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
             }
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        GetConfigurations();
         for (String i: args) {
             if ("runClient".equals(i))
                 isClient = true;
             if ("runServer".equals(i))
                 isClient = false;
         }
+        GetConfigurations();
         HLog.saveLogs(LOG_PATH);
         Runtime.getRuntime().addShutdownHook(new Thread(Thread.currentThread().getName()) {
             @Override
@@ -80,11 +75,11 @@ public class Craftworld {
         System.gc();
         try {
             if (isClient) {
-                Thread client = new Thread(new CraftWorldClient());
+                Thread client = new Thread(new CraftworldClient());
                 client.start();
                 client.join();
             } else {
-                Thread server = new Thread(new CraftWorldServer());
+                Thread server = new Thread(new CraftworldServer());
                 server.start();
                 server.join();
             }
@@ -114,7 +109,7 @@ public class Craftworld {
         GLOBAL_CONFIGURATIONS.add(overwrite_when_extracting);
         GLOBAL_CONFIGURATIONS.write();
     }
-
+/*
     public static void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) {
         if (modClass == null)
             throw new NullPointerException("Null class.");
@@ -134,7 +129,7 @@ public class Craftworld {
             exception.printStackTrace();
         }
     }
-
+*/
     @Subscribe
     public void onEvent(Object event) {
         HLog.logger(HELogLevel.DEBUG, "Posted Event: ", event.getClass().getName());

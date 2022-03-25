@@ -1,4 +1,4 @@
-package Core.Exception;
+package Core.Exceptions;
 
 public class ModRequirementsFormatException extends ModRequirementsException {
     public ModRequirementsFormatException() {

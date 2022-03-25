@@ -1,4 +1,4 @@
-package Core.Event;
+package Core.Events;
 
 public class PostInitializationModsEvent {
 }

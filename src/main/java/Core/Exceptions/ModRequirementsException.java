@@ -1,4 +1,4 @@
-package Core.Exception;
+package Core.Exceptions;
 
 public class ModRequirementsException extends IllegalArgumentException {
     public ModRequirementsException() {
