@@ -39,7 +39,7 @@ public class Craftworld {
 
     public static HConfigurations GLOBAL_CONFIGURATIONS;
     public static String CURRENT_LANGUAGE = "zh_cn";
-    public static boolean OVERWRITE_FILES_WHEN_EXTRACTING = true;
+    public static boolean OVERWRITE_FILES_WHEN_EXTRACTING = false;
 
     public static void main(String[] args)  {
         Thread.currentThread().setName("CraftWorldMain");
