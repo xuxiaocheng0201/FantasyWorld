@@ -8,20 +8,19 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class HClassFinder {
     private String PACKAGE_PATH;
     private File doingJar = null;
-    private final List<File> jarFiles = new ArrayList<>();
-    private final List<Class<?>> superClass = new ArrayList<>();
-    private final List<Class<? extends Annotation>> annotationClass = new ArrayList<>();
+    private final Set<File> jarFiles = new HashSet<>();
+    private final Set<Class<?>> superClass = new HashSet<>();
+    private final Set<Class<? extends Annotation>> annotationClass = new HashSet<>();
     private boolean recursive = true;
-    private final List<Class<?>> classList = new ArrayList<>();
+    private final Set<Class<?>> classList = new HashSet<>();
+    private final Map<Class<?>, File> classListWithJarFile = new HashMap<>();
 
     public static final File thisCodePath = new File(HClassFinder.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 
@@ -47,7 +46,7 @@ public class HClassFinder {
         this.PACKAGE_PATH = PACKAGE_PATH;
     }
 
-    public List<File> getJarFiles() {
+    public Set<File> getJarFiles() {
         return jarFiles;
     }
 
@@ -75,7 +74,7 @@ public class HClassFinder {
         this.jarFiles.clear();
     }
 
-    public List<Class<?>> getSuperClass() {
+    public Set<Class<?>> getSuperClass() {
         return superClass;
     }
 
@@ -94,7 +93,7 @@ public class HClassFinder {
         this.superClass.clear();
     }
 
-    public List<Class<? extends Annotation>> getAnnotationClass() {
+    public Set<Class<? extends Annotation>> getAnnotationClass() {
         return annotationClass;
     }
 
@@ -116,12 +115,17 @@ public class HClassFinder {
         this.recursive = recursive;
     }
 
-    public List<Class<?>> getClassList() {
+    public Set<Class<?>> getClassList() {
         return classList;
+    }
+
+    public Map<Class<?>, File> getClassListWithJarFile() {
+        return classListWithJarFile;
     }
 
     public void clearClassList() {
         classList.clear();
+        classListWithJarFile.clear();
     }
 
     private void checkAndAddClass(String className) {
@@ -136,8 +140,10 @@ public class HClassFinder {
                 return;
             }
         }
-        if (aClass != null && checkSuper(aClass) && checkAnnotation(aClass))
+        if (aClass != null && checkSuper(aClass) && checkAnnotation(aClass)) {
             classList.add(aClass);
+            classListWithJarFile.put(aClass, this.doingJar);
+        }
     }
 
     public boolean checkSuper(Class<?> aClass) {
@@ -161,6 +167,7 @@ public class HClassFinder {
 
     public void startFind() {
         this.classList.clear();
+        this.classListWithJarFile.clear();
         for (File file : this.jarFiles) {
             doingJar = file;
             if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".zip"))

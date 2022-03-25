@@ -14,10 +14,7 @@ import HeadLibs.Pair;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ModClassesLoader {
     private static HLog logger;
@@ -35,7 +32,8 @@ public class ModClassesLoader {
         ALL_EVENT_BUS.add(DEFAULT_EVENT_BUS);
     }
 
-    private static List<Class<?>> allClasses;
+    private static Set<Class<?>> allClasses;
+    private static Map<Class<?>, File> allClassesWithJarFiles;
 
     private static final List<Class<? extends ModImplement>> modList = new ArrayList<>();
     private static final List<Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementList = new ArrayList<>();
@@ -54,8 +52,12 @@ public class ModClassesLoader {
     private static final List<Class<? extends ElementImplement>> singleImplements = new ArrayList<>();
     private static final List<Class<? extends ElementUtil<?>>> singleUtils = new ArrayList<>();
 
-    public static List<Class<?>> getAllClasses() {
+    public static Set<Class<?>> getAllClasses() {
         return allClasses;
+    }
+
+    public static Map<Class<?>, File> getAllClassesWithJarFiles() {
+        return allClassesWithJarFiles;
     }
 
     public static List<Class<? extends ModImplement>> getModList() {
@@ -105,9 +107,6 @@ public class ModClassesLoader {
         logger = new HLog("ModClassesLoader", Thread.currentThread().getName());
         logger.log(HELogLevel.INFO, "Searching mods in '", MODS_FILE.getPath(), "'.");
         searchingMods();
-        logger.log(HELogLevel.DEBUG, "Found @Mod in classes: ", mods);
-        logger.log(HELogLevel.DEBUG, "Found @NewElementImplement in classes: ", elementImplements);
-        logger.log(HELogLevel.DEBUG, "Found @NewElementUtil in classes: ", elementUtils);
         HClassFinder eventFilter = new HClassFinder();
         eventFilter.addAnnotationClass(EventSubscribe.class);
         for (Class<?> aClass: allClasses)
@@ -157,6 +156,7 @@ public class ModClassesLoader {
         modsFinder.addJarFilesInDirectory(MODS_FILE);
         modsFinder.startFind();
         allClasses = modsFinder.getClassList();
+        allClassesWithJarFiles = modsFinder.getClassListWithJarFile();
         HClassFinder modFilter = new HClassFinder();
         modFilter.addAnnotationClass(Mod.class);
         modFilter.addSuperClass(ModImplement.class);

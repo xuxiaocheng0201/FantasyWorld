@@ -1,1 +1,2 @@
-Core.configuration.language.name=显示语言
+Core.configuration.language.name=Craftworld的主要显示语言
+Core.configuration.overwrite_when_extracting.name=在从模组中提取资源文件时是否需要覆盖已存在的文件

@@ -9,7 +9,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:20.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:23.0.0" level="project" />
     <orderEntry type="library" name="Gradle: org.greenrobot:eventbus-java:3.3.1" level="project" />
     <orderEntry type="library" name="Gradle: javassist:javassist:3.12.1.GA" level="project" />
   </component>
