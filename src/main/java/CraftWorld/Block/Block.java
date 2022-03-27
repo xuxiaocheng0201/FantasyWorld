@@ -1,5 +1,6 @@
 package CraftWorld.Block;
 
+import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Exception.DSTFormatException;
@@ -10,6 +11,7 @@ import HeadLibs.Helper.HStringHelper;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class Block implements IDSTBase {
@@ -18,7 +20,11 @@ public class Block implements IDSTBase {
     public static final String id = "Block";
     public static final String prefix = id;
     static {
-        DSTUtils.getInstance().register(id, Block.class);
+        try {
+            DSTUtils.getInstance().register(id, Block.class);
+        } catch (ElementRegisteredException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private String name = id;
@@ -40,7 +46,11 @@ public class Block implements IDSTBase {
             instance = null;
             return;
         }
-        instance = BlockUtils.getInstance().get(BlockUtils.dePrefix(name));
+        try {
+            instance = BlockUtils.getInstance().getInstance(BlockUtils.dePrefix(name));
+        } catch (NoSuchElementException | NoSuchMethodException exception) {
+            exception.printStackTrace();
+        }
         if (instance == null) {
             instance = new BlockAir();
             return;

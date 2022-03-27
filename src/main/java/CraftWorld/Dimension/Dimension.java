@@ -1,5 +1,6 @@
 package CraftWorld.Dimension;
 
+import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.Dimensions.EarthSurfaceDimension;
@@ -8,6 +9,7 @@ import HeadLibs.Helper.HStringHelper;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class Dimension implements IDSTBase {
@@ -16,7 +18,11 @@ public class Dimension implements IDSTBase {
     public static final String id = "Dimension";
     public static final String prefix = id;
     static {
-        DSTUtils.getInstance().register(id, Dimension.class);
+        try {
+            DSTUtils.getInstance().register(id, Dimension.class);
+        } catch (ElementRegisteredException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private String name = id;
@@ -38,7 +44,11 @@ public class Dimension implements IDSTBase {
             instance = null;
             return;
         }
-        instance = DimensionUtils.getInstance().get(DimensionUtils.dePrefix(name));
+        try {
+            instance = DimensionUtils.getInstance().getInstance(DimensionUtils.dePrefix(name));
+        } catch (NoSuchElementException | NoSuchMethodException exception) {
+            exception.printStackTrace();
+        }
         if (instance == null)
             instance = new EarthSurfaceDimension();
     }

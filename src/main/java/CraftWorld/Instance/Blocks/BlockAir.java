@@ -1,5 +1,6 @@
 package CraftWorld.Instance.Blocks;
 
+import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.Block.BlockPos;
 import CraftWorld.Block.BlockUtils;
 import CraftWorld.Block.IBlockBase;
@@ -11,7 +12,11 @@ public class BlockAir implements IBlockBase {
     private DSTMetaCompound dst = new DSTMetaCompound();
 
     static {
-        BlockUtils.getInstance().register("BlockAir", BlockAir.class);
+        try {
+            BlockUtils.getInstance().register("BlockAir", BlockAir.class);
+        } catch (ElementRegisteredException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public BlockAir() {

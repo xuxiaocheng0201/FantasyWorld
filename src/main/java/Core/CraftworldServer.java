@@ -1,6 +1,7 @@
 package Core;
 
-import Core.Events.ServerStoppingEvent;
+import Core.Events.EventBusManager;
+import Core.Events.Instances.ServerStoppingEvent;
 import Core.Exceptions.ModRequirementsException;
 import Core.Mod.ModClassesLoader;
 import Core.Mod.ModLauncher;
@@ -33,7 +34,6 @@ public class CraftworldServer implements Runnable {
             return;
         }
         ModLauncher.toSimpleModContainer();
-        System.gc();
         ModLauncher.sortMods();
         if (!ModLauncher.getExceptions().isEmpty()) {
             logger.log(HELogLevel.BUG, "Mod Loading Error in shorting! Server Thread exits.");
@@ -44,11 +44,12 @@ public class CraftworldServer implements Runnable {
             return;
         }
         logger.log(HELogLevel.FINEST, "Sorted Mod list: ", ModLauncher.getSortedMods());
+        System.gc();
         ModLauncher.launchMods();
         /* ********** Special Modifier ********** */
         CraftWorld.CraftWorld.getInstance().start();
         /* ********** \Special Modifier ********** */
-        ModClassesLoader.getDefaultEventBus().post(new ServerStoppingEvent());
+        EventBusManager.getDefaultEventBus().post(new ServerStoppingEvent(true));
         isRunning = false;
         logger.log(HELogLevel.FINEST, "Server Thread exits.");
     }

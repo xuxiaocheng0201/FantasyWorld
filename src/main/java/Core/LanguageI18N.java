@@ -1,7 +1,7 @@
 package Core;
 
-import Core.Mod.New.Mod;
 import Core.Mod.New.ModImplement;
+import Core.Mod.New.NewMod;
 import HeadLibs.Configuration.SimpleMode.HConfigSimple;
 import HeadLibs.Configuration.SimpleMode.HConfigurationsSimple;
 import HeadLibs.Helper.HStringHelper;
@@ -17,7 +17,7 @@ public class LanguageI18N {
     private static String getLanguageFilePath(Class<? extends ModImplement> modClass, String lang) {
         String modName = "Craftworld";
         if (modClass != null) {
-            Mod mod = modClass.getDeclaredAnnotation(Mod.class);
+            NewMod mod = modClass.getDeclaredAnnotation(NewMod.class);
             if (mod != null)
                 modName = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.name()));
         }

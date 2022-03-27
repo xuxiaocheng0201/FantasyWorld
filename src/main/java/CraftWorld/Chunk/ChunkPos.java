@@ -1,5 +1,6 @@
 package CraftWorld.Chunk;
 
+import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.Block.BlockPos;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -33,7 +34,11 @@ public class ChunkPos implements IDSTBase {
     public static final String id = "ChunkPos";
     public static final String prefix = id;
     static {
-        DSTUtils.getInstance().register(id, ChunkPos.class);
+        try {
+            DSTUtils.getInstance().register(id, ChunkPos.class);
+        } catch (ElementRegisteredException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private String name = id;

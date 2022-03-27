@@ -1,5 +1,6 @@
 package CraftWorld.Instance.DST;
 
+import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
@@ -9,6 +10,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public final class DSTMetaCompound implements IDSTBase {
@@ -16,7 +18,11 @@ public final class DSTMetaCompound implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
-        DSTUtils.getInstance().register(id, DSTMetaCompound.class);
+        try {
+            DSTUtils.getInstance().register(id, DSTMetaCompound.class);
+        } catch (ElementRegisteredException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private String name = "";
@@ -36,7 +42,12 @@ public final class DSTMetaCompound implements IDSTBase {
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            IDSTBase dst = DSTUtils.getInstance().get(DSTUtils.dePrefix(input.readUTF()));
+            IDSTBase dst = null;
+            try {
+                dst = DSTUtils.getInstance().getInstance(DSTUtils.dePrefix(input.readUTF()));
+            } catch (NoSuchElementException | NoSuchMethodException exception) {
+                exception.printStackTrace();
+            }
             if (dst != null)
                 dst.read(input);
             dstMap.put(name, dst);

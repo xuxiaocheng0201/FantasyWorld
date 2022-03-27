@@ -1,4 +1,4 @@
-package Core;
+package Core.Events;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

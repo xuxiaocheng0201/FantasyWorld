@@ -1,38 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="GROUP_BY_SEVERITY" value="true" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix a bug.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ClientStoppingEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ServerStoppingEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementRegisteredException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CraftWorld.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iml" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Recontribute Core codes.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Events/EventBusManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CraftWorld.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CraftWorld.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CraftWorldClient/CraftWorld/0.0.0/mods/gson-2.8.9.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftWorldClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftWorldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Event/ElementsCheckedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Event/ElementsCheckingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckingEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Event/EventSubscribe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventSubscribe.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Event/PostInitializationModsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/PostInitializationModsEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Event/PreInitializationModsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/PreInitializationModsEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exception/ModMissingException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ModMissingException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exception/ModRequirementsException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ModRequirementsException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exception/ModRequirementsFormatException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ModRequirementsFormatException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exception/ModVersionUnmatchedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ModVersionUnmatchedException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exception/WrongCraftworldVersionException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/WrongCraftworldVersionException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/EventSubscribe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/EventSubscribe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ClientStoppingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/ClientStoppingEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/ElementsCheckedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/ElementsCheckingEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/PostInitializationModsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/PostInitializationModsEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/PreInitializationModsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/PreInitializationModsEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ServerStoppingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/ServerStoppingEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/New/ElementUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/New/ElementUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/New/Mod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/New/NewMod.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockPos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Chunk/ChunkPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Chunk/ChunkPos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/Dimension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/Dimension.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Exception/RegisteredException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimension/DimensionEarthSurface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/EarthSurfaceDimension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Blocks/BlockAir.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Blocks/BlockAir.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTMetaCompound.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTMetaCompound.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBoolean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBoolean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByte.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByte.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagChar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagChar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDouble.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDouble.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagInt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagInt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLong.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLong.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShort.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShort.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagString.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/EarthSurfaceDimension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/EarthSurfaceDimension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/IDResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/IDResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +137,7 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.21609196" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="yiiguxing.plugin.translate" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -170,13 +192,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Add the hashCode of BlockPos">
-      <created>1644330015177</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1644330015177</updated>
     </task>
     <task id="LOCAL-00004" summary="Add simple configuration mode.">
       <created>1644331253123</created>
@@ -514,7 +529,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648182341042</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Recontribute Core codes.">
+      <created>1648223145774</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1648223145778</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -544,7 +566,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Normalize DST system.&#10;Prepare block system." />
     <MESSAGE value="Dimension System." />
     <MESSAGE value="ClassFinder" />
     <MESSAGE value="Test ClassFinder" />
@@ -569,7 +590,8 @@
     <MESSAGE value="Fix some bugs." />
     <MESSAGE value="Fix a lot of bugs. But still some." />
     <MESSAGE value="Fix a bug." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix a bug." />
+    <MESSAGE value="Recontribute Core codes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Recontribute Core codes." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

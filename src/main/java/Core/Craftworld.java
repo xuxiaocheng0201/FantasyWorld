@@ -1,5 +1,6 @@
 package Core;
 
+import Core.Events.EventSubscribe;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;

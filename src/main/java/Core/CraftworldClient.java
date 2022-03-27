@@ -1,7 +1,7 @@
 package Core;
 
-import Core.Events.ClientStoppingEvent;
-import Core.Mod.ModClassesLoader;
+import Core.Events.EventBusManager;
+import Core.Events.Instances.ClientStoppingEvent;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
@@ -27,7 +27,7 @@ public class CraftworldClient implements Runnable {
         }
 
 
-        ModClassesLoader.getDefaultEventBus().post(new ClientStoppingEvent());
+        EventBusManager.getDefaultEventBus().post(new ClientStoppingEvent(true));
         isRunning = false;
         logger.log(HELogLevel.FINEST, "Client Thread exits.");
     }

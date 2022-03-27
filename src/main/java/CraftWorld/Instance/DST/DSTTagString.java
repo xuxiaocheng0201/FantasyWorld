@@ -1,5 +1,6 @@
 package CraftWorld.Instance.DST;
 
+import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
@@ -13,7 +14,11 @@ public class DSTTagString implements IDSTBase {
     public static final String id = "String";
     public static final String prefix = id;
     static {
-        DSTUtils.getInstance().register(id, DSTTagString.class);
+        try {
+            DSTUtils.getInstance().register(id, DSTTagString.class);
+        } catch (ElementRegisteredException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private String name = "";

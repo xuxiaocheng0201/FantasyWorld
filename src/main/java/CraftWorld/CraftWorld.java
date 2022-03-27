@@ -1,9 +1,9 @@
 package CraftWorld;
 
-import Core.Mod.New.Mod;
 import Core.Mod.New.ModImplement;
+import Core.Mod.New.NewMod;
 
-@Mod(name = "CraftWorld", version = "0.0.0", require = "before:*")
+@NewMod(name = "CraftWorld", version = "0.0.0", require = "before:*")
 public class CraftWorld implements ModImplement {
     private static final CraftWorld instance = new CraftWorld();
 

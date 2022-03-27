@@ -1,5 +1,6 @@
 package CraftWorld.Block;
 
+import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
@@ -32,7 +33,11 @@ public class BlockPos implements IDSTBase {
     public static final String id = "BlockPos";
     public static final String prefix = id;
     static {
-        DSTUtils.getInstance().register(id, BlockPos.class);
+        try {
+            DSTUtils.getInstance().register(id, BlockPos.class);
+        } catch (ElementRegisteredException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private String name = id;

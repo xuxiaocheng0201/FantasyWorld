@@ -1,10 +1,21 @@
 package HeadLibs.Helper;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class HClassHelper {
+    @SuppressWarnings("unchecked")
     public static <T> T getInstance(Class<T> aClass) {
+        try {
+            Method get = aClass.getDeclaredMethod("getInstance");
+            return (T) get.invoke(null);
+        } catch (Exception exception) {
+            if (!(exception instanceof NoSuchMethodException)) {
+                exception.printStackTrace();
+                return null;
+            }
+        }
         try {
             return aClass.getDeclaredConstructor().newInstance();
         } catch (Exception exception) {

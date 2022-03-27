@@ -1,11 +1,12 @@
 package Core.Mod;
 
 import Core.Craftworld;
-import Core.Events.PostInitializationModsEvent;
-import Core.Events.PreInitializationModsEvent;
+import Core.Events.EventBusManager;
+import Core.Events.Instances.PostInitializationModsEvent;
+import Core.Events.Instances.PreInitializationModsEvent;
 import Core.Exceptions.*;
-import Core.Mod.New.Mod;
 import Core.Mod.New.ModImplement;
+import Core.Mod.New.NewMod;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
@@ -43,8 +44,8 @@ public class ModLauncher {
 
     public static void buildModContainer() {
         logger = new HLog("ModLauncher", Thread.currentThread().getName());
-        for (Class<? extends ModImplement> modClass: ModClassesLoader.getModList()) {
-            Mod mod = modClass.getAnnotation(Mod.class);
+        for (Class<? extends ModImplement> modClass: ModManager.getModList()) {
+            NewMod mod = modClass.getAnnotation(NewMod.class);
             if (mod == null)
                 continue;
             String modName = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.name()));
@@ -236,14 +237,14 @@ public class ModLauncher {
                 }
         int left = 0;
         for (int i = 0; i < sortedMods.size(); ++i)
-            if (requireAfter.contains(sortedMods.get(i).getAnnotation(Mod.class).name()))
+            if (requireAfter.contains(sortedMods.get(i).getAnnotation(NewMod.class).name()))
                 if (left == 0)
                     left = i + 1;
                 else
                     left = Math.min(left, i + 1);
         int right = sortedMods.size();
         for (int i = 0; i < sortedMods.size(); ++i)
-            if (requireBefore.contains(sortedMods.get(i).getAnnotation(Mod.class).name()))
+            if (requireBefore.contains(sortedMods.get(i).getAnnotation(NewMod.class).name()))
                 if (right == sortedMods.size())
                     right = i;
                 else
@@ -259,7 +260,7 @@ public class ModLauncher {
     }
 
     public static void launchMods() {
-        ModClassesLoader.getDefaultEventBus().post(new PreInitializationModsEvent());
+        EventBusManager.getDefaultEventBus().post(new PreInitializationModsEvent());
         for (Class<? extends ModImplement> aClass: sortedMods) {
             ModImplement instance = HClassHelper.getInstance(aClass);
             if (instance == null) {
@@ -268,6 +269,6 @@ public class ModLauncher {
             }
             instance.main();
         }
-        ModClassesLoader.getDefaultEventBus().post(new PostInitializationModsEvent());
+        EventBusManager.getDefaultEventBus().post(new PostInitializationModsEvent());
     }
 }
