@@ -3,8 +3,8 @@ package Core;
 import Core.Events.EventBusManager;
 import Core.Events.Instances.ServerStoppingEvent;
 import Core.Exceptions.ModRequirementsException;
-import Core.Mod.ModClassesLoader;
 import Core.Mod.ModLauncher;
+import Core.Mod.ModManager;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
@@ -17,33 +17,24 @@ public class CraftworldServer implements Runnable {
         HLog logger = new HLog(Thread.currentThread().getName());
         isRunning = true;
         logger.log(HELogLevel.FINEST, "Server Thread has started.");
-        if (ModClassesLoader.loadClasses()) {
+        if (ModLauncher.loadModClasses()) {
             HLog.logger(HELogLevel.BUG, "Mod Loading Error in loading! Server Thread exits.");
+            EventBusManager.getDefaultEventBus().post(new ServerStoppingEvent(false));
             isRunning = false;
             return;
         }
-        ModClassesLoader.registerElements();
-        ModLauncher.buildModContainer();
-        ModLauncher.checkModContainer();
-        if (!ModLauncher.getExceptions().isEmpty()) {
-            logger.log(HELogLevel.BUG, "Mod Loading Error in checking requirements! Server Thread exits.");
-            logger.log(HELogLevel.ERROR, ModLauncher.getExceptions());
-            for (ModRequirementsException exception: ModLauncher.getExceptions())
+        logger.log(HELogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
+        logger.log(HELogLevel.DEBUG, "Checked elements: ", ModManager.getElementPairList());
+        ModLauncher.registerElements();
+        if (ModLauncher.sortMods(logger)) {
+            logger.log(HELogLevel.ERROR, ModLauncher.getSorterExceptions());
+            for (ModRequirementsException exception: ModLauncher.getSorterExceptions())
                 exception.printStackTrace();
+            EventBusManager.getDefaultEventBus().post(new ServerStoppingEvent(false));
             isRunning = false;
             return;
         }
-        ModLauncher.toSimpleModContainer();
-        ModLauncher.sortMods();
-        if (!ModLauncher.getExceptions().isEmpty()) {
-            logger.log(HELogLevel.BUG, "Mod Loading Error in shorting! Server Thread exits.");
-            logger.log(HELogLevel.ERROR, ModLauncher.getExceptions());
-            for (ModRequirementsException exception: ModLauncher.getExceptions())
-                exception.printStackTrace();
-            isRunning = false;
-            return;
-        }
-        logger.log(HELogLevel.FINEST, "Sorted Mod list: ", ModLauncher.getSortedMods());
+        logger.log(HELogLevel.FINEST, "Sorted Mod list: ", ModManager.getModList());
         System.gc();
         ModLauncher.launchMods();
         /* ********** Special Modifier ********** */

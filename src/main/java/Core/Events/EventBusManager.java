@@ -23,6 +23,12 @@ public class EventBusManager {
         return DEFAULT_EVENT_BUS;
     }
 
+    public static String getNameByEventBus(EventBus eventBus) {
+        if (eventBus.equals(DEFAULT_EVENT_BUS))
+            return "default";
+        return "undefined";
+    }
+
     public static List<EventBus> getAllEventBus() {
         return ALL_EVENT_BUS;
     }

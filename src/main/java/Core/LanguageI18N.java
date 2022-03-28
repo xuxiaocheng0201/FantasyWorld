@@ -15,7 +15,7 @@ public class LanguageI18N {
     public static final Map<String, HConfigurationsSimple> languages = new HashMap<>();
 
     private static String getLanguageFilePath(Class<? extends ModImplement> modClass, String lang) {
-        String modName = "Craftworld";
+        String modName = "Core";
         if (modClass != null) {
             NewMod mod = modClass.getDeclaredAnnotation(NewMod.class);
             if (mod != null)

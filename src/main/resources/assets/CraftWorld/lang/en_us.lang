@@ -1,2 +1,1 @@
-Core.configuration.language.name=The main game language.
-Core.configuration.overwrite_when_extracting.name=Need overwrite files when extracting assets and other files from mod jars.
+CraftWorld.Block.air=Air

@@ -1,5 +1,6 @@
 package Core;
 
+import Core.Events.EventBusManager;
 import Core.Events.EventSubscribe;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfig;
@@ -9,6 +10,7 @@ import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
@@ -132,7 +134,7 @@ public class Craftworld {
     }
 */
     @Subscribe
-    public void onEvent(Object event) {
-        HLog.logger(HELogLevel.DEBUG, "Posted Event: ", event.getClass().getName());
+    public void NoSubscriberEvent(NoSubscriberEvent event) {
+        HLog.logger(HELogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
     }
 }
