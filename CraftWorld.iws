@@ -7,21 +7,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Recontribute Core codes.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesSorter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModElementsRegisterer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/assets.Core/lang/en_us.lang" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/assets.Core/lang/zh_cn.lang" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Preparing for elements registerer.">
+      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/EventBusManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/EventBusManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModElementsRegisterer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModElementsRegisterer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang/en_us.lang" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang/en_us.lang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang/zh_cn.lang" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang/zh_cn.lang" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,20 +151,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Small things fix.">
-      <created>1644332906906</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1644332906906</updated>
-    </task>
-    <task id="LOCAL-00006" summary="Add more method in BlockPos.java">
-      <created>1644378756391</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1644378756391</updated>
     </task>
     <task id="LOCAL-00007" summary="Add more project information.">
       <created>1644386335575</created>
@@ -505,7 +481,21 @@
       <option name="project" value="LOCAL" />
       <updated>1648372366008</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="Preparing for elements registerer.">
+      <created>1648451728568</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1648451728570</updated>
+    </task>
+    <task id="LOCAL-00055" summary="Preparing for elements registerer.">
+      <created>1648451898545</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1648451898546</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -535,7 +525,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Dimension System." />
     <MESSAGE value="ClassFinder" />
     <MESSAGE value="Test ClassFinder" />
     <MESSAGE value="Register things by ClassFinder" />
@@ -560,7 +549,8 @@
     <MESSAGE value="Fix a lot of bugs. But still some." />
     <MESSAGE value="Fix a bug." />
     <MESSAGE value="Recontribute Core codes." />
-    <option name="LAST_COMMIT_MESSAGE" value="Recontribute Core codes." />
+    <MESSAGE value="Preparing for elements registerer." />
+    <option name="LAST_COMMIT_MESSAGE" value="Preparing for elements registerer." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
