@@ -2,6 +2,8 @@ package HeadLibs.Logger;
 
 import HeadLibs.Helper.HStringHelper;
 
+import java.util.logging.Level;
+
 public enum HELogLevel {
     FINEST("FINEST", 0),
     FINER("FINER", 10),
@@ -69,5 +71,27 @@ public enum HELogLevel {
         return HStringHelper.merge("HELogLevel{",
                 "name='", name, '\'',
                 '}');
+    }
+
+    public static HELogLevel getFromLevel(Level level) {
+        if (level.equals(Level.INFO))
+            return HELogLevel.INFO;
+        if (level.equals(Level.FINE))
+            return HELogLevel.FINE;
+        if (level.equals(Level.FINER))
+            return HELogLevel.FINER;
+        if (level.equals(Level.FINEST))
+            return HELogLevel.FINEST;
+        if (level.equals(Level.CONFIG))
+            return HELogLevel.CONFIGURATION;
+        if (level.equals(Level.WARNING))
+            return HELogLevel.WARN;
+        if (level.equals(Level.SEVERE))
+            return HELogLevel.NORMAL;
+        if (level.equals(Level.ALL))
+            return HELogLevel.INFO;
+        if (level.equals(Level.OFF))
+            return HELogLevel.BUG;
+        return HELogLevel.DEBUG;
     }
 }

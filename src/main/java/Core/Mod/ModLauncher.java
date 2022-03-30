@@ -1,10 +1,7 @@
 package Core.Mod;
 
 import Core.EventBus.EventBusManager;
-import Core.Events.ElementsCheckedEvent;
-import Core.Events.ElementsCheckingEvent;
-import Core.Events.PostInitializationModsEvent;
-import Core.Events.PreInitializationModsEvent;
+import Core.Events.*;
 import Core.Exceptions.ModRequirementsException;
 import Core.Mod.New.ModImplement;
 import HeadLibs.Helper.HClassHelper;
@@ -80,12 +77,18 @@ public class ModLauncher {
         logger = new HLog("ModLauncher", Thread.currentThread().getName());
         EventBusManager.getDefaultEventBus().post(new PreInitializationModsEvent());
         for (Class<? extends ModImplement> aClass: ModClassesSorter.getSortedMods()) {
+            EventBusManager.getDefaultEventBus().post(new ModInitializingEvent(aClass));
             ModImplement instance = HClassHelper.getInstance(aClass);
             if (instance == null) {
                 logger.log(HELogLevel.ERROR, "No Common Constructor for creating Mod class: ", aClass);
                 continue;
             }
-            instance.main();
+            try {
+                instance.main();
+                EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, true));
+            } catch (Exception exception) {
+                EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, false));
+            }
         }
         EventBusManager.getDefaultEventBus().post(new PostInitializationModsEvent());
     }

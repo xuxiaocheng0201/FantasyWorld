@@ -7,24 +7,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="WARNING: Please check type when invoke ModManager.elementInstances.addInstance(Class&lt;? extends T&gt; aClass)!!!!!!!!!!!">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix some bugs">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ModInitializedEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ModInitializingEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ServerStartingEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/EventBusManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/EventSubscribe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventSubscribe.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/ClientStoppingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ClientStoppingEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/ElementsCheckedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/ElementsCheckingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckingEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/PostInitializationModsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/PostInitializationModsEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/PreInitializationModsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/PreInitializationModsEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/Instances/ServerStoppingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Events/ServerStoppingEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModLauncher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/New/ModImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/New/ModImplement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HELogLevel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HELogLevel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +50,7 @@
         <option value="Interface" />
         <option value="AnnotationType" />
         <option value="Class" />
+        <option value="Record" />
       </list>
     </option>
   </component>
@@ -164,13 +157,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Try to add dst(Data Save Tree) Compound">
-      <created>1644389114567</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1644389114567</updated>
     </task>
     <task id="LOCAL-00009" summary="Add dst(Data Save Tree) Tag Int">
       <created>1644411223079</created>
@@ -508,7 +494,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648536049820</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="Fix some bugs">
+      <created>1648621450210</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1648621450213</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -538,7 +531,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Test ClassFinder" />
     <MESSAGE value="Register things by ClassFinder" />
     <MESSAGE value="Add more functions in HClassFinder" />
     <MESSAGE value="ModFinder prepared!" />
@@ -563,7 +555,8 @@
     <MESSAGE value="Recontribute Core codes." />
     <MESSAGE value="Preparing for elements registerer." />
     <MESSAGE value="WARNING: Please check type when invoke ModManager.elementInstances.addInstance(Class&lt;? extends T&gt; aClass)!!!!!!!!!!!" />
-    <option name="LAST_COMMIT_MESSAGE" value="WARNING: Please check type when invoke ModManager.elementInstances.addInstance(Class&lt;? extends T&gt; aClass)!!!!!!!!!!!" />
+    <MESSAGE value="Fix some bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix some bugs" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

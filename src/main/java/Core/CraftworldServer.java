@@ -1,6 +1,7 @@
 package Core;
 
 import Core.EventBus.EventBusManager;
+import Core.Events.ServerStartingEvent;
 import Core.Events.ServerStoppingEvent;
 import Core.Exceptions.ModRequirementsException;
 import Core.Mod.ModLauncher;
@@ -15,8 +16,9 @@ public class CraftworldServer implements Runnable {
     public void run() {
         Thread.currentThread().setName("CraftworldServer");
         HLog logger = new HLog(Thread.currentThread().getName());
-        isRunning = true;
         logger.log(HELogLevel.FINEST, "Server Thread has started.");
+        isRunning = true;
+        EventBusManager.getDefaultEventBus().post(new ServerStartingEvent());
         if (ModLauncher.loadModClasses()) {
             HLog.logger(HELogLevel.BUG, "Mod Loading Error in loading! Server Thread exits.");
             EventBusManager.getDefaultEventBus().post(new ServerStoppingEvent(false));

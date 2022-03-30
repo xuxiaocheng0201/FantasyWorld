@@ -2,16 +2,38 @@ package Core.EventBus;
 
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
+import HeadLibs.Logger.HLog;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 
 public class EventBusManager {
-    private static final EventBus DEFAULT_EVENT_BUS = EventBus.getDefault();
-    private static final List<EventBus> ALL_EVENT_BUS = new ArrayList<>();
+    private static final Map<String, EventBus> ALL_EVENT_BUS = new HashMap<>();
+    private static final Map<EventBus, String> ALL_EVENT_BUS_REVERSE = new HashMap<>();
+
+    public static void addEventBus(String name, EventBus eventBus) {
+        ALL_EVENT_BUS.put(name, eventBus);
+        ALL_EVENT_BUS_REVERSE.put(eventBus, name);
+    }
+
+    private static final EventBus DEFAULT_EVENT_BUS = EventBus.builder().logger(new Logger() {
+                @Override
+                public void log(Level level, String msg) {
+                    HLog.logger(HELogLevel.getFromLevel(level), msg);
+                }
+                @Override
+                public void log(Level level, String msg, Throwable th) {
+                    HLog.logger(HELogLevel.getFromLevel(level), msg, th);
+                }
+            }).throwSubscriberException(false).logSubscriberExceptions(true).sendSubscriberExceptionEvent(true)
+            .logNoSubscriberMessages(false).sendNoSubscriberEvent(true).build();
     static {
-        ALL_EVENT_BUS.add(DEFAULT_EVENT_BUS);
+        addEventBus("default", DEFAULT_EVENT_BUS);
     }
 
     public static EventBus getDefaultEventBus() {
@@ -19,18 +41,19 @@ public class EventBusManager {
     }
 
     public static EventBus getEventBusByName(String name) {
-        //TODO: Add more event_bus
+        if (ALL_EVENT_BUS.containsKey(name))
+            return ALL_EVENT_BUS.get(name);
         return DEFAULT_EVENT_BUS;
     }
 
     public static String getNameByEventBus(EventBus eventBus) {
-        if (eventBus.equals(DEFAULT_EVENT_BUS))
-            return "default";
+        if (ALL_EVENT_BUS_REVERSE.containsKey(eventBus))
+            return ALL_EVENT_BUS_REVERSE.get(eventBus);
         return "undefined";
     }
 
-    public static List<EventBus> getAllEventBus() {
-        return ALL_EVENT_BUS;
+    public static Set<EventBus> getAllEventBus() {
+        return ALL_EVENT_BUS_REVERSE.keySet();
     }
 
     public static void register(Class<?> aClass) throws NoSuchMethodException {
