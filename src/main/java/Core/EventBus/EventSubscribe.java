@@ -1,4 +1,4 @@
-package Core.Events;
+package Core.EventBus;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

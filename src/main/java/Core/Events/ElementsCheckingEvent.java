@@ -1,4 +1,4 @@
-package Core.Events.Instances;
+package Core.Events;
 
 public record ElementsCheckingEvent() {
 }

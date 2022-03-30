@@ -19,7 +19,7 @@ public class ModManager {
 
     public static List<Class<? extends ModImplement>> getModList() {
         if (ModClassesSorter.getSortedMods().isEmpty())
-            return ModClassesLoader.getMods();
+            return ModClassesLoader.getModList();
         return ModClassesSorter.getSortedMods();
     }
 
@@ -33,7 +33,7 @@ public class ModManager {
         return ModElementsRegisterer.getElementPairList();
     }
 
-    public static Map<String, elementInstances<?>> getAllElementInstances() {
+    public static Map<String, elementInstances<? extends ElementImplement>> getAllElementInstances() {
         return ModElementsRegisterer.getAllElementInstances();
     }
 

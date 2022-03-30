@@ -1,4 +1,4 @@
-package Core.Events;
+package Core.EventBus;
 
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;

@@ -1,7 +1,9 @@
 package Core;
 
-import Core.Events.EventBusManager;
-import Core.Events.EventSubscribe;
+import Core.EventBus.EventBusManager;
+import Core.EventBus.EventSubscribe;
+import Core.Mod.ModManager;
+import Core.Mod.New.ModImplement;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfig;
 import HeadLibs.Configuration.HConfigurations;
@@ -17,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.jar.JarFile;
 
-@EventSubscribe(eventBus = "*")
 public class Craftworld {
     public static final String CURRENT_VERSION = "0.0.0";
     public static final String RUNTIME_PATH = HStringHelper.merge("Craftworld\\", CURRENT_VERSION, "\\");
@@ -112,29 +113,34 @@ public class Craftworld {
         GLOBAL_CONFIGURATIONS.add(overwrite_when_extracting);
         GLOBAL_CONFIGURATIONS.write();
     }
-/*
+
     public static void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) {
-        if (modClass == null)
-            throw new NullPointerException("Null class.");
-        File jarFilePath = ModClassesLoader.getAllClassesWithJarFiles().get(modClass);
+        File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
         File targetFilePath = new File(HStringHelper.merge(RUNTIME_PATH, targetPath)).getAbsoluteFile();
         try {
-            if (jarFilePath.equals(HClassFinder.thisCodePath) && System.console() == null)
-                    Files.copy((new File(HStringHelper.merge("..\\src\\main\\resources\\", sourcePath))).getAbsoluteFile().toPath(),
-                            targetFilePath.toPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING ? StandardCopyOption.REPLACE_EXISTING : null);
-            else {
-                HFileHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, "extract_temp");
-                Files.copy((new File("extract_temp")).getAbsoluteFile().toPath(),
-                        targetFilePath.toPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING ? StandardCopyOption.REPLACE_EXISTING : null);
-                HFileHelper.deleteDirectories("extract_temp");
-            }
+            HFileHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
+            HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+            HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
     }
-*/
-    @Subscribe
-    public void NoSubscriberEvent(NoSubscriberEvent event) {
-        HLog.logger(HELogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
+
+    @SuppressWarnings("unused")
+    @EventSubscribe(eventBus = "default")
+    public static class DefaultEventBusRegister {
+        @Subscribe
+        public void defaultEventBusPostEvent(Object event) {
+            HLog.logger(HELogLevel.FINE, "Default Event bus post event '", event, "'(at '", event.getClass().getName(), "').");
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @EventSubscribe(eventBus = "*")
+    public static class AllEventBusRegister {
+        @Subscribe
+        public void noSubscriberEvent(NoSubscriberEvent event) {
+            HLog.logger(HELogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
+        }
     }
 }

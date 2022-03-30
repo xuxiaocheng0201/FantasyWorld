@@ -1,7 +1,7 @@
 package Core;
 
-import Core.Events.EventBusManager;
-import Core.Events.Instances.ServerStoppingEvent;
+import Core.EventBus.EventBusManager;
+import Core.Events.ServerStoppingEvent;
 import Core.Exceptions.ModRequirementsException;
 import Core.Mod.ModLauncher;
 import Core.Mod.ModManager;
@@ -23,9 +23,10 @@ public class CraftworldServer implements Runnable {
             isRunning = false;
             return;
         }
+        ModLauncher.registerElements();
         logger.log(HELogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
         logger.log(HELogLevel.DEBUG, "Checked elements: ", ModManager.getElementPairList());
-        ModLauncher.registerElements();
+        logger.log(HELogLevel.DEBUG, "Checked element instances: ", ModManager.getAllElementInstances());
         if (ModLauncher.sortMods(logger)) {
             logger.log(HELogLevel.ERROR, ModLauncher.getSorterExceptions());
             for (ModRequirementsException exception: ModLauncher.getSorterExceptions())

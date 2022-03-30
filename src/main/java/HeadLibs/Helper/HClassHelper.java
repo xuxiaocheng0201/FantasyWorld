@@ -9,7 +9,10 @@ public class HClassHelper {
     public static <T> T getInstance(Class<T> aClass) {
         try {
             Method get = aClass.getDeclaredMethod("getInstance");
-            return (T) get.invoke(null);
+            T instance = (T) get.invoke(null);
+            if (instance == null)
+                throw new NoSuchMethodException();
+            return instance;
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
                 exception.printStackTrace();

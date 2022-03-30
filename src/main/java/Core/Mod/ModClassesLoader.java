@@ -38,10 +38,13 @@ class ModClassesLoader {
         return allClassesWithJarFiles;
     }
 
+    // searched
     private static final List<Class<? extends ModImplement>> mods = new ArrayList<>();
     private static final List<Class<? extends ElementImplement>> elementImplements = new ArrayList<>();
     private static final List<Class<? extends ElementUtil<?>>> elementUtils = new ArrayList<>();
 
+    // checked
+    private static final List<Class<? extends ModImplement>> modList = new ArrayList<>();
     private static final List<Class<? extends ElementImplement>> implementList = new ArrayList<>();
     private static final List<Class<? extends ElementUtil<?>>> utilList = new ArrayList<>();
 
@@ -52,27 +55,35 @@ class ModClassesLoader {
     private static final List<Class<? extends ElementImplement>> singleImplements = new ArrayList<>();
     private static final List<Class<? extends ElementUtil<?>>> singleUtils = new ArrayList<>();
 
-    static List<Class<? extends ModImplement>> getMods() {
-        return mods;
+    static List<Class<? extends ModImplement>> getModList() {
+        return modList;
     }
 
-    public static List<List<Class<? extends ModImplement>>> getSameMods() {
+    static List<Class<? extends ElementImplement>> getImplementList() {
+        return implementList;
+    }
+
+    static List<Class<? extends ElementUtil<?>>> getUtilList() {
+        return utilList;
+    }
+
+    static List<List<Class<? extends ModImplement>>> getSameMods() {
         return sameMods;
     }
 
-    public static List<List<Class<? extends ElementImplement>>> getSameImplements() {
+    static List<List<Class<? extends ElementImplement>>> getSameImplements() {
         return sameImplements;
     }
 
-    public static List<List<Class<? extends ElementUtil<?>>>> getSameUtils() {
+    static List<List<Class<? extends ElementUtil<?>>>> getSameUtils() {
         return sameUtils;
     }
 
-    public static List<Class<? extends ElementImplement>> getSingleImplements() {
+    static List<Class<? extends ElementImplement>> getSingleImplements() {
         return singleImplements;
     }
 
-    public static List<Class<? extends ElementUtil<?>>> getSingleUtils() {
+    static List<Class<? extends ElementUtil<?>>> getSingleUtils() {
         return singleUtils;
     }
 
@@ -104,14 +115,14 @@ class ModClassesLoader {
     static void checkSameMods() {
         for (Class<? extends ModImplement> classClass: mods) {
             NewMod classMod = classClass.getAnnotation(NewMod.class);
-            String className = HStringHelper.noNull(classMod.name());
+            String className = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(classMod.name()));
             boolean not_found = true;
-            for (Class<? extends ModImplement> savedClass: ModManager.getModList()) {
+            for (Class<? extends ModImplement> savedClass: modList) {
                 NewMod savedMod = savedClass.getAnnotation(NewMod.class);
-                if (className.equals(HStringHelper.noNull(savedMod.name()))) {
+                if (className.equals(HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(savedMod.name())))) {
                     not_found = false;
-                    logger.log(HELogLevel.FAULT, "Same mod name '", savedMod.name(), "'. " +
-                            "With versions are: '", savedMod.version(), "' and '", classMod.version(), "'.");
+                    logger.log(HELogLevel.FAULT, "Same mod name '", savedMod.name(), "'. ",
+                            "From: '", allClassesWithJarFiles.get(savedClass), "' and '", allClassesWithJarFiles.get(classClass), "'.");
                     boolean found = false;
                     for (List<Class<? extends ModImplement>> sameModFound: sameMods) {
                         if (sameModFound.isEmpty())
@@ -133,7 +144,7 @@ class ModClassesLoader {
                 }
             }
             if (not_found)
-                ModManager.getModList().add(classClass);
+                modList.add(classClass);
         }
     }
 

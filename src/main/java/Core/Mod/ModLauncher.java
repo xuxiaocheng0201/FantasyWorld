@@ -1,10 +1,10 @@
 package Core.Mod;
 
-import Core.Events.EventBusManager;
-import Core.Events.Instances.ElementsCheckedEvent;
-import Core.Events.Instances.ElementsCheckingEvent;
-import Core.Events.Instances.PostInitializationModsEvent;
-import Core.Events.Instances.PreInitializationModsEvent;
+import Core.EventBus.EventBusManager;
+import Core.Events.ElementsCheckedEvent;
+import Core.Events.ElementsCheckingEvent;
+import Core.Events.PostInitializationModsEvent;
+import Core.Events.PreInitializationModsEvent;
 import Core.Exceptions.ModRequirementsException;
 import Core.Mod.New.ModImplement;
 import HeadLibs.Helper.HClassHelper;

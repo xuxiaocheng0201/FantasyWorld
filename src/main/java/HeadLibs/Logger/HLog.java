@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 public class HLog {
-    private static final List<Pair<Pair<Date, Integer>, String>> logs = new ArrayList<>();
     public static String DATE_FORMAT = "HH:mm:ss";
+    private static final List<Pair<Pair<Date, Integer>, String>> logs = new ArrayList<>();
 
     private String name;
 
@@ -45,6 +45,21 @@ public class HLog {
         this.name = name;
     }
 
+    public synchronized void log(HELogLevel level, String message) {
+        if (level == null)
+            level = HELogLevel.DEBUG;
+        Date date = new Date();
+        String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
+                "[", this.name, "]",
+                "[", level.getName(), "]",
+                message);
+        logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
+        if (System.console() != null)
+            System.out.println(log);
+        else
+            System.out.println(level.getPrefix() + log + "\033[0m");
+    }
+
     public void log(String message) {
         log(HELogLevel.DEBUG, message);
     }
@@ -59,21 +74,6 @@ public class HLog {
 
     public void log(Object ...message) {
         log(HELogLevel.DEBUG, message);
-    }
-
-    public synchronized void log(HELogLevel level, String message) {
-        if (level == null)
-            level = HELogLevel.DEBUG;
-        Date date = new Date();
-        String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
-                "[", this.name, "]",
-                "[", level.getName(), "]",
-                message);
-        logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
-        if (System.console() != null)
-            System.out.println(log);
-        else
-            System.out.println(level.getPrefix() + log + "\033[0m");
     }
 
     public void log(HELogLevel level, String ...message) {
@@ -123,14 +123,15 @@ public class HLog {
         (new HLog(Thread.currentThread().getName())).log(level, message);
     }
 
-    public static synchronized void saveLogs(String path) {
-        logs.sort((a, b) ->
-        {
-            int compare_date = a.getKey().getKey().compareTo(b.getKey().getKey());
-            if (compare_date == 0)
-                return a.getKey().getValue().compareTo(b.getKey().getValue());
-            return compare_date;
-        });
+    public static synchronized void saveLogs(String path, boolean needSort) {
+        if (needSort)
+            logs.sort((a, b) ->
+            {
+                int compare_date = a.getKey().getKey().compareTo(b.getKey().getKey());
+                if (compare_date == 0)
+                    return a.getKey().getValue().compareTo(b.getKey().getValue());
+                return compare_date;
+            });
         try {
             if (!HFileHelper.createNewFile(path))
                 throw new IOException("Creating log file failed.");
@@ -143,5 +144,9 @@ public class HLog {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public static void saveLogs(String path) {
+        saveLogs(path, false);
     }
 }
