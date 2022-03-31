@@ -44,12 +44,12 @@ public class ChunkPos implements IDSTBase {
     private String name = id;
 
     @Override
-    public String getName() {
+    public String getDSTName() {
         return name;
     }
 
     @Override
-    public void setName(String name) {
+    public void setDSTName(String name) {
         this.name = name;
     }
 

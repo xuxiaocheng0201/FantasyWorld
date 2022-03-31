@@ -45,6 +45,18 @@ public class HLog {
         this.name = name;
     }
 
+    public void setName(String name, String parent) {
+        this.name = HStringHelper.merge(parent, "/", name);
+    }
+
+    public void setName(String name, HLog parent) {
+        if (parent == null) {
+            this.name = name;
+            return;
+        }
+        this.name = HStringHelper.merge(parent.getName(), "/", name);
+    }
+
     public synchronized void log(HELogLevel level, String message) {
         if (level == null)
             level = HELogLevel.DEBUG;

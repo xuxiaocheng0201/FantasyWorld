@@ -28,12 +28,12 @@ public class Dimension implements IDSTBase {
     private String name = id;
 
     @Override
-    public String getName() {
+    public String getDSTName() {
         return name;
     }
 
     @Override
-    public void setName(String name) {
+    public void setDSTName(String name) {
         this.name = name;
     }
 
@@ -60,7 +60,7 @@ public class Dimension implements IDSTBase {
             output.writeUTF("null");
             return;
         }
-        output.writeUTF(instance.getName());
+        output.writeUTF(instance.getDimensionName());
     }
 
     public IDimensionBase getInstance() {
@@ -74,7 +74,7 @@ public class Dimension implements IDSTBase {
     @Override
     public String toString() {
         return HStringHelper.merge("Dimension{",
-                "name=", (instance == null)? "null" : instance.getName(),
+                "name=", (instance == null)? "null" : instance.getDimensionName(),
                 '}');
     }
 

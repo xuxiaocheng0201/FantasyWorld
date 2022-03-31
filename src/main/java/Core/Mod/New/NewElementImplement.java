@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NewElementImplement {
-    String mod() default "default";
-    String name();
+    String modName() default "default";
+    String elementName();
 }

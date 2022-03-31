@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventSubscribe {
-    String eventBus() default "DEFAULT";
+    String eventBus() default "default";
 }

@@ -20,12 +20,12 @@ public class EarthSurfaceDimension implements IDimensionBase {
     }
 
     @Override
-    public String getName() {
+    public String getDimensionName() {
         return name;
     }
 
     @Override
-    public void setName(String name) {
+    public void setDimensionName(String name) {
         this.name = name;
     }
 }

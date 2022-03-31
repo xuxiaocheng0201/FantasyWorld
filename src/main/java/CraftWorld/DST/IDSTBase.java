@@ -8,8 +8,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
-@NewElementImplement(name = "DST")
+@NewElementImplement(elementName = "DST")
 public interface IDSTBase extends ElementImplement, Serializable {
-    void write(DataOutput output) throws IOException;
+    String getDSTName();
+    void setDSTName(String name);
     void read(DataInput input) throws IOException;
+    void write(DataOutput output) throws IOException;
 }

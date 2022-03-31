@@ -24,12 +24,12 @@ public class BlockAir implements IBlockBase {
     }
 
     @Override
-    public String getName() {
+    public String getBlockName() {
         return name;
     }
 
     @Override
-    public void setName(String name) {
+    public void setBlockName(String name) {
         this.name = name;
     }
 

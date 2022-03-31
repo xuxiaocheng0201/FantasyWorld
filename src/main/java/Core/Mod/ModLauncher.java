@@ -69,10 +69,6 @@ public class ModLauncher {
         return ModClassesSorter.getExceptions();
     }
 
-    public static void registerElements() {
-        ModElementsRegisterer.registerElements();
-    }
-
     public static void launchMods() {
         logger = new HLog("ModLauncher", Thread.currentThread().getName());
         EventBusManager.getDefaultEventBus().post(new PreInitializationModsEvent());
@@ -84,7 +80,7 @@ public class ModLauncher {
                 continue;
             }
             try {
-                instance.main();
+                instance.mainInitialize();
                 EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, true));
             } catch (Exception exception) {
                 EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, false));

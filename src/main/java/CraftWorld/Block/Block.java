@@ -17,6 +17,14 @@ import java.util.Objects;
 public class Block implements IDSTBase {
     private IBlockBase instance = null;
 
+    public IBlockBase getInstance() {
+        return instance;
+    }
+
+    public void setInstance(IBlockBase instance) {
+        this.instance = instance;
+    }
+
     public static final String id = "Block";
     public static final String prefix = id;
     static {
@@ -30,12 +38,12 @@ public class Block implements IDSTBase {
     private String name = id;
 
     @Override
-    public String getName() {
+    public String getDSTName() {
         return name;
     }
 
     @Override
-    public void setName(String name) {
+    public void setDSTName(String name) {
         this.name = name;
     }
 
@@ -70,23 +78,15 @@ public class Block implements IDSTBase {
             output.writeUTF("null");
             return;
         }
-        output.writeUTF(instance.getName());
+        output.writeUTF(instance.getBlockName());
         instance.getPos().write(output);
         instance.getDst().write(output);
-    }
-
-    public IBlockBase getInstance() {
-        return instance;
-    }
-
-    public void setInstance(IBlockBase instance) {
-        this.instance = instance;
     }
 
     @Override
     public String toString() {
         return HStringHelper.merge("Block{",
-                ", name=", (instance == null) ? "null" : instance.getName(),
+                ", name=", (instance == null) ? "null" : instance.getBlockName(),
                 ", pos=", (instance == null) ? "null" : instance.getPos(),
                 ", dst=", (instance == null) ? "null" : instance.getDst(),
                 '}');

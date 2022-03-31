@@ -127,9 +127,9 @@ public class Craftworld {
     }
 
     @SuppressWarnings("unused")
-    @EventSubscribe(eventBus = "default")
+    @EventSubscribe
     public static class DefaultEventBusRegister {
-        @Subscribe
+        @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void defaultEventBusPostEvent(Object event) {
             HLog.logger(HELogLevel.FINE, "Default Event bus post event '", event, "'(at '", event.getClass().getName(), "').");
         }
@@ -138,7 +138,7 @@ public class Craftworld {
     @SuppressWarnings("unused")
     @EventSubscribe(eventBus = "*")
     public static class AllEventBusRegister {
-        @Subscribe
+        @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void noSubscriberEvent(NoSubscriberEvent event) {
             HLog.logger(HELogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
         }

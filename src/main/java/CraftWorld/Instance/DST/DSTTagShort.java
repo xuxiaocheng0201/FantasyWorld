@@ -54,11 +54,11 @@ public class DSTTagShort implements IDSTBase {
         output.writeShort(this.data);
     }
 
-    public String getName() {
+    public String getDSTName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setDSTName(String name) {
         this.name = name;
     }
 
