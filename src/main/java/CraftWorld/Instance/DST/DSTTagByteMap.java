@@ -12,26 +12,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DSTTagStringArray implements IDSTBase {
-    public static final String id = "StringArray";
+public class DSTTagByteMap implements IDSTBase {
+    public static final String id = "ByteMap";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
-            DSTUtils.getInstance().register(id, DSTTagStringArray.class);
+            DSTUtils.getInstance().register(id, DSTTagByteMap.class);
         } catch (ElementRegisteredException exception) {
             exception.printStackTrace();
         }
     }
 
-    private String name = "";
-    private final Map<String, String> data = new HashMap<>();
+    private String name = id;
+    private final Map<String, Byte> data = new HashMap<>();
 
-    public DSTTagStringArray() {
+    public DSTTagByteMap() {
         super();
     }
 
-    public DSTTagStringArray(String name) {
+    public DSTTagByteMap(String name) {
         this.name = name;
     }
 
@@ -41,7 +41,7 @@ public class DSTTagStringArray implements IDSTBase {
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            data.put(name, input.readUTF());
+            data.put(name, input.readByte());
             name = input.readUTF();
         }
     }
@@ -52,7 +52,7 @@ public class DSTTagStringArray implements IDSTBase {
         output.writeUTF(this.name);
         for (String name: data.keySet()) {
             output.writeUTF(name);
-            output.writeUTF(data.get(name));
+            output.writeByte(data.get(name));
         }
         output.writeUTF(suffix);
     }
@@ -65,13 +65,13 @@ public class DSTTagStringArray implements IDSTBase {
         this.name = name;
     }
 
-    public Map<String, String> getData() {
+    public Map<String, Byte> getData() {
         return data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagStringArray{",
+        return HStringHelper.merge("DSTTagByteMap{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -79,10 +79,10 @@ public class DSTTagStringArray implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagStringArray))
+        if (!(a instanceof DSTTagByteMap))
             return false;
-        return Objects.equals(this.name, ((DSTTagStringArray) a).name) &&
-                Objects.equals(this.data, ((DSTTagStringArray) a).data);
+        return Objects.equals(this.name, ((DSTTagByteMap) a).name) &&
+                Objects.equals(this.data, ((DSTTagByteMap) a).data);
     }
 
     @Override

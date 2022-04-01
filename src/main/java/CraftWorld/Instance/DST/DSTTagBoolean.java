@@ -21,7 +21,7 @@ public class DSTTagBoolean implements IDSTBase {
         }
     }
 
-    private String name = "";
+    private String name = id;
     private boolean data = false;
 
     public DSTTagBoolean() {

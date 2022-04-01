@@ -8,50 +8,53 @@ import HeadLibs.Helper.HStringHelper;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-public class DSTTagLong implements IDSTBase {
-    public static final String id = "Long";
-    public static final String prefix = id;
+public class DSTTagShortMap implements IDSTBase {
+    public static final String id = "ShortMap";
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
-            DSTUtils.getInstance().register(id, DSTTagLong.class);
+            DSTUtils.getInstance().register(id, DSTTagShortMap.class);
         } catch (ElementRegisteredException exception) {
             exception.printStackTrace();
         }
     }
 
     private String name = id;
-    private long data = 0;
+    private final Map<String, Short> data = new HashMap<>();
 
-    public DSTTagLong() {
+    public DSTTagShortMap() {
         super();
     }
 
-    public DSTTagLong(String name) {
+    public DSTTagShortMap(String name) {
         this.name = name;
-    }
-
-    public DSTTagLong(long data) {
-        this.data = data;
-    }
-
-    public DSTTagLong(String name, long data) {
-        this.name = name;
-        this.data = data;
     }
 
     @Override
     public void read(DataInput input) throws IOException {
+        data.clear();
         this.name = input.readUTF();
-        this.data = input.readLong();
+        String name = input.readUTF();
+        while (!suffix.equals(name)) {
+            data.put(name, input.readShort());
+            name = input.readUTF();
+        }
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        output.writeLong(this.data);
+        for (String name: data.keySet()) {
+            output.writeUTF(name);
+            output.writeShort(data.get(name));
+        }
+        output.writeUTF(suffix);
     }
 
     public String getDSTName() {
@@ -62,17 +65,13 @@ public class DSTTagLong implements IDSTBase {
         this.name = name;
     }
 
-    public long getData() {
+    public Map<String, Short> getData() {
         return data;
-    }
-
-    public void setData(long data) {
-        this.data = data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagLong{",
+        return HStringHelper.merge("DSTTagShortMap{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -80,10 +79,10 @@ public class DSTTagLong implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagLong))
+        if (!(a instanceof DSTTagShortMap))
             return false;
-        return Objects.equals(this.name, ((DSTTagLong) a).name) &&
-                this.data == ((DSTTagLong) a).data;
+        return Objects.equals(this.name, ((DSTTagShortMap) a).name) &&
+                Objects.equals(this.data, ((DSTTagShortMap) a).data);
     }
 
     @Override

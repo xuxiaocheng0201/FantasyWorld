@@ -39,6 +39,7 @@ public class Craftworld {
     public static HConfigurations GLOBAL_CONFIGURATIONS;
     public static String CURRENT_LANGUAGE = "zh_cn";
     public static boolean OVERWRITE_FILES_WHEN_EXTRACTING = false;
+    public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
 
     public static void main(String[] args)  {
         Thread.currentThread().setName("CraftworldMain");
@@ -61,10 +62,10 @@ public class Craftworld {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        for (String i: args) {
-            if ("runClient".equals(i))
+        for (String arg: args) {
+            if ("runClient".equals(arg))
                 isClient = true;
-            if ("runServer".equals(i))
+            if ("runServer".equals(arg))
                 isClient = false;
         }
         GetConfigurations();
@@ -76,8 +77,9 @@ public class Craftworld {
                 HLog.saveLogs(LOG_PATH);
             }
         });
-        System.gc();
         try {
+            Thread gc = new Thread(new GCThread());
+            gc.start();
             if (isClient) {
                 Thread client = new Thread(new CraftworldClient());
                 client.start();
@@ -87,6 +89,7 @@ public class Craftworld {
                 server.start();
                 server.join();
             }
+            gc.interrupt();
         } catch (InterruptedException exception) {
             exception.printStackTrace();
         }
@@ -96,21 +99,31 @@ public class Craftworld {
         GLOBAL_CONFIGURATIONS = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
         HConfig language = GLOBAL_CONFIGURATIONS.getByName("language");
         HConfig overwrite_when_extracting = GLOBAL_CONFIGURATIONS.getByName("overwrite_when_extracting");
+        HConfig garbage_collector_time_interval = GLOBAL_CONFIGURATIONS.getByName("garbage_collector_time_interval");
 
         if (language == null)
             language = new HConfig("language", LanguageI18N.get("Core.configuration.language.name"), CURRENT_LANGUAGE);
         else
             language.setNote(LanguageI18N.get("Core.configuration.language.name"));
         CURRENT_LANGUAGE = language.getValue();
+        language.setNote(LanguageI18N.get("Core.configuration.language.name"));
+
         if (overwrite_when_extracting == null)
             overwrite_when_extracting = new HConfig("overwrite_when_extracting", LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"), HEConfigType.BOOLEAN, OVERWRITE_FILES_WHEN_EXTRACTING ? "true" : "false");
         else
             overwrite_when_extracting.setNote(LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"));
         OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
 
+        if (garbage_collector_time_interval == null)
+            garbage_collector_time_interval = new HConfig("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HEConfigType.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
+        else
+            garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
+        GARBAGE_COLLECTOR_TIME_INTERVAL = Integer.parseInt(garbage_collector_time_interval.getValue());
+
         GLOBAL_CONFIGURATIONS.clear();
         GLOBAL_CONFIGURATIONS.add(language);
         GLOBAL_CONFIGURATIONS.add(overwrite_when_extracting);
+        GLOBAL_CONFIGURATIONS.add(garbage_collector_time_interval);
         GLOBAL_CONFIGURATIONS.write();
     }
 

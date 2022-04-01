@@ -8,53 +8,47 @@ import HeadLibs.Helper.HStringHelper;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class DSTTagBooleanArray implements IDSTBase {
-    public static final String id = "BooleanArray";
-    public static final String prefix = DSTUtils.prefix(id);
-    public static final String suffix = DSTUtils.suffix(id);
+public class DSTTagBooleanList implements IDSTBase {
+    public static final String id = "BooleanList";
+    public static final String prefix = id;
     static {
         try {
-            DSTUtils.getInstance().register(id, DSTTagBooleanArray.class);
+            DSTUtils.getInstance().register(id, DSTTagBooleanList.class);
         } catch (ElementRegisteredException exception) {
             exception.printStackTrace();
         }
     }
 
-    private String name = "";
-    private final Map<String, Boolean> data = new HashMap<>();
+    private String name = id;
+    private final List<Boolean> data = new ArrayList<>();
 
-    public DSTTagBooleanArray() {
+    public DSTTagBooleanList() {
         super();
     }
 
-    public DSTTagBooleanArray(String name) {
+    public DSTTagBooleanList(String name) {
         this.name = name;
     }
 
     @Override
     public void read(DataInput input) throws IOException {
-        data.clear();
         this.name = input.readUTF();
-        String name = input.readUTF();
-        while (!suffix.equals(name)) {
-            data.put(name, input.readBoolean());
-            name = input.readUTF();
-        }
+        int length = input.readInt();
+        for (int i = 0; i < length; ++i)
+            this.data.add(input.readBoolean());
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        for (String name: data.keySet()) {
-            output.writeUTF(name);
-            output.writeBoolean(data.get(name));
-        }
-        output.writeUTF(suffix);
+        output.writeInt(this.data.size());
+        for (boolean datum: this.data)
+            output.writeBoolean(datum);
     }
 
     public String getDSTName() {
@@ -65,13 +59,13 @@ public class DSTTagBooleanArray implements IDSTBase {
         this.name = name;
     }
 
-    public Map<String, Boolean> getData() {
+    public List<Boolean> getData() {
         return data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagBooleanArray{",
+        return HStringHelper.merge("DSTTagBooleanList{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -79,10 +73,10 @@ public class DSTTagBooleanArray implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagBooleanArray))
+        if (!(a instanceof DSTTagBooleanList))
             return false;
-        return Objects.equals(this.name, ((DSTTagBooleanArray) a).name) &&
-                Objects.equals(this.data, ((DSTTagBooleanArray) a).data);
+        return Objects.equals(this.name, ((DSTTagBooleanList) a).name) &&
+                this.data == ((DSTTagBooleanList) a).data;
     }
 
     @Override

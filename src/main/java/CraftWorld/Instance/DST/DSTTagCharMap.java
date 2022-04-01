@@ -12,26 +12,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DSTTagCharArray implements IDSTBase {
-    public static final String id = "CharArray";
+public class DSTTagCharMap implements IDSTBase {
+    public static final String id = "CharMap";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
-            DSTUtils.getInstance().register(id, DSTTagCharArray.class);
+            DSTUtils.getInstance().register(id, DSTTagCharMap.class);
         } catch (ElementRegisteredException exception) {
             exception.printStackTrace();
         }
     }
 
-    private String name = "";
+    private String name = id;
     private final Map<String, Character> data = new HashMap<>();
 
-    public DSTTagCharArray() {
+    public DSTTagCharMap() {
         super();
     }
 
-    public DSTTagCharArray(String name) {
+    public DSTTagCharMap(String name) {
         this.name = name;
     }
 
@@ -71,7 +71,7 @@ public class DSTTagCharArray implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagCharArray{",
+        return HStringHelper.merge("DSTTagCharMap{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -79,10 +79,10 @@ public class DSTTagCharArray implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagCharArray))
+        if (!(a instanceof DSTTagCharMap))
             return false;
-        return Objects.equals(this.name, ((DSTTagCharArray) a).name) &&
-                Objects.equals(this.data, ((DSTTagCharArray) a).data);
+        return Objects.equals(this.name, ((DSTTagCharMap) a).name) &&
+                Objects.equals(this.data, ((DSTTagCharMap) a).data);
     }
 
     @Override

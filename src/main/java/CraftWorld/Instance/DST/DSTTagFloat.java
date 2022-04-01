@@ -21,7 +21,7 @@ public class DSTTagFloat implements IDSTBase {
         }
     }
 
-    private String name = "";
+    private String name = id;
     private float data = 0;
 
     public DSTTagFloat() {

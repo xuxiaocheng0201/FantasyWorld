@@ -8,53 +8,47 @@ import HeadLibs.Helper.HStringHelper;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class DSTTagByteArray implements IDSTBase {
-    public static final String id = "ByteArray";
-    public static final String prefix = DSTUtils.prefix(id);
-    public static final String suffix = DSTUtils.suffix(id);
+public class DSTTagByteList implements IDSTBase {
+    public static final String id = "ByteList";
+    public static final String prefix = id;
     static {
         try {
-            DSTUtils.getInstance().register(id, DSTTagByteArray.class);
+            DSTUtils.getInstance().register(id, DSTTagByteList.class);
         } catch (ElementRegisteredException exception) {
             exception.printStackTrace();
         }
     }
 
-    private String name = "";
-    private final Map<String, Byte> data = new HashMap<>();
+    private String name = id;
+    private final List<Byte> data = new ArrayList<>();
 
-    public DSTTagByteArray() {
+    public DSTTagByteList() {
         super();
     }
 
-    public DSTTagByteArray(String name) {
+    public DSTTagByteList(String name) {
         this.name = name;
     }
 
     @Override
     public void read(DataInput input) throws IOException {
-        data.clear();
         this.name = input.readUTF();
-        String name = input.readUTF();
-        while (!suffix.equals(name)) {
-            data.put(name, input.readByte());
-            name = input.readUTF();
-        }
+        int length = input.readInt();
+        for (int i = 0; i < length; ++i)
+            this.data.add(input.readByte());
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        for (String name: data.keySet()) {
-            output.writeUTF(name);
-            output.writeByte(data.get(name));
-        }
-        output.writeUTF(suffix);
+        output.writeInt(this.data.size());
+        for (byte datum: this.data)
+            output.writeByte(datum);
     }
 
     public String getDSTName() {
@@ -65,13 +59,13 @@ public class DSTTagByteArray implements IDSTBase {
         this.name = name;
     }
 
-    public Map<String, Byte> getData() {
+    public List<Byte> getData() {
         return data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagByteArray{",
+        return HStringHelper.merge("DSTTagByteList{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -79,10 +73,10 @@ public class DSTTagByteArray implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagByteArray))
+        if (!(a instanceof DSTTagByteList))
             return false;
-        return Objects.equals(this.name, ((DSTTagByteArray) a).name) &&
-                Objects.equals(this.data, ((DSTTagByteArray) a).data);
+        return Objects.equals(this.name, ((DSTTagByteList) a).name) &&
+                this.data == ((DSTTagByteList) a).data;
     }
 
     @Override

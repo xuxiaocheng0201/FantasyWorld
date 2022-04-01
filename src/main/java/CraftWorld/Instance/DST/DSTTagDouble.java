@@ -21,7 +21,7 @@ public class DSTTagDouble implements IDSTBase {
         }
     }
 
-    private String name = "";
+    private String name = id;
     private double data = 0;
 
     public DSTTagDouble() {

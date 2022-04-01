@@ -21,7 +21,7 @@ public class DSTTagString implements IDSTBase {
         }
     }
 
-    private String name = "";
+    private String name = id;
     private String data = "";
 
     public DSTTagString() {

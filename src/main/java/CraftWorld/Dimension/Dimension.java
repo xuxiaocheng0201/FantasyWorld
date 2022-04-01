@@ -45,7 +45,7 @@ public class Dimension implements IDSTBase {
             return;
         }
         try {
-            instance = DimensionUtils.getInstance().getInstance(DimensionUtils.dePrefix(name));
+            instance = DimensionUtils.getInstance().getElementInstance(DimensionUtils.dePrefix(name));
         } catch (NoSuchElementException | NoSuchMethodException exception) {
             exception.printStackTrace();
         }

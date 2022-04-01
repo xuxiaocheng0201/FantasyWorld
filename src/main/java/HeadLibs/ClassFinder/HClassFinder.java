@@ -139,6 +139,9 @@ public class HClassFinder {
                 exception.printStackTrace();
                 return;
             }
+        } catch (NoClassDefFoundError error) {
+            HLog.logger(HELogLevel.MISTAKE, "Class.forName(\"", className, "\") failed. Message: ", error.getMessage(), ".");
+            return;
         }
         if (aClass != null && checkSuper(aClass) && checkAnnotation(aClass)) {
             classList.add(aClass);
@@ -232,7 +235,7 @@ public class HClassFinder {
         } catch (MalformedURLException exception) {
             exception.printStackTrace();
         } catch (NoClassDefFoundError error) {
-            HLog.logger(HELogLevel.MISTAKE, error.getMessage());
+            HLog.logger(HELogLevel.MISTAKE, "HClassFinder.loadClassInJar(\"", jarFile.getAbsolutePath(), "\", \"", className, "\") failed. Message: ", error.getMessage(), ".");
         }
         return null;
     }

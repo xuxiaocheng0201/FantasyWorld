@@ -1,9 +1,13 @@
 package CraftWorld;
 
+import Core.EventBus.EventBusCreator;
+import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.Events.PreInitializationModsEvent;
 import Core.Mod.New.ModImplement;
 import Core.Mod.New.NewMod;
+import CraftWorld.Events.LoadedWorldEvent;
+import CraftWorld.Events.LoadingWorldEvent;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 import org.greenrobot.eventbus.EventBus;
@@ -17,15 +21,22 @@ public class CraftWorld implements ModImplement {
         return instance;
     }
 
-    private final EventBus CRAFT_WORLD_EVENT_BUS = EventBus.builder()
-            .build();
+    private static final HLog logger = new HLog(Thread.currentThread().getName());
 
-
-    private final HLog logger = new HLog();
+    private static final EventBus CRAFT_WORLD_EVENT_BUS = EventBusCreator.loggerEventBusBuilder(logger)
+            .throwSubscriberException(false).logSubscriberExceptions(true).sendSubscriberExceptionEvent(true)
+            .logNoSubscriberMessages(false).sendNoSubscriberEvent(true).build();
+    static {
+        EventBusManager.addEventBus("CraftWorld", CRAFT_WORLD_EVENT_BUS);
+    }
+    public static EventBus getCraftWorldEventBus() {
+        return CRAFT_WORLD_EVENT_BUS;
+    }
 
     @Subscribe
+    @SuppressWarnings("unused")
     public void preInitialize(PreInitializationModsEvent event) {
-        logger.setName("CraftWorld", Thread.currentThread().getName());
+        logger.setName("CraftWorld", logger);
     }
 
     @Override
@@ -35,6 +46,8 @@ public class CraftWorld implements ModImplement {
 
     public void start() {
         logger.log(HELogLevel.FINEST, "Loading world..." );
-        //TODO
+        CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
+        //TODO: Load world
+        CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
     }
 }

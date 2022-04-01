@@ -12,26 +12,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DSTTagLongArray implements IDSTBase {
-    public static final String id = "LongArray";
+public class DSTTagIntMap implements IDSTBase {
+    public static final String id = "IntMap";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
-            DSTUtils.getInstance().register(id, DSTTagLongArray.class);
+            DSTUtils.getInstance().register(id, DSTTagIntMap.class);
         } catch (ElementRegisteredException exception) {
             exception.printStackTrace();
         }
     }
 
-    private String name = "";
-    private final Map<String, Long> data = new HashMap<>();
+    private String name = id;
+    private final Map<String, Integer> data = new HashMap<>();
 
-    public DSTTagLongArray() {
+    public DSTTagIntMap() {
         super();
     }
 
-    public DSTTagLongArray(String name) {
+    public DSTTagIntMap(String name) {
         this.name = name;
     }
 
@@ -41,7 +41,7 @@ public class DSTTagLongArray implements IDSTBase {
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            data.put(name, input.readLong());
+            data.put(name, input.readInt());
             name = input.readUTF();
         }
     }
@@ -52,7 +52,7 @@ public class DSTTagLongArray implements IDSTBase {
         output.writeUTF(this.name);
         for (String name: data.keySet()) {
             output.writeUTF(name);
-            output.writeLong(data.get(name));
+            output.writeInt(data.get(name));
         }
         output.writeUTF(suffix);
     }
@@ -65,13 +65,13 @@ public class DSTTagLongArray implements IDSTBase {
         this.name = name;
     }
 
-    public Map<String, Long> getData() {
+    public Map<String, Integer> getData() {
         return data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagLongArray{",
+        return HStringHelper.merge("DSTTagIntMap{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -79,10 +79,10 @@ public class DSTTagLongArray implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagLongArray))
+        if (!(a instanceof DSTTagIntMap))
             return false;
-        return Objects.equals(this.name, ((DSTTagLongArray) a).name) &&
-                Objects.equals(this.data, ((DSTTagLongArray) a).data);
+        return Objects.equals(this.name, ((DSTTagIntMap) a).name) &&
+                Objects.equals(this.data, ((DSTTagIntMap) a).data);
     }
 
     @Override

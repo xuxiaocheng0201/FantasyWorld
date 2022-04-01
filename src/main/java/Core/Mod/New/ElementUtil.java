@@ -43,7 +43,7 @@ public abstract class ElementUtil<T extends ElementImplement> {
         return map.size();
     }
 
-    public T getInstance(String name) throws NoSuchElementException, NoSuchMethodException {
+    public T getElementInstance(String name) throws NoSuchElementException, NoSuchMethodException {
         if (!map.containsKey(name))
             throw new NoSuchElementException(HStringHelper.merge("Type is not registered! [name='", name, "']"));
         T instance = HClassHelper.getInstance(map.get(name));

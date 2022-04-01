@@ -55,7 +55,7 @@ public class Block implements IDSTBase {
             return;
         }
         try {
-            instance = BlockUtils.getInstance().getInstance(BlockUtils.dePrefix(name));
+            instance = BlockUtils.getInstance().getElementInstance(BlockUtils.dePrefix(name));
         } catch (NoSuchElementException | NoSuchMethodException exception) {
             exception.printStackTrace();
         }

@@ -2,15 +2,11 @@ package Core.EventBus;
 
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HELogLevel;
-import HeadLibs.Logger.HLog;
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 public class EventBusManager {
     private static final Map<String, EventBus> ALL_EVENT_BUS = new HashMap<>();
@@ -21,16 +17,8 @@ public class EventBusManager {
         ALL_EVENT_BUS_REVERSE.put(eventBus, name);
     }
 
-    private static final EventBus DEFAULT_EVENT_BUS = EventBus.builder().logger(new Logger() {
-                @Override
-                public void log(Level level, String msg) {
-                    HLog.logger(HELogLevel.getFromLevel(level), msg);
-                }
-                @Override
-                public void log(Level level, String msg, Throwable th) {
-                    HLog.logger(HELogLevel.getFromLevel(level), msg, th);
-                }
-            }).throwSubscriberException(false).logSubscriberExceptions(true).sendSubscriberExceptionEvent(true)
+    private static final EventBus DEFAULT_EVENT_BUS = EventBusCreator.defaultLoggerEventBusBuilder()
+            .throwSubscriberException(false).logSubscriberExceptions(true).sendSubscriberExceptionEvent(true)
             .logNoSubscriberMessages(false).sendNoSubscriberEvent(true).build();
     static {
         addEventBus("default", DEFAULT_EVENT_BUS);

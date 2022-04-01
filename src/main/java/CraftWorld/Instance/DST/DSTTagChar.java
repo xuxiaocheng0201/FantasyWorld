@@ -21,7 +21,7 @@ public class DSTTagChar implements IDSTBase {
         }
     }
 
-    private String name = "";
+    private String name = id;
     private char data = 0;
 
     public DSTTagChar() {

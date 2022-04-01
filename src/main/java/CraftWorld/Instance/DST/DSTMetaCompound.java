@@ -25,7 +25,7 @@ public final class DSTMetaCompound implements IDSTBase {
         }
     }
 
-    private String name = "";
+    private String name = id;
     private final Map<String, IDSTBase> dstMap = new HashMap<>();
 
     public DSTMetaCompound() {
@@ -44,7 +44,7 @@ public final class DSTMetaCompound implements IDSTBase {
         while (!suffix.equals(name)) {
             IDSTBase dst = null;
             try {
-                dst = DSTUtils.getInstance().getInstance(DSTUtils.dePrefix(input.readUTF()));
+                dst = DSTUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()));
             } catch (NoSuchElementException | NoSuchMethodException exception) {
                 exception.printStackTrace();
             }

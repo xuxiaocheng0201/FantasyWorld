@@ -8,53 +8,47 @@ import HeadLibs.Helper.HStringHelper;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class DSTTagDoubleArray implements IDSTBase {
-    public static final String id = "DoubleArray";
-    public static final String prefix = DSTUtils.prefix(id);
-    public static final String suffix = DSTUtils.suffix(id);
+public class DSTTagCharList implements IDSTBase {
+    public static final String id = "CharList";
+    public static final String prefix = id;
     static {
         try {
-            DSTUtils.getInstance().register(id, DSTTagDoubleArray.class);
+            DSTUtils.getInstance().register(id, DSTTagCharList.class);
         } catch (ElementRegisteredException exception) {
             exception.printStackTrace();
         }
     }
 
-    private String name = "";
-    private final Map<String, Double> data = new HashMap<>();
+    private String name = id;
+    private final List<Character> data = new ArrayList<>();
 
-    public DSTTagDoubleArray() {
+    public DSTTagCharList() {
         super();
     }
 
-    public DSTTagDoubleArray(String name) {
+    public DSTTagCharList(String name) {
         this.name = name;
     }
 
     @Override
     public void read(DataInput input) throws IOException {
-        data.clear();
         this.name = input.readUTF();
-        String name = input.readUTF();
-        while (!suffix.equals(name)) {
-            data.put(name, input.readDouble());
-            name = input.readUTF();
-        }
+        int length = input.readInt();
+        for (int i = 0; i < length; ++i)
+            this.data.add(input.readChar());
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        for (String name: data.keySet()) {
-            output.writeUTF(name);
-            output.writeDouble(data.get(name));
-        }
-        output.writeUTF(suffix);
+        output.writeInt(this.data.size());
+        for (char datum: this.data)
+            output.writeChar(datum);
     }
 
     public String getDSTName() {
@@ -65,13 +59,13 @@ public class DSTTagDoubleArray implements IDSTBase {
         this.name = name;
     }
 
-    public Map<String, Double> getData() {
+    public List<Character> getData() {
         return data;
     }
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagDoubleArray{",
+        return HStringHelper.merge("DSTTagCharList{",
                 "name='", name, '\'',
                 ", data=", data,
                 '}');
@@ -79,10 +73,10 @@ public class DSTTagDoubleArray implements IDSTBase {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof DSTTagDoubleArray))
+        if (!(a instanceof DSTTagCharList))
             return false;
-        return Objects.equals(this.name, ((DSTTagDoubleArray) a).name) &&
-                Objects.equals(this.data, ((DSTTagDoubleArray) a).data);
+        return Objects.equals(this.name, ((DSTTagCharList) a).name) &&
+                this.data == ((DSTTagCharList) a).data;
     }
 
     @Override

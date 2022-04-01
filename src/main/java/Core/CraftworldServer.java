@@ -26,7 +26,7 @@ public class CraftworldServer implements Runnable {
             return;
         }
         logger.log(HELogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
-        logger.log(HELogLevel.DEBUG, "Checked elements: ", ModManager.getElementPairList());
+        logger.log(HELogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
         if (ModLauncher.sortMods(logger)) {
             logger.log(HELogLevel.ERROR, ModLauncher.getSorterExceptions());
             for (ModRequirementsException exception: ModLauncher.getSorterExceptions())

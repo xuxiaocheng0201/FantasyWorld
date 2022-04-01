@@ -57,19 +57,21 @@ public class HLog {
         this.name = HStringHelper.merge(parent.getName(), "/", name);
     }
 
-    public synchronized void log(HELogLevel level, String message) {
-        if (level == null)
-            level = HELogLevel.DEBUG;
-        Date date = new Date();
-        String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
-                "[", this.name, "]",
-                "[", level.getName(), "]",
-                message);
-        logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
-        if (System.console() != null)
-            System.out.println(log);
-        else
-            System.out.println(level.getPrefix() + log + "\033[0m");
+    public void log(HELogLevel level, String message) {
+        synchronized (logs) {
+            if (level == null)
+                level = HELogLevel.DEBUG;
+            Date date = new Date();
+            String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
+                    "[", this.name, "]",
+                    "[", level.getName(), "]",
+                    message);
+            logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
+            if (System.console() != null)
+                System.out.println(log);
+            else
+                System.out.println(level.getPrefix() + log + "\033[0m");
+        }
     }
 
     public void log(String message) {
@@ -135,26 +137,28 @@ public class HLog {
         (new HLog(Thread.currentThread().getName())).log(level, message);
     }
 
-    public static synchronized void saveLogs(String path, boolean needSort) {
-        if (needSort)
-            logs.sort((a, b) ->
-            {
-                int compare_date = a.getKey().getKey().compareTo(b.getKey().getKey());
-                if (compare_date == 0)
-                    return a.getKey().getValue().compareTo(b.getKey().getValue());
-                return compare_date;
-            });
-        try {
-            if (!HFileHelper.createNewFile(path))
-                throw new IOException("Creating log file failed.");
-            FileWriter writer = new FileWriter(new File(path).getAbsoluteFile(), true);
-            while (!logs.isEmpty()) {
-                writer.write(logs.remove(0).getValue());
-                writer.write(System.getProperty("line.separator"));
+    public static void saveLogs(String path, boolean needSort) {
+        synchronized (logs) {
+            if (needSort)
+                logs.sort((a, b) ->
+                {
+                    int compare_date = a.getKey().getKey().compareTo(b.getKey().getKey());
+                    if (compare_date == 0)
+                        return a.getKey().getValue().compareTo(b.getKey().getValue());
+                    return compare_date;
+                });
+            try {
+                if (!HFileHelper.createNewFile(path))
+                    throw new IOException("Creating log file failed.");
+                FileWriter writer = new FileWriter(new File(path).getAbsoluteFile(), true);
+                while (!logs.isEmpty()) {
+                    writer.write(logs.remove(0).getValue());
+                    writer.write(System.getProperty("line.separator"));
+                }
+                writer.close();
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
-            writer.close();
-        } catch (IOException exception) {
-            exception.printStackTrace();
         }
     }
 
