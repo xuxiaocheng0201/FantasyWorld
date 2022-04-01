@@ -49,5 +49,9 @@ public class CraftWorld implements ModImplement {
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         //TODO: Load world
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
+        while(true) {
+
+            break;
+        }
     }
 }
