@@ -26,7 +26,7 @@ public class HConfigurations {
     public void setPath(String path) throws IllegalArgumentException {
         if (path == null)
             throw new IllegalArgumentException("Argument path is null.");
-        if (!HFileHelper.createNewFile(path))
+        if (HFileHelper.createNewFile(path))
             throw new IllegalArgumentException(HStringHelper.merge("Can't create the new file in path='", path, '\''));
         this.file = (new File(path)).getAbsoluteFile();
         this.read();
@@ -132,7 +132,7 @@ public class HConfigurations {
             }
             reader.close();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
     }
 
@@ -156,7 +156,7 @@ public class HConfigurations {
             }
             writer.close();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
     }
 

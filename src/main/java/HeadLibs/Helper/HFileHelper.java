@@ -102,11 +102,11 @@ public class HFileHelper {
                     throw new IOException(HStringHelper.merge("File in path can't be written. [path='", path, "']"));
                 HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("File in path has been set to writable. [path='", path, "']"));
             }
-            return true;
+            return false;
         } catch (IOException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
-        return false;
+        return true;
     }
 
     public static void extractFilesFromJar(JarFile jar, String sourceFileInJar, String targetDir) {
@@ -132,7 +132,7 @@ public class HFileHelper {
                 output.close();
             }
         } catch (IOException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
     }
 }

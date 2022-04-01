@@ -16,7 +16,7 @@ import java.util.Set;
 
 class ModClassesLoader {
     private static HLog logger;
-    public static final File MODS_FILE = (new File(HStringHelper.merge(Craftworld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
+    static final File MODS_FILE = (new File(HStringHelper.merge(Craftworld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
     static {
         if (MODS_FILE.exists() && !MODS_FILE.isDirectory())
             HLog.logger(HELogLevel.ERROR, "Mods path is a file! MODS_PATH='", MODS_FILE.getPath(), "'.");
@@ -24,7 +24,7 @@ class ModClassesLoader {
             HLog.logger(HELogLevel.ERROR, "Creating MODS_PATH directory failed. MODS_PATH='", MODS_FILE.getPath(), "'.");
     }
 
-    public static void setLogger(HLog logger) {
+    static void setLogger(HLog logger) {
         ModClassesLoader.logger = logger;
     }
 
@@ -257,5 +257,21 @@ class ModClassesLoader {
                 singleUtils.add(util);
             }
         }
+    }
+
+    static void gc() {
+        logger = null;
+        if (!ModClassesSorter.getSortedMods().isEmpty())
+            mods.clear();
+        elementImplements.clear();
+        elementUtils.clear();
+        modList.clear();
+        implementList.clear();
+        utilList.clear();
+        sameMods.clear();
+        sameImplements.clear();
+        sameUtils.clear();
+        singleImplements.clear();
+        singleUtils.clear();
     }
 }

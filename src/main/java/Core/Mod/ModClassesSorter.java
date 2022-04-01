@@ -250,4 +250,10 @@ class ModClassesSorter {
             else
                 sortedMods.add(right, modClass);
     }
+
+    static void gc() {
+        exceptions.clear();
+        modContainer.clear();
+        simpleModContainer.clear();
+    }
 }

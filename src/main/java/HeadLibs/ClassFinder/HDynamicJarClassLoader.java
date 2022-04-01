@@ -1,5 +1,8 @@
 package HeadLibs.ClassFinder;
 
+import HeadLibs.Logger.HELogLevel;
+import HeadLibs.Logger.HLog;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarEntry;
@@ -61,7 +64,7 @@ public class HDynamicJarClassLoader extends ClassLoader {
             if (is == null)
                 is = super.getResourceAsStream(name);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
         return is;
     }

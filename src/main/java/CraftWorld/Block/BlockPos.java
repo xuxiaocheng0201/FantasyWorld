@@ -4,6 +4,8 @@ import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
+import HeadLibs.Logger.HLog;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -36,7 +38,7 @@ public class BlockPos implements IDSTBase {
         try {
             DSTUtils.getInstance().register(id, BlockPos.class);
         } catch (ElementRegisteredException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
     }
 

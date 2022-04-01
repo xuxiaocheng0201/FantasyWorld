@@ -28,7 +28,7 @@ public class ModLauncher {
             try {
                 EventBusManager.register(aClass);
             } catch (NoSuchMethodException exception) {
-                exception.printStackTrace();
+                HLog.logger(HELogLevel.ERROR, exception);
             }
         EventBusManager.getDefaultEventBus().post(new ElementsCheckingEvent());
         ModClassesLoader.checkSameMods();
@@ -53,13 +53,13 @@ public class ModLauncher {
         ModClassesSorter.buildModContainer();
         ModClassesSorter.checkModContainer();
         if (!ModClassesSorter.getExceptions().isEmpty()) {
-            logger.log(HELogLevel.BUG, "Mod Loading Error in checking requirements! Server Thread exits.");
+            logger.log(HELogLevel.BUG, "Mod Loading Error in checking requirements!");
             return true;
         }
         ModClassesSorter.toSimpleModContainer();
         ModClassesSorter.sortMods();
         if (!ModClassesSorter.getExceptions().isEmpty()) {
-            logger.log(HELogLevel.BUG, "Mod Loading Error in shorting! Server Thread exits.");
+            logger.log(HELogLevel.BUG, "Mod Loading Error in shorting!");
             return true;
         }
         return false;
@@ -87,5 +87,11 @@ public class ModLauncher {
             }
         }
         EventBusManager.getDefaultEventBus().post(new PostInitializationModsEvent());
+    }
+
+    public static void gc() {
+        ModClassesLoader.gc();
+        ModClassesSorter.gc();
+        System.gc();
     }
 }

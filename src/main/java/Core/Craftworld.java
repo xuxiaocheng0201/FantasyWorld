@@ -2,6 +2,8 @@ package Core;
 
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
+import Core.Exceptions.ModRequirementsException;
+import Core.Mod.ModLauncher;
 import Core.Mod.ModManager;
 import Core.Mod.New.ModImplement;
 import HeadLibs.ClassFinder.HClassFinder;
@@ -34,14 +36,34 @@ public class Craftworld {
     }
     private static final String EXTRACT_TEMP_FILE = "extract_temp";
 
+    public static void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) {
+        File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
+        File targetFilePath = new File(HStringHelper.merge(RUNTIME_PATH, targetPath)).getAbsoluteFile();
+        try {
+            HFileHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
+            HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+            HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
+        } catch (IOException exception) {
+            HLog.logger(HELogLevel.ERROR, exception);
+        }
+    }
+
     public static boolean isClient = true;
 
     public static HConfigurations GLOBAL_CONFIGURATIONS;
     public static String CURRENT_LANGUAGE = "zh_cn";
     public static boolean OVERWRITE_FILES_WHEN_EXTRACTING = false;
     public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
+    public static int PORT = 49232;
+    /*
+        Random random = new Random("Craftworld".hashCode());
+        int r = random.nextInt();
+        while (r < 1 || r > 65535)
+            r = random.nextInt();
+        HLog.logger(r);
+     */
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         Thread.currentThread().setName("CraftworldMain");
         HLog.logger(HELogLevel.INFO, "Hello Craftworld!");
         try {
@@ -60,7 +82,7 @@ public class Craftworld {
                 HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
             }
         } catch (IOException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
         for (String arg: args) {
             if ("runClient".equals(arg))
@@ -80,18 +102,21 @@ public class Craftworld {
         try {
             Thread gc = new Thread(new GCThread());
             gc.start();
-            if (isClient) {
-                Thread client = new Thread(new CraftworldClient());
-                client.start();
-                client.join();
-            } else {
-                Thread server = new Thread(new CraftworldServer());
-                server.start();
-                server.join();
+            if (loadMods()) {
+                ModLauncher.gc();
+                if (isClient) {
+                    Thread client = new Thread(new CraftworldClient());
+                    client.start();
+                    client.join();
+                } else {
+                    Thread server = new Thread(new CraftworldServer());
+                    server.start();
+                    server.join();
+                }
             }
             gc.interrupt();
         } catch (InterruptedException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
     }
 
@@ -100,6 +125,7 @@ public class Craftworld {
         HConfig language = GLOBAL_CONFIGURATIONS.getByName("language");
         HConfig overwrite_when_extracting = GLOBAL_CONFIGURATIONS.getByName("overwrite_when_extracting");
         HConfig garbage_collector_time_interval = GLOBAL_CONFIGURATIONS.getByName("garbage_collector_time_interval");
+        HConfig port = GLOBAL_CONFIGURATIONS.getByName("port");
 
         if (language == null)
             language = new HConfig("language", LanguageI18N.get("Core.configuration.language.name"), CURRENT_LANGUAGE);
@@ -118,7 +144,24 @@ public class Craftworld {
             garbage_collector_time_interval = new HConfig("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HEConfigType.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
         else
             garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
-        GARBAGE_COLLECTOR_TIME_INTERVAL = Integer.parseInt(garbage_collector_time_interval.getValue());
+        if (Integer.parseInt(garbage_collector_time_interval.getValue()) < 10) {
+            HLog.logger(HELogLevel.CONFIGURATION, "Garbage collector time interval too short: ", garbage_collector_time_interval.getValue(), ". Now use:", GARBAGE_COLLECTOR_TIME_INTERVAL);
+            garbage_collector_time_interval.setValue(String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
+        }
+        else
+            GARBAGE_COLLECTOR_TIME_INTERVAL = Integer.parseInt(garbage_collector_time_interval.getValue());
+
+        if (port == null)
+            port = new HConfig("port", LanguageI18N.get("Core.configuration.port.name"), HEConfigType.INT, String.valueOf(PORT));
+        else
+            port.setNote(LanguageI18N.get("Core.configuration.port.name"));
+        PORT = Integer.parseInt(port.getValue());
+        if (PortManager.checkPortUnavailable(PORT)) {
+            int availablePort = PortManager.getNextAvailablePort();
+            HLog.logger(HELogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
+            port.setValue(String.valueOf(availablePort));
+            PORT = availablePort;
+        }
 
         GLOBAL_CONFIGURATIONS.clear();
         GLOBAL_CONFIGURATIONS.add(language);
@@ -127,16 +170,23 @@ public class Craftworld {
         GLOBAL_CONFIGURATIONS.write();
     }
 
-    public static void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) {
-        File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
-        File targetFilePath = new File(HStringHelper.merge(RUNTIME_PATH, targetPath)).getAbsoluteFile();
-        try {
-            HFileHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
-            HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
-            HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+    private static boolean loadMods() {
+        HLog logger = new HLog(Thread.currentThread().getName());
+        if (ModLauncher.loadModClasses()) {
+            logger.log(HELogLevel.BUG, "Mod Loading Error in loading classes!");
+            return false;
         }
+        logger.log(HELogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
+        logger.log(HELogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
+        if (ModLauncher.sortMods(logger)) {
+            logger.log(HELogLevel.ERROR, ModLauncher.getSorterExceptions());
+            for (ModRequirementsException exception: ModLauncher.getSorterExceptions())
+                HLog.logger(HELogLevel.ERROR, exception);
+            return false;
+        }
+        logger.log(HELogLevel.FINEST, "Sorted Mod list: ", ModManager.getModList());
+        ModLauncher.launchMods();
+        return true;
     }
 
     @SuppressWarnings("unused")

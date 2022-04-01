@@ -7,6 +7,8 @@ import CraftWorld.Exception.DSTFormatException;
 import CraftWorld.Instance.Blocks.BlockAir;
 import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
+import HeadLibs.Logger.HLog;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -31,7 +33,7 @@ public class Block implements IDSTBase {
         try {
             DSTUtils.getInstance().register(id, Block.class);
         } catch (ElementRegisteredException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
     }
 
@@ -57,7 +59,7 @@ public class Block implements IDSTBase {
         try {
             instance = BlockUtils.getInstance().getElementInstance(BlockUtils.dePrefix(name));
         } catch (NoSuchElementException | NoSuchMethodException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
         if (instance == null) {
             instance = new BlockAir();

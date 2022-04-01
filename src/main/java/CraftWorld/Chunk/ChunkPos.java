@@ -5,6 +5,8 @@ import CraftWorld.Block.BlockPos;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
+import HeadLibs.Logger.HLog;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -37,7 +39,7 @@ public class ChunkPos implements IDSTBase {
         try {
             DSTUtils.getInstance().register(id, ChunkPos.class);
         } catch (ElementRegisteredException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
     }
 

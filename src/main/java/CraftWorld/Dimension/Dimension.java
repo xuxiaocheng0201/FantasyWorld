@@ -5,6 +5,8 @@ import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.Dimensions.EarthSurfaceDimension;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
+import HeadLibs.Logger.HLog;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -21,7 +23,7 @@ public class Dimension implements IDSTBase {
         try {
             DSTUtils.getInstance().register(id, Dimension.class);
         } catch (ElementRegisteredException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
     }
 
@@ -47,7 +49,7 @@ public class Dimension implements IDSTBase {
         try {
             instance = DimensionUtils.getInstance().getElementInstance(DimensionUtils.dePrefix(name));
         } catch (NoSuchElementException | NoSuchMethodException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
         if (instance == null)
             instance = new EarthSurfaceDimension();

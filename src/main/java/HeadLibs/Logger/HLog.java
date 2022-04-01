@@ -58,14 +58,14 @@ public class HLog {
     }
 
     public void log(HELogLevel level, String message) {
+        if (level == null)
+            level = HELogLevel.DEBUG;
+        Date date = new Date();
+        String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
+                "[", this.name, "]",
+                "[", level.getName(), "]",
+                message);
         synchronized (logs) {
-            if (level == null)
-                level = HELogLevel.DEBUG;
-            Date date = new Date();
-            String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
-                    "[", this.name, "]",
-                    "[", level.getName(), "]",
-                    message);
             logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
             if (System.console() != null)
                 System.out.println(log);
@@ -74,67 +74,150 @@ public class HLog {
         }
     }
 
+    public void log(HELogLevel level, Throwable throwable) {
+        if (throwable == null) {
+            log(level, "Object null!");
+            return;
+        }
+        if (level == null)
+            level = HELogLevel.ERROR;
+        Date date = new Date();
+        StringBuilder builder = new StringBuilder("[");
+        builder.append(HStringHelper.getDate(DATE_FORMAT, date));
+        builder.append("][");
+        builder.append(this.name);
+        builder.append("][");
+        builder.append(level.getName());
+        builder.append("]");
+        builder.append(throwable.getClass().getName());
+        if (throwable.getMessage() != null) {
+            builder.append(": ");
+            builder.append(throwable.getMessage());
+        } else if (throwable.getCause() != null) {
+            builder.append(": ");
+            builder.append(throwable.getCause().getClass().getName());
+        }
+        for (StackTraceElement stackTraceElement: throwable.getStackTrace()) {
+            builder.append(System.getProperty("line.separator"));
+            builder.append("\tat ");
+            builder.append(stackTraceElement.toString());
+        }
+        addCausedThrowable(builder, throwable.getCause());
+        String log = builder.toString();
+        synchronized (logs) {
+            logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
+            if (System.console() != null)
+                System.out.println(log);
+            else
+                System.out.println(level.getPrefix() + log + "\033[0m");
+        }
+    }
+
+    public void log(HELogLevel level, Object message) {
+        if (message == null) {
+            log(level, "Object null!");
+            return;
+        }
+        log(level, HStringHelper.merge(message));
+    }
+
+    public void log(HELogLevel level, String ...messages) {
+        log(level, HStringHelper.merge(messages));
+    }
+
+    public void log(HELogLevel level, Throwable ...throwable) {
+        for (Throwable t: throwable)
+            log(level, t);
+    }
+
+    public void log(HELogLevel level, Object ...messages) {
+        log(level, HStringHelper.merge(messages));
+    }
+
     public void log(String message) {
         log(HELogLevel.DEBUG, message);
+    }
+
+    public void log(Throwable throwable) {
+        log(HELogLevel.ERROR, throwable);
     }
 
     public void log(Object message) {
         log(HELogLevel.DEBUG, message);
     }
 
-    public void log(String ...message) {
-        log(HELogLevel.DEBUG, message);
+    public void log(String ...messages) {
+        log(HELogLevel.DEBUG, messages);
     }
 
-    public void log(Object ...message) {
-        log(HELogLevel.DEBUG, message);
+    public void log(Throwable ...throwable) {
+        log(HELogLevel.ERROR, throwable);
     }
 
-    public void log(HELogLevel level, String ...message) {
-        log(level, HStringHelper.merge(message));
-    }
-
-    public void log(HELogLevel level, Object message) {
-        if (message == null)
-            log(level, "Object null!");
-        else
-            log(level, HStringHelper.merge(message));
-    }
-
-    public void log(HELogLevel level, Object ...message) {
-        log(level, HStringHelper.merge(message));
-    }
-
-    public static void logger(String message) {
-        (new HLog(Thread.currentThread().getName())).log(message);
+    public void log(Object ...messages) {
+        log(HELogLevel.DEBUG, messages);
     }
 
     public static void logger(HELogLevel level, String message) {
         (new HLog(Thread.currentThread().getName())).log(level, message);
     }
 
-    public static void logger(Object message) {
-        (new HLog(Thread.currentThread().getName())).log(message);
+    public static void logger(HELogLevel level, Throwable throwable) {
+        (new HLog(Thread.currentThread().getName())).log(level, throwable);
     }
 
     public static void logger(HELogLevel level, Object message) {
         (new HLog(Thread.currentThread().getName())).log(level, message);
     }
 
-    public static void logger(String ...message) {
+    public static void logger(HELogLevel level, String ...messages) {
+        (new HLog(Thread.currentThread().getName())).log(level, messages);
+    }
+
+    public static void logger(HELogLevel level, Throwable ...throwable) {
+        (new HLog(Thread.currentThread().getName())).log(level, throwable);
+    }
+
+    public static void logger(HELogLevel level, Object ...messages) {
+        (new HLog(Thread.currentThread().getName())).log(level, messages);
+    }
+
+    public static void logger(String message) {
         (new HLog(Thread.currentThread().getName())).log(message);
     }
 
-    public static void logger(HELogLevel level, String ...message) {
-        (new HLog(Thread.currentThread().getName())).log(level, message);
+    public static void logger(Throwable throwable) {
+        (new HLog(Thread.currentThread().getName())).log(throwable);
     }
 
-    public static void logger(Object ...message) {
+    public static void logger(Object message) {
         (new HLog(Thread.currentThread().getName())).log(message);
     }
 
-    public static void logger(HELogLevel level, Object ...message) {
-        (new HLog(Thread.currentThread().getName())).log(level, message);
+    public static void logger(String ...messages) {
+        (new HLog(Thread.currentThread().getName())).log(messages);
+    }
+
+    public static void logger(Throwable ...throwable) {
+        (new HLog(Thread.currentThread().getName())).log(throwable);
+    }
+
+    public static void logger(Object ...messages) {
+        (new HLog(Thread.currentThread().getName())).log(messages);
+    }
+
+    private static void addCausedThrowable(StringBuilder builder, Throwable throwable) {
+        if (throwable == null)
+            return;
+        builder.append(System.getProperty("line.separator"));
+        builder.append("Caused by: ");
+        builder.append(throwable.getClass().getName());
+        for (StackTraceElement stackTraceElement: throwable.getStackTrace()) {
+            builder.append(System.getProperty("line.separator"));
+            builder.append("\tat ");
+            builder.append(stackTraceElement.toString());
+        }
+        addCausedThrowable(builder, throwable.getCause());
     }
 
     public static void saveLogs(String path, boolean needSort) {
@@ -148,7 +231,7 @@ public class HLog {
                     return compare_date;
                 });
             try {
-                if (!HFileHelper.createNewFile(path))
+                if (HFileHelper.createNewFile(path))
                     throw new IOException("Creating log file failed.");
                 FileWriter writer = new FileWriter(new File(path).getAbsoluteFile(), true);
                 while (!logs.isEmpty()) {
@@ -157,7 +240,7 @@ public class HLog {
                 }
                 writer.close();
             } catch (IOException exception) {
-                exception.printStackTrace();
+                HLog.logger(HELogLevel.ERROR, exception);
             }
         }
     }

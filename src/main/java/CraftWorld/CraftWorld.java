@@ -13,6 +13,8 @@ import HeadLibs.Logger.HLog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.net.ServerSocket;
+
 @EventSubscribe
 @NewMod(name = "CraftWorld", version = "0.0.0", require = "before:*")
 public class CraftWorld implements ModImplement {
@@ -44,14 +46,13 @@ public class CraftWorld implements ModImplement {
 
     }
 
-    public void start() {
+    public void start(ServerSocket server) throws InterruptedException {
         logger.log(HELogLevel.FINEST, "Loading world..." );
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         //TODO: Load world
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
-        while(true) {
-
-            break;
+        synchronized (this) {
+            wait(10000);
         }
     }
 }

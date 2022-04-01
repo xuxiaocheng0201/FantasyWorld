@@ -1,6 +1,8 @@
 package HeadLibs.Configuration;
 
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HELogLevel;
+import HeadLibs.Logger.HLog;
 
 public enum HEConfigType {
     BOOLEAN, BOOLEAN_ARRAY,
@@ -82,7 +84,7 @@ public enum HEConfigType {
             }
             return true;
         } catch (NumberFormatException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         }
         return false;
     }

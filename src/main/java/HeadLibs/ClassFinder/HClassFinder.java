@@ -136,7 +136,7 @@ public class HClassFinder {
             try {
                 aClass = loadClassInJar(this.doingJar, className);
             } catch (Exception exception) {
-                exception.printStackTrace();
+                HLog.logger(HELogLevel.ERROR, exception);
                 return;
             }
         } catch (NoClassDefFoundError error) {
@@ -177,7 +177,7 @@ public class HClassFinder {
                 try {
                     findInJar(new JarFile(file));
                 } catch (IOException exception) {
-                    exception.printStackTrace();
+                    HLog.logger(HELogLevel.ERROR, exception);
                 }
             else
                 findInFile(file, "");
@@ -233,7 +233,7 @@ public class HClassFinder {
             HDynamicJarClassLoader classLoader = new HDynamicJarClassLoader(new JarFile(jarFile));
             return classLoader.loadClass(className);
         } catch (MalformedURLException exception) {
-            exception.printStackTrace();
+            HLog.logger(HELogLevel.ERROR, exception);
         } catch (NoClassDefFoundError error) {
             HLog.logger(HELogLevel.MISTAKE, "HClassFinder.loadClassInJar(\"", jarFile.getAbsolutePath(), "\", \"", className, "\") failed. Message: ", error.getMessage(), ".");
         }
