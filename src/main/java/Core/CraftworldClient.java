@@ -17,15 +17,17 @@ public class CraftworldClient implements Runnable {
         HLog logger = new HLog(Thread.currentThread().getName());
         isRunning = true;
         logger.log(HELogLevel.FINEST, "Client Thread has started.");
+
+        //TODO: Menu
         try {
             Thread server = new Thread(new CraftworldServer());
             server.start();
-            //TODO: Client
             try {
                 synchronized (this) {
                     wait(100);
                 }
                 Socket client = new Socket("127.0.0.1", Craftworld.PORT);
+                //TODO: Client
                 client.close();
                 server.join();
             } catch (InterruptedException exception) {
@@ -34,6 +36,8 @@ public class CraftworldClient implements Runnable {
         } catch (IOException exception) {
             logger.log(HELogLevel.ERROR, exception);
         }
+
+
         EventBusManager.getDefaultEventBus().post(new ClientStoppingEvent(true));
         isRunning = false;
         logger.log(HELogLevel.FINEST, "Client Thread exits.");

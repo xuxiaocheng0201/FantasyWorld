@@ -1,23 +1,26 @@
 package HeadLibs.Helper;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class HStringHelper {
-    public static String noNull(String a) {
+    public static @NotNull String noNull(@Nullable String a) {
         if (a == null)
             return "null";
         return a;
     }
 
-    public static String[] noNull(String[] a) {
+    public static @NotNull String[] noNull(String @NotNull [] a) {
         String[] b = new String[a.length];
         for (int i = 0; i < a.length; ++i)
             b[i] = noNull(a[i]);
         return b;
     }
 
-    public static boolean isBlank(String a) {
+    public static boolean isBlank(@Nullable String a) {
         if (a == null)
             return true;
         for (byte i: a.getBytes())
@@ -26,7 +29,7 @@ public class HStringHelper {
         return true;
     }
 
-    public static String delBlankHeadAndTail(String a) {
+    public static @Nullable String delBlankHeadAndTail(@Nullable String a) {
         if (a == null)
             return null;
         int left = a.length() - 1;
@@ -48,14 +51,14 @@ public class HStringHelper {
         return a.substring(left, right + 1);
     }
 
-    public static String[] delBlankHeadAndTail(String[] a) {
+    public static String @NotNull [] delBlankHeadAndTail(String @NotNull [] a) {
         String[] b = new String[a.length];
         for (int i = 0; i < a.length; ++i)
             b[i] = delBlankHeadAndTail(a[i]);
         return b;
     }
 
-    public static String merge(Object... objects) {
+    public static @NotNull String merge(Object @NotNull ... objects) {
         if (objects.length == 0)
             return "";
         StringBuilder builder = new StringBuilder();
@@ -64,7 +67,7 @@ public class HStringHelper {
         return builder.toString();
     }
 
-    public static String merge(String... strings) {
+    public static @NotNull String merge(String @NotNull ... strings) {
         if (strings.length == 0)
             return "";
         StringBuilder builder = new StringBuilder();
@@ -73,11 +76,11 @@ public class HStringHelper {
         return builder.toString();
     }
 
-    public static String getDate(String format) {
+    public static @NotNull String getDate(@NotNull String format) {
         return (new SimpleDateFormat(format)).format(new Date());
     }
 
-    public static String getDate(String format, Date date) {
+    public static @NotNull String getDate(@NotNull String format, Date date) {
         return (new SimpleDateFormat(format)).format(date);
     }
 }

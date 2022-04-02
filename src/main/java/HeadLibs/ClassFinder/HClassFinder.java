@@ -3,6 +3,8 @@ package HeadLibs.ClassFinder;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,33 +14,82 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * Find classes in files and jars.
+ * @author xuxiaocheng
+ */
+@SuppressWarnings("unused")
 public class HClassFinder {
-    private String PACKAGE_PATH;
-    private File doingJar = null;
+    /**
+     * Find classes with package.
+     */
+    private @NotNull String PACKAGE_PATH = "";
+    /**
+     * Which jar the class file is in when searching.
+     */
+    private @Nullable File doingJar = null;
+    /**
+     * Available jars for searching.
+     */
     private final Set<File> jarFiles = new HashSet<>();
+    /**
+     * Found classes must extend or implement these.
+     */
     private final Set<Class<?>> superClass = new HashSet<>();
+    /**
+     * Found classes must have these annotations.
+     */
     private final Set<Class<? extends Annotation>> annotationClass = new HashSet<>();
+    /**
+     * Recursively search classes in package.
+     */
     private boolean recursive = true;
+    /**
+     * Found classes list.
+     */
     private final Set<Class<?>> classList = new HashSet<>();
+    /**
+     * Found classes list with jars.
+     */
     private final Map<Class<?>, File> classListWithJarFile = new HashMap<>();
 
+    /**
+     * This code's jar.
+     */
     public static final File thisCodePath = new File(HClassFinder.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 
+    /**
+     * Construct a new finder.
+     * Searching all classes in this code's jar.
+     */
     public HClassFinder() {
         PACKAGE_PATH = "";
         addJarFile(thisCodePath);
     }
 
-    public HClassFinder(String PACKAGE_PATH) {
+    /**
+     * Construct a new finder.
+     * Searching all classes in this code's jar with package.
+     * @param PACKAGE_PATH Find classes with package.
+     */
+    public HClassFinder(@Nullable String PACKAGE_PATH) {
         setPACKAGE_PATH(PACKAGE_PATH);
         addJarFile(thisCodePath);
     }
 
-    public String getPACKAGE_PATH() {
+    /**
+     * Get package.
+     * @return The package to find classes.
+     */
+    public @NotNull String getPACKAGE_PATH() {
         return PACKAGE_PATH;
     }
 
-    public void setPACKAGE_PATH(String PACKAGE_PATH) {
+    /**
+     * Set package.
+     * @param PACKAGE_PATH The package to find classes.
+     */
+    public void setPACKAGE_PATH(@Nullable String PACKAGE_PATH) {
         if (PACKAGE_PATH == null) {
             this.PACKAGE_PATH = "";
             return;
@@ -46,17 +97,29 @@ public class HClassFinder {
         this.PACKAGE_PATH = PACKAGE_PATH;
     }
 
-    public Set<File> getJarFiles() {
+    /**
+     * Get available jars {@link HClassFinder#jarFiles}
+     * @return Available jars for searching.
+     */
+    public @NotNull Set<File> getJarFiles() {
         return jarFiles;
     }
 
-    public void addJarFile(File jarFile) {
+    /**
+     * Add an available jar for searching.
+     * @param jarFile available jar for searching.
+     */
+    public void addJarFile(@Nullable File jarFile) {
         if (jarFile == null || !jarFile.exists() || jarFiles.contains(jarFile))
             return;
         jarFiles.add(jarFile);
     }
 
-    public void addJarFilesInDirectory(File directory) {
+    /**
+     * Add available jars in directory for searching.
+     * @param directory available jars in.
+     */
+    public void addJarFilesInDirectory(@Nullable File directory) {
         if (directory == null || !directory.exists())
             return;
         if (directory.isFile())
@@ -70,16 +133,27 @@ public class HClassFinder {
         }
     }
 
+    /**
+     * Clear all available jars for searching.
+     */
     public void clearJarFile() {
         this.jarFiles.clear();
     }
 
-    public Set<Class<?>> getSuperClass() {
+    /**
+     * Get super classes {@link HClassFinder#superClass}
+     * @return Super classes.
+     */
+    public @NotNull Set<Class<?>> getSuperClass() {
         return superClass;
     }
 
+    /**
+     * Add a super class.
+     * @param superClass super class.
+     */
     @SuppressWarnings("unchecked")
-    public void addSuperClass(Class<?> superClass) {
+    public void addSuperClass(@Nullable Class<?> superClass) {
         if (superClass == null || this.superClass.contains(superClass))
             return;
         if (superClass.isAnnotation()) {
@@ -89,46 +163,83 @@ public class HClassFinder {
         this.superClass.add(superClass);
     }
 
+    /**
+     * Clear all super classes.
+     */
     public void clearSuperClass() {
         this.superClass.clear();
     }
 
-    public Set<Class<? extends Annotation>> getAnnotationClass() {
+    /**
+     * Get annotation classes {@link HClassFinder#annotationClass}
+     * @return Annotation classes.
+     */
+    public @NotNull Set<Class<? extends Annotation>> getAnnotationClass() {
         return annotationClass;
     }
 
-    public void addAnnotationClass(Class<? extends Annotation> annotation) {
+    /**
+     * Add an annotation class.
+     * @param annotation annotation class.
+     */
+    public void addAnnotationClass(@Nullable Class<? extends Annotation> annotation) {
         if (annotation == null || this.annotationClass.contains(annotation))
             return;
         this.annotationClass.add(annotation);
     }
 
+    /**
+     * Clear all annotation classes.
+     */
     public void clearAnnotationClass() {
         this.annotationClass.clear();
     }
 
+    /**
+     * Is recursively search. {@link HClassFinder#recursive}
+     * @return Need recursively
+     */
     public boolean isRecursive() {
         return recursive;
     }
 
+    /**
+     * Set recursively search.
+     * @param recursive Need recursively
+     */
     public void setRecursive(boolean recursive) {
         this.recursive = recursive;
     }
 
-    public Set<Class<?>> getClassList() {
+    /**
+     * Get found classes list {@link HClassFinder#classList}
+     * @return Found classes list
+     */
+    public @NotNull Set<Class<?>> getClassList() {
         return classList;
     }
 
-    public Map<Class<?>, File> getClassListWithJarFile() {
+    /**
+     * Get found classes list with jars {@link HClassFinder#classListWithJarFile}
+     * @return Found classes list with jars
+     */
+    public @NotNull Map<Class<?>, File> getClassListWithJarFile() {
         return classListWithJarFile;
     }
 
+    /**
+     * Clear all found classes.
+     */
     public void clearClassList() {
         classList.clear();
         classListWithJarFile.clear();
     }
 
-    private void checkAndAddClass(String className) {
+    /**
+     * Check class availability and then add to class list.
+     * @param className Searched class name to check and add.
+     */
+    private void checkAndAddClass(@NotNull String className) {
         Class<?> aClass;
         try {
             aClass = Class.forName(className);
@@ -149,7 +260,11 @@ public class HClassFinder {
         }
     }
 
-    public boolean checkSuper(Class<?> aClass) {
+    /**
+     * Check class availability of super. {@link HClassFinder#superClass}
+     * @param aClass Searched class to check.
+     */
+    public boolean checkSuper(@NotNull Class<?> aClass) {
         if (this.superClass.isEmpty())
             return true;
         for (Class<?> Super: this.superClass)
@@ -158,7 +273,11 @@ public class HClassFinder {
         return true;
     }
 
-    public boolean checkAnnotation(Class<?> aClass) {
+    /**
+     * Check class availability of annotation. {@link HClassFinder#annotationClass}
+     * @param aClass Searched class to check.
+     */
+    public boolean checkAnnotation(@NotNull Class<?> aClass) {
         if (this.annotationClass.isEmpty())
             return true;
         Annotation[] annotations = aClass.getDeclaredAnnotations();
@@ -168,6 +287,9 @@ public class HClassFinder {
         return false;
     }
 
+    /**
+     * Find classes available.
+     */
     public void startFind() {
         this.classList.clear();
         this.classListWithJarFile.clear();
@@ -185,7 +307,11 @@ public class HClassFinder {
         doingJar = null;
     }
 
-    private void findInJar(JarFile jarFile) {
+    /**
+     * Find classes available in zip file.
+     * @param jarFile The zip file.
+     */
+    private void findInJar(@NotNull JarFile jarFile) {
         Enumeration<JarEntry> entryEnumeration = jarFile.entries();
         while (entryEnumeration.hasMoreElements()) {
             JarEntry jarEntry = entryEnumeration.nextElement();
@@ -199,7 +325,12 @@ public class HClassFinder {
         }
     }
 
-    private void findInFile(File jarFile, String packageName) {
+    /**
+     * Find classes available in directory files.
+     * @param jarFile The directory files.
+     * @param packageName Directory package.
+     */
+    private void findInFile(@NotNull File jarFile, @NotNull String packageName) {
         if (jarFile.isDirectory()) {
             File[] files = jarFile.listFiles();
             if (files == null)
@@ -225,7 +356,7 @@ public class HClassFinder {
         checkAndAddClass(packageName);
     }
 
-    public static Class<?> loadClassInJar(File jarFile, String className) throws ClassNotFoundException, IOException {
+    public static @Nullable Class<?> loadClassInJar(@Nullable File jarFile, @NotNull String className) throws ClassNotFoundException, IOException {
         if (jarFile == null || !jarFile.exists() || !jarFile.isFile() ||
                 !(jarFile.getAbsolutePath().endsWith(".zip") || jarFile.getAbsolutePath().endsWith(".jar")))
             return null;

@@ -1,5 +1,7 @@
 package HeadLibs.Helper;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -20,7 +22,7 @@ public class HSystemHelp {
         return (temp != null && temp.contains("64"));
     }
 
-    public static String getRunningType() {
+    public static @NotNull String getRunningType() {
         String temp = System.getProperty("os.name").toLowerCase();
         if (temp.contains("win"))
             return "WINDOWS";
@@ -37,7 +39,7 @@ public class HSystemHelp {
         return "UNKNOWN";
     }
 
-    public static void outputSystemDetail(Writer output) throws IOException {
+    public static void outputSystemDetail(@NotNull Writer output) throws IOException {
         output.write("System Detail:\n");
         output.write(HStringHelper.merge("\tOperating Machine: ", getRunningType(), "\n"));
         output.write(HStringHelper.merge("\tConsole: ", System.console(), "\n"));

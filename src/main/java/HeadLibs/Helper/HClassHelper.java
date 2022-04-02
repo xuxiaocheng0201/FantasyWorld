@@ -2,6 +2,8 @@ package HeadLibs.Helper;
 
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -9,7 +11,7 @@ import java.math.BigInteger;
 
 public class HClassHelper {
     @SuppressWarnings("unchecked")
-    public static <T> T getInstance(Class<T> aClass) {
+    public static <T> @Nullable T getInstance(@NotNull Class<T> aClass) {
         try {
             Method get = aClass.getDeclaredMethod("getInstance");
             T instance = (T) get.invoke(null);

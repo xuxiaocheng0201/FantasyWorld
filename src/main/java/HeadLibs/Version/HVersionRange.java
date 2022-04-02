@@ -1,6 +1,8 @@
 package HeadLibs.Version;
 
 import HeadLibs.Helper.HStringHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,17 +18,17 @@ public class HVersionRange {
         super();
     }
 
-    public HVersionRange(String version) throws IllegalArgumentException {
+    public HVersionRange(@NotNull String version) throws IllegalArgumentException {
         addVersions(version);
     }
 
-    public void addVersions(String versions) throws IllegalArgumentException {
+    public void addVersions(@NotNull String versions) throws IllegalArgumentException {
         String[] versions_ = versions.split("&");
         for (String version: versions_)
             addVersion(version);
     }
 
-    public void addVersion(String version) throws IllegalArgumentException {
+    public void addVersion(@NotNull String version) throws IllegalArgumentException {
         if (version.charAt(0) == '{' && version.charAt(version.length() - 1) == '}') {
             String[] versionS = HStringHelper.delBlankHeadAndTail(version.substring(1, version.length() - 1).split(","));
             versionSingles.addAll(Arrays.asList(versionS));
@@ -38,11 +40,11 @@ public class HVersionRange {
             this.versionSingles.add(version);
     }
 
-    public List<SingleVersionRange> getVersionRanges() {
+    public @NotNull List<SingleVersionRange> getVersionRanges() {
         return versionRanges;
     }
 
-    public List<String> getVersionSingles() {
+    public @NotNull List<String> getVersionSingles() {
         return versionSingles;
     }
 
@@ -54,15 +56,15 @@ public class HVersionRange {
     public boolean versionInRange(String version) {
         for (SingleVersionRange range: this.versionRanges)
             if (range.versionInRange(version))
-                return true;
+                return false;
         for (String s: this.versionSingles)
             if (HVersionComparator.compareVersion(version, s) == 0)
-                return true;
-        return false;
+                return false;
+        return true;
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         if (versionRanges.isEmpty()) {
             if (versionSingles.isEmpty())
                 return "";
@@ -94,7 +96,7 @@ public class HVersionRange {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -116,18 +118,18 @@ public class HVersionRange {
     public static class SingleVersionRange {
         private boolean leftEquable = false;
         private boolean rightEquable = false;
-        private String versionLeft = null;
-        private String versionRight = null;
+        private @Nullable String versionLeft = null;
+        private @Nullable String versionRight = null;
 
         public SingleVersionRange() {
             super();
         }
 
-        public SingleVersionRange(String version) throws IllegalArgumentException {
+        public SingleVersionRange(@NotNull String version) throws IllegalArgumentException {
             setVersionRange(version);
         }
 
-        public void setVersionRange(String version) throws IllegalArgumentException {
+        public void setVersionRange(@NotNull String version) throws IllegalArgumentException {
             byte canEqualLeft = 0;
             if (version.charAt(0) == '[')
                 canEqualLeft = 1;
@@ -147,8 +149,10 @@ public class HVersionRange {
             }
             if (canEqualLeft == 0 || canEqualRight == 0)
                 throw new IllegalArgumentException("Unknown symbols in brackets.");
-            String versions = HStringHelper.delBlankHeadAndTail(version.substring(1, version.length() - 1));
+            String versions = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(version.substring(1, version.length() - 1)));
             int locationComma = versions.indexOf(",");
+            if (locationComma == -1)
+                throw new IllegalArgumentException("No commas in versions.");
             int locationComma1 = versions.lastIndexOf(",");
             if (locationComma != locationComma1)
                 throw new IllegalArgumentException("Too many commas in versions.");
@@ -218,29 +222,29 @@ public class HVersionRange {
             this.rightEquable = rightEquable;
         }
 
-        public String getVersionLeft() {
+        public @Nullable String getVersionLeft() {
             return versionLeft;
         }
 
-        public void setVersionLeft(String versionLeft) {
+        public void setVersionLeft(@Nullable String versionLeft) {
             this.versionLeft = versionLeft;
         }
 
-        public String getVersionRight() {
+        public @Nullable String getVersionRight() {
             return versionRight;
         }
 
-        public void setVersionRight(String versionRight) {
+        public void setVersionRight(@Nullable String versionRight) {
             this.versionRight = versionRight;
         }
 
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return HStringHelper.merge((isLeftEquable() ? '[' : '('), getVersionLeft(), ',', getVersionRight(), (isRightEquable() ? ']' : ')'));
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 

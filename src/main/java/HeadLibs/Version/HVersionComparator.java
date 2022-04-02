@@ -1,9 +1,10 @@
 package HeadLibs.Version;
 
 import HeadLibs.Helper.HStringHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class HVersionComparator {
-    public static int compareVersion(String a, String b) {
+    public static int compareVersion(@Nullable String a, @Nullable String b) {
         if (a == null) {
             if (b == null)
                 return 0;

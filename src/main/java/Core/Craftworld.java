@@ -38,11 +38,19 @@ public class Craftworld {
 
     public static void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) {
         File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
+        if (jarFilePath == null) //Unreachable
+            jarFilePath = HClassFinder.thisCodePath;
         File targetFilePath = new File(HStringHelper.merge(RUNTIME_PATH, targetPath)).getAbsoluteFile();
         try {
-            HFileHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
-            HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
-            HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
+            if (System.console() == null) {
+                File runtimeFile = new File(Craftworld.RUNTIME_PATH).getAbsoluteFile();
+                String srcResourcePath = HStringHelper.merge(runtimeFile.getParentFile().getParentFile().getParentFile().getPath(), "\\src\\main\\resources");
+                HFileHelper.copyFiles(HStringHelper.merge(srcResourcePath, "\\", sourcePath), targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+            } else {
+                HFileHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
+                HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+                HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
+            }
         } catch (IOException exception) {
             HLog.logger(HELogLevel.ERROR, exception);
         }
@@ -66,24 +74,11 @@ public class Craftworld {
     public static void main(String[] args) {
         Thread.currentThread().setName("CraftworldMain");
         HLog.logger(HELogLevel.INFO, "Hello Craftworld!");
-        try {
-            File runtimeFile = new File(Craftworld.RUNTIME_PATH).getAbsoluteFile();
-            String targetAssetsPath = HStringHelper.merge(runtimeFile.getPath(), "\\assets");
-            HConfigurations canOverwrite = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
-            HConfig overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
-            if (overwrite_when_extracting != null)
-                OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
-            if (System.console() == null) {
-                String srcResourcePath = HStringHelper.merge(runtimeFile.getParentFile().getParentFile().getParentFile().getPath(), "\\src\\main\\resources");
-                HFileHelper.copyFiles(HStringHelper.merge(srcResourcePath, "\\assets"), targetAssetsPath, Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
-            } else {
-                HFileHelper.extractFilesFromJar(new JarFile(HClassFinder.thisCodePath), "assets", Craftworld.EXTRACT_TEMP_FILE);
-                HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetAssetsPath, Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
-                HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
-            }
-        } catch (IOException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
-        }
+        HConfigurations canOverwrite = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
+        HConfig overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
+        if (overwrite_when_extracting != null)
+            OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
+        extractFiles(null, "assets\\Core", "assets\\Core");
         for (String arg: args) {
             if ("runClient".equals(arg))
                 isClient = true;
@@ -101,18 +96,15 @@ public class Craftworld {
         });
         try {
             Thread gc = new Thread(new GCThread());
-            gc.start();
             if (loadMods()) {
                 ModLauncher.gc();
-                if (isClient) {
-                    Thread client = new Thread(new CraftworldClient());
-                    client.start();
-                    client.join();
-                } else {
-                    Thread server = new Thread(new CraftworldServer());
-                    server.start();
-                    server.join();
-                }
+                Thread main;
+                if (isClient)
+                    main = new Thread(new CraftworldClient());
+                else
+                    main = new Thread(new CraftworldServer());
+                main.start();
+                main.join();
             }
             gc.interrupt();
         } catch (InterruptedException exception) {
@@ -144,6 +136,7 @@ public class Craftworld {
             garbage_collector_time_interval = new HConfig("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HEConfigType.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
         else
             garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
+        assert garbage_collector_time_interval.getValue() != null;
         if (Integer.parseInt(garbage_collector_time_interval.getValue()) < 10) {
             HLog.logger(HELogLevel.CONFIGURATION, "Garbage collector time interval too short: ", garbage_collector_time_interval.getValue(), ". Now use:", GARBAGE_COLLECTOR_TIME_INTERVAL);
             garbage_collector_time_interval.setValue(String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
@@ -155,6 +148,7 @@ public class Craftworld {
             port = new HConfig("port", LanguageI18N.get("Core.configuration.port.name"), HEConfigType.INT, String.valueOf(PORT));
         else
             port.setNote(LanguageI18N.get("Core.configuration.port.name"));
+        assert port.getValue() != null;
         PORT = Integer.parseInt(port.getValue());
         if (PortManager.checkPortUnavailable(PORT)) {
             int availablePort = PortManager.getNextAvailablePort();

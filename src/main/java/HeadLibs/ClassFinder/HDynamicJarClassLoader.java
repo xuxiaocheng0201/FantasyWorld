@@ -2,6 +2,8 @@ package HeadLibs.ClassFinder;
 
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +27,7 @@ public class HDynamicJarClassLoader extends ClassLoader {
     }
 
     @Override
-    protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    protected synchronized @Nullable Class<?> loadClass(@NotNull String name, boolean resolve) throws ClassNotFoundException {
         if (jarFile == null)
             return null;
         try {

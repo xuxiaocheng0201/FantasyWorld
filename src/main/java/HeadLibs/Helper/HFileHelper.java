@@ -2,6 +2,7 @@ package HeadLibs.Helper;
 
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,7 +15,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class HFileHelper {
-    public static boolean deleteDirectories(String path) {
+    public static boolean deleteDirectories(@NotNull String path) {
         File file = new File(path);
         if (!file.exists() || !file.isDirectory())
             return false;
@@ -32,7 +33,7 @@ public class HFileHelper {
         return file.delete();
     }
 
-    public static void copyFile(String sourcePath, String targetPath, boolean overWrite) throws IOException {
+    public static void copyFile(@NotNull String sourcePath, @NotNull String targetPath, boolean overWrite) throws IOException {
         File sourceFile = new File(sourcePath);
         File targetFile = new File(targetPath);
         if (!sourceFile.exists())
@@ -50,7 +51,7 @@ public class HFileHelper {
         Files.copy(sourceFile.toPath(), targetFile.toPath());
     }
 
-    public static void copyFiles(String sourcePath, String targetPath, boolean overWrite) throws IOException {
+    public static void copyFiles(@NotNull String sourcePath, @NotNull String targetPath, boolean overWrite) throws IOException {
         File sourceFile = new File(sourcePath);
         File targetFile = new File(targetPath);
         if (!sourceFile.exists())
@@ -81,7 +82,7 @@ public class HFileHelper {
         }
     }
 
-    public static boolean createNewFile(String path) {
+    public static boolean createNewFile(@NotNull String path) {
         try {
             File file = new File(path).getAbsoluteFile();
             if (!file.exists()) {
@@ -109,7 +110,7 @@ public class HFileHelper {
         return true;
     }
 
-    public static void extractFilesFromJar(JarFile jar, String sourceFileInJar, String targetDir) {
+    public static void extractFilesFromJar(@NotNull JarFile jar, @NotNull String sourceFileInJar, String targetDir) {
         try {
             Enumeration<JarEntry> enumeration = jar.entries();
             while (enumeration.hasMoreElements()) {

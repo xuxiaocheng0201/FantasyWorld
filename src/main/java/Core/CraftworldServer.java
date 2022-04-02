@@ -6,7 +6,6 @@ import Core.Events.ServerStopEvent;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 
 public class CraftworldServer implements Runnable {
@@ -25,10 +24,11 @@ public class CraftworldServer implements Runnable {
             CraftWorld.CraftWorld.getInstance().start(server);
             /* ********** \Special Modifier ********** */
             server.close();
-        } catch (IOException | InterruptedException exception) {
+            EventBusManager.getDefaultEventBus().post(new ServerStopEvent(true));
+        } catch (Exception exception) {
             logger.log(exception);
+            EventBusManager.getDefaultEventBus().post(new ServerStopEvent(false));
         }
-        EventBusManager.getDefaultEventBus().post(new ServerStopEvent(true));
         isRunning = false;
         logger.log(HELogLevel.FINEST, "Server Thread exits.");
     }

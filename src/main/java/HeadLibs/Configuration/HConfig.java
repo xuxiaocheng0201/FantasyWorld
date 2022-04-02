@@ -1,14 +1,18 @@
 package HeadLibs.Configuration;
 
 import HeadLibs.Helper.HStringHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class HConfig {
-    private String name;
-    private String note;
-    private HEConfigType type;
-    private String value;
+    private @Nullable String name;
+    private @Nullable String note;
+    private @NotNull HEConfigType type;
+    private @Nullable String value;
 
-    public HConfig(String name, String note, HEConfigType type, String value) {
+    public HConfig(String name, @Nullable String note, @NotNull HEConfigType type, String value) {
         this.setName(name);
         this.note = note;
         this.type = type;
@@ -27,15 +31,15 @@ public class HConfig {
         this(name, null, HEConfigType.STRING, value);
     }
     
-    public void setName(String name) {
+    public void setName(@Nullable String name) {
         this.name = ((name == null) ? "null" : name);
     }
 
-    public void setNote(String note) {
+    public void setNote(@Nullable String note) {
         this.note = note;
     }
 
-    public void setType(HEConfigType type) {
+    public void setType(@NotNull HEConfigType type) {
         this.type = type;
     }
 
@@ -44,24 +48,24 @@ public class HConfig {
             this.value = value;
     }
 
-    public String getName() {
+    public @Nullable String getName() {
         return this.name;
     }
 
-    public String getNote() {
+    public @Nullable String getNote() {
         return this.note;
     }
 
-    public HEConfigType getType() {
+    public @NotNull HEConfigType getType() {
         return this.type;
     }
 
-    public String getValue() {
+    public @Nullable String getValue() {
         return this.value;
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return HStringHelper.merge("HConfig{",
                 "name='", name, '\'',
                 ", note='", note, '\'',
@@ -74,11 +78,13 @@ public class HConfig {
     public boolean equals(Object a) {
         if (!(a instanceof HConfig))
             return false;
-        return this.name.equals(((HConfig) a).name) && this.type == ((HConfig) a).type && this.value.equals(((HConfig) a).value);
+        return Objects.equals(this.name, ((HConfig) a).name) && this.type == ((HConfig) a).type && Objects.equals(this.value, ((HConfig) a).value);
     }
 
     @Override
     public int hashCode() {
+        if (this.name == null)
+            return 0;
         return this.name.hashCode();
     }
 }

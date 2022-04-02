@@ -3,6 +3,7 @@ package HeadLibs.Configuration;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import org.jetbrains.annotations.NotNull;
 
 public enum HEConfigType {
     BOOLEAN, BOOLEAN_ARRAY,
@@ -25,7 +26,7 @@ public enum HEConfigType {
                 || this == STRING_ARRAY);
     }
 
-    public HEConfigType withoutArray() {
+    public @NotNull HEConfigType withoutArray() {
         return switch (this) {
             case BOOLEAN_ARRAY -> BOOLEAN;
             case BYTE_ARRAY -> BYTE;
@@ -89,7 +90,7 @@ public enum HEConfigType {
         return false;
     }
 
-    public static HEConfigType getTypeByName(String name) {
+    public static @NotNull HEConfigType getTypeByName(String name) {
         return switch (name) {
             case "BOOLEAN" -> BOOLEAN;
             case "BOOLEAN_ARRAY" -> BOOLEAN_ARRAY;
@@ -111,7 +112,7 @@ public enum HEConfigType {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return switch (this) {
             case BOOLEAN -> "BOOLEAN";
             case BOOLEAN_ARRAY -> "BOOLEAN_ARRAY";

@@ -1,34 +1,38 @@
 package HeadLibs.Configuration.SimpleMode;
 
 import HeadLibs.Helper.HStringHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class HConfigSimple {
-    private String name;
-    private String value;
+    private @Nullable String name;
+    private @Nullable String value;
 
     public HConfigSimple(String name, String value) {
         this.setName(name);
         this.setValue(value);
     }
 
-    public void setName(String name) {
+    public void setName(@Nullable String name) {
         this.name = ((name == null) ? "null" : name);
     }
 
-    public void setValue(String value) {
+    public void setValue(@Nullable String value) {
         this.value = ((value == null) ? "null" : value);
     }
 
-    public String getName() {
+    public @Nullable String getName() {
         return this.name;
     }
 
-    public String getValue() {
+    public @Nullable String getValue() {
         return this.value;
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return HStringHelper.merge("HConfigSimple{",
                 "name='", name, '\'',
                 ", value='", value, '\'',
@@ -39,11 +43,13 @@ public class HConfigSimple {
     public boolean equals(Object a) {
         if (!(a instanceof HConfigSimple))
             return false;
-        return this.name.equals(((HConfigSimple) a).name) && this.value.equals(((HConfigSimple) a).value);
+        return Objects.equals(this.name, ((HConfigSimple) a).name) && Objects.equals(this.value, ((HConfigSimple) a).value);
     }
 
     @Override
     public int hashCode() {
+        if (this.name == null)
+            return 0;
         return this.name.hashCode();
     }
 }

@@ -1,5 +1,6 @@
 package CraftWorld;
 
+import Core.Craftworld;
 import Core.EventBus.EventBusCreator;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
@@ -39,6 +40,7 @@ public class CraftWorld implements ModImplement {
     @SuppressWarnings("unused")
     public void preInitialize(PreInitializationModsEvent event) {
         logger.setName("CraftWorld", logger);
+        Craftworld.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
 
     @Override
@@ -46,7 +48,7 @@ public class CraftWorld implements ModImplement {
 
     }
 
-    public void start(ServerSocket server) throws InterruptedException {
+    public void start(ServerSocket server) throws Exception {
         logger.log(HELogLevel.FINEST, "Loading world..." );
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         //TODO: Load world

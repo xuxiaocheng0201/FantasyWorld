@@ -1,6 +1,7 @@
 package HeadLibs.Logger;
 
 import HeadLibs.Helper.HStringHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
 
@@ -40,7 +41,7 @@ public enum HELogLevel {
      * 6 -> Cyan
      * 7 -> Gray
      */
-    private final String PREFIX;
+    private final @NotNull String PREFIX;
 
     HELogLevel(String name, int priority) {
         this.name = name;
@@ -62,18 +63,18 @@ public enum HELogLevel {
         return PRIORITY;
     }
 
-    public String getPrefix() {
+    public @NotNull String getPrefix() {
         return PREFIX;
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return HStringHelper.merge("HELogLevel{",
                 "name='", name, '\'',
                 '}');
     }
 
-    public static HELogLevel getFromLevel(Level level) {
+    public static @NotNull HELogLevel getFromLevel(@NotNull Level level) {
         if (level.equals(Level.INFO))
             return HELogLevel.INFO;
         if (level.equals(Level.FINE))

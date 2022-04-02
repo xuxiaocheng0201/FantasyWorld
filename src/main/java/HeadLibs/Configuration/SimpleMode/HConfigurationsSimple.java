@@ -4,10 +4,13 @@ import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HConfigurationsSimple {
     public static final String CURRENT_VERSION = "1.0.0";
@@ -19,11 +22,11 @@ public class HConfigurationsSimple {
         this.setPath(path);
     }
 
-    public String getPath() {
+    public @NotNull String getPath() {
         return this.file.getPath();
     }
 
-    public void setPath(String path) throws IllegalArgumentException {
+    public void setPath(@Nullable String path) throws IllegalArgumentException {
         if (path == null)
             throw new IllegalArgumentException("Argument path is null.");
         if (HFileHelper.createNewFile(path))
@@ -32,7 +35,7 @@ public class HConfigurationsSimple {
         this.read();
     }
 
-    public void add(HConfigSimple config) {
+    public void add(@NotNull HConfigSimple config) {
         if (this.getByName(config.getName()) != null) {
             HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']. Drop the first!"));
             this.deleteByName(config.getName());
@@ -40,7 +43,7 @@ public class HConfigurationsSimple {
         this.data.add(config);
     }
 
-    public HConfigSimple getByName(String name) {
+    public @Nullable HConfigSimple getByName(@Nullable String name) {
         for (HConfigSimple i: this.data) {
             if (i.getName() == null)
                 if (name == null)
@@ -53,7 +56,7 @@ public class HConfigurationsSimple {
         return null;
     }
 
-    public void deleteByName(String name) {
+    public void deleteByName(@Nullable String name) {
         for (int i = 0; i < this.data.size(); ++i) {
             if (this.data.get(i).getName() == null) {
                 if (name == null) {
@@ -62,14 +65,14 @@ public class HConfigurationsSimple {
                 }
                 continue;
             }
-            if (this.data.get(i).getName().equals(name)) {
+            if (Objects.equals(this.data.get(i).getName(), name)) {
                 this.data.remove(i);
                 return;
             }
         }
     }
 
-    public void deleteByValue(String value) {
+    public void deleteByValue(@Nullable String value) {
         for (int i = 0; i < this.data.size(); ++i) {
             if (this.data.get(i).getValue() == null) {
                 if (value == null) {
@@ -78,14 +81,14 @@ public class HConfigurationsSimple {
                 }
                 continue;
             }
-            if (this.data.get(i).getValue().equals(value)) {
+            if (Objects.equals(this.data.get(i).getValue(), value)) {
                 this.data.remove(i);
                 return;
             }
         }
     }
 
-    public void deleteAllByValue(String value) {
+    public void deleteAllByValue(@Nullable String value) {
         for (int i = 0; i < this.data.size(); ++i) {
             if (this.data.get(i).getValue() == null) {
                 if (value == null) {
@@ -94,7 +97,7 @@ public class HConfigurationsSimple {
                 }
                 continue;
             }
-            if (this.data.get(i).getValue().equals(value))
+            if (Objects.equals(this.data.get(i).getValue(), value))
                 this.data.remove(i);
         }
     }
@@ -133,9 +136,9 @@ public class HConfigurationsSimple {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
             for (HConfigSimple i: this.data) {
-                writer.write(i.getName());
+                writer.write(i.getName() == null ? "null" : i.getName());
                 writer.write("=");
-                writer.write(i.getValue());
+                writer.write(i.getValue() == null ? "null" : i.getValue());
                 writer.newLine();
             }
             writer.close();
@@ -145,7 +148,7 @@ public class HConfigurationsSimple {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return HStringHelper.merge("HConfigurationsSimple{",
                 "file=", file,
                 ", date=", data,

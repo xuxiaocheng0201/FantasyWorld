@@ -3,6 +3,8 @@ package HeadLibs.Logger;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,10 +12,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class HLog {
-    public static String DATE_FORMAT = "HH:mm:ss";
-    private static final List<Pair<Pair<Date, Integer>, String>> logs = new ArrayList<>();
+    private static @NotNull String DATE_FORMAT = "HH:mm:ss";
+    private static final List<@NotNull Pair<@NotNull Pair<@NotNull Date, @NotNull Integer>, @NotNull String>> logs = new ArrayList<>();
 
     private String name;
 
@@ -29,12 +33,20 @@ public class HLog {
         this.name = HStringHelper.merge(parent, "/", name);
     }
 
-    public HLog(String name, HLog parent) {
+    public HLog(String name, @Nullable HLog parent) {
         if (parent == null) {
             this.name = name;
             return;
         }
         this.name = HStringHelper.merge(parent.getName(), "/", name);
+    }
+
+    public static @NotNull String getDateFormat() {
+        return DATE_FORMAT;
+    }
+
+    public static void setDateFormat(@NotNull String dateFormat) {
+        DATE_FORMAT = dateFormat;
     }
 
     public String getName() {
@@ -49,7 +61,7 @@ public class HLog {
         this.name = HStringHelper.merge(parent, "/", name);
     }
 
-    public void setName(String name, HLog parent) {
+    public void setName(String name, @Nullable HLog parent) {
         if (parent == null) {
             this.name = name;
             return;
@@ -57,7 +69,7 @@ public class HLog {
         this.name = HStringHelper.merge(parent.getName(), "/", name);
     }
 
-    public void log(HELogLevel level, String message) {
+    public void log(@Nullable HELogLevel level, String message) {
         if (level == null)
             level = HELogLevel.DEBUG;
         Date date = new Date();
@@ -74,7 +86,7 @@ public class HLog {
         }
     }
 
-    public void log(HELogLevel level, Throwable throwable) {
+    public void log(@Nullable HELogLevel level, @Nullable Throwable throwable) {
         if (throwable == null) {
             log(level, "Object null!");
             return;
@@ -113,7 +125,7 @@ public class HLog {
         }
     }
 
-    public void log(HELogLevel level, Object message) {
+    public void log(HELogLevel level, @Nullable Object message) {
         if (message == null) {
             log(level, "Object null!");
             return;
@@ -125,7 +137,7 @@ public class HLog {
         log(level, HStringHelper.merge(messages));
     }
 
-    public void log(HELogLevel level, Throwable ...throwable) {
+    public void log(HELogLevel level, Throwable @NotNull ...throwable) {
         for (Throwable t: throwable)
             log(level, t);
     }
@@ -206,7 +218,7 @@ public class HLog {
         (new HLog(Thread.currentThread().getName())).log(messages);
     }
 
-    private static void addCausedThrowable(StringBuilder builder, Throwable throwable) {
+    private static void addCausedThrowable(@NotNull StringBuilder builder, @Nullable Throwable throwable) {
         if (throwable == null)
             return;
         builder.append(System.getProperty("line.separator"));
@@ -220,14 +232,20 @@ public class HLog {
         addCausedThrowable(builder, throwable.getCause());
     }
 
-    public static void saveLogs(String path, boolean needSort) {
+    public static void saveLogs(@NotNull String path, boolean needSort) {
         synchronized (logs) {
             if (needSort)
                 logs.sort((a, b) ->
                 {
+                    assert a.getKey() != null;
+                    assert b.getKey() != null;
+                    assert a.getKey().getKey() != null;
                     int compare_date = a.getKey().getKey().compareTo(b.getKey().getKey());
-                    if (compare_date == 0)
+                    if (compare_date == 0) {
+                        assert a.getKey().getValue() != null;
+                        assert b.getKey().getValue() != null;
                         return a.getKey().getValue().compareTo(b.getKey().getValue());
+                    }
                     return compare_date;
                 });
             try {
@@ -235,7 +253,7 @@ public class HLog {
                     throw new IOException("Creating log file failed.");
                 FileWriter writer = new FileWriter(new File(path).getAbsoluteFile(), true);
                 while (!logs.isEmpty()) {
-                    writer.write(logs.remove(0).getValue());
+                    writer.write(Objects.requireNonNull(logs.remove(0).getValue()));
                     writer.write(System.getProperty("line.separator"));
                 }
                 writer.close();
@@ -245,7 +263,7 @@ public class HLog {
         }
     }
 
-    public static void saveLogs(String path) {
+    public static void saveLogs(@NotNull String path) {
         saveLogs(path, false);
     }
 }
