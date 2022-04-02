@@ -26,9 +26,9 @@ public abstract class ElementUtil<T extends ElementImplement> {
     public void deregister(Class<? extends T> aClass) {
         if (!map.containsValue(aClass))
             return;
-        for (String name: map.keySet())
-            if (map.get(name).equals(aClass))
-                map.remove(name);
+        for (Map.Entry<String, Class<? extends T>> entry : map.entrySet())
+            if (entry.getValue().equals(aClass))
+                map.remove(entry.getKey());
     }
 
     public boolean isRegistered(String name) {

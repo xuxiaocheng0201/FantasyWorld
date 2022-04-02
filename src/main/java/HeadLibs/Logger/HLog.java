@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class HLog {
@@ -38,7 +37,7 @@ public class HLog {
             this.name = name;
             return;
         }
-        this.name = HStringHelper.merge(parent.getName(), "/", name);
+        this.name = HStringHelper.merge(parent.name, "/", name);
     }
 
     public static @NotNull String getDateFormat() {
@@ -66,7 +65,7 @@ public class HLog {
             this.name = name;
             return;
         }
-        this.name = HStringHelper.merge(parent.getName(), "/", name);
+        this.name = HStringHelper.merge(parent.name, "/", name);
     }
 
     public void log(@Nullable HELogLevel level, String message) {
@@ -78,7 +77,7 @@ public class HLog {
                 "[", level.getName(), "]",
                 message);
         synchronized (logs) {
-            logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
+            logs.add(Pair.makePair(Pair.makePair(date, level.getPriority()), log));
             if (System.console() != null)
                 System.out.println(log);
             else
@@ -117,7 +116,7 @@ public class HLog {
         addCausedThrowable(builder, throwable.getCause());
         String log = builder.toString();
         synchronized (logs) {
-            logs.add(new Pair<>(new Pair<>(date, level.getPriority()), log));
+            logs.add(Pair.makePair(Pair.makePair(date, level.getPriority()), log));
             if (System.console() != null)
                 System.out.println(log);
             else
@@ -252,8 +251,8 @@ public class HLog {
                 if (HFileHelper.createNewFile(path))
                     throw new IOException("Creating log file failed.");
                 FileWriter writer = new FileWriter(new File(path).getAbsoluteFile(), true);
-                while (!logs.isEmpty()) {
-                    writer.write(Objects.requireNonNull(logs.remove(0).getValue()));
+                for (Pair<Pair<Date, Integer>, String> pair: logs) {
+                    writer.write(HStringHelper.noNull(pair.getValue()));
                     writer.write(System.getProperty("line.separator"));
                 }
                 writer.close();

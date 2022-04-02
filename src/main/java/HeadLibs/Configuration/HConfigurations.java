@@ -8,15 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 public class HConfigurations {
-    public static final String CURRENT_VERSION = "1.0.0";
-
     private File file;
-    public final List<HConfig> data = new ArrayList<>();
+    public final Set<HConfig> data = new HashSet<>();
 
     public HConfigurations(String path) throws IllegalArgumentException {
         this.setPath(path);
@@ -47,63 +44,19 @@ public class HConfigurations {
         this.data.clear();
     }
 
-    public @Nullable HConfig getByName(@Nullable String name) {
-        for (HConfig i: this.data) {
-            if (i.getName() == null)
-                if (name == null)
-                    return i;
-            else
-                continue;
+    public @Nullable HConfig getByName(@NotNull String name) {
+        for (HConfig i: this.data)
             if (i.getName().equals(name))
                 return i;
-        }
         return null;
     }
 
     public void deleteByName(@Nullable String name) {
-        for (int i = 0; i < this.data.size(); ++i) {
-            if (this.data.get(i).getName() == null) {
-                if (name == null) {
-                    this.data.remove(i);
-                    return;
-                }
-                continue;
-            }
-            if (Objects.equals(this.data.get(i).getName(), name)) {
-                this.data.remove(i);
-                return;
-            }
-        }
-    }
-
-    public void deleteByValue(@Nullable String value) {
-        for (int i = 0; i < this.data.size(); ++i) {
-            if (this.data.get(i).getValue() == null) {
-                if (value == null) {
-                    this.data.remove(i);
-                    return;
-                }
-                continue;
-            }
-            if (Objects.equals(this.data.get(i).getValue(), value)) {
-                this.data.remove(i);
-                return;
-            }
-        }
+        this.data.removeIf(config -> config.getName().equals(name));
     }
 
     public void deleteAllByValue(@Nullable String value) {
-        for (int i = 0; i < this.data.size(); ++i) {
-            if (this.data.get(i).getValue() == null) {
-                if (value == null) {
-                    this.data.remove(i);
-                    --i;
-                }
-                continue;
-            }
-            if (Objects.equals(this.data.get(i).getValue(), value))
-                this.data.remove(i);
-        }
+        this.data.removeIf(config -> config.getValue().equals(value));
     }
 
     public void read() {
@@ -117,8 +70,20 @@ public class HConfigurations {
                     config.setName(temp.substring(6));
                 if (temp.startsWith("note:"))
                     config.setNote(temp.substring(6));
-                if (temp.startsWith("type:"))
-                    config.setType(HEConfigType.getTypeByName(temp.substring(6)));
+                if (temp.startsWith("type:")) {
+                    String type_name = temp.substring(6);
+                    boolean array = false;
+                    if (type_name.endsWith("_ARRAY")) {
+                        type_name = type_name.substring(0, type_name.length() - 6);
+                        array = true;
+                    }
+                    HEConfigType type = HEConfigType.getTypeByName(type_name, array);
+                    if (type == null) {
+                        HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Unregistered configuration type! [type='", temp, "'name='", config.getName(), "', path='", this.getPath(), "']. Use STRING!"));
+                        type = HEConfigType.STRING;
+                    }
+                    config.setType(type);
+                }
                 if (temp.startsWith("value:")) {
                     config.setValue(temp.substring(7));
                     HConfig check = this.getByName(config.getName());
@@ -144,19 +109,16 @@ public class HConfigurations {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
             for (HConfig i: this.data) {
                 writer.write("name: ");
-                if (i.getName() != null)
-                    writer.write(i.getName());
+                writer.write(i.getName());
                 writer.newLine();
                 writer.write("note: ");
-                if (i.getNote() != null)
-                    writer.write(i.getNote());
+                writer.write(i.getNote());
                 writer.newLine();
                 writer.write("type: ");
                 writer.write(i.getType().toString());
                 writer.newLine();
                 writer.write("value: ");
-                if (i.getValue() != null)
-                    writer.write(i.getValue());
+                writer.write(i.getValue());
                 writer.newLine();
                 writer.newLine();
             }

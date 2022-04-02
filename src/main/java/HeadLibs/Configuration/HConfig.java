@@ -6,61 +6,151 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+/**
+ * HConfigurations single element.
+ * @author xuxiaocheng
+ */
+@SuppressWarnings("unused")
 public class HConfig {
-    private @Nullable String name;
-    private @Nullable String note;
+    /**
+     * Config element's name
+     */
+    private @NotNull String name = "";
+    /**
+     * Config element's note
+     */
+    private @NotNull String note = "";
+    /**
+     * Config element's type
+     */
     private @NotNull HEConfigType type;
-    private @Nullable String value;
+    /**
+     * Config element's value
+     */
+    private @NotNull String value = "";
 
-    public HConfig(String name, @Nullable String note, @NotNull HEConfigType type, String value) {
+    /**
+     * Construct a new Config element.
+     * @param name Config element's name
+     * @param note Config element's note
+     * @param type Config element's type
+     * @param value Config element's value
+     */
+    public HConfig(@Nullable String name, @Nullable String note, @NotNull HEConfigType type, @Nullable String value) {
         this.setName(name);
-        this.note = note;
+        this.setNote(note);
         this.type = type;
         this.setValue(value);
     }
 
-    public HConfig(String name, String note, String value) {
+    /**
+     * Construct a new Config element.
+     * @param name Config element's name
+     * @param note Config element's note
+     * @param value Config element's value
+     */
+    public HConfig(@Nullable String name, @Nullable String note, @Nullable String value) {
         this(name, note, HEConfigType.STRING, value);
     }
 
-    public HConfig(String name, HEConfigType type, String value) {
-        this(name, null, type, value);
+    /**
+     * Construct a new Config element.
+     * @param name Config element's name
+     * @param type Config element's type
+     * @param value Config element's value
+     */
+    public HConfig(@Nullable String name, @NotNull HEConfigType type, @Nullable String value) {
+        this(name, "null", type, value);
     }
 
-    public HConfig(String name, String value) {
-        this(name, null, HEConfigType.STRING, value);
+    /**
+     * Construct a new Config element.
+     * @param name Config element's name
+     * @param value Config element's value
+     */
+    public HConfig(@Nullable String name, @Nullable String value) {
+        this(name, "null", HEConfigType.STRING, value);
     }
-    
+
+    /**
+     * Set config element's name.
+     * @param name Config element's name
+     */
     public void setName(@Nullable String name) {
         this.name = ((name == null) ? "null" : name);
     }
 
+    /**
+     * Set config element's note.
+     * @param note Config element's note
+     */
     public void setNote(@Nullable String note) {
-        this.note = note;
+        this.note = ((note == null) ? "null" : note);
     }
 
+    /**
+     * Set config element's type.
+     * @param type Config element's type
+     * @throws HWrongConfigValueException Value is wrong for Type.
+     */
     public void setType(@NotNull HEConfigType type) {
+        if (type.fix(this.value) == null)
+            throw new HWrongConfigValueException(type);
         this.type = type;
     }
 
-    public void setValue(String value) {
-        if (this.type.checkString(value))
-            this.value = value;
+    /**
+     * Set config element's value.
+     * @param value Config element's value
+     * @throws HWrongConfigValueException Value is wrong for type.
+     */
+    public void setValue(@Nullable String value) {
+        String fixed = this.type.fix(value);
+        if (fixed == null)
+            throw new HWrongConfigValueException(value);
+        this.value = fixed;
     }
 
-    public @Nullable String getName() {
+    /**
+     * Set config element's type and value.
+     * @param type Config element's type
+     * @param value Config element's value
+     * @throws HWrongConfigValueException Value is wrong for type.
+     */
+    public void setTypeAndValue(@NotNull HEConfigType type, @Nullable String value) {
+        this.type = type;
+        this.setValue(value);
+    }
+
+    /**
+     * Get config element's name.
+     * @return Config element's name
+     */
+    public @NotNull String getName() {
         return this.name;
     }
 
-    public @Nullable String getNote() {
+    /**
+     * Get config element's note.
+     * @return Config element's note
+     */
+    public @NotNull String getNote() {
         return this.note;
     }
 
+    /**
+     * Get config element's type.
+     * @return Config element's type
+     */
     public @NotNull HEConfigType getType() {
         return this.type;
     }
 
-    public @Nullable String getValue() {
+    /**
+     * Get config element's value.
+     * @return Config element's value
+     */
+    public @NotNull String getValue() {
         return this.value;
     }
 
@@ -83,8 +173,6 @@ public class HConfig {
 
     @Override
     public int hashCode() {
-        if (this.name == null)
-            return 0;
         return this.name.hashCode();
     }
 }

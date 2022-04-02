@@ -10,11 +10,14 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class DSTTagBooleanMap implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = -3458780033002101008L;
     public static final String id = "BooleanMap";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
@@ -52,9 +55,9 @@ public class DSTTagBooleanMap implements IDSTBase {
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        for (String name: data.keySet()) {
-            output.writeUTF(name);
-            output.writeBoolean(data.get(name));
+        for (Map.Entry<String, Boolean> entry : data.entrySet()) {
+            output.writeUTF(entry.getKey());
+            output.writeBoolean(entry.getValue());
         }
         output.writeUTF(suffix);
     }

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Range;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class PortManager {
     public static int getNextAvailablePort() {
         checkedPort.clear();
         long t1 = System.currentTimeMillis();
-        Random random = new Random("Craftworld".hashCode());
+        Random random = new SecureRandom("Craftworld".getBytes());
         int r = random.nextInt();
         while (r < 1 || r > 65535 || !checkPortAvailable(r)) {
             if (System.currentTimeMillis() - t1 > 3000) {

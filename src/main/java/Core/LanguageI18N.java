@@ -12,7 +12,7 @@ import java.util.Map;
 public class LanguageI18N {
     public static final String DEFAULT_LANGUAGE = "en_us";
 
-    public static final Map<String, HConfigurationsSimple> languages = new HashMap<>();
+    private static final Map<String, HConfigurationsSimple> languages = new HashMap<>();
 
     private static String getLanguageFilePath(Class<? extends ModImplement> modClass, String lang) {
         String modName = "Core";

@@ -1,135 +1,212 @@
 package HeadLibs.Configuration;
 
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HELogLevel;
-import HeadLibs.Logger.HLog;
+import HeadLibs.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public enum HEConfigType {
-    BOOLEAN, BOOLEAN_ARRAY,
-    BYTE, BYTE_ARRAY,
-    SHORT, SHORT_ARRAY,
-    INT, INT_ARRAY,
-    LONG, LONG_ARRAY,
-    FLOAT, FLOAT_ARRAY,
-    DOUBLE, DOUBLE_ARRAY,
-    STRING, STRING_ARRAY;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Configuration type.
+ * @author xuxiaocheng
+ */
+@SuppressWarnings("unused")
+public class HEConfigType {
+    //                       name         element       array_type
+    private static final Map<String, Pair<HEConfigType, HEConfigType>> ALL_TYPES = new HashMap<>();
+    public static boolean register(@NotNull HEConfigType type) {
+        Pair<HEConfigType, HEConfigType> pair;
+        if (ALL_TYPES.containsKey(type.name))
+            pair = ALL_TYPES.get(type.name);
+        else
+            pair = new Pair<>();
+        if (type.array)
+            if (pair.getValue() == null)
+                pair.setValue(type);
+            else
+                return pair.getValue().equals(type);
+        else
+        if (pair.getKey() == null)
+            pair.setKey(type);
+        else
+            return pair.getKey().equals(type);
+        if (ALL_TYPES.containsKey(type.name))
+            ALL_TYPES.replace(type.name, pair);
+        else
+            ALL_TYPES.put(type.name, pair);
+        return true;
+    }
+    public static HEConfigType getTypeByName(String name, boolean array) {
+        if (ALL_TYPES.containsKey(name))
+            if (array)
+                return ALL_TYPES.get(name).getValue();
+            else
+                return ALL_TYPES.get(name).getKey();
+        return null;
+    }
+
+    public static final HEConfigType BOOLEAN = new HEConfigType("BOOLEAN", false, HEConfigType::fixValueBoolean);
+    public static final HEConfigType BOOLEAN_ARRAY = new HEConfigType("BOOLEAN", true, value -> fixValueInList(value, HEConfigType::fixValueBoolean));
+    public static final HEConfigType BYTE = new HEConfigType("BYTE", false, HEConfigType::fixValueByte);
+    public static final HEConfigType BYTE_ARRAY = new HEConfigType("BYTE", true, value -> fixValueInList(value, HEConfigType::fixValueByte));
+    public static final HEConfigType SHORT = new HEConfigType("SHORT", false, HEConfigType::fixValueShort);
+    public static final HEConfigType SHORT_ARRAY = new HEConfigType("SHORT", true, value -> fixValueInList(value, HEConfigType::fixValueShort));
+    public static final HEConfigType INT = new HEConfigType("INT", false, HEConfigType::fixValueInt);
+    public static final HEConfigType INT_ARRAY = new HEConfigType("INT", true, value -> fixValueInList(value, HEConfigType::fixValueInt));
+    public static final HEConfigType LONG = new HEConfigType("LONG", false, HEConfigType::fixValueLong);
+    public static final HEConfigType LONG_ARRAY = new HEConfigType("LONG", true, value -> fixValueInList(value, HEConfigType::fixValueLong));
+    public static final HEConfigType FLOAT = new HEConfigType("FLOAT", false, HEConfigType::fixValueFloat);
+    public static final HEConfigType FLOAT_ARRAY = new HEConfigType("FLOAT", true, value -> fixValueInList(value, HEConfigType::fixValueFloat));
+    public static final HEConfigType DOUBLE = new HEConfigType("DOUBLE", false, HEConfigType::fixValueDouble);
+    public static final HEConfigType DOUBLE_ARRAY = new HEConfigType("DOUBLE", true, value -> fixValueInList(value, HEConfigType::fixValueDouble));
+    public static final HEConfigType STRING = new HEConfigType("STRING", false, value -> value);
+    public static final HEConfigType STRING_ARRAY = new HEConfigType("STRING", true, value -> fixValueInList(value, value1 -> value1));
+
+    private final String name;
+    private final boolean array;
+    private final FixConfigurationValueMethod check;
+
+    public HEConfigType(String name, boolean isArray, FixConfigurationValueMethod check) {
+        this.name = name.toUpperCase();
+        this.array = isArray;
+        this.check = check;
+        register(this);
+    }
+
+    public HEConfigType(String name, boolean isArray) {
+        this(name, isArray, value -> value);
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public boolean isArray() {
-        return (this == BOOLEAN_ARRAY
-                || this == BYTE_ARRAY
-                || this == SHORT_ARRAY
-                || this == INT_ARRAY
-                || this == LONG_ARRAY
-                || this == FLOAT_ARRAY
-                || this == DOUBLE_ARRAY
-                || this == STRING_ARRAY);
+        return this.array;
     }
 
-    public @NotNull HEConfigType withoutArray() {
-        return switch (this) {
-            case BOOLEAN_ARRAY -> BOOLEAN;
-            case BYTE_ARRAY -> BYTE;
-            case SHORT_ARRAY -> SHORT;
-            case INT_ARRAY -> INT;
-            case LONG_ARRAY -> LONG;
-            case FLOAT_ARRAY -> FLOAT;
-            case DOUBLE_ARRAY -> DOUBLE;
-            default -> STRING;
-        };
-    }
-
-    public boolean checkString(String value) {
-        try {
-            if ("true".equals(value))
-                value = "1";
-            if ("false".equals(value))
-                value = "0";
-            if (!this.isArray()) {
-                if (this == BOOLEAN && !"1".equals(value) && !"0".equals(value))
-                    throw new NumberFormatException("Value isn't true or false.");
-                if (this == BYTE)
-                    Byte.parseByte(value);
-                if (this == SHORT)
-                    Short.parseShort(value);
-                if (this == INT)
-                    Integer.parseInt(value);
-                if (this == LONG)
-                    Long.parseLong(value);
-                if (this == FLOAT)
-                    Float.parseFloat(value);
-                if (this ==DOUBLE)
-                    Double.parseDouble(value);
-            }
-            if (this.isArray()) {
-                if (value.charAt(0) != '[' || value.charAt(value.length() - 1) != ']')
-                    throw new NumberFormatException("Array format error.");
-                HEConfigType type = this.withoutArray();
-                String part = "";
-                for (int i = 1; i < value.length() - 1; ++i) {
-                    if (value.charAt(i) == ',') {
-                        System.out.println(part);
-                        if (type.checkString(part)) {
-                            ++i;
-                            while(value.charAt(i) == ' ')
-                                ++i;
-                            part = String.valueOf(value.charAt(i));
-                            continue;
-                        }
-                        throw new NumberFormatException(HStringHelper.merge("Array value error in ", i, "(th) char."));
-                    }
-                    part += value.charAt(i);
-                }
-                if (!"]".equals(part) && !type.checkString(part))
-                    throw new NumberFormatException(HStringHelper.merge("Array value error in ", value.length() - 2, "(th) char."));
-            }
-            return true;
-        } catch (NumberFormatException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
-        }
-        return false;
-    }
-
-    public static @NotNull HEConfigType getTypeByName(String name) {
-        return switch (name) {
-            case "BOOLEAN" -> BOOLEAN;
-            case "BOOLEAN_ARRAY" -> BOOLEAN_ARRAY;
-            case "BYTE" -> BYTE;
-            case "BYTE_ARRAY" -> BYTE_ARRAY;
-            case "SHORT" -> SHORT;
-            case "SHORT_ARRAY" -> SHORT_ARRAY;
-            case "INT" -> INT;
-            case "INT_ARRAY" -> INT_ARRAY;
-            case "LONG" -> LONG;
-            case "LONG_ARRAY" -> LONG_ARRAY;
-            case "FLOAT" -> FLOAT;
-            case "FLOAT_ARRAY" -> FLOAT_ARRAY;
-            case "DOUBLE" -> DOUBLE;
-            case "DOUBLE_ARRAY" -> DOUBLE_ARRAY;
-            case "STRING_ARRAY" ->  STRING_ARRAY;
-            default -> STRING;
-        };
+    public String fix(String value) {
+        return check.fix(value);
     }
 
     @Override
-    public @NotNull String toString() {
-        return switch (this) {
-            case BOOLEAN -> "BOOLEAN";
-            case BOOLEAN_ARRAY -> "BOOLEAN_ARRAY";
-            case BYTE -> "BYTE";
-            case BYTE_ARRAY -> "BYTE_ARRAY";
-            case SHORT -> "SHORT";
-            case SHORT_ARRAY -> "SHORT_ARRAY";
-            case INT -> "INT";
-            case INT_ARRAY -> "INT_ARRAY";
-            case LONG -> "LONG";
-            case LONG_ARRAY -> "LONG_ARRAY";
-            case FLOAT -> "FLOAT";
-            case FLOAT_ARRAY -> "FLOAT_ARRAY";
-            case DOUBLE -> "DOUBLE";
-            case DOUBLE_ARRAY -> "DOUBLE_ARRAY";
-            case STRING -> "STRING";
-            case STRING_ARRAY -> "STRING_ARRAY";
-        };
+    public String toString() {
+        if (array)
+            return HStringHelper.merge(this.name, "_ARRAY");
+        return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HEConfigType that = (HEConfigType) o;
+        return array == that.array && name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
+
+    public interface FixConfigurationValueMethod {
+        /**
+         * Fix configuration value is right for type.
+         * @param value Configuration value.
+         * @return Null means unfixable. Others mean fixed.
+         */
+        @Nullable String fix(@Nullable String value);
+    }
+
+    public static @Nullable String fixValueBoolean(@Nullable String value) {
+        try {
+            return String.valueOf(Boolean.parseBoolean(value));
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    public static @Nullable String fixValueByte(@Nullable String value) {
+        if (value == null)
+            return "0";
+        try {
+            return String.valueOf(Byte.valueOf(value));
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    public static @Nullable String fixValueShort(@Nullable String value) {
+        if (value == null)
+            return "0";
+        try {
+            return String.valueOf(Short.valueOf(value));
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    public static @Nullable String fixValueInt(@Nullable String value) {
+        if (value == null)
+            return "0";
+        try {
+            return String.valueOf(Integer.valueOf(value));
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    public static @Nullable String fixValueLong(@Nullable String value) {
+        if (value == null)
+            return "0";
+        try {
+            return String.valueOf(Long.valueOf(value));
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    public static @Nullable String fixValueFloat(@Nullable String value) {
+        if (value == null)
+            return "0.0";
+        try {
+            return String.valueOf(Float.valueOf(value));
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    public static @Nullable String fixValueDouble(@Nullable String value) {
+        if (value == null)
+            return "0.0";
+        try {
+            return String.valueOf(Double.valueOf(value));
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    public static @Nullable String fixValueInList(@Nullable String value, @NotNull FixConfigurationValueMethod method) {
+        String valueWithoutBrackets = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(value));
+        if (valueWithoutBrackets.isEmpty())
+            return "[]";
+        if (valueWithoutBrackets.charAt(0) == '[')
+            valueWithoutBrackets = valueWithoutBrackets.substring(1);
+        if (valueWithoutBrackets.charAt(valueWithoutBrackets.length() - 1) == ']')
+            valueWithoutBrackets = valueWithoutBrackets.substring(0, valueWithoutBrackets.length() - 1);
+        String[] elements = HStringHelper.delBlankHeadAndTail(valueWithoutBrackets.split(","));
+        StringBuilder fixed = new StringBuilder("[");
+        for (String element: elements) {
+            String single = method.fix(element);
+            if (single == null)
+                return null;
+            fixed.append(single);
+            fixed.append(",");
+        }
+        fixed.deleteCharAt(fixed.length() - 1);
+        fixed.append("]");
+        return fixed.toString();
     }
 }

@@ -297,7 +297,17 @@ public class HClassFinder {
             doingJar = file;
             if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".zip"))
                 try {
-                    findInJar(new JarFile(file));
+                    Enumeration<JarEntry> entryEnumeration = (new JarFile(file)).entries();
+                    while (entryEnumeration.hasMoreElements()) {
+                        JarEntry jarEntry = entryEnumeration.nextElement();
+                        String classFullName = jarEntry.getName();
+                        if (classFullName.contains("META-INF"))
+                            continue;
+                        if (!classFullName.endsWith(".class"))
+                            continue;
+                        String className = classFullName.substring(0, classFullName.length() - 6).replace('\\', '.').replace('/', '.');
+                        checkAndAddClass(className);
+                    }
                 } catch (IOException exception) {
                     HLog.logger(HELogLevel.ERROR, exception);
                 }
@@ -305,24 +315,6 @@ public class HClassFinder {
                 findInFile(file, "");
         }
         doingJar = null;
-    }
-
-    /**
-     * Find classes available in zip file.
-     * @param jarFile The zip file.
-     */
-    private void findInJar(@NotNull JarFile jarFile) {
-        Enumeration<JarEntry> entryEnumeration = jarFile.entries();
-        while (entryEnumeration.hasMoreElements()) {
-            JarEntry jarEntry = entryEnumeration.nextElement();
-            String classFullName = jarEntry.getName();
-            if (classFullName.contains("META-INF"))
-                continue;
-            if (!classFullName.endsWith(".class"))
-                continue;
-            String className = classFullName.substring(0, classFullName.length() - 6).replace('\\', '.').replace('/', '.');
-            checkAndAddClass(className);
-        }
     }
 
     /**
@@ -336,7 +328,7 @@ public class HClassFinder {
             if (files == null)
                 return;
             for (File file: files) {
-                String subPackageName = "".equals(packageName) ? "" : HStringHelper.merge(packageName, ".");
+                String subPackageName = packageName.isEmpty() ? "" : HStringHelper.merge(packageName, ".");
                 String filePath = file.getAbsolutePath().replace('\\', '.').replace('/', '.');
                 String subClassName = filePath.substring(filePath.lastIndexOf('.') + 1);
                 if (subClassName.equals("class")) {
@@ -361,6 +353,7 @@ public class HClassFinder {
                 !(jarFile.getAbsolutePath().endsWith(".zip") || jarFile.getAbsolutePath().endsWith(".jar")))
             return null;
         try {
+            @SuppressWarnings("ClassLoaderInstantiation")
             HDynamicJarClassLoader classLoader = new HDynamicJarClassLoader(new JarFile(jarFile));
             return classLoader.loadClass(className);
         } catch (MalformedURLException exception) {

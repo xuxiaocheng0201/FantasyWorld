@@ -10,11 +10,14 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class DSTTagShortMap implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = -8133206058269937530L;
     public static final String id = "ShortMap";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
@@ -52,9 +55,9 @@ public class DSTTagShortMap implements IDSTBase {
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        for (String name: data.keySet()) {
-            output.writeUTF(name);
-            output.writeShort(data.get(name));
+        for (Map.Entry<String, Short> entry : data.entrySet()) {
+            output.writeUTF(entry.getKey());
+            output.writeShort(entry.getValue());
         }
         output.writeUTF(suffix);
     }

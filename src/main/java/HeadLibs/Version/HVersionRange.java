@@ -77,7 +77,7 @@ public class HVersionRange {
             builder.append("}");
             return builder.toString();
         }
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(10);
         for (int i = 0; i < versionRanges.size(); ++i) {
             builder.append((versionRanges.get(i).toString()));
             if (i != versionRanges.size() - 1)
@@ -150,10 +150,10 @@ public class HVersionRange {
             if (canEqualLeft == 0 || canEqualRight == 0)
                 throw new IllegalArgumentException("Unknown symbols in brackets.");
             String versions = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(version.substring(1, version.length() - 1)));
-            int locationComma = versions.indexOf(",");
+            int locationComma = versions.indexOf(',');
             if (locationComma == -1)
                 throw new IllegalArgumentException("No commas in versions.");
-            int locationComma1 = versions.lastIndexOf(",");
+            int locationComma1 = versions.lastIndexOf(',');
             if (locationComma != locationComma1)
                 throw new IllegalArgumentException("Too many commas in versions.");
             this.leftEquable = canEqualLeft == 1;
@@ -240,7 +240,7 @@ public class HVersionRange {
 
         @Override
         public @NotNull String toString() {
-            return HStringHelper.merge((isLeftEquable() ? '[' : '('), getVersionLeft(), ',', getVersionRight(), (isRightEquable() ? ']' : ')'));
+            return HStringHelper.merge((isLeftEquable() ? '[' : '('), versionLeft, ',', versionRight, (isRightEquable() ? ']' : ')'));
         }
 
         @Override

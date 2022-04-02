@@ -14,8 +14,9 @@ public class HStringHelper {
     }
 
     public static @NotNull String[] noNull(String @NotNull [] a) {
-        String[] b = new String[a.length];
-        for (int i = 0; i < a.length; ++i)
+        int length = a.length;
+        String[] b = new String[length];
+        for (int i = 0; i < length; ++i)
             b[i] = noNull(a[i]);
         return b;
     }
@@ -51,9 +52,10 @@ public class HStringHelper {
         return a.substring(left, right + 1);
     }
 
-    public static String @NotNull [] delBlankHeadAndTail(String @NotNull [] a) {
-        String[] b = new String[a.length];
-        for (int i = 0; i < a.length; ++i)
+    public static @NotNull String [] delBlankHeadAndTail(String @NotNull [] a) {
+        int length = a.length;
+        String[] b = new String[length];
+        for (int i = 0; i < length; ++i)
             b[i] = delBlankHeadAndTail(a[i]);
         return b;
     }
@@ -61,7 +63,7 @@ public class HStringHelper {
     public static @NotNull String merge(Object @NotNull ... objects) {
         if (objects.length == 0)
             return "";
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(50);
         for (Object i: objects)
             builder.append(i);
         return builder.toString();
@@ -70,7 +72,7 @@ public class HStringHelper {
     public static @NotNull String merge(String @NotNull ... strings) {
         if (strings.length == 0)
             return "";
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(50);
         for (String i: strings)
             builder.append(i);
         return builder.toString();

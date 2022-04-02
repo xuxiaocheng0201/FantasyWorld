@@ -10,12 +10,15 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public final class DSTMetaCompound implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = 5912925151440251840L;
     public static final String id = "Compound";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
@@ -61,9 +64,9 @@ public final class DSTMetaCompound implements IDSTBase {
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(name);
-        for (String name: dstMap.keySet()) {
-            output.writeUTF(name);
-            dstMap.get(name).write(output);
+        for (Map.Entry<String, IDSTBase> entry : dstMap.entrySet()) {
+            output.writeUTF(entry.getKey());
+            entry.getValue().write(output);
         }
         output.writeUTF(suffix);
     }

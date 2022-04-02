@@ -18,7 +18,9 @@ import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.jar.JarFile;
 
 public class Craftworld {
@@ -33,6 +35,13 @@ public class Craftworld {
         while ((new File(log_path)).exists())
             log_path = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), "_", ++i, ".log");
         LOG_PATH = log_path;
+        log_path = HStringHelper.merge(LOG_PATH, ".err");
+        try {
+            HFileHelper.createNewFile(log_path);
+            System.setErr(new PrintStream(log_path));
+        } catch (FileNotFoundException exception) {
+            HLog.logger(HELogLevel.FAULT, exception);
+        }
     }
     private static final String EXTRACT_TEMP_FILE = "extract_temp";
 
@@ -62,7 +71,7 @@ public class Craftworld {
     public static String CURRENT_LANGUAGE = "zh_cn";
     public static boolean OVERWRITE_FILES_WHEN_EXTRACTING = false;
     public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
-    public static int PORT = 49232;
+    public static int PORT = PortManager.getNextAvailablePort();
     /*
         Random random = new Random("Craftworld".hashCode());
         int r = random.nextInt();
@@ -136,7 +145,6 @@ public class Craftworld {
             garbage_collector_time_interval = new HConfig("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HEConfigType.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
         else
             garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
-        assert garbage_collector_time_interval.getValue() != null;
         if (Integer.parseInt(garbage_collector_time_interval.getValue()) < 10) {
             HLog.logger(HELogLevel.CONFIGURATION, "Garbage collector time interval too short: ", garbage_collector_time_interval.getValue(), ". Now use:", GARBAGE_COLLECTOR_TIME_INTERVAL);
             garbage_collector_time_interval.setValue(String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
@@ -148,7 +156,6 @@ public class Craftworld {
             port = new HConfig("port", LanguageI18N.get("Core.configuration.port.name"), HEConfigType.INT, String.valueOf(PORT));
         else
             port.setNote(LanguageI18N.get("Core.configuration.port.name"));
-        assert port.getValue() != null;
         PORT = Integer.parseInt(port.getValue());
         if (PortManager.checkPortUnavailable(PORT)) {
             int availablePort = PortManager.getNextAvailablePort();
@@ -161,6 +168,7 @@ public class Craftworld {
         GLOBAL_CONFIGURATIONS.add(language);
         GLOBAL_CONFIGURATIONS.add(overwrite_when_extracting);
         GLOBAL_CONFIGURATIONS.add(garbage_collector_time_interval);
+        GLOBAL_CONFIGURATIONS.add(port);
         GLOBAL_CONFIGURATIONS.write();
     }
 
