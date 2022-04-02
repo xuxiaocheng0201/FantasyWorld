@@ -37,7 +37,7 @@ public class CraftWorld implements ModImplement {
     }
 
     @Subscribe
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "MethodMayBeStatic"})
     public void preInitialize(PreInitializationModsEvent event) {
         logger.setName("CraftWorld", logger);
         Craftworld.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
@@ -54,7 +54,7 @@ public class CraftWorld implements ModImplement {
         //TODO: Load world
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
         synchronized (this) {
-            wait(10000);
+            this.wait(10000);
         }
     }
 }

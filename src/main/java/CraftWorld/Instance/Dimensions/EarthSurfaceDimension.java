@@ -18,12 +18,13 @@ public class EarthSurfaceDimension implements IDimensionBase {
     }
 
     public EarthSurfaceDimension() {
+        super();
 
     }
 
     @Override
     public String getDimensionName() {
-        return name;
+        return this.name;
     }
 
     @Override

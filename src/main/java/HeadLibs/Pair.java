@@ -4,6 +4,7 @@ import HeadLibs.Helper.HStringHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -14,6 +15,9 @@ import java.util.Objects;
  */
 @SuppressWarnings("unused")
 public class Pair<K, V> implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -321522862154374460L;
+
     /**
      * The key.
      */
@@ -28,7 +32,7 @@ public class Pair<K, V> implements Serializable {
      * @return The key.
      */
     public @Nullable K getKey() {
-        return Key;
+        return this.Key;
     }
 
     /**
@@ -36,7 +40,7 @@ public class Pair<K, V> implements Serializable {
      * @param key The key to be set.
      */
     public void setKey(@Nullable K key) {
-        Key = key;
+        this.Key = key;
     }
 
     /**
@@ -44,7 +48,7 @@ public class Pair<K, V> implements Serializable {
      * @return The value.
      */
     public @Nullable V getValue() {
-        return Value;
+        return this.Value;
     }
 
     /**
@@ -52,13 +56,14 @@ public class Pair<K, V> implements Serializable {
      * @param value The value to be set.
      */
     public void setValue(@Nullable V value) {
-        Value = value;
+        this.Value = value;
     }
 
     /**
      * Construct an empty pair.
      */
     public Pair() {
+        super();
         this.Key = null;
         this.Value = null;
     }
@@ -69,6 +74,7 @@ public class Pair<K, V> implements Serializable {
      * @param value The value to be set.
      */
     public Pair(@Nullable K key, @Nullable V value) {
+        super();
         this.Key = key;
         this.Value = value;
     }
@@ -88,21 +94,21 @@ public class Pair<K, V> implements Serializable {
     @Override
     public @NotNull String toString() {
         return HStringHelper.merge("Pair{",
-                "Key=", Key,
-                ", Value=", Value,
+                "Key=", this.Key,
+                ", Value=", this.Value,
                 '}');
     }
 
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         Pair<?, ?> pair = (Pair<?, ?>) o;
-        return Objects.equals(Key, pair.Key) && Objects.equals(Value, pair.Value);
+        return Objects.equals(this.Key, pair.Key) && Objects.equals(this.Value, pair.Value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Key, Value);
+        return Objects.hash(this.Key, this.Value);
     }
 }

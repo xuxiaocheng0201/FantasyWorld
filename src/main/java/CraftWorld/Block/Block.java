@@ -17,10 +17,10 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class Block implements IDSTBase {
-    private IBlockBase instance = null;
+    private IBlockBase instance;
 
     public IBlockBase getInstance() {
-        return instance;
+        return this.instance;
     }
 
     public void setInstance(IBlockBase instance) {
@@ -41,7 +41,7 @@ public class Block implements IDSTBase {
 
     @Override
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -52,45 +52,45 @@ public class Block implements IDSTBase {
     @Override
     public void read(DataInput input) throws IOException {
         String name = input.readUTF();
-        if (name.equals("null")) {
-            instance = null;
+        if ("null".equals(name)) {
+            this.instance = null;
             return;
         }
         try {
-            instance = BlockUtils.getInstance().getElementInstance(BlockUtils.dePrefix(name));
+            this.instance = BlockUtils.getInstance().getElementInstance(BlockUtils.dePrefix(name));
         } catch (NoSuchElementException | NoSuchMethodException exception) {
             HLog.logger(HELogLevel.ERROR, exception);
         }
-        if (instance == null) {
-            instance = new BlockAir();
+        if (this.instance == null) {
+            this.instance = new BlockAir();
             return;
         }
         if (!BlockPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
-        instance.getPos().read(input);
+        this.instance.getPos().read(input);
         if (!DSTMetaCompound.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
-        instance.getDst().read(input);
+        this.instance.getDst().read(input);
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        if (instance == null) {
+        if (this.instance == null) {
             output.writeUTF("null");
             return;
         }
-        output.writeUTF(instance.getBlockName());
-        instance.getPos().write(output);
-        instance.getDst().write(output);
+        output.writeUTF(this.instance.getBlockName());
+        this.instance.getPos().write(output);
+        this.instance.getDst().write(output);
     }
 
     @Override
     public String toString() {
         return HStringHelper.merge("Block{",
-                ", name=", (instance == null) ? "null" : instance.getBlockName(),
-                ", pos=", (instance == null) ? "null" : instance.getPos(),
-                ", dst=", (instance == null) ? "null" : instance.getDst(),
+                ", name=", (this.instance == null) ? "null" : this.instance.getBlockName(),
+                ", pos=", (this.instance == null) ? "null" : this.instance.getPos(),
+                ", dst=", (this.instance == null) ? "null" : this.instance.getDst(),
                 '}');
     }
 
@@ -103,6 +103,6 @@ public class Block implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(instance);
+        return Objects.hash(this.instance);
     }
 }

@@ -67,7 +67,7 @@ class ModClassesSorter {
                 String requirementName;
                 HVersionRange versionRange;
                 if (locationAt == -1 || locationAt == requirementInformation.length() - 1) {
-                    if (requirementInformation.equals("*")) {
+                    if ("*".equals(requirementInformation)) {
                         switch (requirementModification) {
                             case "after" -> afterAll = true;
                             case "before" -> beforeAll = true;

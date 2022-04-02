@@ -12,48 +12,48 @@ public abstract class ElementUtil<T extends ElementImplement> {
     protected final Map<String, Class<? extends T>> map = new HashMap<>();
 
     public void register(String name, Class<? extends T> aClass) throws ElementRegisteredException {
-        if (map.containsKey(name))
+        if (this.map.containsKey(name))
             throw new ElementRegisteredException(HStringHelper.merge("Registered name. name='", name, "' aClass=", aClass));
-        if (map.containsValue(aClass))
+        if (this.map.containsValue(aClass))
             throw new ElementRegisteredException(HStringHelper.merge("Registered class. name='", name, "' aClass=", aClass));
-        map.put(name, aClass);
+        this.map.put(name, aClass);
     }
 
     public void deregister(String name) {
-        map.remove(name);
+        this.map.remove(name);
     }
 
     public void deregister(Class<? extends T> aClass) {
-        if (!map.containsValue(aClass))
+        if (!this.map.containsValue(aClass))
             return;
-        for (Map.Entry<String, Class<? extends T>> entry : map.entrySet())
+        for (Map.Entry<String, Class<? extends T>> entry : this.map.entrySet())
             if (entry.getValue().equals(aClass))
-                map.remove(entry.getKey());
+                this.map.remove(entry.getKey());
     }
 
     public boolean isRegistered(String name) {
-        return map.containsKey(name);
+        return this.map.containsKey(name);
     }
 
     public boolean isRegistered(Class<? extends T> aClass) {
-        return map.containsValue(aClass);
+        return this.map.containsValue(aClass);
     }
 
     public int getRegisteredCount() {
-        return map.size();
+        return this.map.size();
     }
 
     public T getElementInstance(String name) throws NoSuchElementException, NoSuchMethodException {
-        if (!map.containsKey(name))
+        if (!this.map.containsKey(name))
             throw new NoSuchElementException(HStringHelper.merge("Type is not registered! [name='", name, "']"));
-        T instance = HClassHelper.getInstance(map.get(name));
+        T instance = HClassHelper.getInstance(this.map.get(name));
         if (instance == null)
             throw new NoSuchMethodException(HStringHelper.merge("No common constructor to get instance. [name='", name, "']"));
         return instance;
     }
 
     public Map<String, Class<? extends T>> getMap() {
-        return map;
+        return this.map;
     }
 
     public static String prefix(String name) {

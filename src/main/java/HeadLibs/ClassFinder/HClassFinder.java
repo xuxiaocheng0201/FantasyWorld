@@ -27,7 +27,7 @@ public class HClassFinder {
     /**
      * Which jar the class file is in when searching.
      */
-    private @Nullable File doingJar = null;
+    private @Nullable File doingJar;
     /**
      * Available jars for searching.
      */
@@ -63,8 +63,9 @@ public class HClassFinder {
      * Searching all classes in this code's jar.
      */
     public HClassFinder() {
-        PACKAGE_PATH = "";
-        addJarFile(thisCodePath);
+        super();
+        this.PACKAGE_PATH = "";
+        this.addJarFile(thisCodePath);
     }
 
     /**
@@ -73,8 +74,9 @@ public class HClassFinder {
      * @param PACKAGE_PATH Find classes with package.
      */
     public HClassFinder(@Nullable String PACKAGE_PATH) {
-        setPACKAGE_PATH(PACKAGE_PATH);
-        addJarFile(thisCodePath);
+        super();
+        this.setPACKAGE_PATH(PACKAGE_PATH);
+        this.addJarFile(thisCodePath);
     }
 
     /**
@@ -82,7 +84,7 @@ public class HClassFinder {
      * @return The package to find classes.
      */
     public @NotNull String getPACKAGE_PATH() {
-        return PACKAGE_PATH;
+        return this.PACKAGE_PATH;
     }
 
     /**
@@ -102,7 +104,7 @@ public class HClassFinder {
      * @return Available jars for searching.
      */
     public @NotNull Set<File> getJarFiles() {
-        return jarFiles;
+        return this.jarFiles;
     }
 
     /**
@@ -110,9 +112,9 @@ public class HClassFinder {
      * @param jarFile available jar for searching.
      */
     public void addJarFile(@Nullable File jarFile) {
-        if (jarFile == null || !jarFile.exists() || jarFiles.contains(jarFile))
+        if (jarFile == null || !jarFile.exists() || this.jarFiles.contains(jarFile))
             return;
-        jarFiles.add(jarFile);
+        this.jarFiles.add(jarFile);
     }
 
     /**
@@ -123,13 +125,13 @@ public class HClassFinder {
         if (directory == null || !directory.exists())
             return;
         if (directory.isFile())
-            addJarFile(directory);
+            this.addJarFile(directory);
         if (directory.isDirectory()) {
             File[] files = directory.listFiles();
             if (files == null)
                 return;
             for (File file: files)
-                addJarFile(file);
+                this.addJarFile(file);
         }
     }
 
@@ -145,7 +147,7 @@ public class HClassFinder {
      * @return Super classes.
      */
     public @NotNull Set<Class<?>> getSuperClass() {
-        return superClass;
+        return this.superClass;
     }
 
     /**
@@ -157,7 +159,7 @@ public class HClassFinder {
         if (superClass == null || this.superClass.contains(superClass))
             return;
         if (superClass.isAnnotation()) {
-            addAnnotationClass((Class<? extends Annotation>) superClass);
+            this.addAnnotationClass((Class<? extends Annotation>) superClass);
             return;
         }
         this.superClass.add(superClass);
@@ -175,7 +177,7 @@ public class HClassFinder {
      * @return Annotation classes.
      */
     public @NotNull Set<Class<? extends Annotation>> getAnnotationClass() {
-        return annotationClass;
+        return this.annotationClass;
     }
 
     /**
@@ -200,7 +202,7 @@ public class HClassFinder {
      * @return Need recursively
      */
     public boolean isRecursive() {
-        return recursive;
+        return this.recursive;
     }
 
     /**
@@ -216,7 +218,7 @@ public class HClassFinder {
      * @return Found classes list
      */
     public @NotNull Set<Class<?>> getClassList() {
-        return classList;
+        return this.classList;
     }
 
     /**
@@ -224,15 +226,15 @@ public class HClassFinder {
      * @return Found classes list with jars
      */
     public @NotNull Map<Class<?>, File> getClassListWithJarFile() {
-        return classListWithJarFile;
+        return this.classListWithJarFile;
     }
 
     /**
      * Clear all found classes.
      */
     public void clearClassList() {
-        classList.clear();
-        classListWithJarFile.clear();
+        this.classList.clear();
+        this.classListWithJarFile.clear();
     }
 
     /**
@@ -254,9 +256,9 @@ public class HClassFinder {
             HLog.logger(HELogLevel.MISTAKE, "Class.forName(\"", className, "\") failed. Message: ", error.getMessage(), ".");
             return;
         }
-        if (aClass != null && checkSuper(aClass) && checkAnnotation(aClass)) {
-            classList.add(aClass);
-            classListWithJarFile.put(aClass, this.doingJar);
+        if (aClass != null && this.checkSuper(aClass) && this.checkAnnotation(aClass)) {
+            this.classList.add(aClass);
+            this.classListWithJarFile.put(aClass, this.doingJar);
         }
     }
 
@@ -294,7 +296,7 @@ public class HClassFinder {
         this.classList.clear();
         this.classListWithJarFile.clear();
         for (File file : this.jarFiles) {
-            doingJar = file;
+            this.doingJar = file;
             if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".zip"))
                 try {
                     Enumeration<JarEntry> entryEnumeration = (new JarFile(file)).entries();
@@ -306,15 +308,15 @@ public class HClassFinder {
                         if (!classFullName.endsWith(".class"))
                             continue;
                         String className = classFullName.substring(0, classFullName.length() - 6).replace('\\', '.').replace('/', '.');
-                        checkAndAddClass(className);
+                        this.checkAndAddClass(className);
                     }
                 } catch (IOException exception) {
                     HLog.logger(HELogLevel.ERROR, exception);
                 }
             else
-                findInFile(file, "");
+                this.findInFile(file, "");
         }
-        doingJar = null;
+        this.doingJar = null;
     }
 
     /**
@@ -331,11 +333,11 @@ public class HClassFinder {
                 String subPackageName = packageName.isEmpty() ? "" : HStringHelper.merge(packageName, ".");
                 String filePath = file.getAbsolutePath().replace('\\', '.').replace('/', '.');
                 String subClassName = filePath.substring(filePath.lastIndexOf('.') + 1);
-                if (subClassName.equals("class")) {
+                if ("class".equals(subClassName)) {
                     String filePathWithoutSuffix = filePath.substring(0, filePath.lastIndexOf('.'));
                     subClassName = filePathWithoutSuffix.substring(filePathWithoutSuffix.lastIndexOf('.') + 1);
                 }
-                findInFile(file, HStringHelper.merge(subPackageName, subClassName));
+                this.findInFile(file, HStringHelper.merge(subPackageName, subClassName));
             }
             return;
         }
@@ -345,7 +347,7 @@ public class HClassFinder {
             return;
         if (!subClassName.endsWith(".class"))
             return;
-        checkAndAddClass(packageName);
+        this.checkAndAddClass(packageName);
     }
 
     public static @Nullable Class<?> loadClassInJar(@Nullable File jarFile, @NotNull String className) throws ClassNotFoundException, IOException {

@@ -1,6 +1,11 @@
 package Core.Exceptions;
 
+import java.io.Serial;
+
 public class ModMissingException extends ModRequirementsException {
+    @Serial
+    private static final long serialVersionUID = -7028339289330024072L;
+
     public ModMissingException() {
         super();
     }

@@ -10,9 +10,12 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Objects;
 
 public class DSTTagChar implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = 3466972365440780620L;
     public static final String id = "Char";
     public static final String prefix = id;
     static {
@@ -24,21 +27,24 @@ public class DSTTagChar implements IDSTBase {
     }
 
     private String name = id;
-    private char data = 0;
+    private char data;
 
     public DSTTagChar() {
         super();
     }
 
     public DSTTagChar(String name) {
+        super();
         this.name = name;
     }
 
     public DSTTagChar(char data) {
+        super();
         this.data = data;
     }
 
     public DSTTagChar(String name, char data) {
+        super();
         this.name = name;
         this.data = data;
     }
@@ -57,7 +63,7 @@ public class DSTTagChar implements IDSTBase {
     }
 
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     public void setDSTName(String name) {
@@ -65,7 +71,7 @@ public class DSTTagChar implements IDSTBase {
     }
 
     public char getData() {
-        return data;
+        return this.data;
     }
 
     public void setData(char data) {
@@ -75,8 +81,8 @@ public class DSTTagChar implements IDSTBase {
     @Override
     public String toString() {
         return HStringHelper.merge("DSTTagChar{",
-                "name='", name, '\'',
-                ", data=", data,
+                "name='", this.name, '\'',
+                ", data=", this.data,
                 '}');
     }
 
@@ -90,6 +96,6 @@ public class DSTTagChar implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, data);
+        return Objects.hash(this.name, this.data);
     }
 }

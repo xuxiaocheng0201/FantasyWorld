@@ -11,6 +11,7 @@ public class HConfigSimple {
     private @Nullable String value;
 
     public HConfigSimple(String name, String value) {
+        super();
         this.setName(name);
         this.setValue(value);
     }
@@ -34,8 +35,8 @@ public class HConfigSimple {
     @Override
     public @NotNull String toString() {
         return HStringHelper.merge("HConfigSimple{",
-                "name='", name, '\'',
-                ", value='", value, '\'',
+                "name='", this.name, '\'',
+                ", value='", this.value, '\'',
                 '}');
     }
 

@@ -21,12 +21,14 @@ public class BlockPos implements IDSTBase {
     }
 
     public BlockPos(int x, int y, int z) {
+        super();
         this.x = BigInteger.valueOf(x);
         this.y = BigInteger.valueOf(y);
         this.z = BigInteger.valueOf(z);
     }
 
     public BlockPos(BigInteger x, BigInteger y, BigInteger z) {
+        super();
         this.x = x;
         this.y = y;
         this.z = z;
@@ -46,7 +48,7 @@ public class BlockPos implements IDSTBase {
 
     @Override
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -112,27 +114,27 @@ public class BlockPos implements IDSTBase {
     }
 
     public int getX() {
-        return x.intValue();
+        return this.x.intValue();
     }
 
     public BigInteger getBigX() {
-        return x;
+        return this.x;
     }
 
     public int getY() {
-        return y.intValue();
+        return this.y.intValue();
     }
 
     public BigInteger getBigY() {
-        return y;
+        return this.y;
     }
 
     public int getZ() {
-        return z.intValue();
+        return this.z.intValue();
     }
 
     public BigInteger getBigZ() {
-        return z;
+        return this.z;
     }
 
     public BigInteger getDistanceSq(BlockPos pos) {
@@ -297,34 +299,34 @@ public class BlockPos implements IDSTBase {
 
     public void offset(EFacing facing) {
         switch (facing) {
-            case UP -> up();
-            case DOWN -> down();
-            case EAST -> east();
-            case WEST -> west();
-            case NORTH -> north();
-            case SOUTH -> south();
+            case UP -> this.up();
+            case DOWN -> this.down();
+            case EAST -> this.east();
+            case WEST -> this.west();
+            case NORTH -> this.north();
+            case SOUTH -> this.south();
         }
     }
 
     public void offset(EFacing facing, int n) {
         switch (facing) {
-            case UP -> up(n);
-            case DOWN -> down(n);
-            case EAST -> east(n);
-            case WEST -> west(n);
-            case NORTH -> north(n);
-            case SOUTH -> south(n);
+            case UP -> this.up(n);
+            case DOWN -> this.down(n);
+            case EAST -> this.east(n);
+            case WEST -> this.west(n);
+            case NORTH -> this.north(n);
+            case SOUTH -> this.south(n);
         }
     }
 
     public void offset(EFacing facing, BigInteger n) {
         switch (facing) {
-            case UP -> up(n);
-            case DOWN -> down(n);
-            case EAST -> east(n);
-            case WEST -> west(n);
-            case NORTH -> north(n);
-            case SOUTH -> south(n);
+            case UP -> this.up(n);
+            case DOWN -> this.down(n);
+            case EAST -> this.east(n);
+            case WEST -> this.west(n);
+            case NORTH -> this.north(n);
+            case SOUTH -> this.south(n);
         }
     }
 
@@ -335,9 +337,9 @@ public class BlockPos implements IDSTBase {
     @Override
     public String toString() {
         return HStringHelper.merge("BlockPos{",
-                "x=", x,
-                ", y=", y,
-                ", z=", z,
+                "x=", this.x,
+                ", y=", this.y,
+                ", z=", this.z,
                 '}');
     }
 
@@ -352,6 +354,6 @@ public class BlockPos implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, z);
+        return Objects.hash(this.x, this.y, this.z);
     }
 }

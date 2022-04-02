@@ -10,11 +10,14 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class DSTTagByteList implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = -4561834002787506461L;
     public static final String id = "ByteList";
     public static final String prefix = id;
     static {
@@ -33,6 +36,7 @@ public class DSTTagByteList implements IDSTBase {
     }
 
     public DSTTagByteList(String name) {
+        super();
         this.name = name;
     }
 
@@ -54,7 +58,7 @@ public class DSTTagByteList implements IDSTBase {
     }
 
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     public void setDSTName(String name) {
@@ -62,14 +66,14 @@ public class DSTTagByteList implements IDSTBase {
     }
 
     public List<Byte> getData() {
-        return data;
+        return this.data;
     }
 
     @Override
     public String toString() {
         return HStringHelper.merge("DSTTagByteList{",
-                "name='", name, '\'',
-                ", data=", data,
+                "name='", this.name, '\'',
+                ", data=", this.data,
                 '}');
     }
 
@@ -83,6 +87,6 @@ public class DSTTagByteList implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, data);
+        return Objects.hash(this.name, this.data);
     }
 }

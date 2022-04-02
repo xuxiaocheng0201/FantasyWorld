@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+@SuppressWarnings("CustomClassloader")
 public class HDynamicJarClassLoader extends ClassLoader {
     private final JarFile jarFile;
     private final ClassLoader parent;
@@ -28,26 +29,26 @@ public class HDynamicJarClassLoader extends ClassLoader {
 
     @Override
     protected synchronized @Nullable Class<?> loadClass(@NotNull String name, boolean resolve) throws ClassNotFoundException {
-        if (jarFile == null)
+        if (this.jarFile == null)
             return null;
         try {
             Class<?> c = null;
-            String path = name.replace('.', '/').concat(".class");
-            JarEntry entry = jarFile.getJarEntry(path);
+            String path = name.replace('.', '/') + ".class";
+            JarEntry entry = this.jarFile.getJarEntry(path);
             if (entry != null) {
-                InputStream is = jarFile.getInputStream(entry);
+                InputStream is = this.jarFile.getInputStream(entry);
                 int availableLen = is.available();
                 int len = 0;
                 byte[] bt1 = new byte[availableLen];
                 while (len < availableLen)
                     len += is.read(bt1, len, availableLen - len);
                 is.close();
-                c = defineClass(name, bt1, 0, bt1.length);
+                c = this.defineClass(name, bt1, 0, bt1.length);
                 if (resolve)
-                    resolveClass(c);
+                    this.resolveClass(c);
             } else
-                if (parent != null)
-                    return parent.loadClass(name);
+                if (this.parent != null)
+                    return this.parent.loadClass(name);
             return c;
         } catch (IOException exception) {
             throw new ClassNotFoundException(name);
@@ -56,13 +57,13 @@ public class HDynamicJarClassLoader extends ClassLoader {
 
     @Override
     public InputStream getResourceAsStream(String name) {
-        if (jarFile == null)
+        if (this.jarFile == null)
             return null;
         InputStream is = null;
         try {
-            JarEntry entry = jarFile.getJarEntry(name);
+            JarEntry entry = this.jarFile.getJarEntry(name);
             if (entry != null)
-                is = jarFile.getInputStream(entry);
+                is = this.jarFile.getInputStream(entry);
             if (is == null)
                 is = super.getResourceAsStream(name);
         } catch (IOException exception) {

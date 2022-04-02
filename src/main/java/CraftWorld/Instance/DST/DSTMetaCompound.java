@@ -38,12 +38,13 @@ public final class DSTMetaCompound implements IDSTBase {
     }
 
     public DSTMetaCompound(String name) {
+        super();
         this.name = name;
     }
 
     @Override
     public void read(DataInput input) throws IOException {
-        dstMap.clear();
+        this.dstMap.clear();
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
@@ -55,7 +56,7 @@ public final class DSTMetaCompound implements IDSTBase {
             }
             if (dst != null)
                 dst.read(input);
-            dstMap.put(name, dst);
+            this.dstMap.put(name, dst);
             name = input.readUTF();
         }
     }
@@ -63,8 +64,8 @@ public final class DSTMetaCompound implements IDSTBase {
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(name);
-        for (Map.Entry<String, IDSTBase> entry : dstMap.entrySet()) {
+        output.writeUTF(this.name);
+        for (Map.Entry<String, IDSTBase> entry : this.dstMap.entrySet()) {
             output.writeUTF(entry.getKey());
             entry.getValue().write(output);
         }
@@ -72,7 +73,7 @@ public final class DSTMetaCompound implements IDSTBase {
     }
 
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     public void setDSTName(String name) {
@@ -80,14 +81,14 @@ public final class DSTMetaCompound implements IDSTBase {
     }
 
     public Map<String, IDSTBase> getDstMap() {
-        return dstMap;
+        return this.dstMap;
     }
 
     @Override
     public String toString() {
         return HStringHelper.merge("DSTMetaCompound{",
-                "name='", name, '\'',
-                ", dstMap=", dstMap,
+                "name='", this.name, '\'',
+                ", dstMap=", this.dstMap,
                 '}');
     }
 
@@ -101,6 +102,6 @@ public final class DSTMetaCompound implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, dstMap);
+        return Objects.hash(this.name, this.dstMap);
     }
 }

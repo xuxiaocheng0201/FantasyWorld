@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 class ModClassesLoader {
+    @SuppressWarnings("FieldHasSetterButNoGetter")
     private static HLog logger;
     static final File MODS_FILE = (new File(HStringHelper.merge(Craftworld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
     static {

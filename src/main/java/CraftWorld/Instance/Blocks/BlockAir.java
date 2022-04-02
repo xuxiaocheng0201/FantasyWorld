@@ -22,12 +22,13 @@ public class BlockAir implements IBlockBase {
     }
 
     public BlockAir() {
+        super();
 
     }
 
     @Override
     public String getBlockName() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -37,7 +38,7 @@ public class BlockAir implements IBlockBase {
 
     @Override
     public BlockPos getPos() {
-        return pos;
+        return this.pos;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class BlockAir implements IBlockBase {
 
     @Override
     public DSTMetaCompound getDst() {
-        return dst;
+        return this.dst;
     }
 
     @Override

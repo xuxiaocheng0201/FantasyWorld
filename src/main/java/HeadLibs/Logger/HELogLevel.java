@@ -56,21 +56,21 @@ public enum HELogLevel {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public int getPriority() {
-        return PRIORITY;
+        return this.PRIORITY;
     }
 
     public @NotNull String getPrefix() {
-        return PREFIX;
+        return this.PREFIX;
     }
 
     @Override
     public @NotNull String toString() {
         return HStringHelper.merge("HELogLevel{",
-                "name='", name, '\'',
+                "name='", this.name, '\'',
                 '}');
     }
 

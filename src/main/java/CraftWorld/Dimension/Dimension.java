@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class Dimension implements IDSTBase {
-    private IDimensionBase instance = null;
+    private IDimensionBase instance;
 
     public static final String id = "Dimension";
     public static final String prefix = id;
@@ -31,7 +31,7 @@ public class Dimension implements IDSTBase {
 
     @Override
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -42,31 +42,31 @@ public class Dimension implements IDSTBase {
     @Override
     public void read(DataInput input) throws IOException {
         String name = input.readUTF();
-        if (name.equals("null")) {
-            instance = null;
+        if ("null".equals(name)) {
+            this.instance = null;
             return;
         }
         try {
-            instance = DimensionUtils.getInstance().getElementInstance(DimensionUtils.dePrefix(name));
+            this.instance = DimensionUtils.getInstance().getElementInstance(DimensionUtils.dePrefix(name));
         } catch (NoSuchElementException | NoSuchMethodException exception) {
             HLog.logger(HELogLevel.ERROR, exception);
         }
-        if (instance == null)
-            instance = new EarthSurfaceDimension();
+        if (this.instance == null)
+            this.instance = new EarthSurfaceDimension();
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        if (instance == null) {
+        if (this.instance == null) {
             output.writeUTF("null");
             return;
         }
-        output.writeUTF(instance.getDimensionName());
+        output.writeUTF(this.instance.getDimensionName());
     }
 
     public IDimensionBase getInstance() {
-        return instance;
+        return this.instance;
     }
 
     public void setInstance(IDimensionBase instance) {
@@ -76,7 +76,7 @@ public class Dimension implements IDSTBase {
     @Override
     public String toString() {
         return HStringHelper.merge("Dimension{",
-                "name=", (instance == null)? "null" : instance.getDimensionName(),
+                "name=", (this.instance == null)? "null" : this.instance.getDimensionName(),
                 '}');
     }
 
@@ -89,6 +89,6 @@ public class Dimension implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(instance);
+        return Objects.hash(this.instance);
     }
 }

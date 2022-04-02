@@ -69,6 +69,7 @@ public class HEConfigType {
     private final FixConfigurationValueMethod check;
 
     public HEConfigType(String name, boolean isArray, FixConfigurationValueMethod check) {
+        super();
         this.name = name.toUpperCase();
         this.array = isArray;
         this.check = check;
@@ -80,7 +81,7 @@ public class HEConfigType {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public boolean isArray() {
@@ -88,12 +89,12 @@ public class HEConfigType {
     }
 
     public String fix(String value) {
-        return check.fix(value);
+        return this.check.fix(value);
     }
 
     @Override
     public String toString() {
-        if (array)
+        if (this.array)
             return HStringHelper.merge(this.name, "_ARRAY");
         return this.name;
     }
@@ -101,9 +102,9 @@ public class HEConfigType {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
         HEConfigType that = (HEConfigType) o;
-        return array == that.array && name.equals(that.name);
+        return this.array == that.array && this.name.equals(that.name);
     }
 
     @Override

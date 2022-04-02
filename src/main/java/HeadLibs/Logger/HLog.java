@@ -25,14 +25,17 @@ public class HLog {
     }
 
     public HLog(String name) {
+        super();
         this.name = name;
     }
 
     public HLog(String name, String parent) {
+        super();
         this.name = HStringHelper.merge(parent, "/", name);
     }
 
     public HLog(String name, @Nullable HLog parent) {
+        super();
         if (parent == null) {
             this.name = name;
             return;
@@ -49,7 +52,7 @@ public class HLog {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -87,7 +90,7 @@ public class HLog {
 
     public void log(@Nullable HELogLevel level, @Nullable Throwable throwable) {
         if (throwable == null) {
-            log(level, "Object null!");
+            this.log(level, "Object null!");
             return;
         }
         if (level == null)
@@ -126,47 +129,47 @@ public class HLog {
 
     public void log(HELogLevel level, @Nullable Object message) {
         if (message == null) {
-            log(level, "Object null!");
+            this.log(level, "Object null!");
             return;
         }
-        log(level, HStringHelper.merge(message));
+        this.log(level, HStringHelper.merge(message));
     }
 
     public void log(HELogLevel level, String ...messages) {
-        log(level, HStringHelper.merge(messages));
+        this.log(level, HStringHelper.merge(messages));
     }
 
     public void log(HELogLevel level, Throwable @NotNull ...throwable) {
         for (Throwable t: throwable)
-            log(level, t);
+            this.log(level, t);
     }
 
     public void log(HELogLevel level, Object ...messages) {
-        log(level, HStringHelper.merge(messages));
+        this.log(level, HStringHelper.merge(messages));
     }
 
     public void log(String message) {
-        log(HELogLevel.DEBUG, message);
+        this.log(HELogLevel.DEBUG, message);
     }
 
     public void log(Throwable throwable) {
-        log(HELogLevel.ERROR, throwable);
+        this.log(HELogLevel.ERROR, throwable);
     }
 
     public void log(Object message) {
-        log(HELogLevel.DEBUG, message);
+        this.log(HELogLevel.DEBUG, message);
     }
 
     public void log(String ...messages) {
-        log(HELogLevel.DEBUG, messages);
+        this.log(HELogLevel.DEBUG, messages);
     }
 
     public void log(Throwable ...throwable) {
-        log(HELogLevel.ERROR, throwable);
+        this.log(HELogLevel.ERROR, throwable);
     }
 
     public void log(Object ...messages) {
-        log(HELogLevel.DEBUG, messages);
+        this.log(HELogLevel.DEBUG, messages);
     }
 
     public static void logger(HELogLevel level, String message) {

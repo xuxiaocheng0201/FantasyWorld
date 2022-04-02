@@ -19,6 +19,7 @@ public class HConfigurationsSimple {
     public final List<HConfigSimple> data = new ArrayList<>();
 
     public HConfigurationsSimple(String path) throws IllegalArgumentException {
+        super();
         this.setPath(path);
     }
 
@@ -150,8 +151,8 @@ public class HConfigurationsSimple {
     @Override
     public @NotNull String toString() {
         return HStringHelper.merge("HConfigurationsSimple{",
-                "file=", file,
-                ", date=", data,
+                "file=", this.file,
+                ", date=", this.data,
                 '}');
     }
 

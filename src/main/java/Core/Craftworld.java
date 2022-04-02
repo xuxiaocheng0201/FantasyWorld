@@ -25,7 +25,7 @@ import java.util.jar.JarFile;
 
 public class Craftworld {
     public static final String CURRENT_VERSION = "0.0.0";
-    public static final String RUNTIME_PATH = HStringHelper.merge("Craftworld\\", CURRENT_VERSION, "\\");
+    public static final String RUNTIME_PATH = HStringHelper.merge("Craftworld\\", Craftworld.CURRENT_VERSION, "\\");
     public static final String GLOBAL_CONFIGURATION_PATH = HStringHelper.merge(RUNTIME_PATH, "global.cfg");
     public static final String ASSETS_PATH = HStringHelper.merge(RUNTIME_PATH, "assets\\");
     public static final String LOG_PATH;
@@ -69,7 +69,7 @@ public class Craftworld {
 
     public static HConfigurations GLOBAL_CONFIGURATIONS;
     public static String CURRENT_LANGUAGE = "zh_cn";
-    public static boolean OVERWRITE_FILES_WHEN_EXTRACTING = false;
+    public static boolean OVERWRITE_FILES_WHEN_EXTRACTING; // false
     public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
     public static int PORT = PortManager.getNextAvailablePort();
     /*
@@ -194,6 +194,7 @@ public class Craftworld {
     @SuppressWarnings("unused")
     @EventSubscribe
     public static class DefaultEventBusRegister {
+        @SuppressWarnings("MethodMayBeStatic")
         @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void defaultEventBusPostEvent(Object event) {
             HLog.logger(HELogLevel.FINE, "Default Event bus post event '", event, "'(at '", event.getClass().getName(), "').");
@@ -203,6 +204,7 @@ public class Craftworld {
     @SuppressWarnings("unused")
     @EventSubscribe(eventBus = "*")
     public static class AllEventBusRegister {
+        @SuppressWarnings("MethodMayBeStatic")
         @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void noSubscriberEvent(NoSubscriberEvent event) {
             HLog.logger(HELogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");

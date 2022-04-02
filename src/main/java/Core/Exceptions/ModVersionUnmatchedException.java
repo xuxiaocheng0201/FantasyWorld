@@ -1,6 +1,11 @@
 package Core.Exceptions;
 
+import java.io.Serial;
+
 public class ModVersionUnmatchedException extends ModRequirementsException {
+    @Serial
+    private static final long serialVersionUID = -5074629509213313717L;
+
     public ModVersionUnmatchedException() {
         super();
     }

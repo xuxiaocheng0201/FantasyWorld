@@ -11,6 +11,7 @@ import HeadLibs.Logger.HLog;
 import java.util.List;
 
 public class ModLauncher {
+    @SuppressWarnings("FieldHasSetterButNoGetter")
     private static HLog logger;
 
     public static void setLogger(HLog logger) {

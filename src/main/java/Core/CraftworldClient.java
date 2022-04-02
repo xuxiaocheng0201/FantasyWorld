@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class CraftworldClient implements Runnable {
-    public volatile static boolean isRunning = false;
+    public static volatile boolean isRunning; //false;
 
     @Override
     public void run() {
@@ -24,7 +24,7 @@ public class CraftworldClient implements Runnable {
             server.start();
             try {
                 synchronized (this) {
-                    wait(100);
+                    this.wait(100);
                 }
                 Socket client = new Socket("127.0.0.1", Craftworld.PORT);
                 //TODO: Client

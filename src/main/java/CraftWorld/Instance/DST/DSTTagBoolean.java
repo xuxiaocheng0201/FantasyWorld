@@ -10,9 +10,12 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Objects;
 
 public class DSTTagBoolean implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = 7888565642586987396L;
     public static final String id = "Boolean";
     public static final String prefix = id;
     static {
@@ -24,21 +27,24 @@ public class DSTTagBoolean implements IDSTBase {
     }
 
     private String name = id;
-    private boolean data = false;
+    private boolean data;
 
     public DSTTagBoolean() {
         super();
     }
 
     public DSTTagBoolean(String name) {
+        super();
         this.name = name;
     }
 
     public DSTTagBoolean(boolean data) {
+        super();
         this.data = data;
     }
 
     public DSTTagBoolean(String name, boolean data) {
+        super();
         this.name = name;
         this.data = data;
     }
@@ -57,7 +63,7 @@ public class DSTTagBoolean implements IDSTBase {
     }
 
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     public void setDSTName(String name) {
@@ -65,7 +71,7 @@ public class DSTTagBoolean implements IDSTBase {
     }
 
     public boolean getData() {
-        return data;
+        return this.data;
     }
 
     public void setData(boolean data) {
@@ -75,8 +81,8 @@ public class DSTTagBoolean implements IDSTBase {
     @Override
     public String toString() {
         return HStringHelper.merge("DSTTagBoolean{",
-                "name='", name, '\'',
-                ", data=", data,
+                "name='", this.name, '\'',
+                ", data=", this.data,
                 '}');
     }
 
@@ -90,6 +96,6 @@ public class DSTTagBoolean implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, data);
+        return Objects.hash(this.name, this.data);
     }
 }

@@ -16,6 +16,7 @@ public class HConfigurations {
     public final Set<HConfig> data = new HashSet<>();
 
     public HConfigurations(String path) throws IllegalArgumentException {
+        super();
         this.setPath(path);
     }
 
@@ -131,8 +132,8 @@ public class HConfigurations {
     @Override
     public @NotNull String toString() {
         return HStringHelper.merge("HConfigurations{",
-                "file=", file,
-                ", date=", data,
+                "file=", this.file,
+                ", date=", this.data,
                 '}');
     }
 

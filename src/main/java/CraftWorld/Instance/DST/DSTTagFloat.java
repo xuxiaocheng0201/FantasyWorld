@@ -10,9 +10,12 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Objects;
 
 public class DSTTagFloat implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = -5636635617251158912L;
     public static final String id = "Float";
     public static final String prefix = id;
     static {
@@ -24,21 +27,24 @@ public class DSTTagFloat implements IDSTBase {
     }
 
     private String name = id;
-    private float data = 0;
+    private float data;
 
     public DSTTagFloat() {
         super();
     }
 
     public DSTTagFloat(String name) {
+        super();
         this.name = name;
     }
 
     public DSTTagFloat(float data) {
+        super();
         this.data = data;
     }
 
     public DSTTagFloat(String name, float data) {
+        super();
         this.name = name;
         this.data = data;
     }
@@ -57,7 +63,7 @@ public class DSTTagFloat implements IDSTBase {
     }
 
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     public void setDSTName(String name) {
@@ -65,7 +71,7 @@ public class DSTTagFloat implements IDSTBase {
     }
 
     public float getData() {
-        return data;
+        return this.data;
     }
 
     public void setData(float data) {
@@ -75,8 +81,8 @@ public class DSTTagFloat implements IDSTBase {
     @Override
     public String toString() {
         return HStringHelper.merge("DSTTagFloat{",
-                "name='", name, '\'',
-                ", data=", data,
+                "name='", this.name, '\'',
+                ", data=", this.data,
                 '}');
     }
 
@@ -90,6 +96,6 @@ public class DSTTagFloat implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, data);
+        return Objects.hash(this.name, this.data);
     }
 }

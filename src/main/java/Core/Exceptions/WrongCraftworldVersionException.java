@@ -1,6 +1,11 @@
 package Core.Exceptions;
 
+import java.io.Serial;
+
 public class WrongCraftworldVersionException extends ModRequirementsException {
+    @Serial
+    private static final long serialVersionUID = -8851833450852889381L;
+
     public WrongCraftworldVersionException() {
         super();
     }

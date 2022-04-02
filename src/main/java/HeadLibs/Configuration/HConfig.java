@@ -37,6 +37,7 @@ public class HConfig {
      * @param value Config element's value
      */
     public HConfig(@Nullable String name, @Nullable String note, @NotNull HEConfigType type, @Nullable String value) {
+        super();
         this.setName(name);
         this.setNote(note);
         this.type = type;
@@ -157,10 +158,10 @@ public class HConfig {
     @Override
     public @NotNull String toString() {
         return HStringHelper.merge("HConfig{",
-                "name='", name, '\'',
-                ", note='", note, '\'',
-                ", type=", type,
-                ", value='", value, '\'',
+                "name='", this.name, '\'',
+                ", note='", this.note, '\'',
+                ", type=", this.type,
+                ", value='", this.value, '\'',
                 '}');
     }
 

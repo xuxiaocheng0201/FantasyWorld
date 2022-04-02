@@ -9,7 +9,7 @@ import HeadLibs.Logger.HLog;
 import java.net.ServerSocket;
 
 public class CraftworldServer implements Runnable {
-    public volatile static boolean isRunning = false;
+    public volatile static boolean isRunning; //false
 
     @Override
     public void run() {

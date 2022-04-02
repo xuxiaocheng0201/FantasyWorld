@@ -10,9 +10,13 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Objects;
 
 public class IDResource implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = -2821429578891939306L;
+
     private String mod_id = "CraftWorld";
     private String assets = "null";
 
@@ -30,7 +34,7 @@ public class IDResource implements IDSTBase {
 
     @Override
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -39,10 +43,12 @@ public class IDResource implements IDSTBase {
     }
 
     public IDResource() {
+        super();
 
     }
 
     public IDResource(String assets) {
+        super();
         if (assets == null)
             return;
         if (!assets.contains(":")) {
@@ -63,19 +69,19 @@ public class IDResource implements IDSTBase {
 
     @Override
     public void read(DataInput input) throws IOException {
-        mod_id = input.readUTF();
-        assets = input.readUTF();
+        this.mod_id = input.readUTF();
+        this.assets = input.readUTF();
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(mod_id);
-        output.writeUTF(assets);
+        output.writeUTF(this.mod_id);
+        output.writeUTF(this.assets);
     }
 
     public String getMod_id() {
-        return mod_id;
+        return this.mod_id;
     }
 
     public void setMod_id(String mod_id) {
@@ -83,7 +89,7 @@ public class IDResource implements IDSTBase {
     }
 
     public String getAssets() {
-        return assets;
+        return this.assets;
     }
 
     public void setAssets(String assets) {
@@ -105,6 +111,6 @@ public class IDResource implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return assets.hashCode();
+        return this.assets.hashCode();
     }
 }

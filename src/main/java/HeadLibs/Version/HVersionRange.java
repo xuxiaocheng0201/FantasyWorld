@@ -19,19 +19,20 @@ public class HVersionRange {
     }
 
     public HVersionRange(@NotNull String version) throws IllegalArgumentException {
-        addVersions(version);
+        super();
+        this.addVersions(version);
     }
 
     public void addVersions(@NotNull String versions) throws IllegalArgumentException {
         String[] versions_ = versions.split("&");
         for (String version: versions_)
-            addVersion(version);
+            this.addVersion(version);
     }
 
     public void addVersion(@NotNull String version) throws IllegalArgumentException {
         if (version.charAt(0) == '{' && version.charAt(version.length() - 1) == '}') {
             String[] versionS = HStringHelper.delBlankHeadAndTail(version.substring(1, version.length() - 1).split(","));
-            versionSingles.addAll(Arrays.asList(versionS));
+            this.versionSingles.addAll(Arrays.asList(versionS));
             return;
         }
         if ((version.charAt(0) == '(' || version.charAt(0) == '[') && (version.charAt(version.length() - 1) == ')' || version.charAt(version.length() - 1) == ']'))
@@ -41,11 +42,11 @@ public class HVersionRange {
     }
 
     public @NotNull List<SingleVersionRange> getVersionRanges() {
-        return versionRanges;
+        return this.versionRanges;
     }
 
     public @NotNull List<String> getVersionSingles() {
-        return versionSingles;
+        return this.versionSingles;
     }
 
     public void clear() {
@@ -65,30 +66,30 @@ public class HVersionRange {
 
     @Override
     public @NotNull String toString() {
-        if (versionRanges.isEmpty()) {
-            if (versionSingles.isEmpty())
+        if (this.versionRanges.isEmpty()) {
+            if (this.versionSingles.isEmpty())
                 return "";
             StringBuilder builder = new StringBuilder("{");
-            for (int i = 0; i < versionSingles.size(); ++i) {
-                builder.append(versionSingles.get(i));
-                if (i != versionSingles.size() - 1)
+            for (int i = 0; i < this.versionSingles.size(); ++i) {
+                builder.append(this.versionSingles.get(i));
+                if (i != this.versionSingles.size() - 1)
                     builder.append(", ");
             }
             builder.append("}");
             return builder.toString();
         }
         StringBuilder builder = new StringBuilder(10);
-        for (int i = 0; i < versionRanges.size(); ++i) {
-            builder.append((versionRanges.get(i).toString()));
-            if (i != versionRanges.size() - 1)
+        for (int i = 0; i < this.versionRanges.size(); ++i) {
+            builder.append((this.versionRanges.get(i).toString()));
+            if (i != this.versionRanges.size() - 1)
                 builder.append(" & ");
         }
-        if (versionSingles.isEmpty())
+        if (this.versionSingles.isEmpty())
             return builder.toString();
         builder.append(" & {");
-        for (int i = 0; i < versionSingles.size(); ++i) {
-            builder.append(versionSingles.get(i));
-            if (i != versionSingles.size() - 1)
+        for (int i = 0; i < this.versionSingles.size(); ++i) {
+            builder.append(this.versionSingles.get(i));
+            if (i != this.versionSingles.size() - 1)
                 builder.append(", ");
         }
         builder.append("}");
@@ -98,35 +99,36 @@ public class HVersionRange {
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         HVersionRange that = (HVersionRange) o;
 
-        if (!versionRanges.equals(that.versionRanges))
+        if (!this.versionRanges.equals(that.versionRanges))
             return false;
-        return versionSingles.equals(that.versionSingles);
+        return this.versionSingles.equals(that.versionSingles);
     }
 
     @Override
     public int hashCode() {
-        int result = versionRanges.hashCode();
-        result = 31 * result + versionSingles.hashCode();
+        int result = this.versionRanges.hashCode();
+        result = 31 * result + this.versionSingles.hashCode();
         return result;
     }
 
     /* Version form: [,] or (,) or [,) or (,] */
     public static class SingleVersionRange {
-        private boolean leftEquable = false;
-        private boolean rightEquable = false;
-        private @Nullable String versionLeft = null;
-        private @Nullable String versionRight = null;
+        private boolean leftEquable;
+        private boolean rightEquable;
+        private @Nullable String versionLeft;
+        private @Nullable String versionRight;
 
         public SingleVersionRange() {
             super();
         }
 
         public SingleVersionRange(@NotNull String version) throws IllegalArgumentException {
-            setVersionRange(version);
+            super();
+            this.setVersionRange(version);
         }
 
         public void setVersionRange(@NotNull String version) throws IllegalArgumentException {
@@ -163,35 +165,35 @@ public class HVersionRange {
         }
 
         public boolean versionInRange(String version) {
-            autoFix();
-            int leftResult = HVersionComparator.compareVersion(versionLeft, version);
-            int rightResult = HVersionComparator.compareVersion(version, versionRight);
-            if (leftResult == 0 && !leftEquable)
+            this.autoFix();
+            int leftResult = HVersionComparator.compareVersion(this.versionLeft, version);
+            int rightResult = HVersionComparator.compareVersion(version, this.versionRight);
+            if (leftResult == 0 && !this.leftEquable)
                 return false;
-            if (rightResult == 0 && !rightEquable)
+            if (rightResult == 0 && !this.rightEquable)
                 return false;
             return leftResult < 0 && rightResult < 0;
         }
 
         public boolean isLegal() {
-            int result = HVersionComparator.compareVersion(versionLeft, versionRight);
-            if (result == 0 && (leftEquable || rightEquable))
+            int result = HVersionComparator.compareVersion(this.versionLeft, this.versionRight);
+            if (result == 0 && (this.leftEquable || this.rightEquable))
                 return false;
             return result < 0;
         }
 
         public void autoFix() {
-            int result = HVersionComparator.compareVersion(versionLeft, versionRight);
-            if (result > 0 || (result == 0 && !leftEquable && !rightEquable))
+            int result = HVersionComparator.compareVersion(this.versionLeft, this.versionRight);
+            if (result > 0 || (result == 0 && !this.leftEquable && !this.rightEquable))
                 return;
             if (result == 0) {
                 this.leftEquable = true;
                 this.rightEquable = true;
             }
             if (result < 0) {
-                String temp = versionLeft;
-                versionLeft = versionRight;
-                versionRight = temp;
+                String temp = this.versionLeft;
+                this.versionLeft = this.versionRight;
+                this.versionRight = temp;
             }
         }
 
@@ -203,9 +205,9 @@ public class HVersionRange {
         }
 
         public boolean isLeftEquable() {
-            if (versionLeft == null)
+            if (this.versionLeft == null)
                 return false;
-            return leftEquable;
+            return this.leftEquable;
         }
 
         public void setLeftEquable(boolean leftEquable) {
@@ -213,9 +215,9 @@ public class HVersionRange {
         }
 
         public boolean isRightEquable() {
-            if (versionRight == null)
+            if (this.versionRight == null)
                 return false;
-            return rightEquable;
+            return this.rightEquable;
         }
 
         public void setRightEquable(boolean rightEquable) {
@@ -223,7 +225,7 @@ public class HVersionRange {
         }
 
         public @Nullable String getVersionLeft() {
-            return versionLeft;
+            return this.versionLeft;
         }
 
         public void setVersionLeft(@Nullable String versionLeft) {
@@ -231,7 +233,7 @@ public class HVersionRange {
         }
 
         public @Nullable String getVersionRight() {
-            return versionRight;
+            return this.versionRight;
         }
 
         public void setVersionRight(@Nullable String versionRight) {
@@ -240,28 +242,28 @@ public class HVersionRange {
 
         @Override
         public @NotNull String toString() {
-            return HStringHelper.merge((isLeftEquable() ? '[' : '('), versionLeft, ',', versionRight, (isRightEquable() ? ']' : ')'));
+            return HStringHelper.merge((this.isLeftEquable() ? '[' : '('), this.versionLeft, ',', this.versionRight, (this.isRightEquable() ? ']' : ')'));
         }
 
         @Override
         public boolean equals(@Nullable Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (o == null || this.getClass() != o.getClass()) return false;
 
             SingleVersionRange that = (SingleVersionRange) o;
 
-            if (leftEquable != that.leftEquable) return false;
-            if (rightEquable != that.rightEquable) return false;
-            if (!Objects.equals(versionLeft, that.versionLeft)) return false;
-            return Objects.equals(versionRight, that.versionRight);
+            if (this.leftEquable != that.leftEquable) return false;
+            if (this.rightEquable != that.rightEquable) return false;
+            if (!Objects.equals(this.versionLeft, that.versionLeft)) return false;
+            return Objects.equals(this.versionRight, that.versionRight);
         }
 
         @Override
         public int hashCode() {
-            int result = (leftEquable ? 1 : 0);
-            result = 31 * result + (rightEquable ? 1 : 0);
-            result = 31 * result + (versionLeft != null ? versionLeft.hashCode() : 0);
-            result = 31 * result + (versionRight != null ? versionRight.hashCode() : 0);
+            int result = (this.leftEquable ? 1 : 0);
+            result = 31 * result + (this.rightEquable ? 1 : 0);
+            result = 31 * result + (this.versionLeft != null ? this.versionLeft.hashCode() : 0);
+            result = 31 * result + (this.versionRight != null ? this.versionRight.hashCode() : 0);
             return result;
         }
     }

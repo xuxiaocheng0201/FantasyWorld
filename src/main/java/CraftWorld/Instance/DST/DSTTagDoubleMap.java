@@ -37,16 +37,17 @@ public class DSTTagDoubleMap implements IDSTBase {
     }
 
     public DSTTagDoubleMap(String name) {
+        super();
         this.name = name;
     }
 
     @Override
     public void read(DataInput input) throws IOException {
-        data.clear();
+        this.data.clear();
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            data.put(name, input.readDouble());
+            this.data.put(name, input.readDouble());
             name = input.readUTF();
         }
     }
@@ -55,7 +56,7 @@ public class DSTTagDoubleMap implements IDSTBase {
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        for (Map.Entry<String, Double> entry : data.entrySet()) {
+        for (Map.Entry<String, Double> entry : this.data.entrySet()) {
             output.writeUTF(entry.getKey());
             output.writeDouble(entry.getValue());
         }
@@ -63,7 +64,7 @@ public class DSTTagDoubleMap implements IDSTBase {
     }
 
     public String getDSTName() {
-        return name;
+        return this.name;
     }
 
     public void setDSTName(String name) {
@@ -71,14 +72,14 @@ public class DSTTagDoubleMap implements IDSTBase {
     }
 
     public Map<String, Double> getData() {
-        return data;
+        return this.data;
     }
 
     @Override
     public String toString() {
         return HStringHelper.merge("DSTTagDoubleMap{",
-                "name='", name, '\'',
-                ", data=", data,
+                "name='", this.name, '\'',
+                ", data=", this.data,
                 '}');
     }
 
@@ -92,6 +93,6 @@ public class DSTTagDoubleMap implements IDSTBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, data);
+        return Objects.hash(this.name, this.data);
     }
 }

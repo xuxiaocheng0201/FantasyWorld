@@ -11,7 +11,7 @@ public class GCThread implements Runnable {
             System.gc();
             synchronized (this) {
                 try {
-                    wait(Craftworld.GARBAGE_COLLECTOR_TIME_INTERVAL);
+                    this.wait(Craftworld.GARBAGE_COLLECTOR_TIME_INTERVAL);
                 } catch (InterruptedException exception) {
                     break;
                 }

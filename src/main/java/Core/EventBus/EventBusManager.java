@@ -48,7 +48,7 @@ public class EventBusManager {
         EventSubscribe subscribe = aClass.getAnnotation(EventSubscribe.class);
         if (subscribe == null)
             return;
-        if (subscribe.eventBus().equals("*")) {
+        if ("*".equals(subscribe.eventBus())) {
             Object instance = HClassHelper.getInstance(aClass);
             if (instance == null)
                 throw new NoSuchMethodException(HStringHelper.merge("Get instance failed. Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'."));
