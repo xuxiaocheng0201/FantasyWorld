@@ -12,19 +12,19 @@ import java.util.NoSuchElementException;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class ElementNotRegisteredException extends NoSuchElementException {
+public class HElementNotRegisteredException extends NoSuchElementException {
     @Serial
     private static final long serialVersionUID = -4342199817525193050L;
 
-    public ElementNotRegisteredException() {
+    public HElementNotRegisteredException() {
         super();
     }
 
-    public ElementNotRegisteredException(@Nullable String message) {
+    public HElementNotRegisteredException(@Nullable String message) {
         super((message == null) ? "Type is not registered!" : message);
     }
 
-    public ElementNotRegisteredException(@Nullable String message, @NotNull String name) {
+    public HElementNotRegisteredException(@Nullable String message, @NotNull String name) {
         super(HStringHelper.merge((message == null) ? "Type is not registered!" : message, " name='", name, "'"));
     }
 }

@@ -4,7 +4,7 @@ import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
-import HeadLibs.Registerer.ElementNotRegisteredException;
+import HeadLibs.Registerer.HElementNotRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,35 +72,39 @@ public class HConfigurations {
                     config.setName(temp.substring(6));
                 if (temp.startsWith("note:"))
                     config.setNote(temp.substring(6));
-                if (temp.startsWith("type:")) {
-                    HConfigTypes type;
-                    try {
-                        type = HConfigTypes.getRegisteredMap().getElement(temp.substring(6));
-                    } catch (ElementNotRegisteredException exception) {
-                        type = null;
+                try {
+                    if (temp.startsWith("type:")) {
+                        HConfigTypes type;
+                        try {
+                            type = HConfigTypes.getRegisteredMap().getElement(temp.substring(6));
+                        } catch (HElementNotRegisteredException exception) {
+                            type = null;
+                        }
+                        if (type == null) {
+                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Unregistered configuration type! [type='", temp, "'name='", config.getName(), "', path='", this.getPath(), "']. Use STRING!"));
+                            type = HConfigTypes.STRING;
+                        }
+                        config.setType(type);
                     }
-                    if (type == null) {
-                        HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Unregistered configuration type! [type='", temp, "'name='", config.getName(), "', path='", this.getPath(), "']. Use STRING!"));
-                        type = HConfigTypes.STRING;
-                    }
-                    config.setType(type);
-                }
-                if (temp.startsWith("value:")) {
-                    config.setValue(temp.substring(7));
-                    HConfigElement check = this.getByName(config.getName());
-                    if (check != null)
-                        if (check.equals(config))
-                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                    if (temp.startsWith("value:")) {
+                        config.setValue(temp.substring(7));
+                        HConfigElement check = this.getByName(config.getName());
+                        if (check != null)
+                            if (check.equals(config))
+                                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                            else
+                                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                         else
-                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
-                    else
-                        this.add(config);
-                    config = new HConfigElement(null, null);
+                            this.add(config);
+                        config = new HConfigElement(null, null);
+                    }
+                } catch (HWrongConfigValueException exception) {
+                    HLog.logger(HELogLevel.ERROR, exception);
                 }
                 temp = reader.readLine();
             }
             reader.close();
-        } catch (IOException exception) {
+        } catch (IOException | HWrongConfigValueException exception) {
             HLog.logger(HELogLevel.ERROR, exception);
         }
     }

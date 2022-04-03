@@ -1,7 +1,7 @@
 package HeadLibs.Configuration;
 
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Registerer.MapRegisterer;
+import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
  */
 @SuppressWarnings("unused")
 public class HConfigTypes {
-    private static final MapRegisterer<HConfigTypes> REGISTERED_MAP = new MapRegisterer<>();
-    public static MapRegisterer<HConfigTypes> getRegisteredMap() {
+    private static final HMapRegisterer<HConfigTypes> REGISTERED_MAP = new HMapRegisterer<>();
+    public static HMapRegisterer<HConfigTypes> getRegisteredMap() {
         return REGISTERED_MAP;
     }
 
@@ -30,38 +30,38 @@ public class HConfigTypes {
     public static final HConfigTypes FLOAT_ARRAY = new HConfigTypes("FLOAT_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueFloat));
     public static final HConfigTypes DOUBLE = new HConfigTypes("DOUBLE", HConfigTypes::fixValueDouble);
     public static final HConfigTypes DOUBLE_ARRAY = new HConfigTypes("DOUBLE_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueDouble));
-    public static final HConfigTypes STRING = new HConfigTypes("STRING", value -> value);
-    public static final HConfigTypes STRING_ARRAY = new HConfigTypes("STRING_ARRAY", value -> fixValueInList(value, value1 -> value1));
+    public static final HConfigTypes STRING = new HConfigTypes("STRING", HConfigTypes::fixValueString);
+    public static final HConfigTypes STRING_ARRAY = new HConfigTypes("STRING_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueString));
 
-    private final String name;
-    private final FixConfigurationValueMethod check;
+    private final @NotNull String name;
+    private final @NotNull FixConfigurationValueMethod check;
 
-    public HConfigTypes(String name, FixConfigurationValueMethod check) {
+    public HConfigTypes(@NotNull String name, @NotNull FixConfigurationValueMethod check) {
         super();
         this.name = name.toUpperCase();
         this.check = check;
         REGISTERED_MAP.register(this.name, this);
     }
 
-    public HConfigTypes(String name) {
+    public HConfigTypes(@NotNull String name) {
         this(name, value -> value);
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return this.name;
     }
 
-    public String fix(String value) {
+    public @Nullable String fix(@Nullable String value) {
         return this.check.fix(value);
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.name;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         HConfigTypes that = (HConfigTypes) o;
@@ -83,6 +83,8 @@ public class HConfigTypes {
     }
 
     public static @Nullable String fixValueBoolean(@Nullable String value) {
+        if (value == null || "null".equals(value))
+            return "false";
         try {
             return String.valueOf(Boolean.parseBoolean(value));
         } catch (NumberFormatException exception) {
@@ -91,7 +93,7 @@ public class HConfigTypes {
     }
 
     public static @Nullable String fixValueByte(@Nullable String value) {
-        if (value == null)
+        if (value == null || "null".equals(value))
             return "0";
         try {
             return String.valueOf(Byte.valueOf(value));
@@ -101,7 +103,7 @@ public class HConfigTypes {
     }
 
     public static @Nullable String fixValueShort(@Nullable String value) {
-        if (value == null)
+        if (value == null || "null".equals(value))
             return "0";
         try {
             return String.valueOf(Short.valueOf(value));
@@ -111,7 +113,7 @@ public class HConfigTypes {
     }
 
     public static @Nullable String fixValueInt(@Nullable String value) {
-        if (value == null)
+        if (value == null || "null".equals(value))
             return "0";
         try {
             return String.valueOf(Integer.valueOf(value));
@@ -121,7 +123,7 @@ public class HConfigTypes {
     }
 
     public static @Nullable String fixValueLong(@Nullable String value) {
-        if (value == null)
+        if (value == null || "null".equals(value))
             return "0";
         try {
             return String.valueOf(Long.valueOf(value));
@@ -131,7 +133,7 @@ public class HConfigTypes {
     }
 
     public static @Nullable String fixValueFloat(@Nullable String value) {
-        if (value == null)
+        if (value == null || "null".equals(value))
             return "0.0";
         try {
             return String.valueOf(Float.valueOf(value));
@@ -141,13 +143,17 @@ public class HConfigTypes {
     }
 
     public static @Nullable String fixValueDouble(@Nullable String value) {
-        if (value == null)
+        if (value == null || "null".equals(value))
             return "0.0";
         try {
             return String.valueOf(Double.valueOf(value));
         } catch (NumberFormatException exception) {
             return null;
         }
+    }
+
+    public static @NotNull String fixValueString(@Nullable String value) {
+        return HStringHelper.noNull(value);
     }
 
     public static @Nullable String fixValueInList(@Nullable String value, @NotNull FixConfigurationValueMethod method) {

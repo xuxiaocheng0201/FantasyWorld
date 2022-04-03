@@ -9,7 +9,7 @@ import java.util.HashSet;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class SetRegisterer<T> {
+public class HSetRegisterer<T> {
     /**
      * The registered elements' set.
      */
@@ -18,11 +18,11 @@ public class SetRegisterer<T> {
     /**
      * Register a new element.
      * @param element the element
-     * @throws ElementRegisteredException element has been registered.
+     * @throws HElementRegisteredException element has been registered.
      */
-    public void register(T element) throws ElementRegisteredException {
+    public void register(T element) throws HElementRegisteredException {
         if (this.set.contains(element))
-            throw new ElementRegisteredException("Registered element.", element);
+            throw new HElementRegisteredException("Registered element.", element);
         this.set.add(element);
     }
 
@@ -59,7 +59,7 @@ public class SetRegisterer<T> {
     }
 
     /**
-     * Get registerer set. {@link SetRegisterer#set}
+     * Get registerer set. {@link HSetRegisterer#set}
      * @return registerer set
      */
     public Collection<T> getSet() {

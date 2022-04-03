@@ -10,6 +10,7 @@ import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfigElement;
 import HeadLibs.Configuration.HConfigTypes;
 import HeadLibs.Configuration.HConfigurations;
+import HeadLibs.Configuration.HWrongConfigValueException;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
@@ -18,9 +19,7 @@ import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.jar.JarFile;
 
 public class Craftworld {
@@ -35,13 +34,6 @@ public class Craftworld {
         while ((new File(log_path)).exists())
             log_path = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), "_", ++i, ".log");
         LOG_PATH = log_path;
-        log_path = HStringHelper.merge(LOG_PATH, ".err");
-        try {
-            HFileHelper.createNewFile(log_path);
-            System.setErr(new PrintStream(log_path));
-        } catch (FileNotFoundException exception) {
-            HLog.logger(HELogLevel.FAULT, exception);
-        }
     }
     private static final String EXTRACT_TEMP_FILE = "extract_temp";
 
@@ -129,47 +121,67 @@ public class Craftworld {
         HConfigElement garbage_collector_time_interval = GLOBAL_CONFIGURATIONS.getByName("garbage_collector_time_interval");
         HConfigElement port = GLOBAL_CONFIGURATIONS.getByName("port");
 
-        if (language == null)
-            language = new HConfigElement("language", LanguageI18N.get("Core.configuration.language.name"), CURRENT_LANGUAGE);
-        else
+        try {
+            if (language == null)
+                language = new HConfigElement("language", LanguageI18N.get("Core.configuration.language.name"), CURRENT_LANGUAGE);
+            else
+                language.setNote(LanguageI18N.get("Core.configuration.language.name"));
+            CURRENT_LANGUAGE = language.getValue();
             language.setNote(LanguageI18N.get("Core.configuration.language.name"));
-        CURRENT_LANGUAGE = language.getValue();
-        language.setNote(LanguageI18N.get("Core.configuration.language.name"));
-
-        if (overwrite_when_extracting == null)
-            overwrite_when_extracting = new HConfigElement("overwrite_when_extracting", LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"), HConfigTypes.BOOLEAN, OVERWRITE_FILES_WHEN_EXTRACTING ? "true" : "false");
-        else
-            overwrite_when_extracting.setNote(LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"));
-        OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
-
-        if (garbage_collector_time_interval == null)
-            garbage_collector_time_interval = new HConfigElement("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HConfigTypes.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
-        else
-            garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
-        if (Integer.parseInt(garbage_collector_time_interval.getValue()) < 10) {
-            HLog.logger(HELogLevel.CONFIGURATION, "Garbage collector time interval too short: ", garbage_collector_time_interval.getValue(), ". Now use:", GARBAGE_COLLECTOR_TIME_INTERVAL);
-            garbage_collector_time_interval.setValue(String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
+        } catch (HWrongConfigValueException exception) {
+            HLog.logger(HELogLevel.ERROR, exception);
         }
-        else
-            GARBAGE_COLLECTOR_TIME_INTERVAL = Integer.parseInt(garbage_collector_time_interval.getValue());
 
-        if (port == null)
-            port = new HConfigElement("port", LanguageI18N.get("Core.configuration.port.name"), HConfigTypes.INT, String.valueOf(PORT));
-        else
-            port.setNote(LanguageI18N.get("Core.configuration.port.name"));
-        PORT = Integer.parseInt(port.getValue());
-        if (PortManager.checkPortUnavailable(PORT)) {
-            int availablePort = PortManager.getNextAvailablePort();
-            HLog.logger(HELogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
-            port.setValue(String.valueOf(availablePort));
-            PORT = availablePort;
+        try {
+            if (overwrite_when_extracting == null)
+                overwrite_when_extracting = new HConfigElement("overwrite_when_extracting", LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"), HConfigTypes.BOOLEAN, OVERWRITE_FILES_WHEN_EXTRACTING ? "true" : "false");
+            else
+                overwrite_when_extracting.setNote(LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"));
+            OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
+        } catch (HWrongConfigValueException exception) {
+            HLog.logger(HELogLevel.ERROR, exception);
+        }
+
+        try {
+            if (garbage_collector_time_interval == null)
+                garbage_collector_time_interval = new HConfigElement("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HConfigTypes.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
+            else
+                garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
+            if (Integer.parseInt(garbage_collector_time_interval.getValue()) < 10) {
+                HLog.logger(HELogLevel.CONFIGURATION, "Garbage collector time interval too short: ", garbage_collector_time_interval.getValue(), ". Now use:", GARBAGE_COLLECTOR_TIME_INTERVAL);
+                garbage_collector_time_interval.setValue(String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
+            }
+            else
+                GARBAGE_COLLECTOR_TIME_INTERVAL = Integer.parseInt(garbage_collector_time_interval.getValue());
+        } catch (HWrongConfigValueException exception) {
+            HLog.logger(HELogLevel.ERROR, exception);
+        }
+
+        try {
+            if (port == null)
+                port = new HConfigElement("port", LanguageI18N.get("Core.configuration.port.name"), HConfigTypes.INT, String.valueOf(PORT));
+            else
+                port.setNote(LanguageI18N.get("Core.configuration.port.name"));
+            PORT = Integer.parseInt(port.getValue());
+            if (PortManager.checkPortUnavailable(PORT)) {
+                int availablePort = PortManager.getNextAvailablePort();
+                HLog.logger(HELogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
+                port.setValue(String.valueOf(availablePort));
+                PORT = availablePort;
+            }
+        } catch (HWrongConfigValueException exception) {
+            HLog.logger(HELogLevel.ERROR, exception);
         }
 
         GLOBAL_CONFIGURATIONS.clear();
-        GLOBAL_CONFIGURATIONS.add(language);
-        GLOBAL_CONFIGURATIONS.add(overwrite_when_extracting);
-        GLOBAL_CONFIGURATIONS.add(garbage_collector_time_interval);
-        GLOBAL_CONFIGURATIONS.add(port);
+        if (language != null)
+            GLOBAL_CONFIGURATIONS.add(language);
+        if (overwrite_when_extracting != null)
+            GLOBAL_CONFIGURATIONS.add(overwrite_when_extracting);
+        if (garbage_collector_time_interval != null)
+            GLOBAL_CONFIGURATIONS.add(garbage_collector_time_interval);
+        if (port != null)
+            GLOBAL_CONFIGURATIONS.add(port);
         GLOBAL_CONFIGURATIONS.write();
     }
 

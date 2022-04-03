@@ -6,7 +6,7 @@ import CraftWorld.Block.IBlockBase;
 import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
-import HeadLibs.Registerer.ElementRegisteredException;
+import HeadLibs.Registerer.HElementRegisteredException;
 
 public class BlockAir implements IBlockBase {
     private String name = "Air";
@@ -16,7 +16,7 @@ public class BlockAir implements IBlockBase {
     static {
         try {
             BlockUtils.getInstance().register("BlockAir", BlockAir.class);
-        } catch (ElementRegisteredException exception) {
+        } catch (HElementRegisteredException exception) {
             HLog.logger(HELogLevel.ERROR, exception);
         }
     }

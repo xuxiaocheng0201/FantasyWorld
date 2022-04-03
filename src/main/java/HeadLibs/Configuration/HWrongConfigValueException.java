@@ -9,7 +9,7 @@ import java.io.Serial;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HWrongConfigValueException extends NumberFormatException {
+public class HWrongConfigValueException extends Exception {
     @Serial
     private static final long serialVersionUID = -4695385007029343114L;
 

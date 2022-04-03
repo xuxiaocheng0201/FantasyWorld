@@ -13,14 +13,14 @@ public enum HELogLevel {
     WARN("WARN", 200, "1;33"),
     CONFIGURATION("CONFIGURATION", 230, "3;35"),
     MISTAKE("MISTAKE", 250, "1;3;34"),
-    ERROR("ERROR", 300, "1;4;34;41"),
+    ERROR("ERROR", 300, "1;4;30;41"),
     BUG("BUG", 400, "1;4;41"),
     FAULT("FAULT", 500, "1;3;30;41"),
     NORMAL("NORMAL", 0, "0"),
     DEBUG("DEBUG", 600, "1;4;30;44");
 
     private final String name;
-    // Higher priority means higher chance to be logged.
+    // Higher priority means higher chance to be logged when same date.
     private final int PRIORITY;
     /**
      * From https://www.cnblogs.com/gzj03/p/14425860.html

@@ -8,7 +8,7 @@ import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
-import HeadLibs.Registerer.ElementRegisteredException;
+import HeadLibs.Registerer.HElementRegisteredException;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -36,7 +36,7 @@ public class Block implements IDSTBase {
     static {
         try {
             DSTUtils.getInstance().register(id, Block.class);
-        } catch (ElementRegisteredException exception) {
+        } catch (HElementRegisteredException exception) {
             HLog.logger(HELogLevel.ERROR, exception);
         }
     }

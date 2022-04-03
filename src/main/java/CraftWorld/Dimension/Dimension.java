@@ -6,7 +6,7 @@ import CraftWorld.Instance.Dimensions.EarthSurfaceDimension;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
-import HeadLibs.Registerer.ElementRegisteredException;
+import HeadLibs.Registerer.HElementRegisteredException;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -26,7 +26,7 @@ public class Dimension implements IDSTBase {
     static {
         try {
             DSTUtils.getInstance().register(id, Dimension.class);
-        } catch (ElementRegisteredException exception) {
+        } catch (HElementRegisteredException exception) {
             HLog.logger(HELogLevel.ERROR, exception);
         }
     }

@@ -4,7 +4,7 @@ import CraftWorld.Dimension.DimensionUtils;
 import CraftWorld.Dimension.IDimensionBase;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
-import HeadLibs.Registerer.ElementRegisteredException;
+import HeadLibs.Registerer.HElementRegisteredException;
 
 public class EarthSurfaceDimension implements IDimensionBase {
     private String name = "EarthSurface";
@@ -12,7 +12,7 @@ public class EarthSurfaceDimension implements IDimensionBase {
     static {
         try {
             DimensionUtils.getInstance().register("EarthSurfaceDimension", EarthSurfaceDimension.class);
-        } catch (ElementRegisteredException exception) {
+        } catch (HElementRegisteredException exception) {
             HLog.logger(HELogLevel.ERROR, exception);
         }
     }

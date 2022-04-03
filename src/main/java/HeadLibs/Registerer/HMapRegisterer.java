@@ -9,7 +9,7 @@ import java.util.Map;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class MapRegisterer<E> {
+public class HMapRegisterer<E> {
     /**
      * The registered elements' map.
      */
@@ -19,13 +19,13 @@ public class MapRegisterer<E> {
      * Register a new element.
      * @param name element's name
      * @param element the element
-     * @throws ElementRegisteredException element or its name has been registered.
+     * @throws HElementRegisteredException element or its name has been registered.
      */
-    public void register(String name, E element) throws ElementRegisteredException {
+    public void register(String name, E element) throws HElementRegisteredException {
         if (this.map.containsKey(name))
-            throw new ElementRegisteredException("Registered name.", name, element);
+            throw new HElementRegisteredException("Registered name.", name, element);
         if (this.map.containsValue(element))
-            throw new ElementRegisteredException("Registered element.", name, element);
+            throw new HElementRegisteredException("Registered element.", name, element);
         this.map.put(name, element);
     }
 
@@ -78,11 +78,11 @@ public class MapRegisterer<E> {
      * Get a registered element by name.
      * @param name element's name
      * @return the registered element
-     * @throws ElementNotRegisteredException No element with this name registered.
+     * @throws HElementNotRegisteredException No element with this name registered.
      */
-    public E getElement(String name) throws ElementNotRegisteredException {
+    public E getElement(String name) throws HElementNotRegisteredException {
         if (!this.map.containsKey(name))
-            throw new ElementNotRegisteredException(null, name);
+            throw new HElementNotRegisteredException(null, name);
         return this.map.get(name);
     }
 
@@ -95,7 +95,7 @@ public class MapRegisterer<E> {
     }
 
     /**
-     * Get registerer map. {@link MapRegisterer#map}
+     * Get registerer map. {@link HMapRegisterer#map}
      * @return registerer map
      */
     public Map<String, E> getMap() {

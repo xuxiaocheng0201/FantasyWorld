@@ -11,23 +11,23 @@ import java.io.Serial;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class ElementRegisteredException extends ArrayStoreException{
+public class HElementRegisteredException extends ArrayStoreException{
     @Serial
     private static final long serialVersionUID = 5758033473623251615L;
 
-    public ElementRegisteredException() {
+    public HElementRegisteredException() {
         super();
     }
 
-    public ElementRegisteredException(@Nullable String message) {
+    public HElementRegisteredException(@Nullable String message) {
         super((message == null) ? "Type has been registered!" : message);
     }
 
-    public ElementRegisteredException(@Nullable String message, @NotNull Object element) {
+    public HElementRegisteredException(@Nullable String message, @NotNull Object element) {
         super(HStringHelper.merge((message == null) ? "Type has been registered!" : message, " element=", element));
     }
 
-    public ElementRegisteredException(@Nullable String message, @NotNull String name, @NotNull Object element) {
+    public HElementRegisteredException(@Nullable String message, @NotNull String name, @NotNull Object element) {
         super(HStringHelper.merge((message == null) ? "Type has been registered!" : message, " name='", name, "' element=", element));
     }
 }
