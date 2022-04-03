@@ -1,6 +1,5 @@
 package CraftWorld.Block;
 
-import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Exception.DSTFormatException;
@@ -9,6 +8,7 @@ import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Registerer.ElementRegisteredException;
 
 import java.io.DataInput;
 import java.io.DataOutput;

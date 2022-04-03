@@ -1,10 +1,10 @@
 package CraftWorld.Instance.Dimensions;
 
-import Core.Exceptions.ElementRegisteredException;
 import CraftWorld.Dimension.DimensionUtils;
 import CraftWorld.Dimension.IDimensionBase;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Registerer.ElementRegisteredException;
 
 public class EarthSurfaceDimension implements IDimensionBase {
     private String name = "EarthSurface";
