@@ -12,6 +12,10 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ *
+ * @author xuxiaocheng
+ */
 public class HConfigurations {
     private File file;
     public final Set<HConfigElement> data = new HashSet<>();
@@ -74,15 +78,15 @@ public class HConfigurations {
                     config.setNote(temp.substring(6));
                 try {
                     if (temp.startsWith("type:")) {
-                        HConfigTypes type;
+                        HConfigType type;
                         try {
-                            type = HConfigTypes.getRegisteredMap().getElement(temp.substring(6));
+                            type = HConfigType.getRegisteredMap().getElement(temp.substring(6));
                         } catch (HElementNotRegisteredException exception) {
                             type = null;
                         }
                         if (type == null) {
                             HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Unregistered configuration type! [type='", temp, "'name='", config.getName(), "', path='", this.getPath(), "']. Use STRING!"));
-                            type = HConfigTypes.STRING;
+                            type = HConfigType.STRING;
                         }
                         config.setType(type);
                     }

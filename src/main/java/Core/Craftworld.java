@@ -8,7 +8,7 @@ import Core.Mod.ModManager;
 import Core.Mod.New.ModImplement;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfigElement;
-import HeadLibs.Configuration.HConfigTypes;
+import HeadLibs.Configuration.HConfigType;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Configuration.HWrongConfigValueException;
 import HeadLibs.Helper.HFileHelper;
@@ -134,7 +134,7 @@ public class Craftworld {
 
         try {
             if (overwrite_when_extracting == null)
-                overwrite_when_extracting = new HConfigElement("overwrite_when_extracting", LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"), HConfigTypes.BOOLEAN, OVERWRITE_FILES_WHEN_EXTRACTING ? "true" : "false");
+                overwrite_when_extracting = new HConfigElement("overwrite_when_extracting", LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"), HConfigType.BOOLEAN, OVERWRITE_FILES_WHEN_EXTRACTING ? "true" : "false");
             else
                 overwrite_when_extracting.setNote(LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"));
             OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
@@ -144,7 +144,7 @@ public class Craftworld {
 
         try {
             if (garbage_collector_time_interval == null)
-                garbage_collector_time_interval = new HConfigElement("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HConfigTypes.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
+                garbage_collector_time_interval = new HConfigElement("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HConfigType.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
             else
                 garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
             if (Integer.parseInt(garbage_collector_time_interval.getValue()) < 10) {
@@ -159,7 +159,7 @@ public class Craftworld {
 
         try {
             if (port == null)
-                port = new HConfigElement("port", LanguageI18N.get("Core.configuration.port.name"), HConfigTypes.INT, String.valueOf(PORT));
+                port = new HConfigElement("port", LanguageI18N.get("Core.configuration.port.name"), HConfigType.INT, String.valueOf(PORT));
             else
                 port.setNote(LanguageI18N.get("Core.configuration.port.name"));
             PORT = Integer.parseInt(port.getValue());

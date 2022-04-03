@@ -10,47 +10,79 @@ import org.jetbrains.annotations.Nullable;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HConfigTypes {
-    private static final HMapRegisterer<HConfigTypes> REGISTERED_MAP = new HMapRegisterer<>();
-    public static HMapRegisterer<HConfigTypes> getRegisteredMap() {
+public class HConfigType {
+    /**
+     * All Registered configuration types.
+     */
+    private static final HMapRegisterer<HConfigType> REGISTERED_MAP = new HMapRegisterer<>();
+
+    /**
+     * Get registered map.
+     * @return registered map.
+     */
+    public static HMapRegisterer<HConfigType> getRegisteredMap() {
         return REGISTERED_MAP;
     }
 
-    public static final HConfigTypes BOOLEAN = new HConfigTypes("BOOLEAN", HConfigTypes::fixValueBoolean);
-    public static final HConfigTypes BOOLEAN_ARRAY = new HConfigTypes("BOOLEAN_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueBoolean));
-    public static final HConfigTypes BYTE = new HConfigTypes("BYTE", HConfigTypes::fixValueByte);
-    public static final HConfigTypes BYTE_ARRAY = new HConfigTypes("BYTE_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueByte));
-    public static final HConfigTypes SHORT = new HConfigTypes("SHORT", HConfigTypes::fixValueShort);
-    public static final HConfigTypes SHORT_ARRAY = new HConfigTypes("SHORT_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueShort));
-    public static final HConfigTypes INT = new HConfigTypes("INT", HConfigTypes::fixValueInt);
-    public static final HConfigTypes INT_ARRAY = new HConfigTypes("INT_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueInt));
-    public static final HConfigTypes LONG = new HConfigTypes("LONG", HConfigTypes::fixValueLong);
-    public static final HConfigTypes LONG_ARRAY = new HConfigTypes("LONG_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueLong));
-    public static final HConfigTypes FLOAT = new HConfigTypes("FLOAT", HConfigTypes::fixValueFloat);
-    public static final HConfigTypes FLOAT_ARRAY = new HConfigTypes("FLOAT_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueFloat));
-    public static final HConfigTypes DOUBLE = new HConfigTypes("DOUBLE", HConfigTypes::fixValueDouble);
-    public static final HConfigTypes DOUBLE_ARRAY = new HConfigTypes("DOUBLE_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueDouble));
-    public static final HConfigTypes STRING = new HConfigTypes("STRING", HConfigTypes::fixValueString);
-    public static final HConfigTypes STRING_ARRAY = new HConfigTypes("STRING_ARRAY", value -> fixValueInList(value, HConfigTypes::fixValueString));
+    public static final HConfigType BOOLEAN = new HConfigType("BOOLEAN", HConfigType::fixValueBoolean);
+    public static final HConfigType BOOLEAN_ARRAY = new HConfigType("BOOLEAN_ARRAY", value -> fixValueInList(value, HConfigType::fixValueBoolean));
+    public static final HConfigType BYTE = new HConfigType("BYTE", HConfigType::fixValueByte);
+    public static final HConfigType BYTE_ARRAY = new HConfigType("BYTE_ARRAY", value -> fixValueInList(value, HConfigType::fixValueByte));
+    public static final HConfigType SHORT = new HConfigType("SHORT", HConfigType::fixValueShort);
+    public static final HConfigType SHORT_ARRAY = new HConfigType("SHORT_ARRAY", value -> fixValueInList(value, HConfigType::fixValueShort));
+    public static final HConfigType INT = new HConfigType("INT", HConfigType::fixValueInt);
+    public static final HConfigType INT_ARRAY = new HConfigType("INT_ARRAY", value -> fixValueInList(value, HConfigType::fixValueInt));
+    public static final HConfigType LONG = new HConfigType("LONG", HConfigType::fixValueLong);
+    public static final HConfigType LONG_ARRAY = new HConfigType("LONG_ARRAY", value -> fixValueInList(value, HConfigType::fixValueLong));
+    public static final HConfigType FLOAT = new HConfigType("FLOAT", HConfigType::fixValueFloat);
+    public static final HConfigType FLOAT_ARRAY = new HConfigType("FLOAT_ARRAY", value -> fixValueInList(value, HConfigType::fixValueFloat));
+    public static final HConfigType DOUBLE = new HConfigType("DOUBLE", HConfigType::fixValueDouble);
+    public static final HConfigType DOUBLE_ARRAY = new HConfigType("DOUBLE_ARRAY", value -> fixValueInList(value, HConfigType::fixValueDouble));
+    public static final HConfigType STRING = new HConfigType("STRING", HConfigType::fixValueString);
+    public static final HConfigType STRING_ARRAY = new HConfigType("STRING_ARRAY", value -> fixValueInList(value, HConfigType::fixValueString));
 
+    /**
+     * Configuration type id/name
+     */
     private final @NotNull String name;
+    /**
+     * The method to check {@link HConfigElement#setValue(String)} is suitable for this type
+     */
     private final @NotNull FixConfigurationValueMethod check;
 
-    public HConfigTypes(@NotNull String name, @NotNull FixConfigurationValueMethod check) {
+    /**
+     * Register a new ConfigType.
+     * @param name type's name
+     * @param check type's checkMethod
+     */
+    public HConfigType(@NotNull String name, @NotNull FixConfigurationValueMethod check) {
         super();
         this.name = name.toUpperCase();
         this.check = check;
         REGISTERED_MAP.register(this.name, this);
     }
 
-    public HConfigTypes(@NotNull String name) {
-        this(name, value -> value);
+    /**
+     * Register a new ConfigType with {@link HConfigType#fixValueString(String)} checkMethod.
+     * @param name type's name
+     */
+    public HConfigType(@NotNull String name) {
+        this(name, HConfigType::fixValueString);
     }
 
+    /**
+     * Get type's name
+     * @return type's name
+     */
     public @NotNull String getName() {
         return this.name;
     }
 
+    /**
+     * Call checkMethod.
+     * @param value config's value to set
+     * @return null - unfixable. notNull - fixed
+     */
     public @Nullable String fix(@Nullable String value) {
         return this.check.fix(value);
     }
@@ -61,11 +93,11 @@ public class HConfigTypes {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-        HConfigTypes that = (HConfigTypes) o;
-        return this.name.equals(that.name);
+        HConfigType that = (HConfigType) o;
+        return this.name.equals(that.name) && this.check.equals(that.check);
     }
 
     @Override

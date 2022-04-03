@@ -1,3 +1,4 @@
+//file:noinspection GroovyUntypedAccess
 plugins {
     id 'java'
 }

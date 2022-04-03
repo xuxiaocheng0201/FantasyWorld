@@ -23,7 +23,7 @@ public class HConfigElement {
     /**
      * Config element's type
      */
-    private @NotNull HConfigTypes type;
+    private @NotNull HConfigType type;
     /**
      * Config element's value
      */
@@ -36,7 +36,7 @@ public class HConfigElement {
      * @param type Config element's type
      * @param value Config element's value
      */
-    public HConfigElement(@Nullable String name, @Nullable String note, @NotNull HConfigTypes type, @Nullable String value) throws HWrongConfigValueException {
+    public HConfigElement(@Nullable String name, @Nullable String note, @NotNull HConfigType type, @Nullable String value) throws HWrongConfigValueException {
         super();
         this.setName(name);
         this.setNote(note);
@@ -51,7 +51,7 @@ public class HConfigElement {
      * @param value Config element's value
      */
     public HConfigElement(@Nullable String name, @Nullable String note, @Nullable String value) throws HWrongConfigValueException {
-        this(name, note, HConfigTypes.STRING, value);
+        this(name, note, HConfigType.STRING, value);
     }
 
     /**
@@ -60,7 +60,7 @@ public class HConfigElement {
      * @param type Config element's type
      * @param value Config element's value
      */
-    public HConfigElement(@Nullable String name, @NotNull HConfigTypes type, @Nullable String value) throws HWrongConfigValueException {
+    public HConfigElement(@Nullable String name, @NotNull HConfigType type, @Nullable String value) throws HWrongConfigValueException {
         this(name, "null", type, value);
     }
 
@@ -70,7 +70,7 @@ public class HConfigElement {
      * @param value Config element's value
      */
     public HConfigElement(@Nullable String name, @Nullable String value) throws HWrongConfigValueException {
-        this(name, "null", HConfigTypes.STRING, value);
+        this(name, "null", HConfigType.STRING, value);
     }
 
     /**
@@ -94,7 +94,7 @@ public class HConfigElement {
      * @param type Config element's type
      * @throws HWrongConfigValueException Value is wrong for Type.
      */
-    public void setType(@NotNull HConfigTypes type) throws HWrongConfigValueException {
+    public void setType(@NotNull HConfigType type) throws HWrongConfigValueException {
         String fixed = type.fix(this.value);
         if (fixed == null)
             throw new HWrongConfigValueException(type);
@@ -120,7 +120,7 @@ public class HConfigElement {
      * @param value Config element's value
      * @throws HWrongConfigValueException Value is wrong for type.
      */
-    public void setTypeAndValue(@NotNull HConfigTypes type, @Nullable String value) throws HWrongConfigValueException {
+    public void setTypeAndValue(@NotNull HConfigType type, @Nullable String value) throws HWrongConfigValueException {
         this.type = type;
         this.setValue(value);
     }
@@ -145,7 +145,7 @@ public class HConfigElement {
      * Get config element's type.
      * @return Config element's type
      */
-    public @NotNull HConfigTypes getType() {
+    public @NotNull HConfigType getType() {
         return this.type;
     }
 

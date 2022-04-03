@@ -44,8 +44,8 @@ public class CraftWorld implements ModImplement {
     }
 
     @Override
-    public void mainInitialize() {
-
+    public void mainInitialize() throws Exception {
+        throw new Exception();
     }
 
     public void start(ServerSocket server) throws InterruptedException {
