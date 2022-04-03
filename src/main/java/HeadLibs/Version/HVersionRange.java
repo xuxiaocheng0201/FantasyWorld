@@ -4,20 +4,44 @@ import HeadLibs.Helper.HStringHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Available version range.
+ * Like intervals in mathematics.
+ * @author xuxiaocheng
+ */
 /* Version form: [,]&(,]&{,,} */
-public class HVersionRange {
+@SuppressWarnings("unused")
+public class HVersionRange implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -7755725541591955245L;
+    /**
+     * Single interval without any operation.
+     */
     private final List<SingleVersionRange> versionRanges = new ArrayList<>();
+    /**
+     * A single version number.
+     */
     private final List<String> versionSingles = new ArrayList<>();
 
+    /**
+     * Construct a (min, max) interval.
+     */
     public HVersionRange() {
         super();
     }
 
+    /**
+     *
+     * @param version Version range.
+     * @throws IllegalArgumentException version isn't legal.
+     */
     public HVersionRange(@NotNull String version) throws IllegalArgumentException {
         super();
         this.addVersions(version);
@@ -54,7 +78,7 @@ public class HVersionRange {
         this.versionSingles.clear();
     }
 
-    public boolean versionInRange(String version) {
+    public boolean versionInRange(@NotNull String version) {
         for (SingleVersionRange range: this.versionRanges)
             if (range.versionInRange(version))
                 return false;
@@ -164,7 +188,7 @@ public class HVersionRange {
             this.versionRight = HStringHelper.delBlankHeadAndTail(versions.substring(locationComma + 1));
         }
 
-        public boolean versionInRange(String version) {
+        public boolean versionInRange(@NotNull String version) {
             this.autoFix();
             int leftResult = HVersionComparator.compareVersion(this.versionLeft, version);
             int rightResult = HVersionComparator.compareVersion(version, this.versionRight);

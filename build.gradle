@@ -2,24 +2,24 @@ plugins {
     id 'java'
 }
 
-group = "Craftworld"
-version = "0.0.0"
-description = "Craft world!"
+group = 'Craftworld'
+version = '0.0.0'
+description = 'Craft world!'
 
 repositories {
     mavenCentral()
 }
 
 java {
-    archivesBaseName = "gradle-project"
+    archivesBaseName = 'gradle-project'
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
 jar {
-    baseName("Craftworld")
-    version("0.0.0")
+    baseName('Craftworld')
+    version('0.0.0')
     manifest() {
-        attributes "Main-Class": "Core.Craftworld"
+        attributes "Main-Class": 'Core.Craftworld'
     }
 }
 

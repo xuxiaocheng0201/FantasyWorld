@@ -11,10 +11,14 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class Dimension implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = -4936855319467494864L;
+
     private IDimensionBase instance;
 
     public static final String id = "Dimension";

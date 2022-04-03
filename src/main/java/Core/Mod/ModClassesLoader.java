@@ -9,10 +9,7 @@ import HeadLibs.Logger.HLog;
 import HeadLibs.Pair;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 class ModClassesLoader {
     @SuppressWarnings("FieldHasSetterButNoGetter")
@@ -40,9 +37,9 @@ class ModClassesLoader {
     }
 
     // searched
-    private static final List<Class<? extends ModImplement>> mods = new ArrayList<>();
-    private static final List<Class<? extends ElementImplement>> elementImplements = new ArrayList<>();
-    private static final List<Class<? extends ElementUtil<?>>> elementUtils = new ArrayList<>();
+    private static final Collection<Class<? extends ModImplement>> mods = new ArrayList<>();
+    private static final Collection<Class<? extends ElementImplement>> elementImplements = new ArrayList<>();
+    private static final Collection<Class<? extends ElementUtil<?>>> elementUtils = new ArrayList<>();
 
     // checked
     private static final List<Class<? extends ModImplement>> modList = new ArrayList<>();
@@ -124,18 +121,18 @@ class ModClassesLoader {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same mod name '", savedMod.name(), "'. ",
                             "From: '", allClassesWithJarFiles.get(savedClass), "' and '", allClassesWithJarFiles.get(classClass), "'.");
-                    boolean found = false;
+                    boolean notFound = true;
                     for (List<Class<? extends ModImplement>> sameModFound: sameMods) {
                         if (sameModFound.isEmpty())
                             continue;
                         NewMod mod = sameModFound.get(0).getAnnotation(NewMod.class);
                         if (className.equals(HStringHelper.noNull(mod.name()))) {
-                            found = true;
+                            notFound = false;
                             sameModFound.add(classClass);
                             break;
                         }
                     }
-                    if (!found) {
+                    if (notFound) {
                         List<Class<? extends ModImplement>> temp = new ArrayList<>();
                         temp.add(classClass);
                         temp.add(savedClass);
@@ -159,18 +156,18 @@ class ModClassesLoader {
                 if (className.equals(HStringHelper.noNull(savedImplement.elementName()))) {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same element implement name '", savedImplement.elementName(), "'.");
-                    boolean found = false;
+                    boolean notFound = true;
                     for (List<Class<? extends ElementImplement>> sameImplementFound: sameImplements) {
                         if (sameImplementFound.isEmpty())
                             continue;
                         NewElementImplement implement = sameImplementFound.get(0).getAnnotation(NewElementImplement.class);
                         if (className.equals(HStringHelper.noNull(implement.elementName()))) {
-                            found = true;
+                            notFound = false;
                             sameImplementFound.add(classClass);
                             break;
                         }
                     }
-                    if (!found) {
+                    if (notFound) {
                         List<Class<? extends ElementImplement>> temp = new ArrayList<>();
                         temp.add(classClass);
                         temp.add(savedClass);
@@ -194,18 +191,18 @@ class ModClassesLoader {
                 if (className.equals(HStringHelper.noNull(savedUtil.name()))) {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same element util name '", savedUtil.name(), "'.");
-                    boolean found = false;
+                    boolean notFound = true;
                     for (List<Class<? extends ElementUtil<?>>> sameUtilFound: sameUtils) {
                         if (sameUtilFound.isEmpty())
                             continue;
                         NewElementUtil util = sameUtilFound.get(0).getAnnotation(NewElementUtil.class);
                         if (className.equals(HStringHelper.noNull(util.name()))) {
-                            found = true;
+                            notFound = false;
                             sameUtilFound.add(classClass);
                             break;
                         }
                     }
-                    if (!found) {
+                    if (notFound) {
                         List<Class<? extends ElementUtil<?>>> temp = new ArrayList<>();
                         temp.add(classClass);
                         temp.add(savedClass);

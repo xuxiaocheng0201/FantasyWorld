@@ -2,21 +2,23 @@ package Core;
 
 import org.jetbrains.annotations.Range;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.security.SecureRandom;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.random.RandomGenerator;
 
+@SuppressWarnings("MagicNumber")
 public class PortManager {
-    private static final Set<Integer> checkedPort = new HashSet<>();
+    private static final Collection<Integer> checkedPort = new HashSet<>();
     private static boolean checkPortAvailable(@Range(from = 1, to = 65535) int port) {
         if (checkedPort.contains(port))
             return false;
         checkedPort.add(port);
         try {
-            ServerSocket server = new ServerSocket(port);
+            Closeable server = new ServerSocket(port);
             server.close();
             return true;
         } catch (IOException exception) {
@@ -28,7 +30,7 @@ public class PortManager {
     public static int getNextAvailablePort() {
         checkedPort.clear();
         long t1 = System.currentTimeMillis();
-        Random random = new SecureRandom("Craftworld".getBytes());
+        RandomGenerator random = new SecureRandom("Craftworld".getBytes());
         int r = random.nextInt();
         while (r < 1 || r > 65535 || !checkPortAvailable(r)) {
             if (System.currentTimeMillis() - t1 > 3000) {
@@ -55,7 +57,7 @@ public class PortManager {
         if (port < 1 || port > 65535)
             return false;
         try {
-            ServerSocket server = new ServerSocket(port);
+            Closeable server = new ServerSocket(port);
             server.close();
             return false;
         } catch (IOException exception) {

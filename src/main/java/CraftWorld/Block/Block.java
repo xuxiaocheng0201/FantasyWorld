@@ -13,10 +13,14 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class Block implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = 6768714227234114009L;
+
     private IBlockBase instance;
 
     public IBlockBase getInstance() {

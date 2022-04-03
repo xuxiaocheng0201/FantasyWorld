@@ -39,6 +39,7 @@ public class HSystemHelp {
         return "UNKNOWN";
     }
 
+    @SuppressWarnings("MagicNumber")
     public static void outputSystemDetail(@NotNull Writer output) throws IOException {
         output.write("System Detail:\n");
         output.write(HStringHelper.merge("\tOperating Machine: ", getRunningType(), "\n"));

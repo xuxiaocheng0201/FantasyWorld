@@ -41,6 +41,7 @@ public enum HELogLevel {
      * 6 -> Cyan
      * 7 -> Gray
      */
+    @SuppressWarnings("GrazieInspection")
     private final @NotNull String PREFIX;
 
     HELogLevel(String name, int priority) {

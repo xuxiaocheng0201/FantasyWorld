@@ -10,10 +10,14 @@ import HeadLibs.Logger.HLog;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serial;
 import java.math.BigInteger;
 import java.util.Objects;
 
 public class BlockPos implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = -1091178102319329091L;
+
     private BigInteger x, y, z;
 
     public BlockPos() {

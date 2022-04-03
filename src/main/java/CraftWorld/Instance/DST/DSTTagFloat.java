@@ -91,7 +91,7 @@ public class DSTTagFloat implements IDSTBase {
         if (!(a instanceof DSTTagFloat))
             return false;
         return Objects.equals(this.name, ((DSTTagFloat) a).name) &&
-                this.data == ((DSTTagFloat) a).data;
+                Objects.equals(this.data, ((DSTTagFloat) a).data);
     }
 
     @Override

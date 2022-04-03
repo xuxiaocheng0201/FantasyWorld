@@ -91,7 +91,7 @@ public class DSTTagDouble implements IDSTBase {
         if (!(a instanceof DSTTagDouble))
             return false;
         return Objects.equals(this.name, ((DSTTagDouble) a).name) &&
-                this.data == ((DSTTagDouble) a).data;
+                Objects.equals(this.data, ((DSTTagDouble) a).data);
     }
 
     @Override

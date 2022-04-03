@@ -58,49 +58,11 @@ public class HConfigurationsSimple {
     }
 
     public void deleteByName(@Nullable String name) {
-        for (int i = 0; i < this.data.size(); ++i) {
-            if (this.data.get(i).getName() == null) {
-                if (name == null) {
-                    this.data.remove(i);
-                    return;
-                }
-                continue;
-            }
-            if (Objects.equals(this.data.get(i).getName(), name)) {
-                this.data.remove(i);
-                return;
-            }
-        }
-    }
-
-    public void deleteByValue(@Nullable String value) {
-        for (int i = 0; i < this.data.size(); ++i) {
-            if (this.data.get(i).getValue() == null) {
-                if (value == null) {
-                    this.data.remove(i);
-                    return;
-                }
-                continue;
-            }
-            if (Objects.equals(this.data.get(i).getValue(), value)) {
-                this.data.remove(i);
-                return;
-            }
-        }
+        this.data.removeIf(config -> Objects.equals(config.getName(), name));
     }
 
     public void deleteAllByValue(@Nullable String value) {
-        for (int i = 0; i < this.data.size(); ++i) {
-            if (this.data.get(i).getValue() == null) {
-                if (value == null) {
-                    this.data.remove(i);
-                    --i;
-                }
-                continue;
-            }
-            if (Objects.equals(this.data.get(i).getValue(), value))
-                this.data.remove(i);
-        }
+        this.data.removeIf(config -> Objects.equals(config.getValue(), value));
     }
 
     public void read() {

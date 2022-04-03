@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@SuppressWarnings("OverloadedVarargsMethod")
 public class HStringHelper {
     public static @NotNull String noNull(@Nullable String a) {
         if (a == null)
@@ -63,7 +64,7 @@ public class HStringHelper {
     public static @NotNull String merge(Object @NotNull ... objects) {
         if (objects.length == 0)
             return "";
-        StringBuilder builder = new StringBuilder(50);
+        StringBuilder builder = new StringBuilder(3 * objects.length);
         for (Object i: objects)
             builder.append(i);
         return builder.toString();
@@ -72,7 +73,7 @@ public class HStringHelper {
     public static @NotNull String merge(String @NotNull ... strings) {
         if (strings.length == 0)
             return "";
-        StringBuilder builder = new StringBuilder(50);
+        StringBuilder builder = new StringBuilder(5 * strings.length);
         for (String i: strings)
             builder.append(i);
         return builder.toString();

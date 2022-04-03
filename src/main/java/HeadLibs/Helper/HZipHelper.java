@@ -15,13 +15,14 @@ import java.util.zip.ZipOutputStream;
 
 public class HZipHelper {
     public static void zip(@NotNull File directory, @NotNull File zipFile) throws IOException {
-        URI base = directory.toURI();
+        File directory1 = directory;
+        URI base = directory1.toURI();
         Deque<File> queue = new LinkedList<>();
-        queue.push(directory);
+        queue.push(directory1);
         ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zipFile));
         while (!queue.isEmpty()) {
-            directory = queue.pop();
-            for (File kid: Objects.requireNonNull(directory.listFiles())) {
+            directory1 = queue.pop();
+            for (File kid: Objects.requireNonNull(directory1.listFiles())) {
                 String name = base.relativize(kid.toURI()).getPath();
                 if (kid.isDirectory()) {
                     queue.push(kid);

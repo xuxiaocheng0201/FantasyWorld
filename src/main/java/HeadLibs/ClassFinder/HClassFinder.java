@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.net.MalformedURLException;
 import java.util.*;
 import java.util.jar.JarEntry;
@@ -248,7 +249,7 @@ public class HClassFinder {
         } catch (ClassNotFoundException classNotFoundException) {
             try {
                 aClass = loadClassInJar(this.doingJar, className);
-            } catch (Exception exception) {
+            } catch (IOException | ClassNotFoundException exception) {
                 HLog.logger(HELogLevel.ERROR, exception);
                 return;
             }
@@ -279,7 +280,7 @@ public class HClassFinder {
      * Check class availability of annotation. {@link HClassFinder#annotationClass}
      * @param aClass Searched class to check.
      */
-    public boolean checkAnnotation(@NotNull Class<?> aClass) {
+    public boolean checkAnnotation(@NotNull AnnotatedElement aClass) {
         if (this.annotationClass.isEmpty())
             return true;
         Annotation[] annotations = aClass.getDeclaredAnnotations();
@@ -297,9 +298,11 @@ public class HClassFinder {
         this.classListWithJarFile.clear();
         for (File file : this.jarFiles) {
             this.doingJar = file;
-            if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".zip"))
+            if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".zip")) {
+                JarFile jarFile = null;
                 try {
-                    Enumeration<JarEntry> entryEnumeration = (new JarFile(file)).entries();
+                    jarFile = new JarFile(file);
+                    Enumeration<JarEntry> entryEnumeration = jarFile.entries();
                     while (entryEnumeration.hasMoreElements()) {
                         JarEntry jarEntry = entryEnumeration.nextElement();
                         String classFullName = jarEntry.getName();
@@ -312,8 +315,15 @@ public class HClassFinder {
                     }
                 } catch (IOException exception) {
                     HLog.logger(HELogLevel.ERROR, exception);
+                } finally {
+                    if (jarFile != null)
+                        try {
+                            jarFile.close();
+                        } catch (IOException exception) {
+                            HLog.logger(HELogLevel.ERROR, exception);
+                        }
                 }
-            else
+            } else
                 this.findInFile(file, "");
         }
         this.doingJar = null;

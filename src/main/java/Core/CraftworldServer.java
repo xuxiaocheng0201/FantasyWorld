@@ -6,10 +6,11 @@ import Core.Events.ServerStopEvent;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 
 public class CraftworldServer implements Runnable {
-    public volatile static boolean isRunning; //false
+    public static volatile boolean isRunning; //false
 
     @Override
     public void run() {
@@ -25,7 +26,7 @@ public class CraftworldServer implements Runnable {
             /* ********** \Special Modifier ********** */
             server.close();
             EventBusManager.getDefaultEventBus().post(new ServerStopEvent(true));
-        } catch (Exception exception) {
+        } catch (IOException | InterruptedException exception) {
             logger.log(exception);
             EventBusManager.getDefaultEventBus().post(new ServerStopEvent(false));
         }

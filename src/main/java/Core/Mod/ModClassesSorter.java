@@ -8,30 +8,19 @@ import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Pair;
 import HeadLibs.Version.HVersionRange;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 class ModClassesSorter {
     private static final List<Class<? extends ModImplement>> sortedMods = new ArrayList<>();
     private static final List<ModRequirementsException> exceptions = new ArrayList<>();
-    //                                  class                               name         version available_Craftworld_version
-    private static final Set<Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, HVersionRange>>>,
-            //        after     required      name    version_range    before
-            Pair<Pair<Set<Pair<Boolean, Pair<String, HVersionRange>>>, Set<Pair<Boolean, Pair<String, HVersionRange>>>>,
-                    //   afterAll beforeAll
-                    Pair<Boolean, Boolean>>>> modContainer = new HashSet<>();
-    //                                  class                          name
-    private static final Set<Pair<Pair<Class<? extends ModImplement>, String>,
-            //        after        before             afterAll beforeAll
-            Pair<Pair<Set<String>, Set<String>>, Pair<Boolean, Boolean>>>> simpleModContainer = new HashSet<>();
+    private static final Collection<Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<String, HVersionRange>>>, Pair<Pair<Set<Pair<Boolean, Pair<String, HVersionRange>>>, Set<Pair<Boolean, Pair<String, HVersionRange>>>>, Pair<Boolean, Boolean>>>> modContainer = new HashSet<>();
+    private static final Collection<Pair<Pair<Class<? extends ModImplement>, String>, Pair<Pair<Set<String>, Set<String>>, Pair<Boolean, Boolean>>>> simpleModContainer = new HashSet<>();
 
     static List<Class<? extends ModImplement>> getSortedMods() {
         return sortedMods;
     }
 
-    public static List<ModRequirementsException> getExceptions() {
+    static List<ModRequirementsException> getExceptions() {
         return exceptions;
     }
 
@@ -145,7 +134,7 @@ class ModClassesSorter {
                 exceptions.add(new ModRequirementsException(HStringHelper.merge("Both after:* and before:*",
                         " for class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
             //request after and before the same mod
-            Set<String> requestAfterModName = new HashSet<>();
+            Collection<String> requestAfterModName = new HashSet<>();
             for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getKey())
                 requestAfterModName.add(requirements.getValue().getKey());
             for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getValue())
@@ -194,7 +183,7 @@ class ModClassesSorter {
         modContainer.clear(); //GC
     }
 
-    private static final Set<String> sortHasSearchedMods = new HashSet<>();
+    private static final Collection<String> sortHasSearchedMods = new HashSet<>();
 
     @SuppressWarnings("ConstantConditions")
     static void sortMods() {
@@ -209,7 +198,7 @@ class ModClassesSorter {
 
     @SuppressWarnings("ConstantConditions")
     private static void addSortMod(Class<? extends ModImplement> modClass, String modName,
-                                   Set<String> requireAfter, Set<String> requireBefore, Pair<Boolean, Boolean> requireAll) {
+                                   Collection<String> requireAfter, Collection<String> requireBefore, Pair<Boolean, Boolean> requireAll) {
         if (sortedMods.contains(modClass))
             return;
         if (sortHasSearchedMods.contains(modName))

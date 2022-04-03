@@ -70,6 +70,7 @@ public class Craftworld {
     public static HConfigurations GLOBAL_CONFIGURATIONS;
     public static String CURRENT_LANGUAGE = "zh_cn";
     public static boolean OVERWRITE_FILES_WHEN_EXTRACTING; // false
+    @SuppressWarnings("MagicNumber")
     public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
     public static int PORT = PortManager.getNextAvailablePort();
     /*

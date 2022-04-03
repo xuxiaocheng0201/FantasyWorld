@@ -27,9 +27,9 @@ public class Chunk {
     public Chunk(BigInteger x, BigInteger y, BigInteger z) {
         super();
         this.pos = new ChunkPos(x, y, z);
-        x = x.multiply(SIZE_B);
-        y = y.multiply(SIZE_B);
-        z = z.multiply(SIZE_B);
+        BigInteger x1 = x.multiply(SIZE_B);
+        BigInteger y1 = y.multiply(SIZE_B);
+        BigInteger z1 = z.multiply(SIZE_B);
         for (int a = 0; a < SIZE; ++a) {
             this.blocks[a] = new Block[SIZE][SIZE];
             for (int b = 0; b < SIZE; ++b) {
@@ -38,9 +38,9 @@ public class Chunk {
                     this.blocks[a][b][c] = new Block();
                     this.blocks[a][b][c].setInstance(new BlockAir());
                     this.blocks[a][b][c].getInstance().setPos(new BlockPos(
-                            x.add(BigInteger.valueOf(a)),
-                            y.add(BigInteger.valueOf(b)),
-                            z.add(BigInteger.valueOf(c))));
+                            x1.add(BigInteger.valueOf(a)),
+                            y1.add(BigInteger.valueOf(b)),
+                            z1.add(BigInteger.valueOf(c))));
                 }
             }
         }

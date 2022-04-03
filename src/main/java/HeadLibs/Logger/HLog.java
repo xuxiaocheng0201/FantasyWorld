@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "OverloadedVarargsMethod"})
 public class HLog {
     private static @NotNull String DATE_FORMAT = "HH:mm:ss";
     private static final List<@NotNull Pair<@NotNull Pair<@NotNull Date, @NotNull Integer>, @NotNull String>> logs = new ArrayList<>();
@@ -72,36 +72,38 @@ public class HLog {
     }
 
     public void log(@Nullable HELogLevel level, String message) {
-        if (level == null)
-            level = HELogLevel.DEBUG;
+        HELogLevel level1 = level;
+        if (level1 == null)
+            level1 = HELogLevel.DEBUG;
         Date date = new Date();
         String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
                 "[", this.name, "]",
-                "[", level.getName(), "]",
+                "[", level1.getName(), "]",
                 message);
         synchronized (logs) {
-            logs.add(Pair.makePair(Pair.makePair(date, level.getPriority()), log));
+            logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
             if (System.console() != null)
                 System.out.println(log);
             else
-                System.out.println(level.getPrefix() + log + "\033[0m");
+                System.out.println(level1.getPrefix() + log + "\033[0m");
         }
     }
 
     public void log(@Nullable HELogLevel level, @Nullable Throwable throwable) {
+        HELogLevel level1 = level;
         if (throwable == null) {
-            this.log(level, "Object null!");
+            this.log(level1, "Object null!");
             return;
         }
-        if (level == null)
-            level = HELogLevel.ERROR;
+        if (level1 == null)
+            level1 = HELogLevel.ERROR;
         Date date = new Date();
         StringBuilder builder = new StringBuilder("[");
         builder.append(HStringHelper.getDate(DATE_FORMAT, date));
         builder.append("][");
         builder.append(this.name);
         builder.append("][");
-        builder.append(level.getName());
+        builder.append(level1.getName());
         builder.append("]");
         builder.append(throwable.getClass().getName());
         if (throwable.getMessage() != null) {
@@ -119,11 +121,11 @@ public class HLog {
         addCausedThrowable(builder, throwable.getCause());
         String log = builder.toString();
         synchronized (logs) {
-            logs.add(Pair.makePair(Pair.makePair(date, level.getPriority()), log));
+            logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
             if (System.console() != null)
                 System.out.println(log);
             else
-                System.out.println(level.getPrefix() + log + "\033[0m");
+                System.out.println(level1.getPrefix() + log + "\033[0m");
         }
     }
 

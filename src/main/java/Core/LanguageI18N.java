@@ -39,15 +39,15 @@ public class LanguageI18N {
     public static String get(Class<? extends ModImplement> modClass, String name, String lang) {
         if (lang == null)
             return get(modClass, name, DEFAULT_LANGUAGE);
-        lang = lang.toLowerCase();
-        if (!languages.containsKey(lang)) {
-            HConfigurationsSimple language = new HConfigurationsSimple(getLanguageFilePath(modClass, lang));
-            languages.put(lang, language);
+        String lang1 = lang.toLowerCase();
+        if (!languages.containsKey(lang1)) {
+            HConfigurationsSimple language = new HConfigurationsSimple(getLanguageFilePath(modClass, lang1));
+            languages.put(lang1, language);
         }
-        HConfigSimple translation = languages.get(lang).getByName(name);
+        HConfigSimple translation = languages.get(lang1).getByName(name);
         if (translation != null)
             return translation.getValue();
-        if (lang.equals(DEFAULT_LANGUAGE)) {
+        if (lang1.equals(DEFAULT_LANGUAGE)) {
             HConfigurationsSimple todo = new HConfigurationsSimple(getLanguageFilePath(modClass, "TODO"));
             if (todo.getByName(name) == null) {
                 todo.add(new HConfigSimple(name, null));

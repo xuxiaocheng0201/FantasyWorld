@@ -51,7 +51,7 @@ public class HDynamicJarClassLoader extends ClassLoader {
                     return this.parent.loadClass(name);
             return c;
         } catch (IOException exception) {
-            throw new ClassNotFoundException(name);
+            throw new ClassNotFoundException(name, exception);
         }
     }
 

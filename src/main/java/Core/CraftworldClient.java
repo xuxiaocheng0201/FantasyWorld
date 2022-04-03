@@ -5,6 +5,7 @@ import Core.Events.ClientStoppingEvent;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -26,7 +27,7 @@ public class CraftworldClient implements Runnable {
                 synchronized (this) {
                     this.wait(100);
                 }
-                Socket client = new Socket("127.0.0.1", Craftworld.PORT);
+                Closeable client = new Socket("127.0.0.1", Craftworld.PORT);
                 //TODO: Client
                 client.close();
                 server.join();

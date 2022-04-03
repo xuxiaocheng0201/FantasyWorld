@@ -48,7 +48,7 @@ public class CraftWorld implements ModImplement {
 
     }
 
-    public void start(ServerSocket server) throws Exception {
+    public void start(ServerSocket server) throws InterruptedException {
         logger.log(HELogLevel.FINEST, "Loading world..." );
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         //TODO: Load world
