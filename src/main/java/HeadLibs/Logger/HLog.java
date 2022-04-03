@@ -13,57 +13,80 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * A HeadLib logger just like {@link java.util.logging.Logger}
+ * @author xuxiaocheng
+ */
 @SuppressWarnings({"unused", "OverloadedVarargsMethod"})
 public class HLog {
+    /**
+     * Log's date format.
+     */
     private static @NotNull String DATE_FORMAT = "HH:mm:ss";
-    private static final List<@NotNull Pair<@NotNull Pair<@NotNull Date, @NotNull Integer>, @NotNull String>> logs = new ArrayList<>();
+    /**
+     * Cache logs.
+     */
+    private static final List<Pair<Pair<Date, Integer>, String>> logs = new ArrayList<>();
 
-    private String name;
-
-    public HLog() {
-        this("main");
-    }
-
-    public HLog(String name) {
-        super();
-        this.name = name;
-    }
-
-    public HLog(String name, String parent) {
-        super();
-        this.name = HStringHelper.merge(parent, "/", name);
-    }
-
-    public HLog(String name, @Nullable HLog parent) {
-        super();
-        if (parent == null) {
-            this.name = name;
-            return;
-        }
-        this.name = HStringHelper.merge(parent.name, "/", name);
-    }
-
+    /**
+     * Get log's date format.
+     * @return log's date format
+     */
     public static @NotNull String getDateFormat() {
         return DATE_FORMAT;
     }
 
+    /**
+     * Set log's date format.
+     * @param dateFormat log's date format
+     */
     public static void setDateFormat(@NotNull String dateFormat) {
         DATE_FORMAT = dateFormat;
     }
 
-    public String getName() {
-        return this.name;
+    /**
+     * logger's name.
+     */
+    private @NotNull String name;
+
+    /**
+     * Construct a logger named main.
+     */
+    public HLog() {
+        this("main");
     }
 
-    public void setName(String name) {
+    /**
+     * Construct a logger.
+     * @param name logger's name
+     */
+    public HLog(@NotNull String name) {
+        super();
         this.name = name;
     }
 
-    public void setName(String name, String parent) {
+    /**
+     * Construct a logger with parent's name.
+     * @param name logger's name
+     * @param parent logger's parent's name
+     */
+    public HLog(@NotNull String name, @Nullable String parent) {
+        super();
+        if (parent == null) {
+            this.name = name;
+            return;
+        }
         this.name = HStringHelper.merge(parent, "/", name);
     }
 
-    public void setName(String name, @Nullable HLog parent) {
+
+    /**
+     * Construct a logger with parent's name.
+     * @param name logger's name
+     * @param parent logger's parent
+     */
+    public HLog(@NotNull String name, @Nullable HLog parent) {
+        super();
         if (parent == null) {
             this.name = name;
             return;
@@ -71,7 +94,50 @@ public class HLog {
         this.name = HStringHelper.merge(parent.name, "/", name);
     }
 
-    public void log(@Nullable HELogLevel level, String message) {
+    /**
+     * Get logger's name.
+     * @return logger's name
+     */
+    public @NotNull String getName() {
+        return this.name;
+    }
+
+    /**
+     * Set logger's name.
+     * @param name logger's name
+     */
+    public void setName(@NotNull String name) {
+        this.name = name;
+    }
+
+    /**
+     * Set logger's name with parent's name.
+     * @param name logger's name
+     * @param parent logger's parent's name
+     */
+    public void setName(@NotNull String name, @Nullable String parent) {
+        this.name = HStringHelper.merge(parent, "/", name);
+    }
+
+    /**
+     * Set logger's name with parent's name.
+     * @param name logger's name
+     * @param parent logger's parent
+     */
+    public void setName(@NotNull String name, @Nullable HLog parent) {
+        if (parent == null) {
+            this.name = name;
+            return;
+        }
+        this.name = HStringHelper.merge(parent.name, "/", name);
+    }
+
+    /**
+     * Log message with level.
+     * @param level log's level
+     * @param message the message to log
+     */
+    public void log(@Nullable HELogLevel level, @Nullable String message) {
         HELogLevel level1 = level;
         if (level1 == null)
             level1 = HELogLevel.DEBUG;
@@ -89,12 +155,13 @@ public class HLog {
         }
     }
 
-    public void log(@Nullable HELogLevel level, @Nullable Throwable throwable) {
+    /**
+     * Log throwable with level.
+     * @param level log's level
+     * @param throwable the throwable to log
+     */
+    public void log(@Nullable HELogLevel level, @NotNull Throwable throwable) {
         HELogLevel level1 = level;
-        if (throwable == null) {
-            this.log(level1, "Object null!");
-            return;
-        }
         if (level1 == null)
             level1 = HELogLevel.ERROR;
         Date date = new Date();
@@ -129,99 +196,210 @@ public class HLog {
         }
     }
 
-    public void log(HELogLevel level, @Nullable Object message) {
-        if (message == null) {
+    /**
+     * Log String.valueOf(object) with level.
+     * @param level log's level
+     * @param object the object to log
+     * @see String#valueOf(Object)
+     */
+    public void log(@Nullable HELogLevel level, @Nullable Object object) {
+        if (object == null) {
             this.log(level, "Object null!");
             return;
         }
-        this.log(level, HStringHelper.merge(message));
+        this.log(level, HStringHelper.merge(object));
     }
 
-    public void log(HELogLevel level, String ...messages) {
+    /**
+     * Log messages with level.
+     * @param level log's level
+     * @param messages the messages to log
+     */
+    public void log(@Nullable HELogLevel level, @Nullable String ...messages) {
         this.log(level, HStringHelper.merge(messages));
     }
 
-    public void log(HELogLevel level, Throwable @NotNull ...throwable) {
+    /**
+     * Log throwable with level.
+     * @param level log's level
+     * @param throwable the throwable to log
+     */
+    public void log(@Nullable HELogLevel level, @NotNull Throwable ...throwable) {
         for (Throwable t: throwable)
             this.log(level, t);
     }
 
-    public void log(HELogLevel level, Object ...messages) {
-        this.log(level, HStringHelper.merge(messages));
+    /**
+     * Log objects with level.
+     * @param level log's level
+     * @param objects the objects to log
+     * @see String#valueOf(Object)
+     */
+    public void log(@Nullable HELogLevel level, @Nullable Object ...objects) {
+        this.log(level, HStringHelper.merge(objects));
     }
 
-    public void log(String message) {
+    /**
+     * Log message with DEBUG level.
+     * @param message the message to log
+     */
+    public void log(@Nullable String message) {
         this.log(HELogLevel.DEBUG, message);
     }
 
-    public void log(Throwable throwable) {
+    /**
+     * Log throwable with ERROR level.
+     * @param throwable the throwable to log
+     */
+    public void log(@NotNull Throwable throwable) {
         this.log(HELogLevel.ERROR, throwable);
     }
 
-    public void log(Object message) {
-        this.log(HELogLevel.DEBUG, message);
+    /**
+     * Log String.valueOf(object) with DEBUG level.
+     * @param object the object to log
+     * @see String#valueOf(Object)
+     */
+    public void log(@Nullable Object object) {
+        this.log(HELogLevel.DEBUG, object);
     }
 
-    public void log(String ...messages) {
+    /**
+     * Log messages with DEBUG level.
+     * @param messages the messages to log
+     */
+    public void log(@Nullable String ...messages) {
         this.log(HELogLevel.DEBUG, messages);
     }
 
-    public void log(Throwable ...throwable) {
+    /**
+     * Log throwable with DEBUG level.
+     * @param throwable the throwable to log
+     */
+    public void log(@NotNull Throwable ...throwable) {
         this.log(HELogLevel.ERROR, throwable);
     }
 
-    public void log(Object ...messages) {
-        this.log(HELogLevel.DEBUG, messages);
+    /**
+     * Log objects with DEBUG level.
+     * @param objects the objects to log
+     * @see String#valueOf(Object)
+     */
+    public void log(@Nullable Object ...objects) {
+        this.log(HELogLevel.DEBUG, objects);
     }
 
-    public static void logger(HELogLevel level, String message) {
+    /**
+     * Statically log message with level.
+     * @param level log's level
+     * @param message the message to log
+     */
+    public static void logger(@Nullable HELogLevel level, @Nullable String message) {
         (new HLog(Thread.currentThread().getName())).log(level, message);
     }
 
-    public static void logger(HELogLevel level, Throwable throwable) {
+    /**
+     * Statically log throwable with level.
+     * @param level log's level
+     * @param throwable the throwable to log
+     */
+    public static void logger(@Nullable HELogLevel level, @NotNull Throwable throwable) {
         (new HLog(Thread.currentThread().getName())).log(level, throwable);
     }
 
-    public static void logger(HELogLevel level, Object message) {
-        (new HLog(Thread.currentThread().getName())).log(level, message);
+    /**
+     * Statically log String.valueOf(object) with level.
+     * @param level log's level
+     * @param object the object to log
+     * @see String#valueOf(Object)
+     */
+    public static void logger(@Nullable HELogLevel level, @Nullable Object object) {
+        (new HLog(Thread.currentThread().getName())).log(level, object);
     }
 
-    public static void logger(HELogLevel level, String ...messages) {
+    /**
+     * Statically log messages with level.
+     * @param level log's level
+     * @param messages the messages to log
+     */
+    public static void logger(@Nullable HELogLevel level, @Nullable String ...messages) {
         (new HLog(Thread.currentThread().getName())).log(level, messages);
     }
 
-    public static void logger(HELogLevel level, Throwable ...throwable) {
+    /**
+     * Statically log throwable with level.
+     * @param level log's level
+     * @param throwable the throwable to log
+     */
+    public static void logger(@Nullable HELogLevel level, @NotNull Throwable ...throwable) {
         (new HLog(Thread.currentThread().getName())).log(level, throwable);
     }
 
-    public static void logger(HELogLevel level, Object ...messages) {
-        (new HLog(Thread.currentThread().getName())).log(level, messages);
+    /**
+     * Statically log objects with level.
+     * @param level log's level
+     * @param objects the objects to log
+     * @see String#valueOf(Object)
+     */
+    public static void logger(@Nullable HELogLevel level, @Nullable Object ...objects) {
+        (new HLog(Thread.currentThread().getName())).log(level, objects);
     }
 
-    public static void logger(String message) {
+    /**
+     * Statically log message with DEBUG level.
+     * @param message the message to log
+     */
+    public static void logger(@Nullable String message) {
         (new HLog(Thread.currentThread().getName())).log(message);
     }
 
-    public static void logger(Throwable throwable) {
+    /**
+     * Statically log throwable with ERROR level.
+     * @param throwable the throwable to log
+     */
+    public static void logger(@NotNull Throwable throwable) {
         (new HLog(Thread.currentThread().getName())).log(throwable);
     }
 
-    public static void logger(Object message) {
-        (new HLog(Thread.currentThread().getName())).log(message);
+    /**
+     * Statically log String.valueOf(object) with DEBUG level.
+     * @param object the object to log
+     * @see String#valueOf(Object)
+     */
+    public static void logger(@Nullable Object object) {
+        (new HLog(Thread.currentThread().getName())).log(object);
     }
 
-    public static void logger(String ...messages) {
+    /**
+     * Statically log messages with DEBUG level.
+     * @param messages the messages to log
+     */
+    public static void logger(@Nullable String ...messages) {
         (new HLog(Thread.currentThread().getName())).log(messages);
     }
 
-    public static void logger(Throwable ...throwable) {
+    /**
+     * Statically log throwable with DEBUG level.
+     * @param throwable the throwable to log
+     */
+    public static void logger(@NotNull Throwable ...throwable) {
         (new HLog(Thread.currentThread().getName())).log(throwable);
     }
 
-    public static void logger(Object ...messages) {
-        (new HLog(Thread.currentThread().getName())).log(messages);
+    /**
+     * Statically log objects with DEBUG level.
+     * @param objects the objects to log
+     * @see String#valueOf(Object)
+     */
+    public static void logger(@Nullable Object ...objects) {
+        (new HLog(Thread.currentThread().getName())).log(objects);
     }
 
+    /**
+     * Recursively add throwable and its cause to log builder.
+     * @param builder log builder.
+     * @param throwable the throwable to log
+     */
     private static void addCausedThrowable(@NotNull StringBuilder builder, @Nullable Throwable throwable) {
         if (throwable == null)
             return;
@@ -236,6 +414,11 @@ public class HLog {
         addCausedThrowable(builder, throwable.getCause());
     }
 
+    /**
+     * Save all cached logs to file.
+     * @param path log file
+     * @param needSort sort logs by date and warning level
+     */
     public static void saveLogs(@NotNull String path, boolean needSort) {
         synchronized (logs) {
             if (needSort)
@@ -267,6 +450,10 @@ public class HLog {
         }
     }
 
+    /**
+     * Save all cached logs to file.
+     * @param path log file
+     */
     public static void saveLogs(@NotNull String path) {
         saveLogs(path, false);
     }

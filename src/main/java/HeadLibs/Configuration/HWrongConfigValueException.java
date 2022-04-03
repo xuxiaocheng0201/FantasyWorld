@@ -24,7 +24,7 @@ public class HWrongConfigValueException extends NumberFormatException {
         super(s);
     }
 
-    public HWrongConfigValueException(HEConfigType type) {
+    public HWrongConfigValueException(HConfigTypes type) {
         super(HStringHelper.merge("Value is no longer suitable for type: ", type.getName()));
     }
 }

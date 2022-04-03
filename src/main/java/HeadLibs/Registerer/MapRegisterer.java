@@ -59,7 +59,7 @@ public class MapRegisterer<E> {
     /**
      * If a element's name has been registered.
      * @param name element's name
-     * @return true - registered.
+     * @return true - registered. false - unregistered.
      */
     public boolean isRegistered(String name) {
         return this.map.containsKey(name);
@@ -68,7 +68,7 @@ public class MapRegisterer<E> {
     /**
      * If a element has been registered.
      * @param element the element
-     * @return true - registered.
+     * @return true - registered. false - unregistered.
      */
     public boolean isRegistered(E element) {
         return this.map.containsValue(element);

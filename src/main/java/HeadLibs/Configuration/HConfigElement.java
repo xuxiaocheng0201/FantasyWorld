@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HConfig {
+public class HConfigElement {
     /**
      * Config element's name
      */
@@ -23,7 +23,7 @@ public class HConfig {
     /**
      * Config element's type
      */
-    private @NotNull HEConfigType type;
+    private @NotNull HConfigTypes type;
     /**
      * Config element's value
      */
@@ -36,7 +36,7 @@ public class HConfig {
      * @param type Config element's type
      * @param value Config element's value
      */
-    public HConfig(@Nullable String name, @Nullable String note, @NotNull HEConfigType type, @Nullable String value) {
+    public HConfigElement(@Nullable String name, @Nullable String note, @NotNull HConfigTypes type, @Nullable String value) {
         super();
         this.setName(name);
         this.setNote(note);
@@ -50,8 +50,8 @@ public class HConfig {
      * @param note Config element's note
      * @param value Config element's value
      */
-    public HConfig(@Nullable String name, @Nullable String note, @Nullable String value) {
-        this(name, note, HEConfigType.STRING, value);
+    public HConfigElement(@Nullable String name, @Nullable String note, @Nullable String value) {
+        this(name, note, HConfigTypes.STRING, value);
     }
 
     /**
@@ -60,7 +60,7 @@ public class HConfig {
      * @param type Config element's type
      * @param value Config element's value
      */
-    public HConfig(@Nullable String name, @NotNull HEConfigType type, @Nullable String value) {
+    public HConfigElement(@Nullable String name, @NotNull HConfigTypes type, @Nullable String value) {
         this(name, "null", type, value);
     }
 
@@ -69,8 +69,8 @@ public class HConfig {
      * @param name Config element's name
      * @param value Config element's value
      */
-    public HConfig(@Nullable String name, @Nullable String value) {
-        this(name, "null", HEConfigType.STRING, value);
+    public HConfigElement(@Nullable String name, @Nullable String value) {
+        this(name, "null", HConfigTypes.STRING, value);
     }
 
     /**
@@ -94,7 +94,7 @@ public class HConfig {
      * @param type Config element's type
      * @throws HWrongConfigValueException Value is wrong for Type.
      */
-    public void setType(@NotNull HEConfigType type) {
+    public void setType(@NotNull HConfigTypes type) {
         if (type.fix(this.value) == null)
             throw new HWrongConfigValueException(type);
         this.type = type;
@@ -118,7 +118,7 @@ public class HConfig {
      * @param value Config element's value
      * @throws HWrongConfigValueException Value is wrong for type.
      */
-    public void setTypeAndValue(@NotNull HEConfigType type, @Nullable String value) {
+    public void setTypeAndValue(@NotNull HConfigTypes type, @Nullable String value) {
         this.type = type;
         this.setValue(value);
     }
@@ -143,7 +143,7 @@ public class HConfig {
      * Get config element's type.
      * @return Config element's type
      */
-    public @NotNull HEConfigType getType() {
+    public @NotNull HConfigTypes getType() {
         return this.type;
     }
 
@@ -157,7 +157,7 @@ public class HConfig {
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.merge("HConfig{",
+        return HStringHelper.merge("HConfigElement{",
                 "name='", this.name, '\'',
                 ", note='", this.note, '\'',
                 ", type=", this.type,
@@ -167,9 +167,9 @@ public class HConfig {
 
     @Override
     public boolean equals(Object a) {
-        if (!(a instanceof HConfig))
+        if (!(a instanceof HConfigElement))
             return false;
-        return Objects.equals(this.name, ((HConfig) a).name) && this.type == ((HConfig) a).type && Objects.equals(this.value, ((HConfig) a).value);
+        return Objects.equals(this.name, ((HConfigElement) a).name) && this.type == ((HConfigElement) a).type && Objects.equals(this.value, ((HConfigElement) a).value);
     }
 
     @Override

@@ -4,6 +4,7 @@ import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Registerer.ElementNotRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 
 public class HConfigurations {
     private File file;
-    public final Set<HConfig> data = new HashSet<>();
+    public final Set<HConfigElement> data = new HashSet<>();
 
     public HConfigurations(String path) throws IllegalArgumentException {
         super();
@@ -33,7 +34,7 @@ public class HConfigurations {
         this.read();
     }
 
-    public void add(@NotNull HConfig config) {
+    public void add(@NotNull HConfigElement config) {
         if (this.getByName(config.getName()) != null) {
             HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']. Drop the first!"));
             this.deleteByName(config.getName());
@@ -45,8 +46,8 @@ public class HConfigurations {
         this.data.clear();
     }
 
-    public @Nullable HConfig getByName(@NotNull String name) {
-        for (HConfig i: this.data)
+    public @Nullable HConfigElement getByName(@NotNull String name) {
+        for (HConfigElement i: this.data)
             if (i.getName().equals(name))
                 return i;
         return null;
@@ -65,29 +66,28 @@ public class HConfigurations {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(this.file));
             String temp = reader.readLine();
-            HConfig config = new HConfig(null, null);
+            HConfigElement config = new HConfigElement(null, null);
             while (temp != null) {
                 if (temp.startsWith("name:"))
                     config.setName(temp.substring(6));
                 if (temp.startsWith("note:"))
                     config.setNote(temp.substring(6));
                 if (temp.startsWith("type:")) {
-                    String type_name = temp.substring(6);
-                    boolean array = false;
-                    if (type_name.endsWith("_ARRAY")) {
-                        type_name = type_name.substring(0, type_name.length() - 6);
-                        array = true;
+                    HConfigTypes type;
+                    try {
+                        type = HConfigTypes.getRegisteredMap().getElement(temp.substring(6));
+                    } catch (ElementNotRegisteredException exception) {
+                        type = null;
                     }
-                    HEConfigType type = HEConfigType.getTypeByName(type_name, array);
                     if (type == null) {
                         HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Unregistered configuration type! [type='", temp, "'name='", config.getName(), "', path='", this.getPath(), "']. Use STRING!"));
-                        type = HEConfigType.STRING;
+                        type = HConfigTypes.STRING;
                     }
                     config.setType(type);
                 }
                 if (temp.startsWith("value:")) {
                     config.setValue(temp.substring(7));
-                    HConfig check = this.getByName(config.getName());
+                    HConfigElement check = this.getByName(config.getName());
                     if (check != null)
                         if (check.equals(config))
                             HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
@@ -95,7 +95,7 @@ public class HConfigurations {
                             HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                     else
                         this.add(config);
-                    config = new HConfig(null, null);
+                    config = new HConfigElement(null, null);
                 }
                 temp = reader.readLine();
             }
@@ -108,7 +108,7 @@ public class HConfigurations {
     public void write() {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
-            for (HConfig i: this.data) {
+            for (HConfigElement i: this.data) {
                 writer.write("name: ");
                 writer.write(i.getName());
                 writer.newLine();

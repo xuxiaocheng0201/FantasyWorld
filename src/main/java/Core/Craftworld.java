@@ -7,9 +7,9 @@ import Core.Mod.ModLauncher;
 import Core.Mod.ModManager;
 import Core.Mod.New.ModImplement;
 import HeadLibs.ClassFinder.HClassFinder;
-import HeadLibs.Configuration.HConfig;
+import HeadLibs.Configuration.HConfigElement;
+import HeadLibs.Configuration.HConfigTypes;
 import HeadLibs.Configuration.HConfigurations;
-import HeadLibs.Configuration.HEConfigType;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HELogLevel;
@@ -85,7 +85,7 @@ public class Craftworld {
         Thread.currentThread().setName("CraftworldMain");
         HLog.logger(HELogLevel.INFO, "Hello Craftworld!");
         HConfigurations canOverwrite = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
-        HConfig overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
+        HConfigElement overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
         if (overwrite_when_extracting != null)
             OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
         extractFiles(null, "assets\\Core", "assets\\Core");
@@ -124,26 +124,26 @@ public class Craftworld {
 
     private static void GetConfigurations() {
         GLOBAL_CONFIGURATIONS = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
-        HConfig language = GLOBAL_CONFIGURATIONS.getByName("language");
-        HConfig overwrite_when_extracting = GLOBAL_CONFIGURATIONS.getByName("overwrite_when_extracting");
-        HConfig garbage_collector_time_interval = GLOBAL_CONFIGURATIONS.getByName("garbage_collector_time_interval");
-        HConfig port = GLOBAL_CONFIGURATIONS.getByName("port");
+        HConfigElement language = GLOBAL_CONFIGURATIONS.getByName("language");
+        HConfigElement overwrite_when_extracting = GLOBAL_CONFIGURATIONS.getByName("overwrite_when_extracting");
+        HConfigElement garbage_collector_time_interval = GLOBAL_CONFIGURATIONS.getByName("garbage_collector_time_interval");
+        HConfigElement port = GLOBAL_CONFIGURATIONS.getByName("port");
 
         if (language == null)
-            language = new HConfig("language", LanguageI18N.get("Core.configuration.language.name"), CURRENT_LANGUAGE);
+            language = new HConfigElement("language", LanguageI18N.get("Core.configuration.language.name"), CURRENT_LANGUAGE);
         else
             language.setNote(LanguageI18N.get("Core.configuration.language.name"));
         CURRENT_LANGUAGE = language.getValue();
         language.setNote(LanguageI18N.get("Core.configuration.language.name"));
 
         if (overwrite_when_extracting == null)
-            overwrite_when_extracting = new HConfig("overwrite_when_extracting", LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"), HEConfigType.BOOLEAN, OVERWRITE_FILES_WHEN_EXTRACTING ? "true" : "false");
+            overwrite_when_extracting = new HConfigElement("overwrite_when_extracting", LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"), HConfigTypes.BOOLEAN, OVERWRITE_FILES_WHEN_EXTRACTING ? "true" : "false");
         else
             overwrite_when_extracting.setNote(LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"));
         OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
 
         if (garbage_collector_time_interval == null)
-            garbage_collector_time_interval = new HConfig("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HEConfigType.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
+            garbage_collector_time_interval = new HConfigElement("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HConfigTypes.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
         else
             garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
         if (Integer.parseInt(garbage_collector_time_interval.getValue()) < 10) {
@@ -154,7 +154,7 @@ public class Craftworld {
             GARBAGE_COLLECTOR_TIME_INTERVAL = Integer.parseInt(garbage_collector_time_interval.getValue());
 
         if (port == null)
-            port = new HConfig("port", LanguageI18N.get("Core.configuration.port.name"), HEConfigType.INT, String.valueOf(PORT));
+            port = new HConfigElement("port", LanguageI18N.get("Core.configuration.port.name"), HConfigTypes.INT, String.valueOf(PORT));
         else
             port.setNote(LanguageI18N.get("Core.configuration.port.name"));
         PORT = Integer.parseInt(port.getValue());
