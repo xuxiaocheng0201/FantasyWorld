@@ -25,7 +25,7 @@ public class HWrongConfigValueException extends Exception {
      * @param type wrong type
      */
     public HWrongConfigValueException(HConfigType type) {
-        super(HStringHelper.merge("Value is no longer suitable. type=", type.getName()));
+        super(HStringHelper.concat("Value is no longer suitable. type=", type.getName()));
     }
 
     /**
@@ -34,7 +34,7 @@ public class HWrongConfigValueException extends Exception {
      * @param value wrong value
      */
     public HWrongConfigValueException(HConfigType type, String value) {
-        super(HStringHelper.merge("Value is no longer suitable. type=", type.getName(), " value='", value, "'"));
+        super(HStringHelper.concat("Value is no longer suitable. type=", type.getName(), " value='", value, "'"));
     }
 
     /**
@@ -51,7 +51,7 @@ public class HWrongConfigValueException extends Exception {
      * @param type wrong type
      */
     public HWrongConfigValueException(String message, HConfigType type) {
-        super(HStringHelper.merge(message, " type=", type.getName()));
+        super(HStringHelper.concat(message, " type=", type.getName()));
     }
 
     /**
@@ -61,6 +61,6 @@ public class HWrongConfigValueException extends Exception {
      * @param value wrong value
      */
     public HWrongConfigValueException(String message, HConfigType type, String value) {
-        super(HStringHelper.merge(message, " type=", type.getName(), " value='", value, "'"));
+        super(HStringHelper.concat(message, " type=", type.getName(), " value='", value, "'"));
     }
 }

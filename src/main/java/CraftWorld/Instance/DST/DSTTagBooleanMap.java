@@ -77,7 +77,7 @@ public class DSTTagBooleanMap implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagBooleanMap{",
+        return HStringHelper.concat("DSTTagBooleanMap{",
                 "name='", this.name, '\'',
                 ", data=", this.data,
                 '}');

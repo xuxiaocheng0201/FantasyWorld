@@ -77,7 +77,7 @@ public class DSTTagStringMap implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagStringMap{",
+        return HStringHelper.concat("DSTTagStringMap{",
                 "name='", this.name, '\'',
                 ", data=", this.data,
                 '}');

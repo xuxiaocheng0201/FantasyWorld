@@ -34,7 +34,7 @@ public class HConfigSimple {
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.merge("HConfigSimple{",
+        return HStringHelper.concat("HConfigSimple{",
                 "name='", this.name, '\'',
                 ", value='", this.value, '\'',
                 '}');

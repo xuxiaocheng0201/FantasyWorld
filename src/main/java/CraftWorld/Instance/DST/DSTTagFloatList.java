@@ -71,7 +71,7 @@ public class DSTTagFloatList implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagFloatList{",
+        return HStringHelper.concat("DSTTagFloatList{",
                 "name='", this.name, '\'',
                 ", data=", this.data,
                 '}');

@@ -72,7 +72,7 @@ public class Chunk {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("Chunk{",
+        return HStringHelper.concat("Chunk{",
                 "pos=", this.pos,
                 ", blocks=", Arrays.toString(this.blocks),
                 '}');

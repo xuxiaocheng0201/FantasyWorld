@@ -1,10 +1,10 @@
 package HeadLibs.Registerer;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Elements registerer.
+ * Elements registerer set.
  * @param <T> The type of elements
  * @author xuxiaocheng
  */
@@ -13,7 +13,7 @@ public class HSetRegisterer<T> {
     /**
      * The registered elements' set.
      */
-    protected final Collection<T> set = new HashSet<>();
+    protected final Set<T> set = new HashSet<>();
 
     /**
      * Register a new element.
@@ -62,7 +62,7 @@ public class HSetRegisterer<T> {
      * Get registerer set. {@link HSetRegisterer#set}
      * @return registerer set
      */
-    public Collection<T> getSet() {
+    public Set<T> getSet() {
         return this.set;
     }
 }

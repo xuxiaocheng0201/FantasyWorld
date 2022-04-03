@@ -31,14 +31,14 @@ public class HConfigurationsSimple {
         if (path == null)
             throw new IllegalArgumentException("Argument path is null.");
         if (HFileHelper.createNewFile(path))
-            throw new IllegalArgumentException(HStringHelper.merge("Can't create the new file in path='", path, '\''));
+            throw new IllegalArgumentException(HStringHelper.concat("Can't create the new file in path='", path, '\''));
         this.file = (new File(path)).getAbsoluteFile();
         this.read();
     }
 
     public void add(@NotNull HConfigSimple config) {
         if (this.getByName(config.getName()) != null) {
-            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']. Drop the first!"));
+            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']. Drop the first!"));
             this.deleteByName(config.getName());
         }
         this.data.add(config);
@@ -79,14 +79,14 @@ public class HConfigurationsSimple {
                     HConfigSimple check = this.getByName(s[0]);
                     if (check != null)
                         if (check.equals(config))
-                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                         else
-                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                     else
                         this.add(config);
                     config = new HConfigSimple(null, null);
                 } else
-                    HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Illegal configuration format! [line='", temp, "']"));
+                    HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("Illegal configuration format! [line='", temp, "']"));
                 temp = reader.readLine();
             }
             reader.close();
@@ -112,7 +112,7 @@ public class HConfigurationsSimple {
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.merge("HConfigurationsSimple{",
+        return HStringHelper.concat("HConfigurationsSimple{",
                 "file=", this.file,
                 ", date=", this.data,
                 '}');

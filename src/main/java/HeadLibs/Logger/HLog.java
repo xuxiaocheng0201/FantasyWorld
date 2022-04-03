@@ -76,7 +76,7 @@ public class HLog {
             this.name = name;
             return;
         }
-        this.name = HStringHelper.merge(parent, "/", name);
+        this.name = HStringHelper.concat(parent, "/", name);
     }
 
 
@@ -91,7 +91,7 @@ public class HLog {
             this.name = name;
             return;
         }
-        this.name = HStringHelper.merge(parent.name, "/", name);
+        this.name = HStringHelper.concat(parent.name, "/", name);
     }
 
     /**
@@ -116,7 +116,7 @@ public class HLog {
      * @param parent logger's parent's name
      */
     public void setName(@NotNull String name, @Nullable String parent) {
-        this.name = HStringHelper.merge(parent, "/", name);
+        this.name = HStringHelper.concat(parent, "/", name);
     }
 
     /**
@@ -129,7 +129,7 @@ public class HLog {
             this.name = name;
             return;
         }
-        this.name = HStringHelper.merge(parent.name, "/", name);
+        this.name = HStringHelper.concat(parent.name, "/", name);
     }
 
     /**
@@ -142,7 +142,7 @@ public class HLog {
         if (level1 == null)
             level1 = HELogLevel.DEBUG;
         Date date = new Date();
-        String log = HStringHelper.merge("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
+        String log = HStringHelper.concat("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
                 "[", this.name, "]",
                 "[", level1.getName(), "]",
                 message);
@@ -207,7 +207,7 @@ public class HLog {
             this.log(level, "Object null!");
             return;
         }
-        this.log(level, HStringHelper.merge(object));
+        this.log(level, HStringHelper.concat(object));
     }
 
     /**
@@ -216,7 +216,7 @@ public class HLog {
      * @param messages the messages to log
      */
     public void log(@Nullable HELogLevel level, @Nullable String ...messages) {
-        this.log(level, HStringHelper.merge(messages));
+        this.log(level, HStringHelper.concat(messages));
     }
 
     /**
@@ -236,7 +236,7 @@ public class HLog {
      * @see String#valueOf(Object)
      */
     public void log(@Nullable HELogLevel level, @Nullable Object ...objects) {
-        this.log(level, HStringHelper.merge(objects));
+        this.log(level, HStringHelper.concat(objects));
     }
 
     /**

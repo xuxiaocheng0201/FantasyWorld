@@ -71,7 +71,7 @@ public class DSTTagLongList implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagLongList{",
+        return HStringHelper.concat("DSTTagLongList{",
                 "name='", this.name, '\'',
                 ", data=", this.data,
                 '}');

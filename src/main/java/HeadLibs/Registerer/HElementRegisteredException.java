@@ -24,10 +24,10 @@ public class HElementRegisteredException extends ArrayStoreException{
     }
 
     public HElementRegisteredException(@Nullable String message, @NotNull Object element) {
-        super(HStringHelper.merge((message == null) ? "Type has been registered!" : message, " element=", element));
+        super(HStringHelper.concat((message == null) ? "Type has been registered!" : message, " element=", element));
     }
 
-    public HElementRegisteredException(@Nullable String message, @NotNull String name, @NotNull Object element) {
-        super(HStringHelper.merge((message == null) ? "Type has been registered!" : message, " name='", name, "' element=", element));
+    public HElementRegisteredException(@Nullable String message, @NotNull Object key, @NotNull Object value) {
+        super(HStringHelper.concat((message == null) ? "Type has been registered!" : message, " key=", value, " element=", value));
     }
 }

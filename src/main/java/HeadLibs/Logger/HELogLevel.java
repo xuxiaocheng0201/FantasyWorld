@@ -53,7 +53,7 @@ public enum HELogLevel {
     HELogLevel(String name, int priority, String prefix) {
         this.name = name;
         this.PRIORITY = priority;
-        this.PREFIX = HStringHelper.merge("\033[", prefix, "m");
+        this.PREFIX = HStringHelper.concat("\033[", prefix, "m");
     }
 
     public String getName() {
@@ -70,7 +70,7 @@ public enum HELogLevel {
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.merge("HELogLevel{",
+        return HStringHelper.concat("HELogLevel{",
                 "name='", this.name, '\'',
                 '}');
     }

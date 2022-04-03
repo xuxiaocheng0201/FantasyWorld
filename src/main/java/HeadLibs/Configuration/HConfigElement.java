@@ -159,7 +159,7 @@ public class HConfigElement {
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.merge("HConfigElement{",
+        return HStringHelper.concat("HConfigElement{",
                 "name='", this.name, '\'',
                 ", note='", this.note, '\'',
                 ", type=", this.type,

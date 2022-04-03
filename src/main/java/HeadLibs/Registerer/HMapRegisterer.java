@@ -1,89 +1,101 @@
 package HeadLibs.Registerer;
 
+import HeadLibs.Pair;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Elements registerer with name.
- * @param <E> The type of elements
+ * Elements registerer map.
+ * @param <K> The type of elements key
+ * @param <V> The type of elements value
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HMapRegisterer<E> {
+public class HMapRegisterer<K, V> {
     /**
      * The registered elements' map.
      */
-    protected final Map<String, E> map = new HashMap<>();
+    protected final Map<K, V> map = new HashMap<>();
 
     /**
-     * Register a new element.
-     * @param name element's name
-     * @param element the element
-     * @throws HElementRegisteredException element or its name has been registered.
+     * Register a new element pair.
+     * @param pair element pair
+     * @throws HElementRegisteredException pair's key or value has been registered.
      */
-    public void register(String name, E element) throws HElementRegisteredException {
-        if (this.map.containsKey(name))
-            throw new HElementRegisteredException("Registered name.", name, element);
-        if (this.map.containsValue(element))
-            throw new HElementRegisteredException("Registered element.", name, element);
-        this.map.put(name, element);
+    public void register(Pair<K, V> pair) throws HElementRegisteredException {
+        this.register(pair.getKey(), pair.getValue());
     }
 
     /**
-     * Deregister element by name.
-     * @param name element's name
+     * Register a new element pair.
+     * @param key pair's name
+     * @param value pair's value
+     * @throws HElementRegisteredException pair's key or value has been registered.
      */
-    public void deregisterByName(String name) {
-        this.map.remove(name);
+    public void register(K key, V value) throws HElementRegisteredException {
+        if (this.map.containsKey(key))
+            throw new HElementRegisteredException("Registered key.", key, value);
+        if (this.map.containsValue(value))
+            throw new HElementRegisteredException("Registered value.", key, value);
+        this.map.put(key, value);
     }
 
     /**
-     * Deregister element.
-     * @param element the element
+     * Deregister element pair by key.
+     * @param key element pair's key
      */
-    public void deregister(E element) {
-        if (!this.map.containsValue(element))
+    public void deregisterKey(K key) {
+        this.map.remove(key);
+    }
+
+    /**
+     * Deregister element pair by value.
+     * @param value element pair's value
+     */
+    public void deregisterValue(V value) {
+        if (!this.map.containsValue(value))
             return;
-        for (Map.Entry<String, E> entry : this.map.entrySet())
-            if (entry.getValue().equals(element))
+        for (Map.Entry<K, V> entry : this.map.entrySet())
+            if (entry.getValue().equals(value))
                 this.map.remove(entry.getKey());
     }
 
     /**
-     * Deregister all elements.
+     * Deregister all element pair.
      */
     public void deregisterAll() {
         this.map.clear();
     }
 
     /**
-     * If a element's name has been registered.
-     * @param name element's name
+     * If a element pair's key has been registered.
+     * @param key element pair's key
      * @return true - registered. false - unregistered.
      */
-    public boolean isRegistered(String name) {
-        return this.map.containsKey(name);
+    public boolean isRegisteredKey(K key) {
+        return this.map.containsKey(key);
     }
 
     /**
-     * If a element has been registered.
-     * @param element the element
+     * If a element pair's value has been registered.
+     * @param value element pair's value
      * @return true - registered. false - unregistered.
      */
-    public boolean isRegistered(E element) {
-        return this.map.containsValue(element);
+    public boolean isRegisteredValue(V value) {
+        return this.map.containsValue(value);
     }
 
     /**
-     * Get a registered element by name.
-     * @param name element's name
-     * @return the registered element
-     * @throws HElementNotRegisteredException No element with this name registered.
+     * Get a registered element value by key.
+     * @param key element pair's key
+     * @return element pair's value
+     * @throws HElementNotRegisteredException No element key registered.
      */
-    public E getElement(String name) throws HElementNotRegisteredException {
-        if (!this.map.containsKey(name))
-            throw new HElementNotRegisteredException(null, name);
-        return this.map.get(name);
+    public V getElement(K key) throws HElementNotRegisteredException {
+        if (!this.map.containsKey(key))
+            throw new HElementNotRegisteredException(null, key);
+        return this.map.get(key);
     }
 
     /**
@@ -98,7 +110,7 @@ public class HMapRegisterer<E> {
      * Get registerer map. {@link HMapRegisterer#map}
      * @return registerer map
      */
-    public Map<String, E> getMap() {
+    public Map<K, V> getMap() {
         return this.map;
     }
 }

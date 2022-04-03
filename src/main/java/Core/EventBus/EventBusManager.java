@@ -51,7 +51,7 @@ public class EventBusManager {
         if ("*".equals(subscribe.eventBus())) {
             Object instance = HClassHelper.getInstance(aClass);
             if (instance == null)
-                throw new NoSuchMethodException(HStringHelper.merge("Get instance failed. Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'."));
+                throw new NoSuchMethodException(HStringHelper.concat("Get instance failed. Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'."));
             for (EventBus eventBus: EventBusManager.getAllEventBus())
                 eventBus.register(instance);
             return;
@@ -59,7 +59,7 @@ public class EventBusManager {
         EventBus eventBus = getEventBusByName(subscribe.eventBus());
         Object instance = HClassHelper.getInstance(aClass);
         if (instance == null)
-            throw new NoSuchMethodException(HStringHelper.merge("Get instance failed. Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'."));
+            throw new NoSuchMethodException(HStringHelper.concat("Get instance failed. Can't register class '", aClass, "' to event bus '", subscribe.eventBus(), "'."));
         eventBus.register(instance);
     }
 }

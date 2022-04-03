@@ -79,7 +79,7 @@ public class Dimension implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("Dimension{",
+        return HStringHelper.concat("Dimension{",
                 "name=", (this.instance == null)? "null" : this.instance.getDimensionName(),
                 '}');
     }

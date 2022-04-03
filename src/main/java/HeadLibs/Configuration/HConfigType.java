@@ -1,7 +1,7 @@
 package HeadLibs.Configuration;
 
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Registerer.HMapRegisterer;
+import HeadLibs.Registerer.HMapRegistererWithName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,13 +14,13 @@ public class HConfigType {
     /**
      * All Registered configuration types.
      */
-    private static final HMapRegisterer<HConfigType> REGISTERED_MAP = new HMapRegisterer<>();
+    private static final HMapRegistererWithName<HConfigType> REGISTERED_MAP = new HMapRegistererWithName<>();
 
     /**
      * Get registered map.
      * @return registered map.
      */
-    public static HMapRegisterer<HConfigType> getRegisteredMap() {
+    public static HMapRegistererWithName<HConfigType> getRegisteredMap() {
         return REGISTERED_MAP;
     }
 
@@ -189,14 +189,14 @@ public class HConfigType {
     }
 
     public static @Nullable String fixValueInList(@Nullable String value, @NotNull FixConfigurationValueMethod method) {
-        String valueWithoutBrackets = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(value));
+        String valueWithoutBrackets = HStringHelper.noNull(value.strip());
         if (valueWithoutBrackets.isEmpty())
             return "[]";
         if (valueWithoutBrackets.charAt(0) == '[')
             valueWithoutBrackets = valueWithoutBrackets.substring(1);
         if (valueWithoutBrackets.charAt(valueWithoutBrackets.length() - 1) == ']')
             valueWithoutBrackets = valueWithoutBrackets.substring(0, valueWithoutBrackets.length() - 1);
-        String[] elements = HStringHelper.delBlankHeadAndTail(valueWithoutBrackets.split(","));
+        String[] elements = HStringHelper.strip(valueWithoutBrackets.split(","));
         StringBuilder fixed = new StringBuilder("[");
         for (String element: elements) {
             String single = method.fix(element);

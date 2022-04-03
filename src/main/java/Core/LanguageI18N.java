@@ -19,9 +19,9 @@ public class LanguageI18N {
         if (modClass != null) {
             NewMod mod = modClass.getDeclaredAnnotation(NewMod.class);
             if (mod != null)
-                modName = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.name()));
+                modName = HStringHelper.noNull(mod.name().strip());
         }
-        return HStringHelper.merge(Craftworld.ASSETS_PATH, modName, "\\lang\\", lang, ".lang");
+        return HStringHelper.concat(Craftworld.ASSETS_PATH, modName, "\\lang\\", lang, ".lang");
     }
 
     public static String get(String name) {

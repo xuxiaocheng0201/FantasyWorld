@@ -24,7 +24,7 @@ public class HElementNotRegisteredException extends NoSuchElementException {
         super((message == null) ? "Type is not registered!" : message);
     }
 
-    public HElementNotRegisteredException(@Nullable String message, @NotNull String name) {
-        super(HStringHelper.merge((message == null) ? "Type is not registered!" : message, " name='", name, "'"));
+    public HElementNotRegisteredException(@Nullable String message, @NotNull Object key) {
+        super(HStringHelper.concat((message == null) ? "Type is not registered!" : message, " key=", key));
     }
 }

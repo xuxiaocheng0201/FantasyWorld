@@ -13,6 +13,7 @@ import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Configuration.HWrongConfigValueException;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Helper.HZipHelper;
 import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
 import org.greenrobot.eventbus.NoSubscriberEvent;
@@ -24,15 +25,15 @@ import java.util.jar.JarFile;
 
 public class Craftworld {
     public static final String CURRENT_VERSION = "0.0.0";
-    public static final String RUNTIME_PATH = HStringHelper.merge("Craftworld\\", Craftworld.CURRENT_VERSION, "\\");
-    public static final String GLOBAL_CONFIGURATION_PATH = HStringHelper.merge(RUNTIME_PATH, "global.cfg");
-    public static final String ASSETS_PATH = HStringHelper.merge(RUNTIME_PATH, "assets\\");
+    public static final String RUNTIME_PATH = HStringHelper.concat("Craftworld\\", Craftworld.CURRENT_VERSION, "\\");
+    public static final String GLOBAL_CONFIGURATION_PATH = HStringHelper.concat(RUNTIME_PATH, "global.cfg");
+    public static final String ASSETS_PATH = HStringHelper.concat(RUNTIME_PATH, "assets\\");
     public static final String LOG_PATH;
     static {
-        String log_path = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), ".log");
+        String log_path = HStringHelper.concat(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), ".log");
         int i = 1;
         while ((new File(log_path)).exists())
-            log_path = HStringHelper.merge(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), "_", ++i, ".log");
+            log_path = HStringHelper.concat(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), "_", ++i, ".log");
         LOG_PATH = log_path;
     }
     private static final String EXTRACT_TEMP_FILE = "extract_temp";
@@ -41,14 +42,14 @@ public class Craftworld {
         File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
         if (jarFilePath == null) //Unreachable
             jarFilePath = HClassFinder.thisCodePath;
-        File targetFilePath = new File(HStringHelper.merge(RUNTIME_PATH, targetPath)).getAbsoluteFile();
+        File targetFilePath = new File(HStringHelper.concat(RUNTIME_PATH, targetPath)).getAbsoluteFile();
         try {
             if (System.console() == null) {
                 File runtimeFile = new File(Craftworld.RUNTIME_PATH).getAbsoluteFile();
-                String srcResourcePath = HStringHelper.merge(runtimeFile.getParentFile().getParentFile().getParentFile().getPath(), "\\src\\main\\resources");
-                HFileHelper.copyFiles(HStringHelper.merge(srcResourcePath, "\\", sourcePath), targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+                String srcResourcePath = HStringHelper.concat(runtimeFile.getParentFile().getParentFile().getParentFile().getPath(), "\\src\\main\\resources");
+                HFileHelper.copyFiles(HStringHelper.concat(srcResourcePath, "\\", sourcePath), targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
             } else {
-                HFileHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
+                HZipHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
                 HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
                 HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
             }

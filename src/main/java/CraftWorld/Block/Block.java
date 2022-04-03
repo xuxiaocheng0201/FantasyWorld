@@ -91,7 +91,7 @@ public class Block implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("Block{",
+        return HStringHelper.concat("Block{",
                 ", name=", (this.instance == null) ? "null" : this.instance.getBlockName(),
                 ", pos=", (this.instance == null) ? "null" : this.instance.getPos(),
                 ", dst=", (this.instance == null) ? "null" : this.instance.getDst(),

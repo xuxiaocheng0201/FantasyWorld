@@ -86,7 +86,7 @@ public final class DSTMetaCompound implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTMetaCompound{",
+        return HStringHelper.concat("DSTMetaCompound{",
                 "name='", this.name, '\'',
                 ", dstMap=", this.dstMap,
                 '}');

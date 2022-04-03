@@ -12,8 +12,8 @@ public class HVersionComparator {
         }
         if (b == null)
             return 1;
-        String[] versionArray1 = HStringHelper.delBlankHeadAndTail(a.split("\\."));
-        String[] versionArray2 = HStringHelper.delBlankHeadAndTail(b.split("\\."));
+        String[] versionArray1 = HStringHelper.strip(a.split("\\."));
+        String[] versionArray2 = HStringHelper.strip(b.split("\\."));
         int idx = 0;
         int minLength = Math.min(versionArray1.length, versionArray2.length);
         int diff = 0;

@@ -55,7 +55,7 @@ public class HVersionRange implements Serializable {
 
     public void addVersion(@NotNull String version) throws IllegalArgumentException {
         if (version.charAt(0) == '{' && version.charAt(version.length() - 1) == '}') {
-            String[] versionS = HStringHelper.delBlankHeadAndTail(version.substring(1, version.length() - 1).split(","));
+            String[] versionS = HStringHelper.strip(version.substring(1, version.length() - 1).split(","));
             this.versionSingles.addAll(Arrays.asList(versionS));
             return;
         }
@@ -175,7 +175,7 @@ public class HVersionRange implements Serializable {
             }
             if (canEqualLeft == 0 || canEqualRight == 0)
                 throw new IllegalArgumentException("Unknown symbols in brackets.");
-            String versions = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(version.substring(1, version.length() - 1)));
+            String versions = HStringHelper.noNull(version.substring(1, version.length() - 1).strip());
             int locationComma = versions.indexOf(',');
             if (locationComma == -1)
                 throw new IllegalArgumentException("No commas in versions.");
@@ -184,8 +184,8 @@ public class HVersionRange implements Serializable {
                 throw new IllegalArgumentException("Too many commas in versions.");
             this.leftEquable = canEqualLeft == 1;
             this.rightEquable = canEqualRight == 1;
-            this.versionLeft = HStringHelper.delBlankHeadAndTail(versions.substring(0, locationComma));
-            this.versionRight = HStringHelper.delBlankHeadAndTail(versions.substring(locationComma + 1));
+            this.versionLeft = versions.substring(0, locationComma).strip();
+            this.versionRight = versions.substring(locationComma + 1).strip();
         }
 
         public boolean versionInRange(@NotNull String version) {
@@ -266,7 +266,7 @@ public class HVersionRange implements Serializable {
 
         @Override
         public @NotNull String toString() {
-            return HStringHelper.merge((this.isLeftEquable() ? '[' : '('), this.versionLeft, ',', this.versionRight, (this.isRightEquable() ? ']' : ')'));
+            return HStringHelper.concat((this.isLeftEquable() ? '[' : '('), this.versionLeft, ',', this.versionRight, (this.isRightEquable() ? ']' : ')'));
         }
 
         @Override

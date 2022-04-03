@@ -340,7 +340,7 @@ public class BlockPos implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("BlockPos{",
+        return HStringHelper.concat("BlockPos{",
                 "x=", this.x,
                 ", y=", this.y,
                 ", z=", this.z,

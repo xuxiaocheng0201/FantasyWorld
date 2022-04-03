@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Objects;
  * @param <V> The type of value
  */
 @SuppressWarnings("unused")
-public class Pair<K, V> implements Serializable {
+public class Pair<K, V> implements Serializable, Map.Entry<K, V> {
     @Serial
     private static final long serialVersionUID = -321522862154374460L;
 
@@ -54,9 +55,12 @@ public class Pair<K, V> implements Serializable {
     /**
      * Set value.
      * @param value The value to be set.
+     * @return old value
      */
-    public void setValue(@Nullable V value) {
+    public V setValue(@Nullable V value) {
+        V oldValue = this.Value;
         this.Value = value;
+        return oldValue;
     }
 
     /**
@@ -91,9 +95,20 @@ public class Pair<K, V> implements Serializable {
         return new Pair<>(key, value);
     }
 
+    /**
+     * Construct a pair with <key, value> by a static method from {@link Map.Entry}
+     * @param entry Map entry to be set.
+     * @param <K> The type of key.
+     * @param <V> The type of value.
+     * @return The new pair.
+     */
+    public static <K, V> @NotNull Pair<K, V> makePair(@NotNull Map.Entry<? extends K, ? extends V> entry) {
+        return new Pair<>(entry.getKey(), entry.getValue());
+    }
+
     @Override
     public @NotNull String toString() {
-        return HStringHelper.merge("Pair{",
+        return HStringHelper.concat("Pair{",
                 "Key=", this.Key,
                 ", Value=", this.Value,
                 '}');

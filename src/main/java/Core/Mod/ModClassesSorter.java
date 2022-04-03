@@ -29,24 +29,24 @@ class ModClassesSorter {
             NewMod mod = modClass.getAnnotation(NewMod.class);
             if (mod == null)
                 continue;
-            String modName = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.name()));
-            String modVersion = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.version()));
-            String modAvailable = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.availableCraftworldVersion()));
+            String modName = HStringHelper.noNull(mod.name().strip());
+            String modVersion = HStringHelper.noNull(mod.version().strip());
+            String modAvailable = HStringHelper.noNull(mod.availableCraftworldVersion().strip());
             HVersionRange availableCraftworldVersion = new HVersionRange(modAvailable);
             Set<Pair<Boolean, Pair<String, HVersionRange>>> after = new HashSet<>();
             Set<Pair<Boolean, Pair<String, HVersionRange>>> before = new HashSet<>();
             boolean afterAll = false;
             boolean beforeAll = false;
-            String[] modRequirements = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(mod.require().split(";")));
+            String[] modRequirements = HStringHelper.noNull(HStringHelper.strip(mod.require().split(";")));
             for (String modRequirement: modRequirements) {
                 int locationColon = modRequirement.indexOf(':');
                 if (locationColon == -1) {
-                    exceptions.add(new ModRequirementsFormatException(HStringHelper.merge("Need ':' to modify mod sort." +
+                    exceptions.add(new ModRequirementsFormatException(HStringHelper.concat("Need ':' to modify mod sort." +
                             " At class '", modClass, "', requirement: '", modRequirement, "'.")));
                     continue;
                 }
                 if (locationColon == modRequirement.length() - 1) {
-                    exceptions.add(new ModRequirementsFormatException(HStringHelper.merge("Must have mod name." +
+                    exceptions.add(new ModRequirementsFormatException(HStringHelper.concat("Must have mod name." +
                             " At class '", modClass, "', requirement: '", modRequirement, "'.")));
                     continue;
                 }
@@ -60,7 +60,7 @@ class ModClassesSorter {
                         switch (requirementModification) {
                             case "after" -> afterAll = true;
                             case "before" -> beforeAll = true;
-                            default -> exceptions.add(new ModRequirementsFormatException(HStringHelper.merge("Unknown Modification in wildcard." +
+                            default -> exceptions.add(new ModRequirementsFormatException(HStringHelper.concat("Unknown Modification in wildcard." +
                                     " At class: '", modClass, "', requirement: '", modRequirement, "', modification: '", requirementModification, "'.")));
                         }
                         continue;
@@ -78,7 +78,7 @@ class ModClassesSorter {
                     case "require-after" -> after.add(Pair.makePair(true, Pair.makePair(requirementName, versionRange)));
                     case "before" -> before.add(Pair.makePair(false, Pair.makePair(requirementName, versionRange)));
                     case "require-before" -> before.add(Pair.makePair(true, Pair.makePair(requirementName, versionRange)));
-                    default -> exceptions.add(new ModRequirementsFormatException(HStringHelper.merge("Unknown Modification." +
+                    default -> exceptions.add(new ModRequirementsFormatException(HStringHelper.concat("Unknown Modification." +
                             " At class: '", modClass, "', requirement: '", modRequirement, "', modification: '", requirementModification, "'.")));
                 }
             }
@@ -94,7 +94,7 @@ class ModClassesSorter {
                         Pair<Boolean, Boolean>>> mod: modContainer) {
             //available in current Craftworld version
             if (mod.getKey().getValue().getValue().getValue().versionInRange(Craftworld.CURRENT_VERSION))
-                exceptions.add(new WrongCraftworldVersionException(HStringHelper.merge("Current version '", Craftworld.CURRENT_VERSION, "' is not in range '", mod.getKey().getValue().getValue().getValue(), "'.",
+                exceptions.add(new WrongCraftworldVersionException(HStringHelper.concat("Current version '", Craftworld.CURRENT_VERSION, "' is not in range '", mod.getKey().getValue().getValue().getValue(), "'.",
                         " At class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
             //force requirement check
             for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getKey()) {
@@ -109,7 +109,7 @@ class ModClassesSorter {
                             break;
                         }
                     if (flag)
-                        exceptions.add(new ModMissingException(HStringHelper.merge("Need mod '", requireModName, "'",
+                        exceptions.add(new ModMissingException(HStringHelper.concat("Need mod '", requireModName, "'",
                                 " for class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
                 }
             }
@@ -125,13 +125,13 @@ class ModClassesSorter {
                             break;
                         }
                     if (flag)
-                        exceptions.add(new ModMissingException(HStringHelper.merge("Need mod '", requireModName, "'",
+                        exceptions.add(new ModMissingException(HStringHelper.concat("Need mod '", requireModName, "'",
                                 " for class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
                 }
             }
             //both after:* and before:*
             if (mod.getValue().getValue().getKey() && mod.getValue().getValue().getValue())
-                exceptions.add(new ModRequirementsException(HStringHelper.merge("Both after:* and before:*",
+                exceptions.add(new ModRequirementsException(HStringHelper.concat("Both after:* and before:*",
                         " for class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
             //request after and before the same mod
             Collection<String> requestAfterModName = new HashSet<>();
@@ -139,7 +139,7 @@ class ModClassesSorter {
                 requestAfterModName.add(requirements.getValue().getKey());
             for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getValue())
                 if (requestAfterModName.contains(requirements.getValue().getKey()))
-                    exceptions.add(new ModRequirementsException(HStringHelper.merge("Request after and before the same mod '", requirements.getValue().getKey(), "'.",
+                    exceptions.add(new ModRequirementsException(HStringHelper.concat("Request after and before the same mod '", requirements.getValue().getKey(), "'.",
                             " At class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
             //mod version check
             for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getKey())
@@ -148,7 +148,7 @@ class ModClassesSorter {
                                 Pair<Boolean, Boolean>>> b: modContainer)
                     if (requirements.getValue().getKey().equals(b.getKey().getValue().getKey())) {
                         if (requirements.getValue().getValue().versionInRange(b.getKey().getValue().getValue().getKey()))
-                            exceptions.add(new ModVersionUnmatchedException(HStringHelper.merge("Have had mod '", b.getKey().getValue().getKey(), "@", b.getKey().getValue().getValue(), "' but need version '", requirements.getValue().getValue(), "'.",
+                            exceptions.add(new ModVersionUnmatchedException(HStringHelper.concat("Have had mod '", b.getKey().getValue().getKey(), "@", b.getKey().getValue().getValue(), "' but need version '", requirements.getValue().getValue(), "'.",
                                     " At class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
                     }
             for (Pair<Boolean, Pair<String, HVersionRange>> requirements: mod.getValue().getKey().getValue())
@@ -157,7 +157,7 @@ class ModClassesSorter {
                                 Pair<Boolean, Boolean>>> b: modContainer)
                     if (requirements.getValue().getKey().equals(b.getKey().getValue().getKey())) {
                         if (requirements.getValue().getValue().versionInRange(b.getKey().getValue().getValue().getKey()))
-                            exceptions.add(new ModVersionUnmatchedException(HStringHelper.merge("Have had mod '", b.getKey().getValue().getKey(), "@", b.getKey().getValue().getValue(), "' but need version '", requirements.getValue().getValue(), "'.",
+                            exceptions.add(new ModVersionUnmatchedException(HStringHelper.concat("Have had mod '", b.getKey().getValue().getKey(), "@", b.getKey().getValue().getValue(), "' but need version '", requirements.getValue().getValue(), "'.",
                                     " At class: '", mod.getKey().getKey(), "' name: '", mod.getKey().getValue().getKey(), "'.")));
                     }
         }
@@ -235,7 +235,7 @@ class ModClassesSorter {
                 else
                     right = Math.max(right, i);
         if (left > right)
-            exceptions.add(new ModRequirementsException(HStringHelper.merge("Mod sort error! left=", left, ", right=", right, ", sortedMod=", sortedMods,
+            exceptions.add(new ModRequirementsException(HStringHelper.concat("Mod sort error! left=", left, ", right=", right, ", sortedMod=", sortedMods,
                     " At class: '", modClass, "' name: '", modName, "'.")));
         else
             if (requireAll.getValue())

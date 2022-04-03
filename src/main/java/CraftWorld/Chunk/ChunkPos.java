@@ -333,7 +333,7 @@ public class ChunkPos implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("ChunkPos{",
+        return HStringHelper.concat("ChunkPos{",
                 "x=", this.x,
                 ", y=", this.y,
                 ", z=", this.z,

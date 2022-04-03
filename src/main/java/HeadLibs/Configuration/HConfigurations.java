@@ -13,11 +13,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * Configuration.
  * @author xuxiaocheng
  */
 public class HConfigurations {
+    /**
+     * Configuration file path.
+     */
     private File file;
+    /**
+     * Saved configuration elements.
+     * @see HConfigType
+     */
     public final Set<HConfigElement> data = new HashSet<>();
 
     public HConfigurations(String path) throws IllegalArgumentException {
@@ -33,14 +40,14 @@ public class HConfigurations {
         if (path == null)
             throw new IllegalArgumentException("Argument path is null.");
         if (HFileHelper.createNewFile(path))
-            throw new IllegalArgumentException(HStringHelper.merge("Can't create the new file in path='", path, '\''));
+            throw new IllegalArgumentException(HStringHelper.concat("Can't create the new file in path='", path, '\''));
         this.file = (new File(path)).getAbsoluteFile();
         this.read();
     }
 
     public void add(@NotNull HConfigElement config) {
         if (this.getByName(config.getName()) != null) {
-            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']. Drop the first!"));
+            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']. Drop the first!"));
             this.deleteByName(config.getName());
         }
         this.data.add(config);
@@ -85,7 +92,7 @@ public class HConfigurations {
                             type = null;
                         }
                         if (type == null) {
-                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("Unregistered configuration type! [type='", temp, "'name='", config.getName(), "', path='", this.getPath(), "']. Use STRING!"));
+                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("Unregistered configuration type! [type='", temp, "'name='", config.getName(), "', path='", this.getPath(), "']. Use STRING!"));
                             type = HConfigType.STRING;
                         }
                         config.setType(type);
@@ -95,9 +102,9 @@ public class HConfigurations {
                         HConfigElement check = this.getByName(config.getName());
                         if (check != null)
                             if (check.equals(config))
-                                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                             else
-                                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.merge("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                         else
                             this.add(config);
                         config = new HConfigElement(null, null);
@@ -139,7 +146,7 @@ public class HConfigurations {
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.merge("HConfigurations{",
+        return HStringHelper.concat("HConfigurations{",
                 "file=", this.file,
                 ", date=", this.data,
                 '}');

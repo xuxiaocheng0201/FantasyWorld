@@ -98,7 +98,7 @@ public class IDResource implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge(this.mod_id, ":", this.assets);
+        return HStringHelper.concat(this.mod_id, ":", this.assets);
     }
 
     @Override

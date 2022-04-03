@@ -9,7 +9,17 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Some tools about {@link Class}
+ */
 public class HClassHelper {
+    /**
+     * Get a new instance from a class.
+     * If the class contains {@code getInstance()}, it will try invoking it.
+     * @param aClass the class
+     * @param <T> class's type
+     * @return null - failed. notNull - the instance
+     */
     @SuppressWarnings("unchecked")
     public static <T> @Nullable T getInstance(@NotNull Class<T> aClass) {
         try {

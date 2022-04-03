@@ -80,7 +80,7 @@ public class DSTTagDouble implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagDouble{",
+        return HStringHelper.concat("DSTTagDouble{",
                 "name='", this.name, '\'',
                 ", data=", this.data,
                 '}');

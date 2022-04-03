@@ -14,7 +14,7 @@ import java.util.*;
 class ModClassesLoader {
     @SuppressWarnings("FieldHasSetterButNoGetter")
     private static HLog logger;
-    static final File MODS_FILE = (new File(HStringHelper.merge(Craftworld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
+    static final File MODS_FILE = (new File(HStringHelper.concat(Craftworld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
     static {
         if (MODS_FILE.exists() && !MODS_FILE.isDirectory())
             HLog.logger(HELogLevel.ERROR, "Mods path is a file! MODS_PATH='", MODS_FILE.getPath(), "'.");
@@ -113,11 +113,11 @@ class ModClassesLoader {
     static void checkSameMods() {
         for (Class<? extends ModImplement> classClass: mods) {
             NewMod classMod = classClass.getAnnotation(NewMod.class);
-            String className = HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(classMod.name()));
+            String className = HStringHelper.noNull(classMod.name().strip());
             boolean not_found = true;
             for (Class<? extends ModImplement> savedClass: modList) {
                 NewMod savedMod = savedClass.getAnnotation(NewMod.class);
-                if (className.equals(HStringHelper.noNull(HStringHelper.delBlankHeadAndTail(savedMod.name())))) {
+                if (className.equals(HStringHelper.noNull(savedMod.name().strip()))) {
                     not_found = false;
                     logger.log(HELogLevel.FAULT, "Same mod name '", savedMod.name(), "'. ",
                             "From: '", allClassesWithJarFiles.get(savedClass), "' and '", allClassesWithJarFiles.get(classClass), "'.");

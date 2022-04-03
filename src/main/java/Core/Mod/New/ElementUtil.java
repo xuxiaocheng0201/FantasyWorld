@@ -3,18 +3,18 @@ package Core.Mod.New;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Registerer.HElementNotRegisteredException;
-import HeadLibs.Registerer.HMapRegisterer;
+import HeadLibs.Registerer.HMapRegistererWithName;
 
-public abstract class ElementUtil<T extends ElementImplement> extends HMapRegisterer<Class<? extends T>> {
+public abstract class ElementUtil<T extends ElementImplement> extends HMapRegistererWithName<Class<? extends T>> {
     public T getElementInstance(String name) throws HElementNotRegisteredException, NoSuchMethodException {
         T instance = HClassHelper.getInstance(this.getElement(name));
         if (instance == null)
-            throw new NoSuchMethodException(HStringHelper.merge("No common constructor to get instance. [name='", name, "']"));
+            throw new NoSuchMethodException(HStringHelper.concat("No common constructor to get instance. [name='", name, "']"));
         return instance;
     }
 
     public static String prefix(String name) {
-        return HStringHelper.merge("start", name);
+        return HStringHelper.concat("start", name);
     }
 
     public static String dePrefix(String prefix) {
@@ -26,7 +26,7 @@ public abstract class ElementUtil<T extends ElementImplement> extends HMapRegist
     }
 
     public static String suffix(String name) {
-        return HStringHelper.merge("end", name);
+        return HStringHelper.concat("end", name);
     }
 
     public static String deSuffix(String suffix) {

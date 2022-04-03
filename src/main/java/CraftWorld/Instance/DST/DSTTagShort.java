@@ -80,7 +80,7 @@ public class DSTTagShort implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.merge("DSTTagShort{",
+        return HStringHelper.concat("DSTTagShort{",
                 "name='", this.name, '\'',
                 ", data=", this.data,
                 '}');
