@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 /**
- * HConfigurations single element.
+ * {@link HConfigurations) single element.
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
@@ -74,6 +74,14 @@ public class HConfigElement {
     }
 
     /**
+     * Get config element's name.
+     * @return Config element's name
+     */
+    public @NotNull String getName() {
+        return this.name;
+    }
+
+    /**
      * Set config element's name.
      * @param name Config element's name
      */
@@ -82,11 +90,27 @@ public class HConfigElement {
     }
 
     /**
+     * Get config element's note.
+     * @return Config element's note
+     */
+    public @NotNull String getNote() {
+        return this.note;
+    }
+
+    /**
      * Set config element's note.
      * @param note Config element's note
      */
     public void setNote(@Nullable String note) {
         this.note = ((note == null) ? "null" : note);
+    }
+
+    /**
+     * Get config element's type.
+     * @return Config element's type
+     */
+    public @NotNull HConfigType getType() {
+        return this.type;
     }
 
     /**
@@ -100,6 +124,14 @@ public class HConfigElement {
             throw new HWrongConfigValueException(type);
         this.type = type;
         this.value = fixed;
+    }
+
+    /**
+     * Get config element's value.
+     * @return Config element's value
+     */
+    public @NotNull String getValue() {
+        return this.value;
     }
 
     /**
@@ -123,38 +155,6 @@ public class HConfigElement {
     public void setTypeAndValue(@NotNull HConfigType type, @Nullable String value) throws HWrongConfigValueException {
         this.type = type;
         this.setValue(value);
-    }
-
-    /**
-     * Get config element's name.
-     * @return Config element's name
-     */
-    public @NotNull String getName() {
-        return this.name;
-    }
-
-    /**
-     * Get config element's note.
-     * @return Config element's note
-     */
-    public @NotNull String getNote() {
-        return this.note;
-    }
-
-    /**
-     * Get config element's type.
-     * @return Config element's type
-     */
-    public @NotNull HConfigType getType() {
-        return this.type;
-    }
-
-    /**
-     * Get config element's value.
-     * @return Config element's value
-     */
-    public @NotNull String getValue() {
-        return this.value;
     }
 
     @Override

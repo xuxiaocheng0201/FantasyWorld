@@ -9,6 +9,7 @@ import HeadLibs.Logger.HLog;
 import HeadLibs.Pair;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 class ModClassesLoader {
@@ -89,7 +90,11 @@ class ModClassesLoader {
     static void pickAllClasses() {
         HClassFinder modsFinder = new HClassFinder();
         modsFinder.addJarFilesInDirectory(MODS_FILE);
-        modsFinder.startFind();
+        try {
+            modsFinder.startFind();
+        } catch (IOException exception) {
+            logger.log(HELogLevel.ERROR, exception);
+        }
         allClassesWithJarFiles = modsFinder.getClassListWithJarFile();
         HClassFinder modFilter = new HClassFinder();
         modFilter.addAnnotationClass(NewMod.class);

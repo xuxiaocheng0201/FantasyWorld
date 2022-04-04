@@ -2,7 +2,7 @@ package Core;
 
 import Core.Mod.New.ModImplement;
 import Core.Mod.New.NewMod;
-import HeadLibs.Configuration.SimpleMode.HConfigSimple;
+import HeadLibs.Configuration.SimpleMode.HConfigElementSimple;
 import HeadLibs.Configuration.SimpleMode.HConfigurationsSimple;
 import HeadLibs.Helper.HStringHelper;
 
@@ -44,13 +44,13 @@ public class LanguageI18N {
             HConfigurationsSimple language = new HConfigurationsSimple(getLanguageFilePath(modClass, lang1));
             languages.put(lang1, language);
         }
-        HConfigSimple translation = languages.get(lang1).getByName(name);
+        HConfigElementSimple translation = languages.get(lang1).getByName(name);
         if (translation != null)
             return translation.getValue();
         if (lang1.equals(DEFAULT_LANGUAGE)) {
             HConfigurationsSimple todo = new HConfigurationsSimple(getLanguageFilePath(modClass, "TODO"));
             if (todo.getByName(name) == null) {
-                todo.add(new HConfigSimple(name, null));
+                todo.add(new HConfigElementSimple(name, null));
                 todo.write();
             }
             return name;

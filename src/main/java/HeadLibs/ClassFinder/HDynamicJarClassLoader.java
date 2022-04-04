@@ -10,7 +10,10 @@ import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-@SuppressWarnings("CustomClassloader")
+/**
+ * Load classed in jar file.
+ */
+@SuppressWarnings({"CustomClassloader", "unused"})
 public class HDynamicJarClassLoader extends ClassLoader {
     private final JarFile jarFile;
     private final ClassLoader parent;

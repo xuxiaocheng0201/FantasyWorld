@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.net.MalformedURLException;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -241,18 +240,14 @@ public class HClassFinder {
     /**
      * Check class availability and then add to class list.
      * @param className Searched class name to check and add.
+     * @throws IOException I/O class file failed
      */
-    private void checkAndAddClass(@NotNull String className) {
+    private void checkAndAddClass(@NotNull String className) throws IOException {
         Class<?> aClass;
         try {
             aClass = Class.forName(className);
         } catch (ClassNotFoundException classNotFoundException) {
-            try {
-                aClass = loadClassInJar(this.doingJar, className);
-            } catch (IOException | ClassNotFoundException exception) {
-                HLog.logger(HELogLevel.ERROR, exception);
-                return;
-            }
+            aClass = loadClassInJar(this.doingJar, className);
         } catch (NoClassDefFoundError error) {
             HLog.logger(HELogLevel.MISTAKE, "Class.forName(\"", className, "\") failed. Message: ", error.getMessage(), ".");
             return;
@@ -292,8 +287,9 @@ public class HClassFinder {
 
     /**
      * Find classes available.
+     * @throws IOException Read jar file failed.
      */
-    public void startFind() {
+    public void startFind() throws IOException{
         this.classList.clear();
         this.classListWithJarFile.clear();
         for (File file : this.jarFiles) {
@@ -333,8 +329,9 @@ public class HClassFinder {
      * Find classes available in directory files.
      * @param jarFile The directory files.
      * @param packageName Directory package.
+     * @throws IOException Read jar file failed.
      */
-    private void findInFile(@NotNull File jarFile, @NotNull String packageName) {
+    private void findInFile(@NotNull File jarFile, @NotNull String packageName) throws IOException {
         if (jarFile.isDirectory()) {
             File[] files = jarFile.listFiles();
             if (files == null)
@@ -360,7 +357,14 @@ public class HClassFinder {
         this.checkAndAddClass(packageName);
     }
 
-    public static @Nullable Class<?> loadClassInJar(@Nullable File jarFile, @NotNull String className) throws ClassNotFoundException, IOException {
+    /**
+     * Get class form jar file by package path and name.
+     * @param jarFile jar file
+     * @param className package path and class name
+     * @return null - can't find. notNull - found class.
+     * @throws IOException Read jar file failed.
+     */
+    public static @Nullable Class<?> loadClassInJar(@Nullable File jarFile, @NotNull String className) throws IOException {
         if (jarFile == null || !jarFile.exists() || !jarFile.isFile() ||
                 !(jarFile.getAbsolutePath().endsWith(".zip") || jarFile.getAbsolutePath().endsWith(".jar")))
             return null;
@@ -368,10 +372,10 @@ public class HClassFinder {
             @SuppressWarnings("ClassLoaderInstantiation")
             HDynamicJarClassLoader classLoader = new HDynamicJarClassLoader(new JarFile(jarFile));
             return classLoader.loadClass(className);
-        } catch (MalformedURLException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
         } catch (NoClassDefFoundError error) {
             HLog.logger(HELogLevel.MISTAKE, "HClassFinder.loadClassInJar(\"", jarFile.getAbsolutePath(), "\", \"", className, "\") failed. Message: ", error.getMessage(), ".");
+        } catch (ClassNotFoundException exception) {
+            return null;
         }
         return null;
     }
