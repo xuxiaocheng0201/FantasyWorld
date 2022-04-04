@@ -2,8 +2,8 @@ package HeadLibs.Configuration.SimpleMode;
 
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -153,19 +153,19 @@ public boolean isExists(@Nullable HConfigElementSimple config) {
                     HConfigElementSimple check = this.getByName(s[0]);
                     if (check != null)
                         if (check.equals(config))
-                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                            HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                         else
-                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                            HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                     else
                         this.add(config);
                     config = new HConfigElementSimple(null, null);
                 } else
-                    HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("Illegal configuration format! [line='", temp, "']"));
+                    HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("Illegal configuration format! [line='", temp, "']"));
                 temp = reader.readLine();
             }
             reader.close();
         } catch (IOException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 
@@ -183,7 +183,7 @@ public boolean isExists(@Nullable HConfigElementSimple config) {
             }
             writer.close();
         } catch (IOException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 

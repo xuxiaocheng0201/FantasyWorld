@@ -2,8 +2,8 @@ package Core;
 
 import Core.EventBus.EventBusManager;
 import Core.Events.ClientStoppingEvent;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class CraftworldClient implements Runnable {
         Thread.currentThread().setName("CraftworldClient");
         HLog logger = new HLog(Thread.currentThread().getName());
         isRunning = true;
-        logger.log(HELogLevel.FINEST, "Client Thread has started.");
+        logger.log(HLogLevel.FINEST, "Client Thread has started.");
 
         //TODO: Menu
         try {
@@ -32,15 +32,15 @@ public class CraftworldClient implements Runnable {
                 client.close();
                 server.join();
             } catch (InterruptedException exception) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
             }
         } catch (IOException exception) {
-            logger.log(HELogLevel.ERROR, exception);
+            logger.log(HLogLevel.ERROR, exception);
         }
 
 
         EventBusManager.getDefaultEventBus().post(new ClientStoppingEvent(true));
         isRunning = false;
-        logger.log(HELogLevel.FINEST, "Client Thread exits.");
+        logger.log(HLogLevel.FINEST, "Client Thread exits.");
     }
 }

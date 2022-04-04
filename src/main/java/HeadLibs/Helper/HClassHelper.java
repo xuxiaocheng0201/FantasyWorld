@@ -1,7 +1,7 @@
 package HeadLibs.Helper;
 
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,7 @@ public class HClassHelper {
             return instance;
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -38,7 +38,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor().newInstance();
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -46,7 +46,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(String.class).newInstance("");
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -54,7 +54,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(String.class, String.class).newInstance("", "");
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -62,7 +62,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(String.class, String.class, String.class).newInstance("", "", "");
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -70,7 +70,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(boolean.class).newInstance(true);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -78,7 +78,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(boolean.class, boolean.class).newInstance(true, true);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -86,7 +86,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(boolean.class, boolean.class, boolean.class).newInstance(true, true, true);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -94,7 +94,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Boolean.class).newInstance(true);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -102,7 +102,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Boolean.class, Boolean.class).newInstance(true, true);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -110,7 +110,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Boolean.class, Boolean.class, Boolean.class).newInstance(true, true, true);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -118,7 +118,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(char.class).newInstance(' ');
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -126,7 +126,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(char.class, char.class).newInstance(' ', ' ');
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -134,7 +134,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(char.class, char.class, char.class).newInstance(' ', ' ', ' ');
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -142,7 +142,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Character.class).newInstance(' ');
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -150,7 +150,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Character.class, Character.class).newInstance(' ', ' ');
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -158,7 +158,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Character.class, Character.class, Character.class).newInstance(' ', ' ', ' ');
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -166,7 +166,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(int.class).newInstance(0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -174,7 +174,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(int.class, int.class).newInstance(0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -182,7 +182,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(int.class, int.class, int.class).newInstance(0, 0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -190,7 +190,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Integer.class).newInstance(0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -198,7 +198,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Integer.class, Integer.class).newInstance(0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -206,7 +206,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Integer.class, Integer.class, Integer.class).newInstance(0, 0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -214,7 +214,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(float.class).newInstance(0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -222,7 +222,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(float.class, float.class).newInstance(0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -230,7 +230,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(float.class, float.class, float.class).newInstance(0, 0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -238,7 +238,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Float.class).newInstance(0.0F);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -246,7 +246,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Float.class, Float.class).newInstance(0.0F, 0.0F);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -254,7 +254,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Float.class, Float.class, Float.class).newInstance(0.0F, 0.0F, 0.0F);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -262,7 +262,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(double.class).newInstance(0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -270,7 +270,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(double.class, double.class).newInstance(0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -278,7 +278,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(double.class, double.class, double.class).newInstance(0, 0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -286,7 +286,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Double.class).newInstance(0.0D);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -294,7 +294,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Double.class, Double.class).newInstance(0.0D, 0.0D);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -302,7 +302,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Double.class, Double.class, Double.class).newInstance(0.0D, 0.0D, 0.0D);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -310,7 +310,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(long.class).newInstance(0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -318,7 +318,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(long.class, long.class).newInstance(0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -326,7 +326,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(long.class, long.class, long.class).newInstance(0, 0, 0);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -334,7 +334,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Long.class).newInstance(0L);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -342,7 +342,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Long.class, Long.class).newInstance(0L, 0L);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -350,7 +350,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Long.class, Long.class, Long.class).newInstance(0L, 0L, 0L);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -358,7 +358,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(BigInteger.class).newInstance(BigInteger.ZERO);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -366,7 +366,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(BigInteger.class, BigInteger.class).newInstance(BigInteger.ZERO, BigInteger.ZERO);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -374,7 +374,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(BigInteger.class, BigInteger.class, BigInteger.class).newInstance(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -382,7 +382,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(BigDecimal.class).newInstance(BigDecimal.ZERO);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -390,7 +390,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(BigDecimal.class, BigDecimal.class).newInstance(BigDecimal.ZERO, BigDecimal.ZERO);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -398,7 +398,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(BigDecimal.class, BigDecimal.class, BigDecimal.class).newInstance(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -407,7 +407,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Object.class).newInstance(new Object());
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -415,7 +415,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Object.class, Object.class).newInstance(null, null);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }
@@ -423,7 +423,7 @@ public class HClassHelper {
             return aClass.getDeclaredConstructor(Object.class, Object.class, Object.class).newInstance(null, null, null);
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }
         }

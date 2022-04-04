@@ -3,8 +3,8 @@ package CraftWorld.Utils;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
 
 import java.io.DataInput;
@@ -26,7 +26,7 @@ public class IDResource implements IDSTBase {
         try {
             DSTUtils.getInstance().register(id, IDResource.class);
         } catch (HElementRegisteredException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 

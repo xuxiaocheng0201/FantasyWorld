@@ -5,8 +5,8 @@ import Core.Events.*;
 import Core.Exceptions.ModRequirementsException;
 import Core.Mod.New.ModImplement;
 import HeadLibs.Helper.HClassHelper;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 
 import java.util.List;
 
@@ -23,13 +23,13 @@ public class ModLauncher {
         if (!ModClassesLoader.MODS_FILE.exists() || !ModClassesLoader.MODS_FILE.isDirectory())
             return true;
         ModClassesLoader.setLogger(logger);
-        logger.log(HELogLevel.INFO, "Searching mods in '", ModClassesLoader.MODS_FILE.getPath(), "'.");
+        logger.log(HLogLevel.INFO, "Searching mods in '", ModClassesLoader.MODS_FILE.getPath(), "'.");
         ModClassesLoader.pickAllClasses();
         for (Class<?> aClass: ModClassesLoader.getAllClasses())
             try {
                 EventBusManager.register(aClass);
             } catch (NoSuchMethodException exception) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
             }
         EventBusManager.getDefaultEventBus().post(new ElementsCheckingEvent());
         ModClassesLoader.checkSameMods();
@@ -54,13 +54,13 @@ public class ModLauncher {
         ModClassesSorter.buildModContainer();
         ModClassesSorter.checkModContainer();
         if (!ModClassesSorter.getExceptions().isEmpty()) {
-            logger.log(HELogLevel.BUG, "Mod Loading Error in checking requirements!");
+            logger.log(HLogLevel.BUG, "Mod Loading Error in checking requirements!");
             return true;
         }
         ModClassesSorter.toSimpleModContainer();
         ModClassesSorter.sortMods();
         if (!ModClassesSorter.getExceptions().isEmpty()) {
-            logger.log(HELogLevel.BUG, "Mod Loading Error in shorting!");
+            logger.log(HLogLevel.BUG, "Mod Loading Error in shorting!");
             return true;
         }
         return false;
@@ -77,7 +77,7 @@ public class ModLauncher {
             EventBusManager.getDefaultEventBus().post(new ModInitializingEvent(aClass));
             ModImplement instance = HClassHelper.getInstance(aClass);
             if (instance == null) {
-                logger.log(HELogLevel.ERROR, "No Common Constructor for creating Mod class: ", aClass);
+                logger.log(HLogLevel.ERROR, "No Common Constructor for creating Mod class: ", aClass);
                 continue;
             }
             try {

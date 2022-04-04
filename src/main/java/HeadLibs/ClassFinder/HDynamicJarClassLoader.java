@@ -1,7 +1,7 @@
 package HeadLibs.ClassFinder;
 
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,7 +70,7 @@ public class HDynamicJarClassLoader extends ClassLoader {
             if (is == null)
                 is = super.getResourceAsStream(name);
         } catch (IOException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
         return is;
     }

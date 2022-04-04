@@ -14,8 +14,8 @@ import HeadLibs.Configuration.HWrongConfigValueException;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Helper.HZipHelper;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -54,7 +54,7 @@ public class Craftworld {
                 HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
             }
         } catch (IOException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 
@@ -76,7 +76,7 @@ public class Craftworld {
 
     public static void main(String[] args) {
         Thread.currentThread().setName("CraftworldMain");
-        HLog.logger(HELogLevel.INFO, "Hello Craftworld!");
+        HLog.logger(HLogLevel.INFO, "Hello Craftworld!");
         HConfigurations canOverwrite = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
         HConfigElement overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
         if (overwrite_when_extracting != null)
@@ -93,7 +93,7 @@ public class Craftworld {
         Runtime.getRuntime().addShutdownHook(new Thread(Thread.currentThread().getName()) {
             @Override
             public void run() {
-                HLog.logger(HELogLevel.INFO, "Welcome to play again!");
+                HLog.logger(HLogLevel.INFO, "Welcome to play again!");
                 HLog.saveLogs(LOG_PATH);
             }
         });
@@ -111,7 +111,7 @@ public class Craftworld {
             }
             gc.interrupt();
         } catch (InterruptedException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 
@@ -130,7 +130,7 @@ public class Craftworld {
             CURRENT_LANGUAGE = language.getValue();
             language.setNote(LanguageI18N.get("Core.configuration.language.name"));
         } catch (HWrongConfigValueException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
 
         try {
@@ -140,7 +140,7 @@ public class Craftworld {
                 overwrite_when_extracting.setNote(LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"));
             OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
         } catch (HWrongConfigValueException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
 
         try {
@@ -149,13 +149,13 @@ public class Craftworld {
             else
                 garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
             if (Integer.parseInt(garbage_collector_time_interval.getValue()) < 10) {
-                HLog.logger(HELogLevel.CONFIGURATION, "Garbage collector time interval too short: ", garbage_collector_time_interval.getValue(), ". Now use:", GARBAGE_COLLECTOR_TIME_INTERVAL);
+                HLog.logger(HLogLevel.CONFIGURATION, "Garbage collector time interval too short: ", garbage_collector_time_interval.getValue(), ". Now use:", GARBAGE_COLLECTOR_TIME_INTERVAL);
                 garbage_collector_time_interval.setValue(String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
             }
             else
                 GARBAGE_COLLECTOR_TIME_INTERVAL = Integer.parseInt(garbage_collector_time_interval.getValue());
         } catch (HWrongConfigValueException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
 
         try {
@@ -166,12 +166,12 @@ public class Craftworld {
             PORT = Integer.parseInt(port.getValue());
             if (PortManager.checkPortUnavailable(PORT)) {
                 int availablePort = PortManager.getNextAvailablePort();
-                HLog.logger(HELogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
+                HLog.logger(HLogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
                 port.setValue(String.valueOf(availablePort));
                 PORT = availablePort;
             }
         } catch (HWrongConfigValueException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
 
         GLOBAL_CONFIGURATIONS.clear();
@@ -189,18 +189,18 @@ public class Craftworld {
     private static boolean loadMods() {
         HLog logger = new HLog(Thread.currentThread().getName());
         if (ModLauncher.loadModClasses()) {
-            logger.log(HELogLevel.BUG, "Mod Loading Error in loading classes!");
+            logger.log(HLogLevel.BUG, "Mod Loading Error in loading classes!");
             return false;
         }
-        logger.log(HELogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
-        logger.log(HELogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
+        logger.log(HLogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
+        logger.log(HLogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
         if (ModLauncher.sortMods(logger)) {
-            logger.log(HELogLevel.ERROR, ModLauncher.getSorterExceptions());
+            logger.log(HLogLevel.ERROR, ModLauncher.getSorterExceptions());
             for (ModRequirementsException exception: ModLauncher.getSorterExceptions())
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
             return false;
         }
-        logger.log(HELogLevel.FINEST, "Sorted Mod list: ", ModManager.getModList());
+        logger.log(HLogLevel.FINEST, "Sorted Mod list: ", ModManager.getModList());
         ModLauncher.launchMods();
         return true;
     }
@@ -211,7 +211,7 @@ public class Craftworld {
         @SuppressWarnings("MethodMayBeStatic")
         @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void defaultEventBusPostEvent(Object event) {
-            HLog.logger(HELogLevel.FINE, "Default Event bus post event '", event, "'(at '", event.getClass().getName(), "').");
+            HLog.logger(HLogLevel.FINE, "Default Event bus post event '", event, "'(at '", event.getClass().getName(), "').");
         }
     }
 
@@ -221,7 +221,7 @@ public class Craftworld {
         @SuppressWarnings("MethodMayBeStatic")
         @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void noSubscriberEvent(NoSubscriberEvent event) {
-            HLog.logger(HELogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
+            HLog.logger(HLogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
         }
     }
 }

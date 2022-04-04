@@ -1,7 +1,7 @@
 package Core.EventBus;
 
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.EventBusBuilder;
 import org.greenrobot.eventbus.Logger;
@@ -13,11 +13,11 @@ public class EventBusCreator {
         return EventBus.builder().logger(new Logger() {
             @Override
             public void log(Level level, String msg) {
-                logger.log(HELogLevel.getFromLevel(level), msg);
+                logger.log(HLogLevel.mapFromLevel(level), msg);
             }
             @Override
             public void log(Level level, String msg, Throwable th) {
-                logger.log(HELogLevel.getFromLevel(level), msg, " Caused by: ", th);
+                logger.log(HLogLevel.mapFromLevel(level), msg, " Caused by: ", th);
             }
         });
     }
@@ -26,11 +26,11 @@ public class EventBusCreator {
         return EventBus.builder().logger(new Logger() {
             @Override
             public void log(Level level, String msg) {
-                HLog.logger(HELogLevel.getFromLevel(level), msg);
+                HLog.logger(HLogLevel.mapFromLevel(level), msg);
             }
             @Override
             public void log(Level level, String msg, Throwable th) {
-                HLog.logger(HELogLevel.getFromLevel(level), msg, " Caused by: ", th);
+                HLog.logger(HLogLevel.mapFromLevel(level), msg, " Caused by: ", th);
             }
         });
     }

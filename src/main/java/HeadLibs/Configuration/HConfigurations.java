@@ -2,8 +2,8 @@ package HeadLibs.Configuration;
 
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -158,7 +158,7 @@ public class HConfigurations {
                             type = null;
                         }
                         if (type == null) {
-                            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("Unregistered configuration type! [type='", temp, "'name='", config.getName(), "', path='", this.getPath(), "']. Use STRING!"));
+                            HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("Unregistered configuration type! [type='", temp, "'name='", config.getName(), "', path='", this.getPath(), "']. Use STRING!"));
                             type = HConfigType.STRING;
                         }
                         config.setType(type);
@@ -168,21 +168,21 @@ public class HConfigurations {
                         HConfigElement check = this.getByName(config.getName());
                         if (check != null)
                             if (check.equals(config))
-                                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                                HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                             else
-                                HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
+                                HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
                         else
                             this.add(config);
                         config = new HConfigElement(null, null);
                     }
                 } catch (HWrongConfigValueException exception) {
-                    HLog.logger(HELogLevel.ERROR, exception);
+                    HLog.logger(HLogLevel.ERROR, exception);
                 }
                 temp = reader.readLine();
             }
             reader.close();
         } catch (IOException | HWrongConfigValueException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 
@@ -209,7 +209,7 @@ public class HConfigurations {
             }
             writer.close();
         } catch (IOException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 

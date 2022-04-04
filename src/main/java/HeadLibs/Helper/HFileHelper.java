@@ -1,7 +1,7 @@
 package HeadLibs.Helper;
 
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -117,12 +117,12 @@ public class HFileHelper {
         if (!file.canRead()) {
             if (!file.setReadable(true))
                 throw new IOException(HStringHelper.concat("File in path can't be read. [path='", path, "']"));
-            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("File in path has been set to readable. [path='", path, "']"));
+            HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("File in path has been set to readable. [path='", path, "']"));
         }
         if (!file.canWrite()) {
             if (!file.setWritable(true))
                 throw new IOException(HStringHelper.concat("File in path can't be written. [path='", path, "']"));
-            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("File in path has been set to writable. [path='", path, "']"));
+            HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("File in path has been set to writable. [path='", path, "']"));
         }
     }
 }

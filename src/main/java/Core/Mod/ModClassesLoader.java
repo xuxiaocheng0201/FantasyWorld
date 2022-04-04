@@ -4,8 +4,8 @@ import Core.Craftworld;
 import Core.Mod.New.*;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Pair;
 
 import java.io.File;
@@ -18,9 +18,9 @@ class ModClassesLoader {
     static final File MODS_FILE = (new File(HStringHelper.concat(Craftworld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
     static {
         if (MODS_FILE.exists() && !MODS_FILE.isDirectory())
-            HLog.logger(HELogLevel.ERROR, "Mods path is a file! MODS_PATH='", MODS_FILE.getPath(), "'.");
+            HLog.logger(HLogLevel.ERROR, "Mods path is a file! MODS_PATH='", MODS_FILE.getPath(), "'.");
         else if (!MODS_FILE.exists() && !MODS_FILE.mkdirs())
-            HLog.logger(HELogLevel.ERROR, "Creating MODS_PATH directory failed. MODS_PATH='", MODS_FILE.getPath(), "'.");
+            HLog.logger(HLogLevel.ERROR, "Creating MODS_PATH directory failed. MODS_PATH='", MODS_FILE.getPath(), "'.");
     }
 
     static void setLogger(HLog logger) {
@@ -93,7 +93,7 @@ class ModClassesLoader {
         try {
             modsFinder.startFind();
         } catch (IOException exception) {
-            logger.log(HELogLevel.ERROR, exception);
+            logger.log(HLogLevel.ERROR, exception);
         }
         allClassesWithJarFiles = modsFinder.getClassListWithJarFile();
         HClassFinder modFilter = new HClassFinder();
@@ -124,7 +124,7 @@ class ModClassesLoader {
                 NewMod savedMod = savedClass.getAnnotation(NewMod.class);
                 if (className.equals(HStringHelper.noNull(savedMod.name().strip()))) {
                     not_found = false;
-                    logger.log(HELogLevel.FAULT, "Same mod name '", savedMod.name(), "'. ",
+                    logger.log(HLogLevel.FAULT, "Same mod name '", savedMod.name(), "'. ",
                             "From: '", allClassesWithJarFiles.get(savedClass), "' and '", allClassesWithJarFiles.get(classClass), "'.");
                     boolean notFound = true;
                     for (List<Class<? extends ModImplement>> sameModFound: sameMods) {
@@ -160,7 +160,7 @@ class ModClassesLoader {
                 NewElementImplement savedImplement = savedClass.getAnnotation(NewElementImplement.class);
                 if (className.equals(HStringHelper.noNull(savedImplement.elementName()))) {
                     not_found = false;
-                    logger.log(HELogLevel.FAULT, "Same element implement name '", savedImplement.elementName(), "'.");
+                    logger.log(HLogLevel.FAULT, "Same element implement name '", savedImplement.elementName(), "'.");
                     boolean notFound = true;
                     for (List<Class<? extends ElementImplement>> sameImplementFound: sameImplements) {
                         if (sameImplementFound.isEmpty())
@@ -195,7 +195,7 @@ class ModClassesLoader {
                 NewElementUtil savedUtil = savedClass.getAnnotation(NewElementUtil.class);
                 if (className.equals(HStringHelper.noNull(savedUtil.name()))) {
                     not_found = false;
-                    logger.log(HELogLevel.FAULT, "Same element util name '", savedUtil.name(), "'.");
+                    logger.log(HLogLevel.FAULT, "Same element util name '", savedUtil.name(), "'.");
                     boolean notFound = true;
                     for (List<Class<? extends ElementUtil<?>>> sameUtilFound: sameUtils) {
                         if (sameUtilFound.isEmpty())
@@ -236,7 +236,7 @@ class ModClassesLoader {
                 }
             }
             if (elementUtil == null) {
-                logger.log(HELogLevel.ERROR, "No pair util for implement '", tempName, "'. Ignore it!");
+                logger.log(HLogLevel.ERROR, "No pair util for implement '", tempName, "'. Ignore it!");
                 singleImplements.add(implement);
                 continue;
             }
@@ -256,7 +256,7 @@ class ModClassesLoader {
                 }
             }
             if (elementImplement == null) {
-                logger.log(HELogLevel.ERROR, "No pair implement for util '", tempName, "'. Ignore it!");
+                logger.log(HLogLevel.ERROR, "No pair implement for util '", tempName, "'. Ignore it!");
                 singleUtils.add(util);
             }
         }

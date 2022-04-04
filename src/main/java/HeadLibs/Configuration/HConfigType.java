@@ -15,7 +15,6 @@ public class HConfigType {
      * All Registered configuration types.
      */
     private static final HMapRegistererWithName<HConfigType> REGISTERED_MAP = new HMapRegistererWithName<>();
-
     /**
      * Get registered map.
      * @return registered map.
@@ -189,7 +188,7 @@ public class HConfigType {
     }
 
     public static @Nullable String fixValueInList(@Nullable String value, @NotNull FixConfigurationValueMethod method) {
-        String valueWithoutBrackets = HStringHelper.noNull(value.strip());
+        String valueWithoutBrackets = HStringHelper.noNullStrip(value);
         if (valueWithoutBrackets.isEmpty())
             return "[]";
         if (valueWithoutBrackets.charAt(0) == '[')

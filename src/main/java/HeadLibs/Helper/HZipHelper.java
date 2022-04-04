@@ -1,7 +1,7 @@
 package HeadLibs.Helper;
 
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -71,7 +71,7 @@ public class HZipHelper {
                 File file = new File(HStringHelper.concat(targetDir, File.separator, name));
                 if (jarEntry.isDirectory()) {
                     if (!file.mkdirs())
-                        HLog.logger(HELogLevel.ERROR, "Making directories failed!");
+                        HLog.logger(HLogLevel.ERROR, "Making directories failed!");
                     continue;
                 }
                 InputStream input = jar.getInputStream(jarEntry);
@@ -82,7 +82,7 @@ public class HZipHelper {
                 output.close();
             }
         } catch (IOException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 }

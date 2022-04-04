@@ -3,8 +3,8 @@ package Core;
 import Core.EventBus.EventBusManager;
 import Core.Events.ServerStartEvent;
 import Core.Events.ServerStopEvent;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -16,7 +16,7 @@ public class CraftworldServer implements Runnable {
     public void run() {
         Thread.currentThread().setName("CraftworldServer");
         HLog logger = new HLog(Thread.currentThread().getName());
-        logger.log(HELogLevel.FINEST, "Server Thread has started.");
+        logger.log(HLogLevel.FINEST, "Server Thread has started.");
         isRunning = true;
         EventBusManager.getDefaultEventBus().post(new ServerStartEvent());
         try {
@@ -31,6 +31,6 @@ public class CraftworldServer implements Runnable {
             EventBusManager.getDefaultEventBus().post(new ServerStopEvent(false));
         }
         isRunning = false;
-        logger.log(HELogLevel.FINEST, "Server Thread exits.");
+        logger.log(HLogLevel.FINEST, "Server Thread exits.");
     }
 }

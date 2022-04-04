@@ -3,8 +3,8 @@ package CraftWorld.Instance.DST;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
 
 import java.io.DataInput;
@@ -25,7 +25,7 @@ public class DSTTagStringMap implements IDSTBase {
         try {
             DSTUtils.getInstance().register(id, DSTTagStringMap.class);
         } catch (HElementRegisteredException exception) {
-            HLog.logger(HELogLevel.ERROR, exception);
+            HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 

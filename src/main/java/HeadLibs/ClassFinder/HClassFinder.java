@@ -1,8 +1,8 @@
 package HeadLibs.ClassFinder;
 
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -249,7 +249,7 @@ public class HClassFinder {
         } catch (ClassNotFoundException classNotFoundException) {
             aClass = loadClassInJar(this.doingJar, className);
         } catch (NoClassDefFoundError error) {
-            HLog.logger(HELogLevel.MISTAKE, "Class.forName(\"", className, "\") failed. Message: ", error.getMessage(), ".");
+            HLog.logger(HLogLevel.MISTAKE, "Class.forName(\"", className, "\") failed. Message: ", error.getMessage(), ".");
             return;
         }
         if (aClass != null && this.checkSuper(aClass) && this.checkAnnotation(aClass)) {
@@ -310,13 +310,13 @@ public class HClassFinder {
                         this.checkAndAddClass(className);
                     }
                 } catch (IOException exception) {
-                    HLog.logger(HELogLevel.ERROR, exception);
+                    HLog.logger(HLogLevel.ERROR, exception);
                 } finally {
                     if (jarFile != null)
                         try {
                             jarFile.close();
                         } catch (IOException exception) {
-                            HLog.logger(HELogLevel.ERROR, exception);
+                            HLog.logger(HLogLevel.ERROR, exception);
                         }
                 }
             } else
@@ -373,7 +373,7 @@ public class HClassFinder {
             HDynamicJarClassLoader classLoader = new HDynamicJarClassLoader(new JarFile(jarFile));
             return classLoader.loadClass(className);
         } catch (NoClassDefFoundError error) {
-            HLog.logger(HELogLevel.MISTAKE, "HClassFinder.loadClassInJar(\"", jarFile.getAbsolutePath(), "\", \"", className, "\") failed. Message: ", error.getMessage(), ".");
+            HLog.logger(HLogLevel.MISTAKE, "HClassFinder.loadClassInJar(\"", jarFile.getAbsolutePath(), "\", \"", className, "\") failed. Message: ", error.getMessage(), ".");
         } catch (ClassNotFoundException exception) {
             return null;
         }

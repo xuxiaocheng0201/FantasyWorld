@@ -138,12 +138,12 @@ public class HLog {
      * @param message the message to log
      */
     @SuppressWarnings("DefaultNotLastCaseInSwitch")
-    public void log(@Nullable HELogLevel level, @Nullable String message) {
+    public void log(@Nullable HLogLevel level, @Nullable String message) {
         if ("null".equals(this.name))
             return;
-        HELogLevel level1 = level;
+        HLogLevel level1 = level;
         if (level1 == null)
-            level1 = HELogLevel.DEBUG;
+            level1 = HLogLevel.DEBUG;
         Date date = new Date();
         String log = HStringHelper.concat("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
                 "[", this.name, "]",
@@ -175,12 +175,12 @@ public class HLog {
      * @param throwable the throwable to log
      */
     @SuppressWarnings("DefaultNotLastCaseInSwitch")
-    public void log(@Nullable HELogLevel level, @NotNull Throwable throwable) {
+    public void log(@Nullable HLogLevel level, @NotNull Throwable throwable) {
         if ("null".equals(this.name))
             return;
-        HELogLevel level1 = level;
+        HLogLevel level1 = level;
         if (level1 == null)
-            level1 = HELogLevel.ERROR;
+            level1 = HLogLevel.ERROR;
         Date date = new Date();
         StringBuilder builder = new StringBuilder("[");
         builder.append(HStringHelper.getDate(DATE_FORMAT, date));
@@ -230,7 +230,7 @@ public class HLog {
      * @param object the object to log
      * @see String#valueOf(Object)
      */
-    public void log(@Nullable HELogLevel level, @Nullable Object object) {
+    public void log(@Nullable HLogLevel level, @Nullable Object object) {
         if (object == null) {
             this.log(level, "Object null!");
             return;
@@ -243,7 +243,7 @@ public class HLog {
      * @param level log's level
      * @param messages the messages to log
      */
-    public void log(@Nullable HELogLevel level, @Nullable String ...messages) {
+    public void log(@Nullable HLogLevel level, @Nullable String ...messages) {
         this.log(level, HStringHelper.concat(messages));
     }
 
@@ -252,7 +252,7 @@ public class HLog {
      * @param level log's level
      * @param throwable the throwable to log
      */
-    public void log(@Nullable HELogLevel level, @NotNull Throwable ...throwable) {
+    public void log(@Nullable HLogLevel level, @NotNull Throwable ...throwable) {
         for (Throwable t: throwable)
             this.log(level, t);
     }
@@ -263,7 +263,7 @@ public class HLog {
      * @param objects the objects to log
      * @see String#valueOf(Object)
      */
-    public void log(@Nullable HELogLevel level, @Nullable Object ...objects) {
+    public void log(@Nullable HLogLevel level, @Nullable Object ...objects) {
         this.log(level, HStringHelper.concat(objects));
     }
 
@@ -272,7 +272,7 @@ public class HLog {
      * @param message the message to log
      */
     public void log(@Nullable String message) {
-        this.log(HELogLevel.DEBUG, message);
+        this.log(HLogLevel.DEBUG, message);
     }
 
     /**
@@ -280,7 +280,7 @@ public class HLog {
      * @param throwable the throwable to log
      */
     public void log(@NotNull Throwable throwable) {
-        this.log(HELogLevel.ERROR, throwable);
+        this.log(HLogLevel.ERROR, throwable);
     }
 
     /**
@@ -289,7 +289,7 @@ public class HLog {
      * @see String#valueOf(Object)
      */
     public void log(@Nullable Object object) {
-        this.log(HELogLevel.DEBUG, object);
+        this.log(HLogLevel.DEBUG, object);
     }
 
     /**
@@ -297,7 +297,7 @@ public class HLog {
      * @param messages the messages to log
      */
     public void log(@Nullable String ...messages) {
-        this.log(HELogLevel.DEBUG, messages);
+        this.log(HLogLevel.DEBUG, messages);
     }
 
     /**
@@ -305,7 +305,7 @@ public class HLog {
      * @param throwable the throwable to log
      */
     public void log(@NotNull Throwable ...throwable) {
-        this.log(HELogLevel.ERROR, throwable);
+        this.log(HLogLevel.ERROR, throwable);
     }
 
     /**
@@ -314,7 +314,7 @@ public class HLog {
      * @see String#valueOf(Object)
      */
     public void log(@Nullable Object ...objects) {
-        this.log(HELogLevel.DEBUG, objects);
+        this.log(HLogLevel.DEBUG, objects);
     }
 
     /**
@@ -322,7 +322,7 @@ public class HLog {
      * @param level log's level
      * @param message the message to log
      */
-    public static void logger(@Nullable HELogLevel level, @Nullable String message) {
+    public static void logger(@Nullable HLogLevel level, @Nullable String message) {
         (new HLog(Thread.currentThread().getName())).log(level, message);
     }
 
@@ -331,7 +331,7 @@ public class HLog {
      * @param level log's level
      * @param throwable the throwable to log
      */
-    public static void logger(@Nullable HELogLevel level, @NotNull Throwable throwable) {
+    public static void logger(@Nullable HLogLevel level, @NotNull Throwable throwable) {
         (new HLog(Thread.currentThread().getName())).log(level, throwable);
     }
 
@@ -341,7 +341,7 @@ public class HLog {
      * @param object the object to log
      * @see String#valueOf(Object)
      */
-    public static void logger(@Nullable HELogLevel level, @Nullable Object object) {
+    public static void logger(@Nullable HLogLevel level, @Nullable Object object) {
         (new HLog(Thread.currentThread().getName())).log(level, object);
     }
 
@@ -350,7 +350,7 @@ public class HLog {
      * @param level log's level
      * @param messages the messages to log
      */
-    public static void logger(@Nullable HELogLevel level, @Nullable String ...messages) {
+    public static void logger(@Nullable HLogLevel level, @Nullable String ...messages) {
         (new HLog(Thread.currentThread().getName())).log(level, messages);
     }
 
@@ -359,7 +359,7 @@ public class HLog {
      * @param level log's level
      * @param throwable the throwable to log
      */
-    public static void logger(@Nullable HELogLevel level, @NotNull Throwable ...throwable) {
+    public static void logger(@Nullable HLogLevel level, @NotNull Throwable ...throwable) {
         (new HLog(Thread.currentThread().getName())).log(level, throwable);
     }
 
@@ -369,7 +369,7 @@ public class HLog {
      * @param objects the objects to log
      * @see String#valueOf(Object)
      */
-    public static void logger(@Nullable HELogLevel level, @Nullable Object ...objects) {
+    public static void logger(@Nullable HLogLevel level, @Nullable Object ...objects) {
         (new HLog(Thread.currentThread().getName())).log(level, objects);
     }
 
@@ -476,7 +476,7 @@ public class HLog {
                 }
                 writer.close();
             } catch (IOException exception) {
-                HLog.logger(HELogLevel.ERROR, exception);
+                HLog.logger(HLogLevel.ERROR, exception);
             }
         }
     }

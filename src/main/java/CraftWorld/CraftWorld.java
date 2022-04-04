@@ -9,8 +9,8 @@ import Core.Mod.New.ModImplement;
 import Core.Mod.New.NewMod;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
-import HeadLibs.Logger.HELogLevel;
 import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -49,7 +49,7 @@ public class CraftWorld implements ModImplement {
     }
 
     public void start(ServerSocket server) throws InterruptedException {
-        logger.log(HELogLevel.FINEST, "Loading world..." );
+        logger.log(HLogLevel.FINEST, "Loading world..." );
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         //TODO: Load world
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());

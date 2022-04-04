@@ -37,15 +37,26 @@ public class HStringHelper {
 
     /**
      * Strip string array.
-     * @param a Source strings
+     * @param a source strings
      * @return fixed strings
      */
-    public static @NotNull String[] strip(String @NotNull [] a) {
+    public static @NotNull String[] strip(@NotNull String [] a) {
         int length = a.length;
         String[] b = new String[length];
         for (int i = 0; i < length; ++i)
             b[i] = a[i].strip();
         return b;
+    }
+
+    /**
+     * Unify string.
+     * @param a source string
+     * @return fixed string
+     */
+    public static @NotNull String noNullStrip(@Nullable String a) {
+        if (a == null || a.isBlank())
+            return "";
+        return a.strip();
     }
 
     /**
