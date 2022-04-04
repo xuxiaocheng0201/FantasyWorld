@@ -13,6 +13,7 @@ public class HMapRegistererWithName<E> extends HMapRegisterer<String, E> {
      * @param element the element
      * @throws HElementRegisteredException element or its name has been registered.
      */
+    @Override
     public void register(String name, E element) throws HElementRegisteredException {
         if (this.map.containsKey(name))
             throw new HElementRegisteredException("Registered name.", name, element);

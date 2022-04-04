@@ -137,7 +137,10 @@ public class HLog {
      * @param level log's level
      * @param message the message to log
      */
+    @SuppressWarnings("DefaultNotLastCaseInSwitch")
     public void log(@Nullable HELogLevel level, @Nullable String message) {
+        if ("null".equals(this.name))
+            return;
         HELogLevel level1 = level;
         if (level1 == null)
             level1 = HELogLevel.DEBUG;
@@ -146,12 +149,23 @@ public class HLog {
                 "[", this.name, "]",
                 "[", level1.getName(), "]",
                 message);
-        synchronized (logs) {
-            logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
-            if (System.console() != null)
-                System.out.println(log);
-            else
-                System.out.println(level1.getPrefix() + log + "\033[0m");
+        switch (this.name) {
+            case "stdErr":
+                if (System.console() != null)
+                    System.err.println(log);
+                else
+                    System.err.println(level1.getPrefix() + log + "\033[0m");
+                break;
+            default:
+                synchronized (logs) {
+                    logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
+                }
+                //noinspection fallthrough
+            case "stdOut":
+                if (System.console() != null)
+                    System.out.println(log);
+                else
+                    System.out.println(level1.getPrefix() + log + "\033[0m");
         }
     }
 
@@ -160,7 +174,10 @@ public class HLog {
      * @param level log's level
      * @param throwable the throwable to log
      */
+    @SuppressWarnings("DefaultNotLastCaseInSwitch")
     public void log(@Nullable HELogLevel level, @NotNull Throwable throwable) {
+        if ("null".equals(this.name))
+            return;
         HELogLevel level1 = level;
         if (level1 == null)
             level1 = HELogLevel.ERROR;
@@ -187,12 +204,23 @@ public class HLog {
         }
         addCausedThrowable(builder, throwable.getCause());
         String log = builder.toString();
-        synchronized (logs) {
-            logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
-            if (System.console() != null)
-                System.out.println(log);
-            else
-                System.out.println(level1.getPrefix() + log + "\033[0m");
+        switch (this.name) {
+            case "stdErr":
+                if (System.console() != null)
+                    System.err.println(log);
+                else
+                    System.err.println(level1.getPrefix() + log + "\033[0m");
+                break;
+            default:
+                synchronized (logs) {
+                    logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
+                }
+                //noinspection fallthrough
+            case "stdOut":
+                if (System.console() != null)
+                    System.out.println(log);
+                else
+                    System.out.println(level1.getPrefix() + log + "\033[0m");
         }
     }
 
@@ -436,8 +464,11 @@ public class HLog {
                     return compare_date;
                 });
             try {
-                if (HFileHelper.createNewFile(path))
-                    throw new IOException("Creating log file failed.");
+                try {
+                    HFileHelper.createNewFile(path);
+                } catch (IOException exception) {
+                    throw new IOException("Creating log file failed.", exception);
+                }
                 FileWriter writer = new FileWriter(new File(path).getAbsoluteFile(), true);
                 for (Pair<Pair<Date, Integer>, String> pair: logs) {
                     writer.write(HStringHelper.noNull(pair.getValue()));

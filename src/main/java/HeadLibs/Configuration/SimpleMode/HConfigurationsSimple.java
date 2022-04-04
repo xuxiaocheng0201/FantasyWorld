@@ -30,8 +30,11 @@ public class HConfigurationsSimple {
     public void setPath(@Nullable String path) throws IllegalArgumentException {
         if (path == null)
             throw new IllegalArgumentException("Argument path is null.");
-        if (HFileHelper.createNewFile(path))
-            throw new IllegalArgumentException(HStringHelper.concat("Can't create the new file in path='", path, '\''));
+        try {
+            HFileHelper.createNewFile(path);
+        } catch (IOException exception) {
+            throw new IllegalArgumentException(HStringHelper.concat("Can't create the new file in path='", path, '\''), exception);
+        }
         this.file = (new File(path)).getAbsoluteFile();
         this.read();
     }

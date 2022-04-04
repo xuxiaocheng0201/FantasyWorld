@@ -9,13 +9,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Configuration.
  * @author xuxiaocheng
  */
+@SuppressWarnings("unused")
 public class HConfigurations {
     /**
      * Configuration file path.
@@ -23,55 +24,120 @@ public class HConfigurations {
     private File file;
     /**
      * Saved configuration elements.
-     * @see HConfigType
+     * @see HConfigElement
      */
-    public final Set<HConfigElement> data = new HashSet<>();
+    public final Map<String, HConfigElement> data = new HashMap<>();
 
-    public HConfigurations(String path) throws IllegalArgumentException {
+    /**
+     * Construct configuration in file path
+     * @param path file path
+     * @throws IllegalArgumentException Wrong file path.
+     */
+    public HConfigurations(@NotNull String path) throws IllegalArgumentException {
         super();
         this.setPath(path);
     }
 
+    /**
+     * Get configuration file path.
+     * @return configuration file path
+     */
     public @NotNull String getPath() {
         return this.file.getPath();
     }
 
+    /**
+     * Set configuration file path and read it.
+     * @param path configuration file path.
+     * @throws IllegalArgumentException File path invalid.
+     */
     public void setPath(@Nullable String path) throws IllegalArgumentException {
         if (path == null)
             throw new IllegalArgumentException("Argument path is null.");
-        if (HFileHelper.createNewFile(path))
-            throw new IllegalArgumentException(HStringHelper.concat("Can't create the new file in path='", path, '\''));
+        try {
+            HFileHelper.createNewFile(path);
+        } catch (IOException exception) {
+            throw new IllegalArgumentException(HStringHelper.concat("Can't create the new file in path='", path, '\''), exception);
+        }
         this.file = (new File(path)).getAbsoluteFile();
         this.read();
     }
 
-    public void add(@NotNull HConfigElement config) {
-        if (this.getByName(config.getName()) != null) {
-            HLog.logger(HELogLevel.CONFIGURATION, HStringHelper.concat("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']. Drop the first!"));
-            this.deleteByName(config.getName());
-        }
-        this.data.add(config);
+    /**
+     * Is a config element's name exists?
+     * @param config the configuration
+     * @return true - exists. false - not exist.
+     */
+    public boolean isExists(@Nullable HConfigElement config) {
+        if (config == null)
+            return true;
+        return this.data.containsKey(config.getName());
     }
 
+    /**
+     * Add new configuration element to cache.
+     * @param config new configuration element
+     * @throws IllegalArgumentException configuration's name has exist.
+     */
+    public void add(@NotNull HConfigElement config) throws IllegalArgumentException {
+        if (this.isExists(config))
+            throw new IllegalArgumentException(HStringHelper.concat("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']."));
+        this.data.put(config.getName(), config);
+    }
+
+    /**
+     * Add new configuration element to cache.
+     * @param config new configuration element
+     * @param overwrite overwrite when configuration exists
+     * @return true - {@code data} change. false - not change
+     */
+    public boolean add(@NotNull HConfigElement config, boolean overwrite) {
+        if (this.isExists(config)) {
+            if (!overwrite)
+                return false;
+            this.deleteByName(config.getName());
+        }
+        this.data.put(config.getName(), config);
+        return true;
+    }
+
+    /**
+     * Get configuration element by name.
+     * @param name configuration name
+     * @return null - can't find. notNull - the element.
+     */
+    public @Nullable HConfigElement getByName(@NotNull String name) {
+        return this.data.get(name);
+    }
+
+    /**
+     * Delete configuration element by name.
+     * @param name configuration name
+     */
+    public void deleteByName(@Nullable String name) {
+        this.data.remove(name);
+    }
+
+    /**
+     * Remove all configuration element by value
+     * @param value configuration value
+     */
+    public void deleteAllByValue(@NotNull String value) {
+        for (Map.Entry<String, HConfigElement> entry: this.data.entrySet())
+            if (value.equals(entry.getValue().getValue()))
+                this.data.remove(entry.getKey());
+    }
+
+    /**
+     * Remove all configuration element
+     */
     public void clear() {
         this.data.clear();
     }
 
-    public @Nullable HConfigElement getByName(@NotNull String name) {
-        for (HConfigElement i: this.data)
-            if (i.getName().equals(name))
-                return i;
-        return null;
-    }
-
-    public void deleteByName(@Nullable String name) {
-        this.data.removeIf(config -> config.getName().equals(name));
-    }
-
-    public void deleteAllByValue(@Nullable String value) {
-        this.data.removeIf(config -> config.getValue().equals(value));
-    }
-
+    /**
+     * Read configurations from file.
+     */
     public void read() {
         this.data.clear();
         try {
@@ -120,10 +186,13 @@ public class HConfigurations {
         }
     }
 
+    /**
+     * Write configurations to file.
+     */
     public void write() {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
-            for (HConfigElement i: this.data) {
+            for (HConfigElement i: this.data.values()) {
                 writer.write("name: ");
                 writer.write(i.getName());
                 writer.newLine();
