@@ -4,6 +4,8 @@ import HeadLibs.Helper.HStringHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -11,7 +13,10 @@ import java.util.Objects;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HConfigElement {
+public class HConfigElement implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 6124564601710918431L;
+
     /**
      * Config element's name
      */

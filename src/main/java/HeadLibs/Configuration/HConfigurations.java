@@ -17,7 +17,10 @@ import java.util.Map;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HConfigurations {
+public class HConfigurations implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 5587908518491879607L;
+
     /**
      * Configuration file path.
      */

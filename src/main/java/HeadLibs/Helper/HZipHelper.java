@@ -22,6 +22,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * Some tools about zip/jar file.
  */
+@SuppressWarnings("unused")
 public class HZipHelper {
     /**
      * Zip a directory to zip file.

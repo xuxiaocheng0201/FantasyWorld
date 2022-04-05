@@ -7,19 +7,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Log Level can be registered.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix some bugs.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/New/ElementUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/New/ElementUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/Dimension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/Dimension.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTMetaCompound.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTMetaCompound.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigElement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigElement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HStringHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HStringHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLogLevel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLogLevel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HElementNotRegisteredException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HElementNotRegisteredException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HElementRegisteredException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HElementRegisteredException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HMapRegisterer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HMapRegisterer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HMapRegistererWithName.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigurations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigurations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HZipHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HZipHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,13 +162,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Dimension System.">
-      <created>1645287719843</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1645287719843</updated>
     </task>
     <task id="LOCAL-00026" summary="ClassFinder">
       <created>1645356566289</created>
@@ -512,7 +499,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649088556852</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Fix some bugs.">
+      <created>1649151734721</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1649151734724</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -557,7 +551,6 @@
     <MESSAGE value="build mod container" />
     <MESSAGE value="Mod version checking." />
     <MESSAGE value="Mod sort function finished." />
-    <MESSAGE value="Fix some bugs." />
     <MESSAGE value="Fix a lot of bugs. But still some." />
     <MESSAGE value="Fix a bug." />
     <MESSAGE value="Recontribute Core codes." />
@@ -579,7 +572,8 @@
     <MESSAGE value="Add some javadocs and Tree.java" />
     <MESSAGE value="Add some javadocs." />
     <MESSAGE value="Log Level can be registered." />
-    <option name="LAST_COMMIT_MESSAGE" value="Log Level can be registered." />
+    <MESSAGE value="Fix some bugs." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix some bugs." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

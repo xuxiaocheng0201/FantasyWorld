@@ -7,7 +7,10 @@ import HeadLibs.Registerer.HMapRegisterer;
 
 public abstract class ElementUtil<T extends ElementImplement> extends HMapRegisterer<String, Class<? extends T>> {
     public T getElementInstance(String name) throws HElementNotRegisteredException, NoSuchMethodException {
-        T instance = HClassHelper.getInstance(this.getElement(name));
+        Class<? extends T> aClass = this.getElement(name);
+        if (aClass == null)
+            throw new HElementNotRegisteredException(null, name);
+        T instance = HClassHelper.getInstance(aClass);
         if (instance == null)
             throw new NoSuchMethodException(HStringHelper.concat("No common constructor to get instance. [name='", name, "']"));
         return instance;

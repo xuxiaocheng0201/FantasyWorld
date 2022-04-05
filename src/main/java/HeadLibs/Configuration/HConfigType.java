@@ -7,16 +7,23 @@ import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Configuration type.
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HConfigType {
+public class HConfigType implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -7824027279249219691L;
+
     /**
      * All Registered configuration types.
      */
     private static final HMapRegisterer<String, HConfigType> REGISTERED_MAP = new HMapRegisterer<>();
+
     /**
      * Get registered map.
      * @return registered map.
