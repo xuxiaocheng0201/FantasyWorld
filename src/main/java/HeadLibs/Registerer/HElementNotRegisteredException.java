@@ -5,14 +5,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
-import java.util.NoSuchElementException;
 
 /**
  * Throw when getting an unregistered element.
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HElementNotRegisteredException extends NoSuchElementException {
+public class HElementNotRegisteredException extends Exception {
     @Serial
     private static final long serialVersionUID = -4342199817525193050L;
 

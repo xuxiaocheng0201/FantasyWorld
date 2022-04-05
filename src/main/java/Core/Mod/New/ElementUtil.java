@@ -3,9 +3,9 @@ package Core.Mod.New;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Registerer.HElementNotRegisteredException;
-import HeadLibs.Registerer.HMapRegistererWithName;
+import HeadLibs.Registerer.HMapRegisterer;
 
-public abstract class ElementUtil<T extends ElementImplement> extends HMapRegistererWithName<Class<? extends T>> {
+public abstract class ElementUtil<T extends ElementImplement> extends HMapRegisterer<String, Class<? extends T>> {
     public T getElementInstance(String name) throws HElementNotRegisteredException, NoSuchMethodException {
         T instance = HClassHelper.getInstance(this.getElement(name));
         if (instance == null)

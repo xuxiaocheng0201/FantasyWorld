@@ -5,6 +5,7 @@ import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 
 import java.io.DataInput;
@@ -13,7 +14,6 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public final class DSTMetaCompound implements IDSTBase {
@@ -51,7 +51,7 @@ public final class DSTMetaCompound implements IDSTBase {
             IDSTBase dst = null;
             try {
                 dst = DSTUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()));
-            } catch (NoSuchElementException | NoSuchMethodException exception) {
+            } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
                 HLog.logger(HLogLevel.ERROR, exception);
             }
             if (dst != null)

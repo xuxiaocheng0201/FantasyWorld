@@ -60,6 +60,20 @@ public class HStringHelper {
     }
 
     /**
+     * Does the String have meaning?
+     * @param a the string
+     * @return true - meaningful. false - meaningless.
+     */
+    public static boolean hasMeaning(@Nullable String a) {
+        if (a == null)
+            return false;
+        String s = noNullStrip(a);
+        if (s.isEmpty())
+            return false;
+        return !"null".equalsIgnoreCase(s);
+    }
+
+    /**
      * Concat objects to string.
      * @param objects source objects
      * @return concatenate string

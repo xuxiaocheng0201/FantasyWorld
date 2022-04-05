@@ -8,13 +8,13 @@ import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class Block implements IDSTBase {
@@ -62,7 +62,7 @@ public class Block implements IDSTBase {
         }
         try {
             this.instance = BlockUtils.getInstance().getElementInstance(BlockUtils.dePrefix(name));
-        } catch (NoSuchElementException | NoSuchMethodException exception) {
+        } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
         }
         if (this.instance == null) {

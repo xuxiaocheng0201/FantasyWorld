@@ -2,9 +2,9 @@ package HeadLibs.Logger;
 
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Pair;
+import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
-import HeadLibs.Registerer.HMapRegistererWithName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,35 +29,64 @@ public class HLogLevel {
     public static LogRegistererMap getRegisteredMap() {
         return REGISTERED_MAP;
     }
-    public static class LogRegistererMap extends HMapRegistererWithName<HLogLevel> {
-        private final HMapRegisterer<Level, String> fromLevelMap = new HMapRegisterer<>();
-        private final HMapRegisterer<String, Level> toLevelMap = new HMapRegisterer<>();
+    /**
+     * Log level registerer.
+     */
+    public static class LogRegistererMap extends HMapRegisterer<String, HLogLevel> {
+        /**
+         * Map {@link Level} to {@link HLogLevel} registerer.
+         */
+        private final HMapRegisterer<Level, String> fromLevelMap = new HMapRegisterer<>(true);
+        /**
+         * Map {@link HLogLevel} to {@link Level} registerer.
+         */
+        private final HMapRegisterer<String, Level> toLevelMap = new HMapRegisterer<>(true);
 
-        @SuppressWarnings("BoundedWildcard")
         @Override
-        public void register(Pair<String, HLogLevel> pair) throws HElementRegisteredException {
+        public void register(@NotNull Pair<? extends String, ? extends HLogLevel> pair) throws HElementRegisteredException {
             this.register(pair.getKey(), pair.getValue());
         }
 
+        /**
+         * Register a new log level.
+         * @param element log level
+         * @throws HElementRegisteredException Registered
+         */
+        public void register(@NotNull HLogLevel element) throws HElementRegisteredException {
+            this.register(element.name, element);
+        }
+
+        /**
+         * Use {@link HLogLevel.LogRegistererMap#register(HLogLevel)}
+         */
         @Override
-        public void register(String name, HLogLevel element) throws HElementRegisteredException {
+        @Deprecated
+        public void register(@Nullable String name, @Nullable HLogLevel element) throws HElementRegisteredException {
             super.register(name, element);
-            this.fromLevelMap.register(element.fromLevel, name);
-            this.toLevelMap.register(name, element.toLevel);
+            if (element != null) {
+                if (element.fromLevel != null)
+                    this.fromLevelMap.register(element.fromLevel, name);
+                if (element.toLevel != null)
+                    this.toLevelMap.register(name, element.toLevel);
+            }
         }
 
         @Override
-        public void deregisterKey(String key) {
-            super.deregisterKey(key);
+        public void deregisterKey(@Nullable String key) {
+            if (key == null)
+                return;
+            this.map.remove(key);
             this.fromLevelMap.deregisterValue(key);
             this.toLevelMap.deregisterKey(key);
         }
 
         @Override
-        public void deregisterValue(HLogLevel value) {
-            super.deregisterValue(value);
-            this.fromLevelMap.deregisterKey(value.fromLevel);
-            this.toLevelMap.deregisterValue(value.toLevel);
+        public void deregisterValue(@Nullable HLogLevel value) {
+            if (value == null) {
+                super.deregisterValue(null);
+                return;
+            }
+            this.deregisterKey(value.getName());
         }
 
         @Override
@@ -67,10 +96,18 @@ public class HLogLevel {
             this.toLevelMap.deregisterAll();
         }
 
+        /**
+         * Get {@link Level} to {@link HLogLevel} map registerer.
+         * @return {@link Level} to {@link HLogLevel} map registerer.
+         */
         public HMapRegisterer<Level, String> getFromLevelMap() {
             return this.fromLevelMap;
         }
 
+        /**
+         * Get {@link HLogLevel} to {@link Level} map registerer.
+         * @return {@link HLogLevel} to {@link Level} map registerer.
+         */
         public HMapRegisterer<String, Level> getToLevelMap() {
             return this.toLevelMap;
         }
@@ -88,10 +125,36 @@ public class HLogLevel {
     public static final HLogLevel FAULT = new HLogLevel("FAULT", 500, "1;3;30;41", Level.OFF);
     public static final HLogLevel NORMAL = new HLogLevel("NORMAL", 0, "0", Level.ALL);
     public static final HLogLevel DEBUG = new HLogLevel("DEBUG", 600, "1;4;30;44");
+    static {
+        try {FINEST.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {FINER.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {FINE.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {INFO.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {WARN.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {CONFIGURATION.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {MISTAKE.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {ERROR.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {BUG.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {FAULT.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {NORMAL.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {DEBUG.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+    }
 
+    private static final HLogLevel defaultHLogLevel = INFO;
+    private static final Level defaultLevel = Level.INFO;
+
+    /**
+     * Log level name.
+     */
     private final @NotNull String name;
-    // Higher priority means higher chance to be logged when same date.
+    /**
+     * Log priority when the date is same.
+     * Higher priority means higher chance to be logged when same date.
+     */
     private final int priority;
+    /**
+     * Color options.
+     */
     /* Prefix options explanation.
      * From https://www.cnblogs.com/gzj03/p/14425860.html
      * Format: "\033[number;.....;number;number m"
@@ -113,58 +176,127 @@ public class HLogLevel {
      */
     private final @NotNull String prefix;
     /**
+     * Map {@link Level} to {@link HLogLevel}
+     */
+    private final @Nullable Level fromLevel;
+    /**
      * Map {@link HLogLevel} to {@link Level}
      */
-    private final @NotNull Level fromLevel;
-    private final @NotNull Level toLevel;
+    private final @Nullable Level toLevel;
 
+    /**
+     * Register a new log level.
+     * @param name level name
+     * @param priority level priority
+     * @param prefix level color option
+     * @param fromLevel map from {@link Level}
+     * @param toLevel map to {@link Level}
+     */
     public HLogLevel(@NotNull String name, int priority, @Nullable String prefix, @Nullable Level fromLevel, @Nullable Level toLevel) {
         super();
         this.name = name;
         this.priority = priority;
         this.prefix = (prefix == null || prefix.isBlank()) ? "" : HStringHelper.concat("\033[", prefix, "m");
-        this.fromLevel = fromLevel == null  ? Level.INFO : fromLevel;
-        this.toLevel = toLevel == null ? Level.INFO : toLevel;
-        REGISTERED_MAP.register(this.name, this);
+        this.fromLevel = fromLevel;
+        this.toLevel = toLevel;
     }
 
+    /**
+     * Register a new log level.
+     * @param name level name
+     * @param priority level priority
+     * @param prefix level color option
+     * @param equalLevel map from and to {@link Level}
+     */
     public HLogLevel(@NotNull String name, int priority, @Nullable String prefix, @Nullable Level equalLevel) {
         this(name, priority, prefix, equalLevel, equalLevel);
     }
 
+    /**
+     * Register a new log level.
+     * @param name level name
+     * @param priority level priority
+     * @param prefix level color option
+     */
     public HLogLevel(@NotNull String name, int priority, @Nullable String prefix) {
         this(name, priority, prefix, null, null);
     }
 
+    /**
+     * Register a new log level.
+     * @param name level name
+     * @param priority level priority
+     * @param fromLevel map from {@link Level}
+     * @param toLevel map to {@link Level}
+     */
     public HLogLevel(@NotNull String name, int priority, @Nullable Level fromLevel, @Nullable Level toLevel) {
         this(name, priority, null, fromLevel, toLevel);
     }
 
+    /**
+     * Register a new log level.
+     * @param name level name
+     * @param priority level priority
+     * @param equalLevel map from and to {@link Level}
+     */
     public HLogLevel(@NotNull String name, int priority, @Nullable Level equalLevel) {
         this(name, priority, null, equalLevel, equalLevel);
     }
 
+    /**
+     * Register a new log level.
+     * @param name level name
+     * @param priority level priority
+     */
     public HLogLevel(@NotNull String name, int priority) {
         this(name, priority, null, null, null);
     }
 
+    /**
+     * Register this log level to registerer map.
+     * @throws HElementRegisteredException Level has been registered.
+     */
+    public void register() throws HElementRegisteredException {
+        REGISTERED_MAP.register(this.name, this);
+    }
+
+    /**
+     * Get level name.
+     * @return level name
+     */
     public @NotNull String getName() {
         return this.name;
     }
 
+    /**
+     * Get level priority.
+     * @return level priority
+     */
     public int getPriority() {
         return this.priority;
     }
 
+    /**
+     * Get level color option.
+     * @return level color option
+     */
     public @NotNull String getPrefix() {
         return this.prefix;
     }
 
-    public @NotNull Level getFromLevel() {
+    /**
+     * Get level map form {@link Level}
+     * @return {@link Level} mapped from
+     */
+    public @Nullable Level getFromLevel() {
         return this.fromLevel;
     }
 
-    public @NotNull Level getToLevel() {
+    /**
+     * Get level map to {@link Level}
+     * @return {@link Level} mapped to
+     */
+    public @Nullable Level getToLevel() {
         return this.toLevel;
     }
 
@@ -188,11 +320,31 @@ public class HLogLevel {
         return Objects.hash(this.name, this.priority, this.prefix);
     }
 
-    public static HLogLevel mapFromLevel(Level level) {
-        return REGISTERED_MAP.getElement(REGISTERED_MAP.fromLevelMap.getElement(level));
+    /**
+     * Get {@code HLogLevel} mapped from {@code Level}
+     * @param level from {@code Level}
+     * @return mapped {@code HLogLevel}
+     */
+    public static @NotNull HLogLevel mapFromLevel(@NotNull Level level) {
+        try {
+            String resultName = REGISTERED_MAP.fromLevelMap.getElement(level);
+            if (resultName == null)
+                return defaultHLogLevel;
+            HLogLevel result = REGISTERED_MAP.getElement(resultName);
+            if (result == null)
+                return defaultHLogLevel;
+            return result;
+        } catch (HElementNotRegisteredException exception) {
+            return defaultHLogLevel;
+        }
     }
 
-    public static Level mapToLevel(HLogLevel level) {
-        return level.toLevel;
+    /**
+     * Get {@code Level} mapped to {@code HLogLevel}
+     * @param level from {@code HLogLevel}
+     * @return mapped {@code Level}
+     */
+    public static @NotNull Level mapToLevel(@NotNull HLogLevel level) {
+        return level.toLevel == null ? defaultLevel : level.toLevel;
     }
 }

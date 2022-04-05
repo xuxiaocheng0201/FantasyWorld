@@ -1,7 +1,9 @@
 package HeadLibs.Configuration;
 
 import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Registerer.HMapRegistererWithName;
+import HeadLibs.Logger.HLog;
+import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,12 +16,12 @@ public class HConfigType {
     /**
      * All Registered configuration types.
      */
-    private static final HMapRegistererWithName<HConfigType> REGISTERED_MAP = new HMapRegistererWithName<>();
+    private static final HMapRegisterer<String, HConfigType> REGISTERED_MAP = new HMapRegisterer<>();
     /**
      * Get registered map.
      * @return registered map.
      */
-    public static HMapRegistererWithName<HConfigType> getRegisteredMap() {
+    public static HMapRegisterer<String, HConfigType> getRegisteredMap() {
         return REGISTERED_MAP;
     }
 
@@ -39,6 +41,24 @@ public class HConfigType {
     public static final HConfigType DOUBLE_ARRAY = new HConfigType("DOUBLE_ARRAY", value -> fixValueInList(value, HConfigType::fixValueDouble));
     public static final HConfigType STRING = new HConfigType("STRING", HConfigType::fixValueString);
     public static final HConfigType STRING_ARRAY = new HConfigType("STRING_ARRAY", value -> fixValueInList(value, HConfigType::fixValueString));
+    static {
+        try {BOOLEAN.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {BOOLEAN_ARRAY.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {BYTE.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {BYTE_ARRAY.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {SHORT.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {SHORT_ARRAY.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {INT.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {INT_ARRAY.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {LONG.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {LONG_ARRAY.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {FLOAT.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {FLOAT_ARRAY.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {DOUBLE.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {DOUBLE_ARRAY.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {STRING.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+        try {STRING_ARRAY.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
+    }
 
     /**
      * Configuration type id/name
@@ -58,7 +78,6 @@ public class HConfigType {
         super();
         this.name = name.toUpperCase();
         this.check = check;
-        REGISTERED_MAP.register(this.name, this);
     }
 
     /**
@@ -67,6 +86,14 @@ public class HConfigType {
      */
     public HConfigType(@NotNull String name) {
         this(name, HConfigType::fixValueString);
+    }
+
+    /**
+     * Register this config type to registerer map.
+     * @throws HElementRegisteredException Type has been registered.
+     */
+    public void register() throws HElementRegisteredException {
+        REGISTERED_MAP.register(this.name, this);
     }
 
     /**
@@ -92,7 +119,7 @@ public class HConfigType {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         HConfigType that = (HConfigType) o;
@@ -114,7 +141,7 @@ public class HConfigType {
     }
 
     public static @Nullable String fixValueBoolean(@Nullable String value) {
-        if (value == null || "null".equals(value))
+        if (!HStringHelper.hasMeaning(value))
             return "false";
         try {
             return String.valueOf(Boolean.parseBoolean(value));
@@ -124,7 +151,7 @@ public class HConfigType {
     }
 
     public static @Nullable String fixValueByte(@Nullable String value) {
-        if (value == null || "null".equals(value))
+        if (!HStringHelper.hasMeaning(value))
             return "0";
         try {
             return String.valueOf(Byte.valueOf(value));
@@ -134,7 +161,7 @@ public class HConfigType {
     }
 
     public static @Nullable String fixValueShort(@Nullable String value) {
-        if (value == null || "null".equals(value))
+        if (!HStringHelper.hasMeaning(value))
             return "0";
         try {
             return String.valueOf(Short.valueOf(value));
@@ -144,7 +171,7 @@ public class HConfigType {
     }
 
     public static @Nullable String fixValueInt(@Nullable String value) {
-        if (value == null || "null".equals(value))
+        if (!HStringHelper.hasMeaning(value))
             return "0";
         try {
             return String.valueOf(Integer.valueOf(value));
@@ -154,7 +181,7 @@ public class HConfigType {
     }
 
     public static @Nullable String fixValueLong(@Nullable String value) {
-        if (value == null || "null".equals(value))
+        if (!HStringHelper.hasMeaning(value))
             return "0";
         try {
             return String.valueOf(Long.valueOf(value));
@@ -164,7 +191,7 @@ public class HConfigType {
     }
 
     public static @Nullable String fixValueFloat(@Nullable String value) {
-        if (value == null || "null".equals(value))
+        if (!HStringHelper.hasMeaning(value))
             return "0.0";
         try {
             return String.valueOf(Float.valueOf(value));
@@ -174,7 +201,7 @@ public class HConfigType {
     }
 
     public static @Nullable String fixValueDouble(@Nullable String value) {
-        if (value == null || "null".equals(value))
+        if (!HStringHelper.hasMeaning(value))
             return "0.0";
         try {
             return String.valueOf(Double.valueOf(value));
