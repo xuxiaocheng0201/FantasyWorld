@@ -9,7 +9,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Package {@link String} to {@code Version}.
@@ -61,12 +60,12 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         HStringVersion that = (HStringVersion) o;
-        return Objects.equals(this.version, that.version);
+        return this.version.equals(that.version);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.version);
+        return this.version.hashCode();
     }
 
     @Override
@@ -78,6 +77,10 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         if (version == null)
             return true;
         return version.version.isEmpty();
+    }
+
+    public static int compareVersion(@Nullable String a, @Nullable String b) throws HVersionFormatException {
+        return compareVersion(new HStringVersion(a), new HStringVersion(b));
     }
 
     public static int compareVersion(@Nullable HStringVersion a, @Nullable HStringVersion b) {
@@ -164,9 +167,5 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
                 break;
         }
         return (difference != 0) ? difference : versionArray1.length - versionArray2.length;
-    }
-
-    public static int compareVersion(@Nullable String a, @Nullable String b) throws HVersionFormatException {
-        return compareVersion(new HStringVersion(a), new HStringVersion(b));
     }
 }

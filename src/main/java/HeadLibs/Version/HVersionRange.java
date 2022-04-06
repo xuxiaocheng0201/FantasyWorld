@@ -8,6 +8,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * @author xuxiaocheng
+ */
 /* Version form: [,] or (,) or [,) or (,]*/
 @SuppressWarnings("unused")
 public class HVersionRange implements Serializable {

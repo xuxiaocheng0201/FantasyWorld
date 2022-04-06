@@ -38,20 +38,20 @@ public class HVersionComplex implements Serializable {
         super();
     }
 
-    /* *
-     *
-     * @param version Version range.
-     * @throws IllegalArgumentException version isn't legal.
-     *//*
     public HVersionComplex(@NotNull String version) throws HVersionFormatException {
         super();
         this.addVersions(version);
     }
 
-    public HVersionComplex(@NotNull HStringVersion version) throws HVersionFormatException {
+    public HVersionComplex(@NotNull HStringVersion version) {
         super();
-        this.addVersion(version);
-    }*/
+        this.addVersionSingle(version);
+    }
+
+    public HVersionComplex(@NotNull HVersionRange versionRange) {
+        super();
+        this.addVersionRange(versionRange);
+    }
 
     public @NotNull List<HVersionRange> getVersionRanges() {
         return this.versionRanges;
@@ -61,9 +61,37 @@ public class HVersionComplex implements Serializable {
         return this.versionSingles;
     }
 
-    public void clear() {
+    public void setAll() {
+        this.setEmpty();
+        this.versionRanges.add(new HVersionRange());
+    }
+
+    public void setEmpty() {
         this.versionRanges.clear();
         this.versionSingles.clear();
+    }
+
+    public void setVersionSingle(@Nullable String version) throws HVersionFormatException {
+        this.setVersionSingle(new HStringVersion(version));
+    }
+
+    public void setVersionSingle(@Nullable HStringVersion version) {
+        this.setEmpty();
+        this.addVersionSingle(version);
+    }
+
+    public void setVersionRange(@Nullable String version) throws HVersionFormatException {
+        this.setVersionRange(new HVersionRange(version));
+    }
+
+    public void setVersionRange(@Nullable HVersionRange version) {
+        this.setEmpty();
+        this.addVersionRange(version);
+    }
+
+    public void setVersions(@Nullable String version) throws HVersionFormatException {
+        this.setEmpty();
+        this.addVersions(version);
     }
 
     public void addVersionSingle(@Nullable String version) throws HVersionFormatException {
@@ -86,7 +114,9 @@ public class HVersionComplex implements Serializable {
         this.autoFix();
     }
 
-    public void addVersions(@NotNull String versions) throws HVersionFormatException {
+    public void addVersions(@Nullable String versions) throws HVersionFormatException {
+        if (versions == null)
+            return;
         String[] versions_ = versions.split("&");
         for (String version: versions_) {
             if (version.isBlank())
@@ -101,16 +131,15 @@ public class HVersionComplex implements Serializable {
             else
                 this.addVersionSingle(new HStringVersion(version));
         }
+        this.autoFix();
     }
 
-    public boolean versionInRange(@NotNull HStringVersion version) {
-        for (HVersionRange range: this.versionRanges)
-            if (range.versionInRange(version))
-                return true;
-        for (HStringVersion s: this.versionSingles)
-            if (HStringVersion.compareVersion(version, s) == 0)
-                return true;
-        return false;
+    public void addVersions(@Nullable HVersionComplex versionComplex) {
+        if (versionComplex == null)
+            return;
+        this.versionRanges.addAll(versionComplex.versionRanges);
+        this.versionSingles.addAll(versionComplex.versionSingles);
+        this.autoFix();
     }
 
     public void autoFix() {
@@ -183,6 +212,16 @@ public class HVersionComplex implements Serializable {
             }
             this.versionRanges = ranges;
         }
+    }
+
+    public boolean versionInRange(@NotNull HStringVersion version) {
+        for (HVersionRange range: this.versionRanges)
+            if (range.versionInRange(version))
+                return true;
+        for (HStringVersion s: this.versionSingles)
+            if (HStringVersion.compareVersion(version, s) == 0)
+                return true;
+        return false;
     }
 
     @Override
