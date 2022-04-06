@@ -177,10 +177,13 @@ public class HVersionRange implements Serializable {
             this.setEmpty();
             return;
         }
-        if (HStringVersion.isNull(this.leftVersion))
-            this.leftEquable = false;
-        if (HStringVersion.isNull(this.rightVersion))
-            this.rightEquable = false;
+        if (HStringVersion.isNull(this.leftVersion) || HStringVersion.isNull(this.rightVersion)) {
+            if (HStringVersion.isNull(this.leftVersion))
+                this.leftEquable = false;
+            if (HStringVersion.isNull(this.rightVersion))
+                this.rightEquable = false;
+            return;
+        }
         int result = HStringVersion.compareVersion(this.leftVersion, this.rightVersion);
         if (result > 0)
             this.setEmpty();

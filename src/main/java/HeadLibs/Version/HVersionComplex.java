@@ -114,25 +114,27 @@ public class HVersionComplex implements Serializable {
     }
 
     public void autoFix() {
+        Collection<HVersionRange> del = new ArrayList<>();
         for (HVersionRange versionRange: this.versionRanges) {
             versionRange.autoFix();
             if (HStringVersion.compareVersion(versionRange.getLeftVersion(), versionRange.getRightVersion()) == 0) {
-                if (versionRange.getLeftVersion().equals(HStringVersion.EMPTY)) {
+                if (!versionRange.isEmpty()) {
                     this.versionRanges.clear();
                     this.versionSingles.clear();
                     this.versionRanges.add(new HVersionRange());
                     return;
                 }
-                this.versionRanges.remove(versionRange);
+                del.add(versionRange);
                 this.versionSingles.add(versionRange.getLeftVersion());
             }
         }
+        this.versionRanges.removeAll(del);
         this.versionRanges.removeIf(HVersionRange::isEmpty);
         this.versionRanges = this.versionRanges.stream().distinct().collect(Collectors.toList());
         this.versionSingles.removeIf(HStringVersion::isNull);
         this.versionSingles = this.versionSingles.stream().distinct().collect(Collectors.toList());
         this.versionRanges.sort((o1, o2) -> {
-            int result = HStringVersion.compareVersion(o1.getLeftVersion(), o2.getLeftVersion());
+            int result = HStringVersion.compareVersion(o1.getLeftVersion(), o2.getLeftVersion(), false);
             if (result != 0) return result;
             return HStringVersion.compareVersion(o1.getRightVersion(), o2.getRightVersion());
         });
@@ -169,9 +171,14 @@ public class HVersionComplex implements Serializable {
                     ranges.add(now);
                     continue;
                 }
+                result = HStringVersion.compareVersion(last.getRightVersion(), now.getRightVersion());
+                if (result > 0)
+                    continue;
                 ranges.remove(last);
                 HVersionRange h = new HVersionRange();
                 h.setVersionRange(last.isLeftEquable(), last.getLeftVersion(), now.getRightVersion(), now.isRightEquable());
+                if (result == 0)
+                    h.setRightEquable(last.isRightEquable() || now.isRightEquable());
                 ranges.add(h);
             }
             this.versionRanges = ranges;

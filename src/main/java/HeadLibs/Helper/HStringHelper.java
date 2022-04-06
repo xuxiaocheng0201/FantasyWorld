@@ -165,14 +165,10 @@ public class HStringHelper {
     public static @NotNull String concat(@NotNull String ...strings) {
         if (strings.length == 0)
             return "";
-        StringBuilder ans = new StringBuilder(strings[0]);
-        for (int i = 1; i < strings.length; ++i)
-            ans.append(strings[i]);
-        return ans.toString();
-//        StringBuilder builder = new StringBuilder(5 * strings.length);
-//        for (String i: strings)
-//            builder.append(i);
-//        return builder.toString();
+        StringBuilder builder = new StringBuilder(5 * strings.length);
+        for (String i: strings)
+            builder.append(i);
+        return builder.toString();
     }
 
     /**

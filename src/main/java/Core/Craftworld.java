@@ -16,7 +16,6 @@ import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Helper.HZipHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Version.HVersionComplex;
 import HeadLibs.Version.HVersionFormatException;
 import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
@@ -76,7 +75,7 @@ public class Craftworld {
         HLog.logger(r);
      */
 
-    public static void main(String[] args) throws HVersionFormatException {/*
+    public static void main(String[] args) throws HVersionFormatException {
         Thread.currentThread().setName("CraftworldMain");
         HLog.logger(HLogLevel.INFO, "Hello Craftworld!");
         HConfigurations canOverwrite = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
@@ -115,14 +114,6 @@ public class Craftworld {
         } catch (InterruptedException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
         }
-        */
-
-
-        HVersionComplex versionComplex = new HVersionComplex();
-        versionComplex.addVersions("(9,10)");
-        HLog.logger(versionComplex);
-        versionComplex.addVersions("(1,)");
-        HLog.logger(versionComplex);
     }
 
     private static void GetConfigurations() {
