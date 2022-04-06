@@ -6,289 +6,228 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
-/**
- * Available version range.
- * Like intervals in mathematics.
- * @author xuxiaocheng
- */
-/* Version form: [,]&(,]&{,,} */
+/* Version form: [,] or (,) or [,) or (,]*/
 @SuppressWarnings("unused")
 public class HVersionRange implements Serializable {
     @Serial
-    private static final long serialVersionUID = -7755725541591955245L;
-    /**
-     * Single interval without any operation.
-     */
-    private final List<SingleVersionRange> versionRanges = new ArrayList<>();
-    /**
-     * A single version number.
-     */
-    private final List<String> versionSingles = new ArrayList<>();
+    private static final long serialVersionUID = 4882505281267885490L;
 
-    /**
-     * Construct a (min, max) interval.
-     */
+    private boolean empty;
+    private boolean leftEquable;
+    private boolean rightEquable;
+    private @NotNull HStringVersion leftVersion = HStringVersion.EMPTY;
+    private @NotNull HStringVersion rightVersion = HStringVersion.EMPTY;
+
     public HVersionRange() {
         super();
     }
 
-    /**
-     *
-     * @param version Version range.
-     * @throws IllegalArgumentException version isn't legal.
-     */
-    public HVersionRange(@NotNull String version) throws IllegalArgumentException {
+    public HVersionRange(@Nullable String version) throws HVersionFormatException {
         super();
-        this.addVersions(version);
+        this.setVersionRange(version);
     }
 
-    public void addVersions(@NotNull String versions) throws IllegalArgumentException {
-        String[] versions_ = versions.split("&");
-        for (String version: versions_)
-            this.addVersion(version);
+    public boolean isEmpty() {
+        return this.empty;
     }
 
-    public void addVersion(@NotNull String version) throws IllegalArgumentException {
-        if (version.charAt(0) == '{' && version.charAt(version.length() - 1) == '}') {
-            String[] versionS = HStringHelper.strip(version.substring(1, version.length() - 1).split(","));
-            this.versionSingles.addAll(Arrays.asList(versionS));
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    public boolean isLeftEquable() {
+        return this.leftEquable;
+    }
+
+    public void setLeftEquable(boolean leftEquable) {
+        this.leftEquable = leftEquable;
+    }
+
+    public boolean isRightEquable() {
+        return this.rightEquable;
+    }
+
+    public void setRightEquable(boolean rightEquable) {
+        this.rightEquable = rightEquable;
+    }
+
+    public @NotNull HStringVersion getLeftVersion() {
+        return this.leftVersion;
+    }
+
+    public void setLeftVersion(@Nullable String leftVersion) throws HVersionFormatException {
+        this.leftVersion = new HStringVersion(leftVersion);
+    }
+
+    public void setLeftVersion(@Nullable HStringVersion versionLeft) {
+        if (versionLeft == null)
+            this.leftVersion = HStringVersion.EMPTY;
+        else
+            this.leftVersion = versionLeft;
+        this.empty = false;
+    }
+
+    public @NotNull HStringVersion getRightVersion() {
+        return this.rightVersion;
+    }
+
+    public void setRightVersion(@Nullable String rightVersion) throws HVersionFormatException {
+        this.rightVersion = new HStringVersion(rightVersion);
+    }
+
+    public void setRightVersion(@Nullable HStringVersion rightVersion) {
+        if (rightVersion == null)
+            this.rightVersion = HStringVersion.EMPTY;
+        else
+            this.rightVersion = rightVersion;
+        this.empty = false;
+    }
+
+    public void setAll() {
+        this.leftEquable = false;
+        this.rightEquable = false;
+        this.leftVersion = HStringVersion.EMPTY;
+        this.rightVersion = HStringVersion.EMPTY;
+        this.empty = false;
+    }
+
+    public void setEmpty() {
+        this.leftEquable = false;
+        this.rightEquable = false;
+        this.leftVersion = HStringVersion.EMPTY;
+        this.rightVersion = HStringVersion.EMPTY;
+        this.empty = true;
+    }
+
+    public void setVersionSingle(String version) throws HVersionFormatException {
+        this.setVersionSingle(new HStringVersion(version));
+    }
+
+    public void setVersionSingle(HStringVersion version) {
+        this.leftEquable = true;
+        this.rightEquable = true;
+        this.leftVersion = version;
+        this.rightVersion = version;
+        this.empty = false;
+    }
+
+    public void setVersionRange(@Nullable String minVersion, @Nullable String maxVersion) throws HVersionFormatException {
+        this.setVersionRange(true, new HStringVersion(minVersion), new HStringVersion(maxVersion), true);
+    }
+
+    public void setVersionRange(@Nullable HStringVersion minVersion, @Nullable HStringVersion maxVersion) {
+        this.setVersionRange(true, minVersion, maxVersion, true);
+    }
+
+    public void setVersionRange(boolean leftEquable, @Nullable String minVersion, @Nullable String maxVersion, boolean rightEquable) throws HVersionFormatException {
+        this.setVersionRange(leftEquable, new HStringVersion(minVersion), new HStringVersion(maxVersion), rightEquable);
+    }
+
+    public void setVersionRange(boolean leftEquable, @Nullable HStringVersion minVersion, @Nullable HStringVersion maxVersion, boolean rightEquable) {
+        this.leftEquable = leftEquable;
+        this.rightEquable = rightEquable;
+        this.setLeftVersion(minVersion);
+        this.setRightVersion(maxVersion);
+        this.autoFix();
+    }
+
+    public void setVersionRange(@Nullable String versionIn) throws HVersionFormatException {
+        String version = HStringHelper.nullableStrip(versionIn);
+        if (version == null || version.isEmpty()) {
+            this.setAll();
             return;
         }
-        if ((version.charAt(0) == '(' || version.charAt(0) == '[') && (version.charAt(version.length() - 1) == ')' || version.charAt(version.length() - 1) == ']'))
-            this.versionRanges.add(new SingleVersionRange(version));
-        else
-            this.versionSingles.add(version);
+        byte canEqualLeft = 0;
+        if (version.charAt(0) == '[')
+            canEqualLeft = 1;
+        if (version.charAt(0) == '(')
+            canEqualLeft = -1;
+        byte canEqualRight = 0;
+        if (version.charAt(version.length() - 1) == ']')
+            canEqualRight = 1;
+        if (version.charAt(version.length() - 1) == ')')
+            canEqualRight = -1;
+        if (canEqualLeft == 0 && canEqualRight == 0) {
+            this.setVersionSingle(new HStringVersion(version));
+            return;
+        }
+        if (canEqualLeft == 0 || canEqualRight == 0)
+            throw new HVersionFormatException("Unpaired brackets.", version);
+        String versions = HStringHelper.notNullStrip(version.substring(1, version.length() - 1));
+        int locationComma = versions.indexOf(',');
+        if (locationComma == -1) {
+            this.setVersionSingle(new HStringVersion(versions));
+            return;
+        }
+        int locationComma1 = versions.lastIndexOf(',');
+        if (locationComma != locationComma1)
+            throw new HVersionFormatException("Too many commas in version range.", version);
+        this.leftEquable = canEqualLeft == 1;
+        this.rightEquable = canEqualRight == 1;
+        this.leftVersion = new HStringVersion(versions.substring(0, locationComma));
+        this.rightVersion = new HStringVersion(versions.substring(locationComma + 1));
+        this.empty = false;
+        this.autoFix();
     }
 
-    public @NotNull List<SingleVersionRange> getVersionRanges() {
-        return this.versionRanges;
+    public void autoFix() {
+        if (this.empty) {
+            this.setEmpty();
+            return;
+        }
+        if (HStringVersion.isNull(this.leftVersion))
+            this.leftEquable = false;
+        if (HStringVersion.isNull(this.rightVersion))
+            this.rightEquable = false;
+        int result = HStringVersion.compareVersion(this.leftVersion, this.rightVersion);
+        if (result > 0)
+            this.setEmpty();
+        if (result == 0) {
+            this.leftEquable = true;
+            this.rightEquable = true;
+        }
     }
 
-    public @NotNull List<String> getVersionSingles() {
-        return this.versionSingles;
+    public boolean versionInRange(@Nullable String version) throws HVersionFormatException {
+        return this.versionInRange(new HStringVersion(version));
     }
 
-    public void clear() {
-        this.versionRanges.clear();
-        this.versionSingles.clear();
-    }
-
-    public boolean versionInRange(@NotNull String version) {
-        for (SingleVersionRange range: this.versionRanges)
-            if (range.versionInRange(version))
-                return false;
-        for (String s: this.versionSingles)
-            if (HVersionComparator.compareVersion(version, s) == 0)
-                return false;
-        return true;
+    public boolean versionInRange(@Nullable HStringVersion version) {
+        if (version == null || this.empty)
+            return false;
+        this.autoFix();
+        int leftResult = HStringVersion.compareVersion(this.leftVersion, version);
+        int rightResult = HStringVersion.compareVersion(version, this.rightVersion);
+        if (leftResult == 0 && !this.leftEquable)
+            return false;
+        if (rightResult == 0 && !this.rightEquable)
+            return false;
+        return leftResult < 0 && rightResult < 0;
     }
 
     @Override
     public @NotNull String toString() {
-        if (this.versionRanges.isEmpty()) {
-            if (this.versionSingles.isEmpty())
-                return "";
-            StringBuilder builder = new StringBuilder("{");
-            for (int i = 0; i < this.versionSingles.size(); ++i) {
-                builder.append(this.versionSingles.get(i));
-                if (i != this.versionSingles.size() - 1)
-                    builder.append(", ");
-            }
-            builder.append("}");
-            return builder.toString();
-        }
-        StringBuilder builder = new StringBuilder(10);
-        for (int i = 0; i < this.versionRanges.size(); ++i) {
-            builder.append((this.versionRanges.get(i).toString()));
-            if (i != this.versionRanges.size() - 1)
-                builder.append(" & ");
-        }
-        if (this.versionSingles.isEmpty())
-            return builder.toString();
-        builder.append(" & {");
-        for (int i = 0; i < this.versionSingles.size(); ++i) {
-            builder.append(this.versionSingles.get(i));
-            if (i != this.versionSingles.size() - 1)
-                builder.append(", ");
-        }
-        builder.append("}");
-        return builder.toString();
+        return this.empty ? "empty" :
+                HStringHelper.concat(this.leftEquable ? '[' : '(',
+                this.leftVersion.getVersion(), ',', this.rightVersion.getVersion(),
+                this.rightEquable ? ']' : ')');
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-
         HVersionRange that = (HVersionRange) o;
-
-        if (!this.versionRanges.equals(that.versionRanges))
-            return false;
-        return this.versionSingles.equals(that.versionSingles);
+        if (this.empty == that.empty)
+            return this.empty;
+        return this.leftEquable == that.leftEquable && this.rightEquable == that.rightEquable && this.leftVersion.equals(that.leftVersion) && this.rightVersion.equals(that.rightVersion);
     }
 
     @Override
     public int hashCode() {
-        int result = this.versionRanges.hashCode();
-        result = 31 * result + this.versionSingles.hashCode();
-        return result;
-    }
-
-    /* Version form: [,] or (,) or [,) or (,] */
-    public static class SingleVersionRange {
-        private boolean leftEquable;
-        private boolean rightEquable;
-        private @Nullable String versionLeft;
-        private @Nullable String versionRight;
-
-        public SingleVersionRange() {
-            super();
-        }
-
-        public SingleVersionRange(@NotNull String version) throws IllegalArgumentException {
-            super();
-            this.setVersionRange(version);
-        }
-
-        public void setVersionRange(@NotNull String version) throws IllegalArgumentException {
-            byte canEqualLeft = 0;
-            if (version.charAt(0) == '[')
-                canEqualLeft = 1;
-            if (version.charAt(0) == '(')
-                canEqualLeft = -1;
-            byte canEqualRight = 0;
-            if (version.charAt(version.length() - 1) == ']')
-                canEqualRight = 1;
-            if (version.charAt(version.length() - 1) == ')')
-                canEqualRight = -1;
-            if (canEqualLeft == 0 && canEqualRight == 0) {
-                this.leftEquable = true;
-                this.rightEquable = true;
-                this.versionLeft = version;
-                this.versionRight = version;
-                return;
-            }
-            if (canEqualLeft == 0 || canEqualRight == 0)
-                throw new IllegalArgumentException("Unknown symbols in brackets.");
-            String versions = HStringHelper.noNull(version.substring(1, version.length() - 1).strip());
-            int locationComma = versions.indexOf(',');
-            if (locationComma == -1)
-                throw new IllegalArgumentException("No commas in versions.");
-            int locationComma1 = versions.lastIndexOf(',');
-            if (locationComma != locationComma1)
-                throw new IllegalArgumentException("Too many commas in versions.");
-            this.leftEquable = canEqualLeft == 1;
-            this.rightEquable = canEqualRight == 1;
-            this.versionLeft = versions.substring(0, locationComma).strip();
-            this.versionRight = versions.substring(locationComma + 1).strip();
-        }
-
-        public boolean versionInRange(@NotNull String version) {
-            this.autoFix();
-            int leftResult = HVersionComparator.compareVersion(this.versionLeft, version);
-            int rightResult = HVersionComparator.compareVersion(version, this.versionRight);
-            if (leftResult == 0 && !this.leftEquable)
-                return false;
-            if (rightResult == 0 && !this.rightEquable)
-                return false;
-            return leftResult < 0 && rightResult < 0;
-        }
-
-        public boolean isLegal() {
-            int result = HVersionComparator.compareVersion(this.versionLeft, this.versionRight);
-            if (result == 0 && (this.leftEquable || this.rightEquable))
-                return false;
-            return result < 0;
-        }
-
-        public void autoFix() {
-            int result = HVersionComparator.compareVersion(this.versionLeft, this.versionRight);
-            if (result > 0 || (result == 0 && !this.leftEquable && !this.rightEquable))
-                return;
-            if (result == 0) {
-                this.leftEquable = true;
-                this.rightEquable = true;
-            }
-            if (result < 0) {
-                String temp = this.versionLeft;
-                this.versionLeft = this.versionRight;
-                this.versionRight = temp;
-            }
-        }
-
-        public void clear() {
-            this.leftEquable = false;
-            this.rightEquable = false;
-            this.versionLeft = null;
-            this.versionRight = null;
-        }
-
-        public boolean isLeftEquable() {
-            if (this.versionLeft == null)
-                return false;
-            return this.leftEquable;
-        }
-
-        public void setLeftEquable(boolean leftEquable) {
-            this.leftEquable = leftEquable;
-        }
-
-        public boolean isRightEquable() {
-            if (this.versionRight == null)
-                return false;
-            return this.rightEquable;
-        }
-
-        public void setRightEquable(boolean rightEquable) {
-            this.rightEquable = rightEquable;
-        }
-
-        public @Nullable String getVersionLeft() {
-            return this.versionLeft;
-        }
-
-        public void setVersionLeft(@Nullable String versionLeft) {
-            this.versionLeft = versionLeft;
-        }
-
-        public @Nullable String getVersionRight() {
-            return this.versionRight;
-        }
-
-        public void setVersionRight(@Nullable String versionRight) {
-            this.versionRight = versionRight;
-        }
-
-        @Override
-        public @NotNull String toString() {
-            return HStringHelper.concat((this.isLeftEquable() ? '[' : '('), this.versionLeft, ',', this.versionRight, (this.isRightEquable() ? ']' : ')'));
-        }
-
-        @Override
-        public boolean equals(@Nullable Object o) {
-            if (this == o) return true;
-            if (o == null || this.getClass() != o.getClass()) return false;
-
-            SingleVersionRange that = (SingleVersionRange) o;
-
-            if (this.leftEquable != that.leftEquable) return false;
-            if (this.rightEquable != that.rightEquable) return false;
-            if (!Objects.equals(this.versionLeft, that.versionLeft)) return false;
-            return Objects.equals(this.versionRight, that.versionRight);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = (this.leftEquable ? 1 : 0);
-            result = 31 * result + (this.rightEquable ? 1 : 0);
-            result = 31 * result + (this.versionLeft != null ? this.versionLeft.hashCode() : 0);
-            result = 31 * result + (this.versionRight != null ? this.versionRight.hashCode() : 0);
-            return result;
-        }
+        if (this.empty) return 0;
+        return Objects.hash(this.leftEquable, this.rightEquable, this.leftVersion, this.rightVersion);
     }
 }

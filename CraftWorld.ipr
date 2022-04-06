@@ -782,7 +782,6 @@
         <option name="m_ignoreNegatedNullComparison" value="true" />
         <option name="m_ignoreNegatedZeroComparison" value="false" />
       </inspection_tool>
-      <inspection_tool class="NestedConditionalExpression" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="NestedSynchronizedStatement" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="NewGroovyClassNamingConvention" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="NonExceptionNameEndsWithException" enabled="true" level="WARNING" enabled_by_default="true" />

@@ -148,7 +148,7 @@ public class HConfigType implements Serializable {
     }
 
     public static @Nullable String fixValueBoolean(@Nullable String value) {
-        if (!HStringHelper.hasMeaning(value))
+        if (HStringHelper.meanNull(value))
             return "false";
         try {
             return String.valueOf(Boolean.parseBoolean(value));
@@ -158,7 +158,7 @@ public class HConfigType implements Serializable {
     }
 
     public static @Nullable String fixValueByte(@Nullable String value) {
-        if (!HStringHelper.hasMeaning(value))
+        if (HStringHelper.meanNull(value))
             return "0";
         try {
             return String.valueOf(Byte.valueOf(value));
@@ -168,7 +168,7 @@ public class HConfigType implements Serializable {
     }
 
     public static @Nullable String fixValueShort(@Nullable String value) {
-        if (!HStringHelper.hasMeaning(value))
+        if (HStringHelper.meanNull(value))
             return "0";
         try {
             return String.valueOf(Short.valueOf(value));
@@ -178,7 +178,7 @@ public class HConfigType implements Serializable {
     }
 
     public static @Nullable String fixValueInt(@Nullable String value) {
-        if (!HStringHelper.hasMeaning(value))
+        if (HStringHelper.meanNull(value))
             return "0";
         try {
             return String.valueOf(Integer.valueOf(value));
@@ -188,7 +188,7 @@ public class HConfigType implements Serializable {
     }
 
     public static @Nullable String fixValueLong(@Nullable String value) {
-        if (!HStringHelper.hasMeaning(value))
+        if (HStringHelper.meanNull(value))
             return "0";
         try {
             return String.valueOf(Long.valueOf(value));
@@ -198,7 +198,7 @@ public class HConfigType implements Serializable {
     }
 
     public static @Nullable String fixValueFloat(@Nullable String value) {
-        if (!HStringHelper.hasMeaning(value))
+        if (HStringHelper.meanNull(value))
             return "0.0";
         try {
             return String.valueOf(Float.valueOf(value));
@@ -208,7 +208,7 @@ public class HConfigType implements Serializable {
     }
 
     public static @Nullable String fixValueDouble(@Nullable String value) {
-        if (!HStringHelper.hasMeaning(value))
+        if (HStringHelper.meanNull(value))
             return "0.0";
         try {
             return String.valueOf(Double.valueOf(value));
@@ -218,11 +218,11 @@ public class HConfigType implements Serializable {
     }
 
     public static @NotNull String fixValueString(@Nullable String value) {
-        return HStringHelper.noNull(value);
+        return HStringHelper.notNullOrEmpty(value);
     }
 
     public static @Nullable String fixValueInList(@Nullable String value, @NotNull FixConfigurationValueMethod method) {
-        String valueWithoutBrackets = HStringHelper.noNullStrip(value);
+        String valueWithoutBrackets = HStringHelper.notNullStrip(value);
         if (valueWithoutBrackets.isEmpty())
             return "[]";
         if (valueWithoutBrackets.charAt(0) == '[')

@@ -54,7 +54,7 @@ public class CraftWorld implements ModImplement {
         //TODO: Load world
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
         synchronized (this) {
-            this.wait(10000);
+            this.wait(3000);
         }
     }
 }

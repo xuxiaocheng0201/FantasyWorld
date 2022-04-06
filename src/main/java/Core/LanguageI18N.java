@@ -19,7 +19,7 @@ public class LanguageI18N {
         if (modClass != null) {
             NewMod mod = modClass.getDeclaredAnnotation(NewMod.class);
             if (mod != null)
-                modName = HStringHelper.noNull(mod.name().strip());
+                modName = HStringHelper.notNullOrEmpty(mod.name().strip());
         }
         return HStringHelper.concat(Craftworld.ASSETS_PATH, modName, "\\lang\\", lang, ".lang");
     }

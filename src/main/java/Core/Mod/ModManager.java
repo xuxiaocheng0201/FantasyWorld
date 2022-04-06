@@ -25,7 +25,7 @@ public class ModManager {
     public static void deleteMod(String modName) {
         if (modName == null)
             return;
-        getModList().removeIf(modClass -> modName.equals(HStringHelper.noNull(modClass.getAnnotation(NewMod.class).name().strip())));
+        getModList().removeIf(modClass -> modName.equals(HStringHelper.notNullOrEmpty(modClass.getAnnotation(NewMod.class).name().strip())));
     }
 
     public static Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {

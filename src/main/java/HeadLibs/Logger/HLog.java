@@ -116,6 +116,10 @@ public class HLog {
      * @param parent logger's parent's name
      */
     public void setName(@NotNull String name, @Nullable String parent) {
+        if (parent == null) {
+            this.name = name;
+            return;
+        }
         this.name = HStringHelper.concat(parent, "/", name);
     }
 
@@ -148,7 +152,7 @@ public class HLog {
         String log = HStringHelper.concat("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
                 "[", this.name, "]",
                 "[", level1.getName(), "]",
-                message);
+                message == null ? "Null message." : message);
         switch (this.name) {
             case "stdErr":
                 if (System.console() != null)
@@ -243,7 +247,7 @@ public class HLog {
      * @param level log's level
      * @param messages the messages to log
      */
-    public void log(@Nullable HLogLevel level, @Nullable String ...messages) {
+    public void log(@Nullable HLogLevel level, @NotNull String ...messages) {
         this.log(level, HStringHelper.concat(messages));
     }
 
@@ -263,7 +267,7 @@ public class HLog {
      * @param objects the objects to log
      * @see String#valueOf(Object)
      */
-    public void log(@Nullable HLogLevel level, @Nullable Object ...objects) {
+    public void log(@Nullable HLogLevel level, @NotNull Object ...objects) {
         this.log(level, HStringHelper.concat(objects));
     }
 
@@ -471,7 +475,7 @@ public class HLog {
                 }
                 FileWriter writer = new FileWriter(new File(path).getAbsoluteFile(), true);
                 for (Pair<Pair<Date, Integer>, String> pair: logs) {
-                    writer.write(HStringHelper.noNull(pair.getValue()));
+                    writer.write(HStringHelper.notNullOrEmpty(pair.getValue()));
                     writer.write(System.getProperty("line.separator"));
                 }
                 writer.close();
