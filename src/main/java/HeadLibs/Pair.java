@@ -1,6 +1,5 @@
 package HeadLibs;
 
-import HeadLibs.Helper.HStringHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Pair is a two-tuple. <Key, Value>
+ * Pair is a two-tuple with key and value.
  * @param <K> the type of key
  * @param <V> the type of value
  */
@@ -29,7 +28,7 @@ public class Pair<K, V> implements Map.Entry<K, V>, Serializable {
     private @Nullable V value;
 
     /**
-     * Construct an empty pair.
+     * Construct a null pair.
      */
     public Pair() {
         super();
@@ -38,7 +37,7 @@ public class Pair<K, V> implements Map.Entry<K, V>, Serializable {
     }
 
     /**
-     * Construct a pair with <key, value>.
+     * Construct a pair with key and value.
      * @param key the key to be set
      * @param value the value to be set
      */
@@ -77,7 +76,7 @@ public class Pair<K, V> implements Map.Entry<K, V>, Serializable {
      * @param value the value to be set
      * @return old value
      */
-    public V setValue(@Nullable V value) {
+    public @Nullable V setValue(@Nullable V value) {
         V oldValue = this.value;
         this.value = value;
         return oldValue;
@@ -85,10 +84,10 @@ public class Pair<K, V> implements Map.Entry<K, V>, Serializable {
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.concat("Pair{",
-                "Key=", this.key,
-                ", Value=", this.value,
-                '}');
+        return "Pair{" +
+                "key=" + (this.key == null ? "null" : this.key) +
+                ", value=" + (this.value == null ? "null" : this.value) +
+                '}';
     }
 
     @Override
@@ -105,7 +104,20 @@ public class Pair<K, V> implements Map.Entry<K, V>, Serializable {
     }
 
     /**
-     * Construct a pair with <key, value> by a static method.
+     * Clone the pair by a static method.
+     * @param pair the pair to be cloned
+     * @param <K> the type of pair key
+     * @param <V> the type of pair value
+     * @return the new pair
+     */
+    public static <K, V> @NotNull Pair<K, V> makePair(@Nullable Pair<? extends K, ? extends V> pair) {
+        if (pair == null)
+            return new Pair<>();
+        return new Pair<>(pair.key, pair.value);
+    }
+
+    /**
+     * Construct a pair with key and value by a static method.
      * @param key the key to be set
      * @param value the value to be set
      * @param <K> the type of key
@@ -117,13 +129,15 @@ public class Pair<K, V> implements Map.Entry<K, V>, Serializable {
     }
 
     /**
-     * Construct a pair with <key, value> by a static method from {@link Map.Entry}
+     * Construct a pair with key and value by a static method from {@link Map.Entry}
      * @param entry map entry to be set
      * @param <K> the type of key
      * @param <V> the type of value
      * @return the new pair
      */
-    public static <K, V> @NotNull Pair<K, V> makePair(@NotNull Map.Entry<? extends K, ? extends V> entry) {
+    public static <K, V> @NotNull Pair<K, V> makePair(@Nullable Map.Entry<? extends K, ? extends V> entry) {
+        if (entry == null)
+            return new Pair<>();
         return new Pair<>(entry.getKey(), entry.getValue());
     }
 }

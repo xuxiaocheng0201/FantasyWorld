@@ -145,9 +145,11 @@ public class HStringHelper {
 
     /**
      * Concat objects to string.
+     * Suggest using {@code string + string}
      * @param objects source objects
      * @return concatenate string
      */
+    @Deprecated
     public static @NotNull String concat(@NotNull Object ...objects) {
         if (objects.length == 0)
             return "";
@@ -159,9 +161,11 @@ public class HStringHelper {
 
     /**
      * Concat strings to string
+     * Suggest using {@code string + string}
      * @param strings source strings
      * @return concatenate string
      */
+    @Deprecated
     public static @NotNull String concat(@NotNull String ...strings) {
         if (strings.length == 0)
             return "";
