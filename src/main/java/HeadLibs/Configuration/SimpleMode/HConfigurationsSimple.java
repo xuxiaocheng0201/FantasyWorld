@@ -1,15 +1,15 @@
 package HeadLibs.Configuration.SimpleMode;
 
+import HeadLibs.Configuration.HWrongConfigValueException;
 import HeadLibs.Helper.HFileHelper;
-import HeadLibs.Helper.HStringHelper;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HElementNotRegisteredException;
+import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * Simple configuration.
@@ -21,84 +21,84 @@ public class HConfigurationsSimple {
     /**
      * Configuration file path.
      */
-    private File file;
+    private @NotNull File file = new File("config.cfg");
     /**
      * Saved configuration elements.
      * @see HConfigElementSimple
      */
-    public final Map<String, HConfigElementSimple> data = new HashMap<>();
+    public final HMapRegisterer<String, HConfigElementSimple> data = new HMapRegisterer<>();
+
+    /**
+     * Construct a empty configuration.
+     */
+    public HConfigurationsSimple() {
+        super();
+    }
 
     /**
      * Construct configuration in file path
      * @param path file path
-     * @throws IllegalArgumentException Wrong file path.
+     * @throws IOException Wrong file path.
      */
-    public HConfigurationsSimple(String path) throws IllegalArgumentException {
+    public HConfigurationsSimple(String path) throws IOException {
         super();
         this.setPath(path);
     }
 
     /**
-     * Get configuration file path.
-     * @return configuration file path
+     * Get configuration file absolute path.
+     * @return configuration file absolute path
      */
     public @NotNull String getPath() {
         return this.file.getPath();
     }
 
     /**
-     * Set configuration file path and read it.
-     * @param path configuration file path.
-     * @throws IllegalArgumentException File path invalid.
+     * Set configuration file path.
+     * @param path configuration file path
+     * @throws IOException File path invalid.
      */
-    public void setPath(@Nullable String path) throws IllegalArgumentException {
-        if (path == null)
-            throw new IllegalArgumentException("Argument path is null.");
-        try {
-            HFileHelper.createNewFile(path);
-        } catch (IOException exception) {
-            throw new IllegalArgumentException(HStringHelper.concat("Can't create the new file in path='", path, '\''), exception);
-        }
+    public void setPath(@Nullable String path) throws IOException {
+        HFileHelper.createNewFile(path);
         this.file = (new File(path)).getAbsoluteFile();
-        this.read();
     }
 
     /**
-     * Is a config element's name exists?
+     * Is a configuration name exists?
      * @param config the configuration
      * @return true - exists. false - not exist.
      */
-public boolean isExists(@Nullable HConfigElementSimple config) {
+    public boolean isExists(@Nullable HConfigElementSimple config) {
         if (config == null)
             return true;
-        return this.data.containsKey(config.getName());
+        return this.data.isRegisteredKey(config.getName());
     }
 
-
     /**
-     * Add new configuration element to cache.
+     * Add a new configuration element to cache.
      * @param config new configuration element
-     * @throws IllegalArgumentException configuration's name has exist.
+     * @throws HElementRegisteredException Configuration name has existed.
      */
-    public void add(@NotNull HConfigElementSimple config) throws IllegalArgumentException {
-        if (this.isExists(config))
-            throw new IllegalArgumentException(HStringHelper.concat("Configuration name has existed. [name='", config.getName(), "', path='", this.getPath(), "']."));
-        this.data.put(config.getName(), config);
+    public void add(@NotNull HConfigElementSimple config) throws HElementRegisteredException {
+        if (this.data.isRegisteredKey(config.getName()))
+            throw new HElementRegisteredException("Configuration name has been registered! name='" + config.getName() + "', path='" + this.file.getPath() + "'.");
+        this.data.register(config.getName(), config);
     }
 
     /**
      * Add new configuration element to cache.
      * @param config new configuration element
      * @param overwrite overwrite when configuration exists
-     * @return true - {@code data} change. false - not change
+     * @return true - added. false - not added.
      */
     public boolean add(@NotNull HConfigElementSimple config, boolean overwrite) {
-        if (this.isExists(config)) {
+        try {
+            this.data.register(config.getName(), config);
+        } catch (HElementRegisteredException exception) {
             if (!overwrite)
                 return false;
-            this.deleteByName(config.getName());
+            this.data.reset(config.getName(), config);
         }
-        this.data.put(config.getName(), config);
         return true;
     }
 
@@ -108,7 +108,11 @@ public boolean isExists(@Nullable HConfigElementSimple config) {
      * @return null - can't find. notNull - the element.
      */
     public @Nullable HConfigElementSimple getByName(@NotNull String name) {
-        return this.data.get(name);
+        try {
+            return this.data.getElement(name);
+        } catch (HElementNotRegisteredException exception) {
+            return null;
+        }
     }
 
     /**
@@ -116,94 +120,89 @@ public boolean isExists(@Nullable HConfigElementSimple config) {
      * @param name configuration name
      */
     public void deleteByName(@Nullable String name) {
-        this.data.remove(name);
+        this.data.deregisterKey(name);
     }
 
     /**
-     * Remove all configuration element by value
+     * Remove all configuration elements by value.
      * @param value configuration value
      */
     public void deleteAllByValue(@NotNull String value) {
-        for (Map.Entry<String, HConfigElementSimple> entry: this.data.entrySet())
-            if (value.equals(entry.getValue().getValue()))
-                this.data.remove(entry.getKey());
+        for (HConfigElementSimple element: this.data.getMap().values())
+            if (value.equals(element.getValue()))
+                this.data.deregisterValue(element);
     }
 
     /**
-     * Remove all configuration element
+     * Remove all configuration elements.
      */
     public void clear() {
-        this.data.clear();
+        this.data.deregisterAll();
     }
 
     /**
      * Read configurations from file.
      */
-    public void read() {
-        this.data.clear();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(this.file));
-            String temp = reader.readLine();
-            HConfigElementSimple config = new HConfigElementSimple(null, null);
-            while (temp != null) {
-                if (temp.contains("=")) {
-                    String[] s = temp.split("=");
-                    config.setName(s[0]);
-                    config.setValue(temp.substring(s[0].length() + 1));
-                    HConfigElementSimple check = this.getByName(s[0]);
-                    if (check != null)
-                        if (check.equals(config))
-                            HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("The completely same Configuration! [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
-                        else
-                            HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("The same Configuration name! But different Configuration value [name='", config.getName(), "', path='", this.getPath(), "']. Drop the second!"));
-                    else
-                        this.add(config);
-                    config = new HConfigElementSimple(null, null);
-                } else
-                    HLog.logger(HLogLevel.CONFIGURATION, HStringHelper.concat("Illegal configuration format! [line='", temp, "']"));
-                temp = reader.readLine();
-            }
-            reader.close();
-        } catch (IOException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
+    public void read() throws IOException, HWrongConfigValueException, HElementRegisteredException {
+        this.data.deregisterAll();
+        BufferedReader reader = new BufferedReader(new FileReader(this.file));
+        String temp = reader.readLine();
+        HConfigElementSimple config = new HConfigElementSimple(null, null);
+        HWrongConfigValueException hWrongConfigValueException = null;
+        HElementRegisteredException hElementRegisteredException = null;
+        while (temp != null) {
+            if (temp.contains("=")) {
+                int index = temp.indexOf('=');
+                config.setName(temp.substring(0, index));
+                config.setValue(temp.substring(index + 1));
+                try {
+                    this.add(config);
+                } catch (HElementRegisteredException elementRegisteredException) {
+                    if (hElementRegisteredException == null)
+                        hElementRegisteredException = elementRegisteredException;
+                }
+                config = new HConfigElementSimple(null, null);
+            } else
+                if (hWrongConfigValueException == null)
+                    hWrongConfigValueException = new HWrongConfigValueException("Illegal configuration format! [line='" + temp + "']");
+            temp = reader.readLine();
         }
+        reader.close();
+        if (hWrongConfigValueException != null)
+            throw hWrongConfigValueException;
+        if (hElementRegisteredException != null)
+            throw hElementRegisteredException;
     }
 
     /**
      * Write configurations to file.
      */
-    public void write() {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
-            for (HConfigElementSimple i: this.data.values()) {
-                writer.write(i.getName());
-                writer.write("=");
-                writer.write(i.getValue());
-                writer.newLine();
-            }
-            writer.close();
-        } catch (IOException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
+    public void write() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
+        for (HConfigElementSimple i: this.data.getMap().values()) {
+            writer.write(i.getName());
+            writer.write("=");
+            writer.write(i.getValue());
+            writer.newLine();
         }
+        writer.close();
     }
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.concat("HConfigurationsSimple{",
-                "file=", this.file,
-                ", date=", this.data,
-                '}');
+        return "HConfigurationsSimple:" + this.data;
     }
 
     @Override
-    public boolean equals(Object a) {
-        if (!(a instanceof HConfigurationsSimple))
-            return false;
-        return this.getPath().equals(((HConfigurationsSimple) a).getPath()) && this.data.equals(((HConfigurationsSimple) a).data);
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        HConfigurationsSimple that = (HConfigurationsSimple) o;
+        return this.file.equals(that.file) && this.data.equals(that.data);
     }
 
     @Override
     public int hashCode() {
-        return this.getPath().hashCode();
+        return Objects.hash(this.data);
     }
 }

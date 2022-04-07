@@ -16,6 +16,8 @@ import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Helper.HZipHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HElementNotRegisteredException;
+import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -25,15 +27,16 @@ import java.util.jar.JarFile;
 
 public class Craftworld {
     public static final String CURRENT_VERSION = "0.0.0";
-    public static final String RUNTIME_PATH = HStringHelper.concat("Craftworld\\", Craftworld.CURRENT_VERSION, "\\");
-    public static final String GLOBAL_CONFIGURATION_PATH = HStringHelper.concat(RUNTIME_PATH, "global.cfg");
-    public static final String ASSETS_PATH = HStringHelper.concat(RUNTIME_PATH, "assets\\");
+    public static final String RUNTIME_PATH = "Craftworld\\" + Craftworld.CURRENT_VERSION + "\\";
+    public static final String GLOBAL_CONFIGURATION_PATH = RUNTIME_PATH + "global.cfg";
+    public static final String ASSETS_PATH = RUNTIME_PATH + "assets\\";
     public static final String LOG_PATH;
     static {
-        String log_path = HStringHelper.concat(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), ".log");
+        String temp = RUNTIME_PATH + "log\\" + HStringHelper.getDate("yyyy-MM-dd");
+        String log_path = temp + ".log";
         int i = 1;
         while ((new File(log_path)).exists())
-            log_path = HStringHelper.concat(RUNTIME_PATH, "log\\", HStringHelper.getDate("yyyy-MM-dd"), "_", ++i, ".log");
+            log_path = temp + "_" + ++i + ".log";
         LOG_PATH = log_path;
     }
     private static final String EXTRACT_TEMP_FILE = "extract_temp";
@@ -42,12 +45,12 @@ public class Craftworld {
         File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
         if (jarFilePath == null) //Unreachable
             jarFilePath = HClassFinder.thisCodePath;
-        File targetFilePath = new File(HStringHelper.concat(RUNTIME_PATH, targetPath)).getAbsoluteFile();
+        File targetFilePath = new File(RUNTIME_PATH + targetPath).getAbsoluteFile();
         try {
             if (System.console() == null) {
                 File runtimeFile = new File(Craftworld.RUNTIME_PATH).getAbsoluteFile();
-                String srcResourcePath = HStringHelper.concat(runtimeFile.getParentFile().getParentFile().getParentFile().getPath(), "\\src\\main\\resources");
-                HFileHelper.copyFiles(HStringHelper.concat(srcResourcePath, "\\", sourcePath), targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+                String srcResourcePath = runtimeFile.getParentFile().getParentFile().getParentFile().getPath() + "\\src\\main\\resources";
+                HFileHelper.copyFiles(srcResourcePath + "\\" + sourcePath, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
             } else {
                 HZipHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
                 HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
@@ -73,12 +76,21 @@ public class Craftworld {
             r = random.nextInt();
         HLog.logger(r);
      */
+    private static HLog logger;
 
     public static void main(String[] args) {
         Thread.currentThread().setName("CraftworldMain");
-        HLog.logger(HLogLevel.INFO, "Hello Craftworld!");
-        HConfigurations canOverwrite = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
-        HConfigElement overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
+        logger = new HLog("CraftworldMain");
+        logger.log(HLogLevel.INFO, "Hello Craftworld!");
+        HConfigurations canOverwrite;
+        HConfigElement overwrite_when_extracting = null;
+        try {
+            canOverwrite = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
+            canOverwrite.read();
+            overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
+        } catch (IOException | HWrongConfigValueException | HElementRegisteredException | HElementNotRegisteredException exception) {
+            logger.log(HLogLevel.ERROR, exception);
+        }
         if (overwrite_when_extracting != null)
             OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
         extractFiles(null, "assets\\Core", "assets\\Core");
@@ -93,12 +105,13 @@ public class Craftworld {
         Runtime.getRuntime().addShutdownHook(new Thread(Thread.currentThread().getName()) {
             @Override
             public void run() {
-                HLog.logger(HLogLevel.INFO, "Welcome to play again!");
+                logger.log(HLogLevel.INFO, "Welcome to play again!");
                 HLog.saveLogs(LOG_PATH);
             }
         });
         try {
             Thread gc = new Thread(new GCThread());
+            gc.start();
             if (loadMods()) {
                 ModLauncher.gc();
                 Thread main;
@@ -111,12 +124,17 @@ public class Craftworld {
             }
             gc.interrupt();
         } catch (InterruptedException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
+            logger.log(HLogLevel.ERROR, exception);
         }
     }
 
     private static void GetConfigurations() {
-        GLOBAL_CONFIGURATIONS = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
+        try {
+            GLOBAL_CONFIGURATIONS = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
+            GLOBAL_CONFIGURATIONS.read();
+        } catch (IOException | HWrongConfigValueException | HElementRegisteredException | HElementNotRegisteredException exception) {
+            logger.log(HLogLevel.CONFIGURATION, exception);
+        }
         HConfigElement language = GLOBAL_CONFIGURATIONS.getByName("language");
         HConfigElement overwrite_when_extracting = GLOBAL_CONFIGURATIONS.getByName("overwrite_when_extracting");
         HConfigElement garbage_collector_time_interval = GLOBAL_CONFIGURATIONS.getByName("garbage_collector_time_interval");
@@ -130,7 +148,8 @@ public class Craftworld {
             CURRENT_LANGUAGE = language.getValue();
             language.setNote(LanguageI18N.get("Core.configuration.language.name"));
         } catch (HWrongConfigValueException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
+            logger.log(HLogLevel.ERROR, exception);
+            language = new HConfigElement();
         }
 
         try {
@@ -140,7 +159,8 @@ public class Craftworld {
                 overwrite_when_extracting.setNote(LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"));
             OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
         } catch (HWrongConfigValueException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
+            logger.log(HLogLevel.ERROR, exception);
+            overwrite_when_extracting = new HConfigElement();
         }
 
         try {
@@ -155,7 +175,8 @@ public class Craftworld {
             else
                 GARBAGE_COLLECTOR_TIME_INTERVAL = Integer.parseInt(garbage_collector_time_interval.getValue());
         } catch (HWrongConfigValueException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
+            logger.log(HLogLevel.ERROR, exception);
+            garbage_collector_time_interval = new HConfigElement();
         }
 
         try {
@@ -166,24 +187,30 @@ public class Craftworld {
             PORT = Integer.parseInt(port.getValue());
             if (PortManager.checkPortUnavailable(PORT)) {
                 int availablePort = PortManager.getNextAvailablePort();
-                HLog.logger(HLogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
+                logger.log(HLogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
                 port.setValue(String.valueOf(availablePort));
                 PORT = availablePort;
             }
         } catch (HWrongConfigValueException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
+            logger.log(HLogLevel.ERROR, exception);
+            port = new HConfigElement();
         }
 
         GLOBAL_CONFIGURATIONS.clear();
-        if (language != null)
+        try {
             GLOBAL_CONFIGURATIONS.add(language);
-        if (overwrite_when_extracting != null)
             GLOBAL_CONFIGURATIONS.add(overwrite_when_extracting);
-        if (garbage_collector_time_interval != null)
             GLOBAL_CONFIGURATIONS.add(garbage_collector_time_interval);
-        if (port != null)
             GLOBAL_CONFIGURATIONS.add(port);
-        GLOBAL_CONFIGURATIONS.write();
+        } catch (HElementRegisteredException exception) {
+            logger.log(HLogLevel.CONFIGURATION, exception);
+            logger.log(HLogLevel.FAULT, "Impossible exception!");
+        }
+        try {
+            GLOBAL_CONFIGURATIONS.write();
+        } catch (IOException exception) {
+            logger.log(HLogLevel.ERROR, exception);
+        }
     }
 
     private static boolean loadMods() {
@@ -208,20 +235,22 @@ public class Craftworld {
     @SuppressWarnings("unused")
     @EventSubscribe
     public static class DefaultEventBusRegister {
+        private static final HLog logger = new HLog("DefaultEventBusReporter");
         @SuppressWarnings("MethodMayBeStatic")
         @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void defaultEventBusPostEvent(Object event) {
-            HLog.logger(HLogLevel.FINE, "Default Event bus post event '", event, "'(at '", event.getClass().getName(), "').");
+            logger.log(HLogLevel.FINE, "Default Event bus post event '", event, "'(at '", event.getClass().getName(), "').");
         }
     }
 
     @SuppressWarnings("unused")
     @EventSubscribe(eventBus = "*")
     public static class AllEventBusRegister {
+        private static final HLog logger = new HLog("AllEventBusReporter");
         @SuppressWarnings("MethodMayBeStatic")
         @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void noSubscriberEvent(NoSubscriberEvent event) {
-            HLog.logger(HLogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
+            logger.log(HLogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
         }
     }
 }

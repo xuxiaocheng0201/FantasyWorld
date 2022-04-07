@@ -1,29 +1,44 @@
 package HeadLibs.Configuration.SimpleMode;
 
-import HeadLibs.Helper.HStringHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * {@link HConfigurationsSimple} single element.
+ * Simple single configuration element.
  * @author xuxiaocheng
+ * @see HConfigurationsSimple
  */
-public class HConfigElementSimple {
+@SuppressWarnings("unused")
+public class HConfigElementSimple implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -2691268100491960817L;
+
     /**
-     * Config element's name
+     * Configuration name.
      */
     private @NotNull String name = "";
     /**
-     * Config element's value
+     * Configuration value.
      */
     private @NotNull String value = "";
 
     /**
+     * Construct a null Config element.
+     */
+    public HConfigElementSimple() {
+        super();
+        this.name = "null";
+        this.value = "null";
+    }
+
+    /**
      * Construct a new Config element.
-     * @param name Config element's name
-     * @param value Config element's value
+     * @param name configuration name
+     * @param value configuration value
      */
     public HConfigElementSimple(@Nullable String name, @Nullable String value) {
         super();
@@ -31,55 +46,40 @@ public class HConfigElementSimple {
         this.setValue(value);
     }
 
-    /**
-     * Get config element's name.
-     * @return Config element's name
-     */
     public @NotNull String getName() {
         return this.name;
     }
 
-    /**
-     * Set config element's name.
-     * @param name Config element's name
-     */
     public void setName(@Nullable String name) {
-        this.name = ((name == null) ? "null" : name);
+        this.name = (name == null) ? "null" : name;
     }
 
-    /**
-     * Get config element's value.
-     * @return Config element's value
-     */
     public @NotNull String getValue() {
         return this.value;
     }
 
-    /**
-     * Set config element's value.
-     * @param value Config element's value
-     */
     public void setValue(@Nullable String value) {
-        this.value = ((value == null) ? "null" : value);
+        this.value = (value == null) ? "null" : value;
     }
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.concat("HConfigElementSimple{",
-                "name='", this.name, '\'',
-                ", value='", this.value, '\'',
-                '}');
+        return "HConfigElementSimple{" +
+                "name='" + this.name + '\'' +
+                ", value='" + this.value + '\'' +
+                '}';
     }
 
     @Override
-    public boolean equals(Object a) {
-        if (!(a instanceof HConfigElementSimple))
-            return false;
-        return Objects.equals(this.name, ((HConfigElementSimple) a).name) && Objects.equals(this.value, ((HConfigElementSimple) a).value);
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        HConfigElementSimple that = (HConfigElementSimple) o;
+        return this.name.equals(that.name) && this.value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
-        return this.name.hashCode();
+        return Objects.hash(this.name, this.value);
     }
 }

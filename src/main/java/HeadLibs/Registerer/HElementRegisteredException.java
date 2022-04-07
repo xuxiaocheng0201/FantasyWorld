@@ -1,6 +1,6 @@
 package HeadLibs.Registerer;
 
-import HeadLibs.Helper.HStringHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
@@ -14,21 +14,24 @@ public class HElementRegisteredException extends Exception{
     @Serial
     private static final long serialVersionUID = 5758033473623251615L;
 
-    private static final String DEFAULT_MESSAGE = "Type has been registered!";
+    private static final String DEFAULT_MESSAGE = "Element has been registered!";
+    private static @NotNull String getMessage(@Nullable String message) {
+        return (message == null) ? DEFAULT_MESSAGE : message;
+    }
 
     public HElementRegisteredException() {
-        super();
+        super(DEFAULT_MESSAGE);
     }
 
     public HElementRegisteredException(@Nullable String message) {
-        super((message == null) ? DEFAULT_MESSAGE : message);
+        super(getMessage(message));
     }
 
     public HElementRegisteredException(@Nullable String message, @Nullable Object element) {
-        super(HStringHelper.concat((message == null) ? DEFAULT_MESSAGE : message, " element=", element));
+        super(getMessage(message) + " element=" + element);
     }
 
     public HElementRegisteredException(@Nullable String message, @Nullable  Object key, @Nullable Object value) {
-        super(HStringHelper.concat((message == null) ? DEFAULT_MESSAGE : message, " key=", value, " element=", value));
+        super(getMessage(message) + " key=" + value + " element=" + value);
     }
 }

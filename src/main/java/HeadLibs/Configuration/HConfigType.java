@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Configuration type.
@@ -23,10 +24,9 @@ public class HConfigType implements Serializable {
      * All Registered configuration types.
      */
     private static final HMapRegisterer<String, HConfigType> REGISTERED_MAP = new HMapRegisterer<>();
-
     /**
      * Get registered map.
-     * @return registered map.
+     * @return registered map
      */
     public static HMapRegisterer<String, HConfigType> getRegisteredMap() {
         return REGISTERED_MAP;
@@ -68,17 +68,17 @@ public class HConfigType implements Serializable {
     }
 
     /**
-     * Configuration type id/name
+     * Configuration type name.
      */
     private final @NotNull String name;
     /**
-     * The method to check {@link HConfigElement#setValue(String)} is suitable for this type
+     * The method to check {@link HConfigElement#setValue(String)} is suitable for this type.
      */
     private final @NotNull FixConfigurationValueMethod check;
 
     /**
      * Register a new ConfigType.
-     * @param name type's name
+     * @param name type name
      * @param check type's checkMethod
      */
     public HConfigType(@NotNull String name, @NotNull FixConfigurationValueMethod check) {
@@ -89,7 +89,7 @@ public class HConfigType implements Serializable {
 
     /**
      * Register a new ConfigType with {@link HConfigType#fixValueString(String)} checkMethod.
-     * @param name type's name
+     * @param name type name
      */
     public HConfigType(@NotNull String name) {
         this(name, HConfigType::fixValueString);
@@ -103,16 +103,12 @@ public class HConfigType implements Serializable {
         REGISTERED_MAP.register(this.name, this);
     }
 
-    /**
-     * Get type's name
-     * @return type's name
-     */
     public @NotNull String getName() {
         return this.name;
     }
 
     /**
-     * Call checkMethod.
+     * Call checkMethod to make value fit type.
      * @param value config's value to set
      * @return null - unfixable. notNull - fixed
      */
@@ -122,7 +118,7 @@ public class HConfigType implements Serializable {
 
     @Override
     public @NotNull String toString() {
-        return this.name;
+        return "HConfigType:" + this.name;
     }
 
     @Override
@@ -135,7 +131,7 @@ public class HConfigType implements Serializable {
 
     @Override
     public int hashCode() {
-        return this.name.hashCode();
+        return Objects.hash(this.name);
     }
 
     public interface FixConfigurationValueMethod {
@@ -218,7 +214,7 @@ public class HConfigType implements Serializable {
     }
 
     public static @NotNull String fixValueString(@Nullable String value) {
-        return HStringHelper.notNullOrEmpty(value);
+        return value == null || value.isBlank() ? "null" :value;
     }
 
     public static @Nullable String fixValueInList(@Nullable String value, @NotNull FixConfigurationValueMethod method) {

@@ -3,6 +3,7 @@ package HeadLibs.Helper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -104,7 +105,9 @@ public class HFileHelper {
      * @param path file path
      * @throws IOException create failed
      */
-    public static void createNewFile(@NotNull String path) throws IOException {
+    public static void createNewFile(@Nullable String path) throws IOException {
+        if (path == null)
+            throw new IOException("Argument file path is null.");
         File file = new File(path).getAbsoluteFile();
         if (!file.exists()) {
             if(!file.getParentFile().exists() && !file.getParentFile().mkdirs())

@@ -6,9 +6,7 @@ import HeadLibs.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,19 +48,30 @@ public class HLog {
     private @NotNull String name;
 
     /**
+     * logger's output stream.
+     */
+    private @Nullable PrintStream outputStream = System.out;
+
+    /**
+     * Need record logs to {@link HLog#logs}.
+     */
+    private boolean recordable = true;
+
+    /**
      * Construct a logger named main.
      */
     public HLog() {
-        this("main");
+        super();
+        this.name = "main";
     }
 
     /**
      * Construct a logger.
      * @param name logger's name
      */
-    public HLog(@NotNull String name) {
+    public HLog(@Nullable String name) {
         super();
-        this.name = name;
+        this.name = (name == null) ? "main" : name;
     }
 
     /**
@@ -70,28 +79,27 @@ public class HLog {
      * @param name logger's name
      * @param parent logger's parent's name
      */
-    public HLog(@NotNull String name, @Nullable String parent) {
+    public HLog(@Nullable String name, @Nullable String parent) {
         super();
         if (parent == null) {
-            this.name = name;
+            this.name = (name == null) ? "main" : name;
             return;
         }
-        this.name = HStringHelper.concat(parent, "/", name);
+        this.name = parent + "/" + ((name == null) ? "main" : name);
     }
-
 
     /**
      * Construct a logger with parent's name.
      * @param name logger's name
      * @param parent logger's parent
      */
-    public HLog(@NotNull String name, @Nullable HLog parent) {
+    public HLog(@Nullable String name, @Nullable HLog parent) {
         super();
         if (parent == null) {
-            this.name = name;
+            this.name = (name == null) ? "main" : name;
             return;
         }
-        this.name = HStringHelper.concat(parent.name, "/", name);
+        this.name = parent.name + "/" + ((name == null) ? "main" : name);
     }
 
     /**
@@ -106,8 +114,8 @@ public class HLog {
      * Set logger's name.
      * @param name logger's name
      */
-    public void setName(@NotNull String name) {
-        this.name = name;
+    public void setName(@Nullable String name) {
+        this.name = (name == null) ? "main" : name;
     }
 
     /**
@@ -115,12 +123,12 @@ public class HLog {
      * @param name logger's name
      * @param parent logger's parent's name
      */
-    public void setName(@NotNull String name, @Nullable String parent) {
+    public void setName(@Nullable String name, @Nullable String parent) {
         if (parent == null) {
-            this.name = name;
+            this.name = (name == null) ? "main" : name;
             return;
         }
-        this.name = HStringHelper.concat(parent, "/", name);
+        this.name = parent + "/" + ((name == null) ? "main" : name);
     }
 
     /**
@@ -128,12 +136,28 @@ public class HLog {
      * @param name logger's name
      * @param parent logger's parent
      */
-    public void setName(@NotNull String name, @Nullable HLog parent) {
+    public void setName(@Nullable String name, @Nullable HLog parent) {
         if (parent == null) {
-            this.name = name;
+            this.name = (name == null) ? "main" : name;
             return;
         }
-        this.name = HStringHelper.concat(parent.name, "/", name);
+        this.name = parent.name + "/" + ((name == null) ? "main" : name);
+    }
+
+    public @Nullable PrintStream getOutputStream() {
+        return this.outputStream;
+    }
+
+    public void setOutputStream(@Nullable PrintStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public boolean isRecordable() {
+        return this.recordable;
+    }
+
+    public void setRecordable(boolean recordable) {
+        this.recordable = recordable;
     }
 
     /**
@@ -141,7 +165,6 @@ public class HLog {
      * @param level log's level
      * @param message the message to log
      */
-    @SuppressWarnings("DefaultNotLastCaseInSwitch")
     public void log(@Nullable HLogLevel level, @Nullable String message) {
         if ("null".equals(this.name))
             return;
@@ -149,28 +172,30 @@ public class HLog {
         if (level1 == null)
             level1 = HLogLevel.DEBUG;
         Date date = new Date();
-        String log = HStringHelper.concat("[", HStringHelper.getDate(DATE_FORMAT, date), "]",
-                "[", this.name, "]",
-                "[", level1.getName(), "]",
-                message == null ? "Null message." : message);
-        switch (this.name) {
-            case "stdErr":
-                if (System.console() != null)
-                    System.err.println(log);
-                else
-                    System.err.println(level1.getPrefix() + log + "\033[0m");
-                break;
-            default:
-                synchronized (logs) {
-                    logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
-                }
-                //noinspection fallthrough
-            case "stdOut":
-                if (System.console() != null)
-                    System.out.println(log);
-                else
-                    System.out.println(level1.getPrefix() + log + "\033[0m");
+        String log = "[" + HStringHelper.getDate(DATE_FORMAT, date) + "]" +
+                "[" + this.name + "]" +
+                "[" + level1.getName() + "]" +
+                (message == null ? "Null message." : message);
+        if ("stdErr".equals(this.name)) {
+            if (System.console() != null)
+                System.err.println(log);
+            else
+                System.err.println(level1.getPrefix() + log + "\033[0m");
+        } else if ("stdOut".equals(this.name)) {
+            if (System.console() != null)
+                System.out.println(log);
+            else
+                System.out.println(level1.getPrefix() + log + "\033[0m");
+        } else if (this.outputStream != null) {
+            if (System.console() != null)
+                this.outputStream.println(log);
+            else
+                this.outputStream.println(level1.getPrefix() + log + "\033[0m");
         }
+        if (this.recordable)
+            synchronized (logs) {
+                logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
+            }
     }
 
     /**
@@ -178,10 +203,13 @@ public class HLog {
      * @param level log's level
      * @param throwable the throwable to log
      */
-    @SuppressWarnings("DefaultNotLastCaseInSwitch")
-    public void log(@Nullable HLogLevel level, @NotNull Throwable throwable) {
+    public void log(@Nullable HLogLevel level, @Nullable Throwable throwable) {
         if ("null".equals(this.name))
             return;
+        if (throwable == null) {
+            this.log(level, "Null throwable.");
+            return;
+        }
         HLogLevel level1 = level;
         if (level1 == null)
             level1 = HLogLevel.ERROR;
@@ -208,24 +236,26 @@ public class HLog {
         }
         addCausedThrowable(builder, throwable.getCause());
         String log = builder.toString();
-        switch (this.name) {
-            case "stdErr":
-                if (System.console() != null)
-                    System.err.println(log);
-                else
-                    System.err.println(level1.getPrefix() + log + "\033[0m");
-                break;
-            default:
-                synchronized (logs) {
-                    logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
-                }
-                //noinspection fallthrough
-            case "stdOut":
-                if (System.console() != null)
-                    System.out.println(log);
-                else
-                    System.out.println(level1.getPrefix() + log + "\033[0m");
+        if ("stdErr".equals(this.name)) {
+            if (System.console() != null)
+                System.err.println(log);
+            else
+                System.err.println(level1.getPrefix() + log + "\033[0m");
+        } else if ("stdOut".equals(this.name)) {
+            if (System.console() != null)
+                System.out.println(log);
+            else
+                System.out.println(level1.getPrefix() + log + "\033[0m");
+        } else if (this.outputStream != null) {
+            if (System.console() != null)
+                this.outputStream.println(log);
+            else
+                this.outputStream.println(level1.getPrefix() + log + "\033[0m");
         }
+        if (this.recordable)
+            synchronized (logs) {
+                logs.add(Pair.makePair(Pair.makePair(date, level1.getPriority()), log));
+            }
     }
 
     /**
@@ -236,10 +266,10 @@ public class HLog {
      */
     public void log(@Nullable HLogLevel level, @Nullable Object object) {
         if (object == null) {
-            this.log(level, "Object null!");
+            this.log(level, "Null object.");
             return;
         }
-        this.log(level, HStringHelper.concat(object));
+        this.log(level, String.valueOf(object));
     }
 
     /**
@@ -247,8 +277,15 @@ public class HLog {
      * @param level log's level
      * @param messages the messages to log
      */
-    public void log(@Nullable HLogLevel level, @NotNull String ...messages) {
-        this.log(level, HStringHelper.concat(messages));
+    public void log(@Nullable HLogLevel level, @Nullable String ...messages) {
+        if (messages == null || messages.length == 0) {
+            this.log(level, "Null message.");
+            return;
+        }
+        StringBuilder builder = new StringBuilder(5 * messages.length);
+        for (String i: messages)
+            builder.append(i);
+        this.log(level, builder.toString());
     }
 
     /**
@@ -256,7 +293,11 @@ public class HLog {
      * @param level log's level
      * @param throwable the throwable to log
      */
-    public void log(@Nullable HLogLevel level, @NotNull Throwable ...throwable) {
+    public void log(@Nullable HLogLevel level, @Nullable Throwable ...throwable) {
+        if (throwable == null || throwable.length == 0) {
+            this.log(level, "Null throwable.");
+            return;
+        }
         for (Throwable t: throwable)
             this.log(level, t);
     }
@@ -267,8 +308,15 @@ public class HLog {
      * @param objects the objects to log
      * @see String#valueOf(Object)
      */
-    public void log(@Nullable HLogLevel level, @NotNull Object ...objects) {
-        this.log(level, HStringHelper.concat(objects));
+    public void log(@Nullable HLogLevel level, @Nullable Object ...objects) {
+        if (objects == null || objects.length == 0) {
+            this.log(level, "Null object.");
+            return;
+        }
+        StringBuilder builder = new StringBuilder(3 * objects.length);
+        for (Object i: objects)
+            builder.append(i);
+        this.log(level, builder.toString());
     }
 
     /**
@@ -283,7 +331,7 @@ public class HLog {
      * Log throwable with ERROR level.
      * @param throwable the throwable to log
      */
-    public void log(@NotNull Throwable throwable) {
+    public void log(@Nullable Throwable throwable) {
         this.log(HLogLevel.ERROR, throwable);
     }
 
@@ -301,6 +349,10 @@ public class HLog {
      * @param messages the messages to log
      */
     public void log(@Nullable String ...messages) {
+        if (messages == null) {
+            this.log(HLogLevel.DEBUG, "null");
+            return;
+        }
         this.log(HLogLevel.DEBUG, messages);
     }
 
@@ -308,7 +360,7 @@ public class HLog {
      * Log throwable with DEBUG level.
      * @param throwable the throwable to log
      */
-    public void log(@NotNull Throwable ...throwable) {
+    public void log(@Nullable Throwable ...throwable) {
         this.log(HLogLevel.ERROR, throwable);
     }
 
@@ -335,7 +387,7 @@ public class HLog {
      * @param level log's level
      * @param throwable the throwable to log
      */
-    public static void logger(@Nullable HLogLevel level, @NotNull Throwable throwable) {
+    public static void logger(@Nullable HLogLevel level, @Nullable Throwable throwable) {
         (new HLog(Thread.currentThread().getName())).log(level, throwable);
     }
 
@@ -363,7 +415,7 @@ public class HLog {
      * @param level log's level
      * @param throwable the throwable to log
      */
-    public static void logger(@Nullable HLogLevel level, @NotNull Throwable ...throwable) {
+    public static void logger(@Nullable HLogLevel level, @Nullable Throwable ...throwable) {
         (new HLog(Thread.currentThread().getName())).log(level, throwable);
     }
 
@@ -389,7 +441,7 @@ public class HLog {
      * Statically log throwable with ERROR level.
      * @param throwable the throwable to log
      */
-    public static void logger(@NotNull Throwable throwable) {
+    public static void logger(@Nullable Throwable throwable) {
         (new HLog(Thread.currentThread().getName())).log(throwable);
     }
 
@@ -414,7 +466,7 @@ public class HLog {
      * Statically log throwable with DEBUG level.
      * @param throwable the throwable to log
      */
-    public static void logger(@NotNull Throwable ...throwable) {
+    public static void logger(@Nullable Throwable ...throwable) {
         (new HLog(Thread.currentThread().getName())).log(throwable);
     }
 

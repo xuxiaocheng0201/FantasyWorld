@@ -1,12 +1,14 @@
 package HeadLibs.Registerer;
 
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Elements registerer map.
@@ -15,16 +17,19 @@ import java.util.Map;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HMapRegisterer<K, V> {
+public class HMapRegisterer<K, V> implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -5018927767212486603L;
+
     /**
-     * The registered elements' map.
+     * The registered elements map.
      */
     protected final Map<K, V> map = new HashMap<>();
 
     /**
      * Can be registered with different keys and same value?
      */
-    private final boolean sameValueAllowed;
+    protected final boolean sameValueAllowed;
 
     /**
      * Construct a new map registerer.
@@ -53,7 +58,7 @@ public class HMapRegisterer<K, V> {
     /**
      * Register a new element pair.
      * @param pair element pair
-     * @throws HElementRegisteredException pair's key or value has been registered.
+     * @throws HElementRegisteredException Key or value has been registered.
      */
     public void register(@NotNull Pair<? extends K, ? extends V> pair) throws HElementRegisteredException {
         this.register(pair.getKey(), pair.getValue());
@@ -61,9 +66,9 @@ public class HMapRegisterer<K, V> {
 
     /**
      * Register a new element pair.
-     * @param key pair's name
-     * @param value pair's value
-     * @throws HElementRegisteredException pair's key or value has been registered.
+     * @param key pair name
+     * @param value pair value
+     * @throws HElementRegisteredException Key or value has been registered.
      */
     public void register(@Nullable K key, @Nullable V value) throws HElementRegisteredException {
         if (key == null)
@@ -76,8 +81,27 @@ public class HMapRegisterer<K, V> {
     }
 
     /**
+     * Reset a new element pair.
+     * @param pair element pair
+     * @return old value
+     */
+    public @Nullable V reset(@NotNull Pair<? extends K, ? extends V> pair) {
+        return this.map.put(pair.getKey(), pair.getValue());
+    }
+
+    /**
+     * Reset a new element pair.
+     * @param key pair name
+     * @param value pair value
+     * @return old value
+     */
+    public @Nullable V reset(@Nullable K key, @Nullable V value) {
+        return this.map.put(key, value);
+    }
+
+    /**
      * Deregister element pair by key.
-     * @param key element pair's key
+     * @param key element pair key
      */
     public void deregisterKey(@Nullable K key) {
         if (key == null)
@@ -87,7 +111,7 @@ public class HMapRegisterer<K, V> {
 
     /**
      * Deregister element pair by value.
-     * @param value element pair's value
+     * @param value element pair value
      */
     public void deregisterValue(@Nullable V value) {
         if (!this.map.containsValue(value))
@@ -108,8 +132,8 @@ public class HMapRegisterer<K, V> {
     }
 
     /**
-     * If a element pair's key has been registered.
-     * @param key element pair's key
+     * If an element pair key has been registered.
+     * @param key element pair key
      * @return true - registered. false - unregistered.
      */
     public boolean isRegisteredKey(@Nullable K key) {
@@ -119,8 +143,8 @@ public class HMapRegisterer<K, V> {
     }
 
     /**
-     * If a element pair's value has been registered.
-     * @param value element pair's value
+     * If a element pair value has been registered.
+     * @param value element pair value
      * @return true - registered. false - unregistered.
      */
     public boolean isRegisteredValue(@Nullable V value) {
@@ -129,8 +153,8 @@ public class HMapRegisterer<K, V> {
 
     /**
      * Get a registered element value by key.
-     * @param key element pair's key
-     * @return element pair's value
+     * @param key element pair key
+     * @return element pair value
      * @throws HElementNotRegisteredException No element key registered.
      */
     public @Nullable V getElement(@NotNull K key) throws HElementNotRegisteredException {
@@ -157,7 +181,7 @@ public class HMapRegisterer<K, V> {
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.concat("MapRegisterer", this.map.toString());
+        return "MapRegisterer:" + this.map;
     }
 
     @Override
@@ -170,6 +194,6 @@ public class HMapRegisterer<K, V> {
 
     @Override
     public int hashCode() {
-        return this.map.hashCode();
+        return Objects.hash(this.map, this.sameValueAllowed);
     }
 }

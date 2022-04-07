@@ -1,6 +1,5 @@
 package HeadLibs.Configuration;
 
-import HeadLibs.Helper.HStringHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,8 +8,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * {@link HConfigurations) single element.
+ * Single configuration element.
  * @author xuxiaocheng
+ * @see HConfigurations
  */
 @SuppressWarnings("unused")
 public class HConfigElement implements Serializable {
@@ -18,28 +18,36 @@ public class HConfigElement implements Serializable {
     private static final long serialVersionUID = 6124564601710918431L;
 
     /**
-     * Config element's name
+     * Configuration name.
      */
     private @NotNull String name = "";
     /**
-     * Config element's note
+     * Configuration note.
      */
     private @NotNull String note = "";
     /**
-     * Config element's type
+     * Configuration type.
      */
     private @NotNull HConfigType type;
     /**
-     * Config element's value
+     * Configuration value.
      */
     private @NotNull String value = "";
 
     /**
+     * Construct an empty Config element.
+     */
+    public HConfigElement() {
+        super();
+        this.type = HConfigType.STRING;
+    }
+
+    /**
      * Construct a new Config element.
-     * @param name Config element's name
-     * @param note Config element's note
-     * @param type Config element's type
-     * @param value Config element's value
+     * @param name configuration name
+     * @param note configuration note
+     * @param type configuration type
+     * @param value configuration value
      */
     public HConfigElement(@Nullable String name, @Nullable String note, @NotNull HConfigType type, @Nullable String value) throws HWrongConfigValueException {
         super();
@@ -51,9 +59,9 @@ public class HConfigElement implements Serializable {
 
     /**
      * Construct a new Config element.
-     * @param name Config element's name
-     * @param note Config element's note
-     * @param value Config element's value
+     * @param name configuration name
+     * @param note configuration note
+     * @param value configuration value
      */
     public HConfigElement(@Nullable String name, @Nullable String note, @Nullable String value) throws HWrongConfigValueException {
         this(name, note, HConfigType.STRING, value);
@@ -61,9 +69,9 @@ public class HConfigElement implements Serializable {
 
     /**
      * Construct a new Config element.
-     * @param name Config element's name
-     * @param type Config element's type
-     * @param value Config element's value
+     * @param name configuration name
+     * @param type configuration type
+     * @param value configuration value
      */
     public HConfigElement(@Nullable String name, @NotNull HConfigType type, @Nullable String value) throws HWrongConfigValueException {
         this(name, "null", type, value);
@@ -71,92 +79,52 @@ public class HConfigElement implements Serializable {
 
     /**
      * Construct a new Config element.
-     * @param name Config element's name
-     * @param value Config element's value
+     * @param name configuration name
+     * @param value configuration value
      */
     public HConfigElement(@Nullable String name, @Nullable String value) throws HWrongConfigValueException {
         this(name, "null", HConfigType.STRING, value);
     }
 
-    /**
-     * Get config element's name.
-     * @return Config element's name
-     */
     public @NotNull String getName() {
         return this.name;
     }
 
-    /**
-     * Set config element's name.
-     * @param name Config element's name
-     */
     public void setName(@Nullable String name) {
         this.name = ((name == null) ? "null" : name);
     }
 
-    /**
-     * Get config element's note.
-     * @return Config element's note
-     */
     public @NotNull String getNote() {
         return this.note;
     }
 
-    /**
-     * Set config element's note.
-     * @param note Config element's note
-     */
     public void setNote(@Nullable String note) {
         this.note = ((note == null) ? "null" : note);
     }
 
-    /**
-     * Get config element's type.
-     * @return Config element's type
-     */
     public @NotNull HConfigType getType() {
         return this.type;
     }
 
-    /**
-     * Set config element's type.
-     * @param type Config element's type
-     * @throws HWrongConfigValueException Value is wrong for Type.
-     */
     public void setType(@NotNull HConfigType type) throws HWrongConfigValueException {
         String fixed = type.fix(this.value);
         if (fixed == null)
-            throw new HWrongConfigValueException(type);
+            throw new HWrongConfigValueException(null, type, this.value);
         this.type = type;
         this.value = fixed;
     }
 
-    /**
-     * Get config element's value.
-     * @return Config element's value
-     */
     public @NotNull String getValue() {
         return this.value;
     }
 
-    /**
-     * Set config element's value.
-     * @param value Config element's value
-     * @throws HWrongConfigValueException Value is wrong for type.
-     */
     public void setValue(@Nullable String value) throws HWrongConfigValueException {
         String fixed = this.type.fix(value);
         if (fixed == null)
-            throw new HWrongConfigValueException(value);
+            throw new HWrongConfigValueException(null, this.type, value);
         this.value = fixed;
     }
 
-    /**
-     * Set config element's type and value.
-     * @param type Config element's type
-     * @param value Config element's value
-     * @throws HWrongConfigValueException Value is wrong for type.
-     */
     public void setTypeAndValue(@NotNull HConfigType type, @Nullable String value) throws HWrongConfigValueException {
         this.type = type;
         this.setValue(value);
@@ -164,16 +132,16 @@ public class HConfigElement implements Serializable {
 
     @Override
     public @NotNull String toString() {
-        return HStringHelper.concat("HConfigElement{",
-                "name='", this.name, '\'',
-                ", note='", this.note, '\'',
-                ", type=", this.type,
-                ", value='", this.value, '\'',
-                '}');
+        return "HConfigElement{" +
+                "name='" + this.name + '\'' +
+                ", note='" + this.note + '\'' +
+                ", type=" + this.type +
+                ", value='" + this.value + '\'' +
+                '}';
     }
 
     @Override
-    public boolean equals(Object a) {
+    public boolean equals(@Nullable Object a) {
         if (!(a instanceof HConfigElement))
             return false;
         return Objects.equals(this.name, ((HConfigElement) a).name) && this.type == ((HConfigElement) a).type && Objects.equals(this.value, ((HConfigElement) a).value);
@@ -181,6 +149,6 @@ public class HConfigElement implements Serializable {
 
     @Override
     public int hashCode() {
-        return this.name.hashCode();
+        return Objects.hash(this.name, this.type, this.value);
     }
 }

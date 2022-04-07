@@ -15,15 +15,20 @@ public class HElementNotRegisteredException extends Exception {
     @Serial
     private static final long serialVersionUID = -4342199817525193050L;
 
+    private static final String DEFAULT_MESSAGE = "No registered element!";
+    private static @NotNull String getMessage(@Nullable String message) {
+        return (message == null) ? DEFAULT_MESSAGE : message;
+    }
+
     public HElementNotRegisteredException() {
-        super();
+        super(DEFAULT_MESSAGE);
     }
 
     public HElementNotRegisteredException(@Nullable String message) {
-        super((message == null) ? "Type is not registered!" : message);
+        super(getMessage(message));
     }
 
     public HElementNotRegisteredException(@Nullable String message, @NotNull Object key) {
-        super(HStringHelper.concat((message == null) ? "Type is not registered!" : message, " key=", key));
+        super(getMessage(message) + " key=" + key);
     }
 }
