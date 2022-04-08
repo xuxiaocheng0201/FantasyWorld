@@ -7,13 +7,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix many bugs.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Redo mod container.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesSorter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/ModClassesSorter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Mod/New/NewMod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Mod/New/NewMod.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionFormatException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionFormatException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,13 +186,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00032" summary="ModFinder prepared!">
-      <created>1645961104693</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1645961104694</updated>
     </task>
     <task id="LOCAL-00033" summary="Add Eventbus.">
       <created>1646054129121</created>
@@ -531,7 +523,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649338098577</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="Improve Version part.">
+      <created>1649396521283</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1649396521285</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -573,8 +572,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="WARNING: Please check type when invoke ModManager.elementInstances.addInstance(Class&lt;? extends T&gt; aClass)!!!!!!!!!!!" />
-    <MESSAGE value="Fix some bugs" />
     <MESSAGE value="Add more events" />
     <MESSAGE value="Recontribute cor code" />
     <MESSAGE value="Recontribute core code" />
@@ -598,7 +595,9 @@
     <MESSAGE value="Preliminary complete HVersionComplex.java" />
     <MESSAGE value="Deprecating HStringHelper.concat method." />
     <MESSAGE value="Fix many bugs." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix many bugs." />
+    <MESSAGE value="Improve Version part." />
+    <MESSAGE value="Redo mod container." />
+    <option name="LAST_COMMIT_MESSAGE" value="Redo mod container." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

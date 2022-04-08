@@ -18,6 +18,8 @@ import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Version.HStringVersion;
+import HeadLibs.Version.HVersionFormatException;
 import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -26,12 +28,21 @@ import java.io.IOException;
 import java.util.jar.JarFile;
 
 public class Craftworld {
-    public static final String CURRENT_VERSION = "0.0.0";
-    public static final String RUNTIME_PATH = "Craftworld\\" + Craftworld.CURRENT_VERSION + "\\";
+    public static final String CURRENT_VERSION_STRING = "0.0.0";
+    public static final HStringVersion CURRENT_VERSION;
+    public static final String RUNTIME_PATH = "Craftworld\\" + Craftworld.CURRENT_VERSION_STRING + "\\";
     public static final String GLOBAL_CONFIGURATION_PATH = RUNTIME_PATH + "global.cfg";
     public static final String ASSETS_PATH = RUNTIME_PATH + "assets\\";
     public static final String LOG_PATH;
     static {
+        HStringVersion current_version;
+        try {
+            current_version = new HStringVersion(CURRENT_VERSION_STRING);
+        } catch (HVersionFormatException exception) {
+            current_version = null;
+            HLog.logger(HLogLevel.FAULT, exception);
+        }
+        CURRENT_VERSION = current_version;
         String temp = RUNTIME_PATH + "log\\" + HStringHelper.getDate("yyyy-MM-dd");
         String log_path = temp + ".log";
         int i = 1;
@@ -41,23 +52,19 @@ public class Craftworld {
     }
     private static final String EXTRACT_TEMP_FILE = "extract_temp";
 
-    public static void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) {
+    public static void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) throws IOException {
         File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
-        if (jarFilePath == null) //Unreachable
-            jarFilePath = HClassFinder.thisCodePath;
+        if (jarFilePath == null)
+            throw new IOException("Null jar file path for class '" + modClass + "'.s");
         File targetFilePath = new File(RUNTIME_PATH + targetPath).getAbsoluteFile();
-        try {
-            if (System.console() == null) {
-                File runtimeFile = new File(Craftworld.RUNTIME_PATH).getAbsoluteFile();
-                String srcResourcePath = runtimeFile.getParentFile().getParentFile().getParentFile().getPath() + "\\src\\main\\resources";
-                HFileHelper.copyFiles(srcResourcePath + "\\" + sourcePath, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
-            } else {
-                HZipHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
-                HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
-                HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
-            }
-        } catch (IOException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
+        if (System.console() == null) {
+            File runtimeFile = new File(Craftworld.RUNTIME_PATH).getAbsoluteFile();
+            String srcResourcePath = runtimeFile.getParentFile().getParentFile().getParentFile().getPath() + "\\src\\main\\resources";
+            HFileHelper.copyFiles(srcResourcePath + "\\" + sourcePath, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+        } else {
+            HZipHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
+            HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
+            HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
         }
     }
 
@@ -93,7 +100,11 @@ public class Craftworld {
         }
         if (overwrite_when_extracting != null)
             OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
-        extractFiles(null, "assets\\Core", "assets\\Core");
+        try {
+            extractFiles(null, "assets\\Core", "assets\\Core");
+        } catch (IOException exception) {
+            logger.log(HLogLevel.ERROR, exception);
+        }
         for (String arg: args) {
             if ("runClient".equals(arg))
                 isClient = true;

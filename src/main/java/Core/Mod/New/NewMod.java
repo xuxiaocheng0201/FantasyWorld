@@ -13,5 +13,5 @@ public @interface NewMod {
     String name();
     String version() default "1.0";
     String require() default "";
-    String availableCraftworldVersion() default Craftworld.CURRENT_VERSION;
+    String availableCraftworldVersion() default Craftworld.CURRENT_VERSION_STRING;
 }

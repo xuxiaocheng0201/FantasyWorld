@@ -1,5 +1,6 @@
 package HeadLibs.Version;
 
+import HeadLibs.Helper.HStringHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -131,7 +132,7 @@ public class HVersionComplex implements Serializable {
     public void addVersions(@Nullable String versions) throws HVersionFormatException {
         if (versions == null)
             return;
-        String[] versions_ = versions.split("&");
+        String[] versions_ = HStringHelper.strip(versions.split("&"));
         for (String version: versions_) {
             if (version.isBlank())
                 continue;
