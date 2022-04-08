@@ -9,15 +9,20 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
+ * Range for versions.
+ * String form: [,] or (,) or [,) or (,]
  * @author xuxiaocheng
  */
-/* Version form: [,] or (,) or [,) or (,]*/
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "GrazieInspection"})
 public class HVersionRange implements Serializable {
     @Serial
     private static final long serialVersionUID = 4882505281267885490L;
 
+    /**
+     * A flag to differentiate empty and universal set.
+     */
     private boolean empty;
+    
     private boolean leftEquable;
     private boolean rightEquable;
     private @NotNull HStringVersion leftVersion = HStringVersion.EMPTY;
@@ -104,11 +109,15 @@ public class HVersionRange implements Serializable {
         this.empty = true;
     }
 
-    public void setVersionSingle(String version) throws HVersionFormatException {
+    public void setVersionSingle(@Nullable String version) throws HVersionFormatException {
         this.setVersionSingle(new HStringVersion(version));
     }
 
-    public void setVersionSingle(HStringVersion version) {
+    public void setVersionSingle(@Nullable HStringVersion version) {
+        if (version == null) {
+            this.setEmpty();
+            return;
+        }
         this.leftEquable = true;
         this.rightEquable = true;
         this.leftVersion = version;
@@ -175,6 +184,9 @@ public class HVersionRange implements Serializable {
         this.autoFix();
     }
 
+    /**
+     * Deal with some obvious mistakes.
+     */
     public void autoFix() {
         if (this.empty) {
             this.setEmpty();
@@ -215,14 +227,15 @@ public class HVersionRange implements Serializable {
 
     @Override
     public @NotNull String toString() {
-        return this.empty ? "empty" :
-                HStringHelper.concat(this.leftEquable ? '[' : '(',
-                this.leftVersion.getVersion(), ',', this.rightVersion.getVersion(),
-                this.rightEquable ? ']' : ')');
+        if (this.empty)
+            return "empty";
+        return this.leftEquable ? "[" : "(" +
+                this.leftVersion.getVersion() + ',' + this.rightVersion.getVersion() +
+                (this.rightEquable ? ']' : ')');
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         HVersionRange that = (HVersionRange) o;

@@ -19,14 +19,28 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
     @Serial
     private static final long serialVersionUID = -8779747563654866413L;
 
+    /**
+     * Null version.
+     */
     public static HStringVersion EMPTY = new HStringVersion();
 
+    /**
+     * Version.
+     */
     private @NotNull String version = "";
 
+    /**
+     * Construct a null version.
+     */
     public HStringVersion() {
         super();
     }
 
+    /**
+     * Construct a version from version string.
+     * @param version the version string
+     * @throws HVersionFormatException Wrong formation of version string.
+     */
     public HStringVersion(@Nullable String version) throws HVersionFormatException {
         super();
         this.setVersion(version);
@@ -47,16 +61,28 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
             throw new HVersionFormatException("Found brackets in string version.", version);
         if (version.contains(",") || version.contains("&"))
             throw new HVersionFormatException("Found separation character in string version.", version);
-        this.version = HStringHelper.notNullStrip(version);
+        this.version = version.strip();
+    }
+
+    public boolean inRange(@Nullable String versionRange) throws HVersionFormatException {
+        if (versionRange == null)
+            return false;
+        return (new HVersionRange(versionRange)).versionInRange(this);
+    }
+
+    public boolean inRange(@Nullable HVersionRange versionRange) {
+        if (versionRange == null)
+            return false;
+        return versionRange.versionInRange(this);
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.version;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         HStringVersion that = (HStringVersion) o;
@@ -69,25 +95,36 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
     }
 
     @Override
-    public int compareTo(@NotNull HStringVersion o) {
+    public int compareTo(@Nullable HStringVersion o) {
         return compareVersion(this, o);
     }
 
+    /**
+     * Is a null version?
+     * @param version the version
+     * @return true - null. false - notNull.
+     */
     public static boolean isNull(@Nullable HStringVersion version) {
         if (version == null)
             return true;
         return version.version.isEmpty();
     }
 
-    public static int compareVersion(@Nullable String a, @Nullable String b) throws HVersionFormatException {
-        return compareVersion(new HStringVersion(a), new HStringVersion(b));
+    public static int compareVersion(@Nullable String leftVersion, @Nullable String rightVersion) throws HVersionFormatException {
+        return compareVersion(new HStringVersion(leftVersion), new HStringVersion(rightVersion));
     }
 
-    public static int compareVersion(@Nullable HStringVersion a, @Nullable HStringVersion b) {
-        return compareVersion(a, b, true);
+    public static int compareVersion(@Nullable HStringVersion leftVersion, @Nullable HStringVersion rightVersion) {
+        if (isNull(leftVersion) || isNull(rightVersion))
+            return -1;
+        return compareVersionWithoutPosition(leftVersion, rightVersion, true);
     }
 
-    public static int compareVersion(@Nullable HStringVersion a, @Nullable HStringVersion b, boolean nullMeanMax) {
+    public static int compareVersionWithoutPosition(@Nullable String a, @Nullable String b, boolean nullMeanMax) throws HVersionFormatException {
+        return compareVersionWithoutPosition(new HStringVersion(a), new HStringVersion(b), nullMeanMax);
+    }
+
+    public static int compareVersionWithoutPosition(@Nullable HStringVersion a, @Nullable HStringVersion b, boolean nullMeanMax) {
         if (isNull(a)) {
             if (isNull(b))
                 return 0;

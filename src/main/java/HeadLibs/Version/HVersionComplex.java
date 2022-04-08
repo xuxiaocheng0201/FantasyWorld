@@ -5,19 +5,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * Available version range.
  * Like intervals in mathematics.
+ * String form: [,)&(,]&{,,}
  * @author xuxiaocheng
  */
-/* Version form: [,]&(,]&{,,} */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "GrazieInspection"})
 public class HVersionComplex implements Serializable {
     @Serial
     private static final long serialVersionUID = -7755725541591955245L;
@@ -25,32 +21,49 @@ public class HVersionComplex implements Serializable {
     /**
      * Single interval without any operation.
      */
-    private List<HVersionRange> versionRanges = new ArrayList<>();
+    private final List<HVersionRange> versionRanges = new ArrayList<>();
     /**
      * A single version number.
      */
-    private List<HStringVersion> versionSingles = new ArrayList<>();
+    private final List<HStringVersion> versionSingles = new ArrayList<>();
 
     /**
-     * Construct a (min, max) interval.
+     * Construct an empty interval.
      */
     public HVersionComplex() {
         super();
     }
 
+    /**
+     * Construct a version from version string.
+     * @param version the version string
+     * @throws HVersionFormatException Wrong formation of version string.
+     */
     public HVersionComplex(@NotNull String version) throws HVersionFormatException {
         super();
         this.addVersions(version);
     }
 
-    public HVersionComplex(@NotNull HStringVersion version) {
+    public HVersionComplex(@Nullable HStringVersion version) {
         super();
         this.addVersionSingle(version);
     }
 
-    public HVersionComplex(@NotNull HVersionRange versionRange) {
+    public HVersionComplex(@NotNull HStringVersion[] versions) {
+        super();
+        for (HStringVersion version: versions)
+            this.addVersionSingle(version);
+    }
+
+    public HVersionComplex(@Nullable HVersionRange versionRange) {
         super();
         this.addVersionRange(versionRange);
+    }
+
+    public HVersionComplex(@NotNull HVersionRange[] versionRanges) {
+        super();
+        for (HVersionRange versionRange: versionRanges)
+            this.addVersionRange(versionRange);
     }
 
     public @NotNull List<HVersionRange> getVersionRanges() {
@@ -62,7 +75,8 @@ public class HVersionComplex implements Serializable {
     }
 
     public void setAll() {
-        this.setEmpty();
+        this.versionRanges.clear();
+        this.versionSingles.clear();
         this.versionRanges.add(new HVersionRange());
     }
 
@@ -143,83 +157,95 @@ public class HVersionComplex implements Serializable {
     }
 
     public void autoFix() {
-        Collection<HVersionRange> del = new ArrayList<>();
+        // Remove null and duplicate values.
+        this.versionRanges.removeIf(HVersionRange::isEmpty);
+        Collection<HVersionRange> noDuplicateRanges = this.versionRanges.stream().distinct().toList();
+        this.versionRanges.clear();
+        this.versionRanges.addAll(noDuplicateRanges);
+        this.versionSingles.removeIf(HStringVersion::isNull);
+        Collection<HStringVersion> noDuplicateSingles = this.versionSingles.stream().distinct().toList();
+        this.versionSingles.clear();
+        this.versionSingles.addAll(noDuplicateSingles);
+        // Find universal range and single element range.
+        Collection<HVersionRange> deleteRanges = new HashSet<>();
         for (HVersionRange versionRange: this.versionRanges) {
             versionRange.autoFix();
             if (HStringVersion.compareVersion(versionRange.getLeftVersion(), versionRange.getRightVersion()) == 0) {
                 if (!versionRange.isEmpty()) {
-                    this.versionRanges.clear();
-                    this.versionSingles.clear();
-                    this.versionRanges.add(new HVersionRange());
+                    this.setAll();
                     return;
                 }
-                del.add(versionRange);
+                deleteRanges.add(versionRange);
                 this.versionSingles.add(versionRange.getLeftVersion());
             }
         }
-        this.versionRanges.removeAll(del);
-        this.versionRanges.removeIf(HVersionRange::isEmpty);
-        this.versionRanges = this.versionRanges.stream().distinct().collect(Collectors.toList());
-        this.versionSingles.removeIf(HStringVersion::isNull);
-        this.versionSingles = this.versionSingles.stream().distinct().collect(Collectors.toList());
-        this.versionRanges.sort((o1, o2) -> {
-            int result = HStringVersion.compareVersion(o1.getLeftVersion(), o2.getLeftVersion(), false);
-            if (result != 0) return result;
-            return HStringVersion.compareVersion(o1.getRightVersion(), o2.getRightVersion());
-        });
-        this.versionSingles.sort(HStringVersion::compareVersion);
-        Collection<HStringVersion> removed = new ArrayList<>();
-        for (HStringVersion version: this.versionSingles) {
-            boolean remove = false;
+        this.versionRanges.removeAll(deleteRanges);
+        // Merge single version to range version.
+        Collection<HStringVersion> deleteSingles = new HashSet<>();
+        for (HStringVersion version: this.versionSingles)
             for (HVersionRange versionRange: this.versionRanges) {
-                int left = HStringVersion.compareVersion(version, versionRange.getLeftVersion());
-                int right = HStringVersion.compareVersion(versionRange.getRightVersion(), version);
+                int left = HStringVersion.compareVersionWithoutPosition(versionRange.getLeftVersion(), version, false);
+                int right = HStringVersion.compareVersionWithoutPosition(version, versionRange.getRightVersion(), true);
                 if (left == 0) {
                     versionRange.setLeftEquable(true);
-                    remove = true;
+                    deleteSingles.add(version);
                 }
                 if (right == 0) {
                     versionRange.setRightEquable(true);
-                    remove = true;
+                    deleteSingles.add(version);
                 }
                 if (left > 0 && right > 0)
-                    remove = true;
+                    deleteSingles.add(version);
             }
-            if (remove)
-                removed.add(version);
-        }
-        this.versionSingles.removeAll(removed);
-        if (this.versionRanges.size() > 1) {
-            List<HVersionRange> ranges = new ArrayList<>();
-            ranges.add(this.versionRanges.get(0));
-            for (int i = 1; i < this.versionRanges.size(); ++i) {
-                HVersionRange last = ranges.get(ranges.size() - 1);
-                HVersionRange now = this.versionRanges.get(i);
-                int result = HStringVersion.compareVersion(last.getRightVersion(), now.getLeftVersion());
-                if (result < 0 || (result == 0 && !last.isRightEquable() && !now.isLeftEquable())) {
-                    ranges.add(now);
-                    continue;
-                }
-                result = HStringVersion.compareVersion(last.getRightVersion(), now.getRightVersion());
-                if (result > 0)
-                    continue;
-                ranges.remove(last);
-                HVersionRange h = new HVersionRange();
-                h.setVersionRange(last.isLeftEquable(), last.getLeftVersion(), now.getRightVersion(), now.isRightEquable());
-                if (result == 0)
-                    h.setRightEquable(last.isRightEquable() || now.isRightEquable());
-                ranges.add(h);
+        this.versionSingles.removeAll(deleteSingles);
+        // Sort versions.
+        this.versionRanges.sort((o1, o2) -> {
+            int result = HStringVersion.compareVersionWithoutPosition(o1.getLeftVersion(), o2.getLeftVersion(), false);
+            if (result != 0) return result;
+            return HStringVersion.compareVersionWithoutPosition(o1.getRightVersion(), o2.getRightVersion(), true);
+        });
+        this.versionSingles.sort((o1, o2) -> HStringVersion.compareVersionWithoutPosition(o1, o2, true));
+        // Merge version ranges.
+        List<HVersionRange> ranges = new ArrayList<>();
+        for (HVersionRange now: this.versionRanges) {
+            if (ranges.isEmpty()){
+                ranges.add(now);
+                continue;
             }
-            this.versionRanges = ranges;
+            HVersionRange last = ranges.get(ranges.size() - 1);
+            int result = HStringVersion.compareVersion(now.getLeftVersion(), last.getRightVersion());
+            if (result > 0 || (result == 0 && !last.isRightEquable() && !now.isLeftEquable())) {
+                ranges.add(now);
+                continue;
+            }
+            result = HStringVersion.compareVersionWithoutPosition(last.getRightVersion(), now.getRightVersion(), true);
+            if (result > 0)
+                continue;
+            ranges.remove(last);
+            HVersionRange h = new HVersionRange();
+            h.setVersionRange(last.isLeftEquable(), last.getLeftVersion(), now.getRightVersion(), now.isRightEquable());
+            if (result == 0)
+                h.setRightEquable(last.isRightEquable() || now.isRightEquable());
+            h.autoFix();
+            ranges.add(h);
         }
+        this.versionRanges.clear();
+        this.versionRanges.addAll(ranges);
     }
 
-    public boolean versionInRange(@NotNull HStringVersion version) {
+    public boolean versionInRange(@Nullable String version) throws HVersionFormatException {
+        return this.versionInRange(new HStringVersion(version));
+    }
+
+    public boolean versionInRange(@Nullable HStringVersion version) {
+        if (version == null)
+            return false;
+        this.autoFix();
         for (HVersionRange range: this.versionRanges)
             if (range.versionInRange(version))
                 return true;
         for (HStringVersion s: this.versionSingles)
-            if (HStringVersion.compareVersion(version, s) == 0)
+            if (HStringVersion.compareVersionWithoutPosition(version, s, true) == 0)
                 return true;
         return false;
     }
@@ -242,7 +268,7 @@ public class HVersionComplex implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         HVersionComplex that = (HVersionComplex) o;
