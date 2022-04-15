@@ -1,9 +1,9 @@
-package Core.Mod;
+package Core.Addition;
 
-import Core.Mod.New.ElementImplement;
-import Core.Mod.New.ElementUtil;
-import Core.Mod.New.ModImplement;
-import Core.Mod.New.NewMod;
+import Core.Addition.Implement.ElementImplement;
+import Core.Addition.Implement.ElementUtil;
+import Core.Addition.Mod.ModImplement;
+import Core.Addition.Mod.NewMod;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Pair;
 
@@ -25,10 +25,14 @@ public class ModManager {
     public static void deleteMod(String modName) {
         if (modName == null)
             return;
-        getModList().removeIf(modClass -> modName.equals(HStringHelper.notNullOrEmpty(modClass.getAnnotation(NewMod.class).name().strip())));
+        getModList().removeIf(modClass -> modName.equals(HStringHelper.notNullStrip(modClass.getAnnotation(NewMod.class).name())));
     }
 
     public static Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
-        return ModElementsRegisterer.getElementPairList();
+        return ModClassesLoader.getElementPairList();
+    }
+
+    public static String crashClassInformation(Class<? extends ModImplement> modClass) {
+        return " At class '" + modClass.toString() + "' in file '" + getAllClassesWithJarFiles().get(modClass).getAbsolutePath() + "'.";
     }
 }

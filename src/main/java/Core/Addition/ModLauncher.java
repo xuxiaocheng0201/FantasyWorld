@@ -1,9 +1,9 @@
-package Core.Mod;
+package Core.Addition;
 
+import Core.Addition.Mod.ModImplement;
 import Core.EventBus.EventBusManager;
 import Core.Events.*;
 import Core.Exceptions.ModRequirementsException;
-import Core.Mod.New.ModImplement;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -50,7 +50,8 @@ public class ModLauncher {
         return false;
     }
 
-    public static boolean sortMods(HLog logger) {
+    public static boolean sortMods() {
+        logger = new HLog("ModSorter", Thread.currentThread().getName());
         ModClassesSorter.buildModContainer();
         ModClassesSorter.checkModContainer();
         if (!ModClassesSorter.getExceptions().isEmpty()) {

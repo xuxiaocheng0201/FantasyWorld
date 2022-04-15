@@ -1,57 +1,52 @@
 package Core;
 
-import Core.Mod.New.ModImplement;
-import Core.Mod.New.NewMod;
+import Core.Addition.Mod.ModImplement;
 import HeadLibs.Configuration.SimpleMode.HConfigElementSimple;
 import HeadLibs.Configuration.SimpleMode.HConfigurationsSimple;
-import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Helper.HClassHelper;
+import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HMapRegisterer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
+/**
+ * I18N string from *.lang file in directory assets/%modName%/lang.
+ */
 public class LanguageI18N {
     public static final String DEFAULT_LANGUAGE = "en_us";
 
-    private static final Map<String, HConfigurationsSimple> languages = new HashMap<>();
+    private static final HMapRegisterer<String, HConfigurationsSimple> languages = new HMapRegisterer<>();
 
     private static String getLanguageFilePath(Class<? extends ModImplement> modClass, String lang) {
-        String modName = "Core";
-        if (modClass != null) {
-            NewMod mod = modClass.getDeclaredAnnotation(NewMod.class);
-            if (mod != null)
-                modName = HStringHelper.notNullOrEmpty(mod.name().strip());
-        }
-        return HStringHelper.concat(Craftworld.ASSETS_PATH, modName, "\\lang\\", lang, ".lang");
+        ModImplement mod = HClassHelper.getInstance(modClass);
+        if (mod == null)
+            return Craftworld.ASSETS_PATH + "Core\\lang\\" + lang + ".lang";
+        return mod.getLanguagePath(lang);
     }
 
-    public static String get(String name) {
+    public static String get(String name) throws IOException {
         return get(null, name, Craftworld.CURRENT_LANGUAGE);
     }
 
-    public static String get(String name, String lang) {
-        return get(null, name, lang);
-    }
-
-    public static String get(Class<? extends ModImplement> modClass, String name) {
+    public static String get(Class<? extends ModImplement> modClass, String name) throws IOException {
         return get(modClass, name, Craftworld.CURRENT_LANGUAGE);
     }
 
-    public static String get(Class<? extends ModImplement> modClass, String name, String lang) {
-        if (lang == null)
-            return get(modClass, name, DEFAULT_LANGUAGE);
-        String lang1 = lang.toLowerCase();
-        if (!languages.containsKey(lang1)) {
+    public static String get(Class<? extends ModImplement> modClass, String name, String lang) throws IOException {
+        String lang1 = lang == null ? Craftworld.CURRENT_LANGUAGE : lang.toLowerCase();
+        if (!languages.isRegisteredKey(lang1)) {
             HConfigurationsSimple language = new HConfigurationsSimple(getLanguageFilePath(modClass, lang1));
-            languages.put(lang1, language);
+            languages.reset(lang1, language);
         }
-        HConfigElementSimple translation = languages.get(lang1).getByName(name);
+        HConfigElementSimple translation = languages.getElementNullable(lang1).getByName(name);
         if (translation != null)
             return translation.getValue();
         if (lang1.equals(DEFAULT_LANGUAGE)) {
             HConfigurationsSimple todo = new HConfigurationsSimple(getLanguageFilePath(modClass, "TODO"));
-            if (todo.getByName(name) == null) {
+            try {
                 todo.add(new HConfigElementSimple(name, null));
                 todo.write();
+            } catch (HElementRegisteredException ignore) {
             }
             return name;
         }

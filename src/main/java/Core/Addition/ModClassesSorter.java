@@ -1,9 +1,9 @@
-package Core.Mod;
+package Core.Addition;
 
+import Core.Addition.Mod.ModImplement;
+import Core.Addition.Mod.NewMod;
 import Core.Craftworld;
 import Core.Exceptions.*;
-import Core.Mod.New.ModImplement;
-import Core.Mod.New.NewMod;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Pair;
 import HeadLibs.Version.HStringVersion;
@@ -55,7 +55,7 @@ class ModClassesSorter {
             Set<Pair<Boolean, Pair<String, HVersionComplex>>> before = new HashSet<>();
             boolean afterAll = false;
             boolean beforeAll = false;
-            String[] modRequirements = HStringHelper.strip(mod.require().split(";"));
+            String[] modRequirements = HStringHelper.strip(mod.requirements().split(";"));
             for (String modRequirement: modRequirements) {
                 int locationColon = modRequirement.indexOf(':');
                 if (locationColon == -1) {

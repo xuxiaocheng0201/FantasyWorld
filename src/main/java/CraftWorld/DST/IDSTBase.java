@@ -1,7 +1,7 @@
 package CraftWorld.DST;
 
-import Core.Mod.New.ElementImplement;
-import Core.Mod.New.NewElementImplement;
+import Core.Addition.Implement.ElementImplement;
+import Core.Addition.Implement.NewElementImplement;
 
 import java.io.*;
 

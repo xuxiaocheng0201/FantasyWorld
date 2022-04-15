@@ -40,7 +40,7 @@ public class HVersionComplex implements Serializable {
      * @param version the version string
      * @throws HVersionFormatException Wrong formation of version string.
      */
-    public HVersionComplex(@NotNull String version) throws HVersionFormatException {
+    public HVersionComplex(@Nullable String version) throws HVersionFormatException {
         super();
         this.addVersions(version);
     }

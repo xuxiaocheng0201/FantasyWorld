@@ -164,6 +164,17 @@ public class HMapRegisterer<K, V> implements Serializable {
     }
 
     /**
+     * Get a registered element value by key.
+     * @param key element pair key
+     * @return element pair value
+     */
+    public @Nullable V getElementNullable(@NotNull K key) {
+        if (!this.map.containsKey(key))
+            return null;
+        return this.map.get(key);
+    }
+
+    /**
      * Get the count of registered elements.
      * @return the count of registered elements.
      */

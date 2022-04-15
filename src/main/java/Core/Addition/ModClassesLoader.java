@@ -1,7 +1,12 @@
-package Core.Mod;
+package Core.Addition;
 
+import Core.Addition.Implement.ElementImplement;
+import Core.Addition.Implement.ElementUtil;
+import Core.Addition.Implement.NewElementImplement;
+import Core.Addition.Implement.NewElementUtil;
+import Core.Addition.Mod.ModImplement;
+import Core.Addition.Mod.NewMod;
 import Core.Craftworld;
-import Core.Mod.New.*;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
@@ -15,7 +20,7 @@ import java.util.*;
 class ModClassesLoader {
     @SuppressWarnings("FieldHasSetterButNoGetter")
     private static HLog logger;
-    static final File MODS_FILE = (new File(HStringHelper.concat(Craftworld.RUNTIME_PATH, "mods"))).getAbsoluteFile();
+    static final File MODS_FILE = (new File(Craftworld.RUNTIME_PATH + "mods")).getAbsoluteFile();
     static {
         if (MODS_FILE.exists() && !MODS_FILE.isDirectory())
             HLog.logger(HLogLevel.ERROR, "Mods path is a file! MODS_PATH='", MODS_FILE.getPath(), "'.");
@@ -84,6 +89,11 @@ class ModClassesLoader {
 
     static List<Class<? extends ElementUtil<?>>> getSingleUtils() {
         return singleUtils;
+    }
+
+    private static final Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementPairList = new HashMap<>();
+    static Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+        return elementPairList;
     }
 
     @SuppressWarnings("unchecked")
@@ -240,7 +250,7 @@ class ModClassesLoader {
                 singleImplements.add(implement);
                 continue;
             }
-            ModElementsRegisterer.getElementPairList().put(tempName, new Pair<>(implement, elementUtil));
+            elementPairList.put(tempName, new Pair<>(implement, elementUtil));
         }
         for (Class<? extends ElementUtil<?>> util: elementUtils) {
             NewElementUtil elementUtil = util.getAnnotation(NewElementUtil.class);

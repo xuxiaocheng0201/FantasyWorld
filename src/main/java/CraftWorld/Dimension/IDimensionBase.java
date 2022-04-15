@@ -1,7 +1,7 @@
 package CraftWorld.Dimension;
 
-import Core.Mod.New.ElementImplement;
-import Core.Mod.New.NewElementImplement;
+import Core.Addition.Implement.ElementImplement;
+import Core.Addition.Implement.NewElementImplement;
 
 @NewElementImplement(elementName = "Dimension")
 public interface IDimensionBase extends ElementImplement {

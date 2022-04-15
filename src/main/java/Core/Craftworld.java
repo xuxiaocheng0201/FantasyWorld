@@ -1,11 +1,11 @@
 package Core;
 
+import Core.Addition.Mod.ModImplement;
+import Core.Addition.ModLauncher;
+import Core.Addition.ModManager;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.Exceptions.ModRequirementsException;
-import Core.Mod.ModLauncher;
-import Core.Mod.ModManager;
-import Core.Mod.New.ModImplement;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfigElement;
 import HeadLibs.Configuration.HConfigType;
@@ -39,8 +39,9 @@ public class Craftworld {
         try {
             current_version = new HStringVersion(CURRENT_VERSION_STRING);
         } catch (HVersionFormatException exception) {
+            HLog.logger(HLogLevel.CONFIGURATION, exception);
+            HLog.logger(HLogLevel.FAULT, "Impossible exception!");
             current_version = null;
-            HLog.logger(HLogLevel.FAULT, exception);
         }
         CURRENT_VERSION = current_version;
         String temp = RUNTIME_PATH + "log\\" + HStringHelper.getDate("yyyy-MM-dd");
@@ -85,7 +86,7 @@ public class Craftworld {
      */
     private static HLog logger;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Thread.currentThread().setName("CraftworldMain");
         logger = new HLog("CraftworldMain");
         logger.log(HLogLevel.INFO, "Hello Craftworld!");
@@ -139,7 +140,7 @@ public class Craftworld {
         }
     }
 
-    private static void GetConfigurations() {
+    private static void GetConfigurations() throws IOException {
         try {
             GLOBAL_CONFIGURATIONS = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
             GLOBAL_CONFIGURATIONS.read();
@@ -154,8 +155,6 @@ public class Craftworld {
         try {
             if (language == null)
                 language = new HConfigElement("language", LanguageI18N.get("Core.configuration.language.name"), CURRENT_LANGUAGE);
-            else
-                language.setNote(LanguageI18N.get("Core.configuration.language.name"));
             CURRENT_LANGUAGE = language.getValue();
             language.setNote(LanguageI18N.get("Core.configuration.language.name"));
         } catch (HWrongConfigValueException exception) {
@@ -232,7 +231,7 @@ public class Craftworld {
         }
         logger.log(HLogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
         logger.log(HLogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
-        if (ModLauncher.sortMods(logger)) {
+        if (ModLauncher.sortMods()) {
             logger.log(HLogLevel.ERROR, ModLauncher.getSorterExceptions());
             for (ModRequirementsException exception: ModLauncher.getSorterExceptions())
                 HLog.logger(HLogLevel.ERROR, exception);

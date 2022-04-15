@@ -1,12 +1,12 @@
 package CraftWorld;
 
+import Core.Addition.Mod.ModImplement;
+import Core.Addition.Mod.NewMod;
 import Core.Craftworld;
 import Core.EventBus.EventBusCreator;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.Events.PreInitializationModsEvent;
-import Core.Mod.New.ModImplement;
-import Core.Mod.New.NewMod;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import HeadLibs.Logger.HLog;
@@ -14,10 +14,11 @@ import HeadLibs.Logger.HLogLevel;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 
 @EventSubscribe
-@NewMod(name = "CraftWorld", version = "0.0.0", require = "before:*")
+@NewMod(name = "CraftWorld", version = "0.0.0", requirements = "before:*")
 public class CraftWorld implements ModImplement {
     private static final CraftWorld instance = new CraftWorld();
     public static CraftWorld getInstance() {
@@ -38,7 +39,7 @@ public class CraftWorld implements ModImplement {
 
     @Subscribe
     @SuppressWarnings({"unused", "MethodMayBeStatic"})
-    public void preInitialize(PreInitializationModsEvent event) {
+    public void preInitialize(PreInitializationModsEvent event) throws IOException {
         logger.setName("CraftWorld", logger);
         Craftworld.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }

@@ -2,7 +2,6 @@ package HeadLibs.Helper;
 
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
@@ -21,7 +20,9 @@ public class HClassHelper {
      * @return null - failed. notNull - the instance
      */
     @SuppressWarnings("unchecked")
-    public static <T> @Nullable T getInstance(@NotNull Class<T> aClass) {
+    public static <T> @Nullable T getInstance(@Nullable Class<T> aClass) {
+        if (aClass == null)
+            return null;
         try {
             Method get = aClass.getDeclaredMethod("getInstance");
             T instance = (T) get.invoke(null);
