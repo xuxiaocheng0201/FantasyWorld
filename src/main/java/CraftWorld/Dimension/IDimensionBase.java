@@ -1,9 +1,9 @@
 package CraftWorld.Dimension;
 
 import Core.Addition.Implement.ElementImplement;
-import Core.Addition.Implement.NewElementImplement;
+import Core.Addition.Implement.NewElementImplementCore;
 
-@NewElementImplement(elementName = "Dimension")
+@NewElementImplementCore(elementName = "Dimension")
 public interface IDimensionBase extends ElementImplement {
     String getDimensionName();
     void setDimensionName(String name);

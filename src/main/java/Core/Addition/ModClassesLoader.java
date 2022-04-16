@@ -2,8 +2,8 @@ package Core.Addition;
 
 import Core.Addition.Implement.ElementImplement;
 import Core.Addition.Implement.ElementUtil;
-import Core.Addition.Implement.NewElementImplement;
-import Core.Addition.Implement.NewElementUtil;
+import Core.Addition.Implement.NewElementImplementCore;
+import Core.Addition.Implement.NewElementUtilCore;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
 import Core.Craftworld;
@@ -110,10 +110,10 @@ class ModClassesLoader {
         modFilter.addAnnotationClass(NewMod.class);
         modFilter.addSuperClass(ModImplement.class);
         HClassFinder implementFilter = new HClassFinder();
-        implementFilter.addAnnotationClass(NewElementImplement.class);
+        implementFilter.addAnnotationClass(NewElementImplementCore.class);
         implementFilter.addSuperClass(ElementImplement.class);
         HClassFinder utilFilter = new HClassFinder();
-        utilFilter.addAnnotationClass(NewElementUtil.class);
+        utilFilter.addAnnotationClass(NewElementUtilCore.class);
         utilFilter.addSuperClass(ElementUtil.class);
         for (Class<?> aClass: modsFinder.getClassList()) {
             if (modFilter.checkAnnotation(aClass) && modFilter.checkSuper(aClass))
@@ -163,11 +163,11 @@ class ModClassesLoader {
 
     static void checkSameElementImplements() {
         for (Class<? extends ElementImplement> classClass: elementImplements) {
-            NewElementImplement classImplement = classClass.getAnnotation(NewElementImplement.class);
+            NewElementImplementCore classImplement = classClass.getAnnotation(NewElementImplementCore.class);
             String className = HStringHelper.notNullOrEmpty(classImplement.elementName());
             boolean not_found = true;
             for (Class<? extends ElementImplement> savedClass: implementList) {
-                NewElementImplement savedImplement = savedClass.getAnnotation(NewElementImplement.class);
+                NewElementImplementCore savedImplement = savedClass.getAnnotation(NewElementImplementCore.class);
                 if (className.equals(HStringHelper.notNullOrEmpty(savedImplement.elementName()))) {
                     not_found = false;
                     logger.log(HLogLevel.FAULT, "Same element implement name '", savedImplement.elementName(), "'.");
@@ -175,7 +175,7 @@ class ModClassesLoader {
                     for (List<Class<? extends ElementImplement>> sameImplementFound: sameImplements) {
                         if (sameImplementFound.isEmpty())
                             continue;
-                        NewElementImplement implement = sameImplementFound.get(0).getAnnotation(NewElementImplement.class);
+                        NewElementImplementCore implement = sameImplementFound.get(0).getAnnotation(NewElementImplementCore.class);
                         if (className.equals(HStringHelper.notNullOrEmpty(implement.elementName()))) {
                             notFound = false;
                             sameImplementFound.add(classClass);
@@ -198,11 +198,11 @@ class ModClassesLoader {
 
     static void checkSameElementUtils() {
         for (Class<? extends ElementUtil<?>> classClass: elementUtils) {
-            NewElementUtil classMod = classClass.getAnnotation(NewElementUtil.class);
+            NewElementUtilCore classMod = classClass.getAnnotation(NewElementUtilCore.class);
             String className = HStringHelper.notNullOrEmpty(classMod.elementName());
             boolean not_found = true;
             for (Class<? extends ElementUtil<?>> savedClass: utilList) {
-                NewElementUtil savedUtil = savedClass.getAnnotation(NewElementUtil.class);
+                NewElementUtilCore savedUtil = savedClass.getAnnotation(NewElementUtilCore.class);
                 if (className.equals(HStringHelper.notNullOrEmpty(savedUtil.elementName()))) {
                     not_found = false;
                     logger.log(HLogLevel.FAULT, "Same element util name '", savedUtil.elementName(), "'.");
@@ -210,7 +210,7 @@ class ModClassesLoader {
                     for (List<Class<? extends ElementUtil<?>>> sameUtilFound: sameUtils) {
                         if (sameUtilFound.isEmpty())
                             continue;
-                        NewElementUtil util = sameUtilFound.get(0).getAnnotation(NewElementUtil.class);
+                        NewElementUtilCore util = sameUtilFound.get(0).getAnnotation(NewElementUtilCore.class);
                         if (className.equals(HStringHelper.notNullOrEmpty(util.elementName()))) {
                             notFound = false;
                             sameUtilFound.add(classClass);
@@ -233,11 +233,11 @@ class ModClassesLoader {
 
     static void checkElementsPair() {
         for (Class<? extends ElementImplement> implement: elementImplements) {
-            NewElementImplement elementImplement = implement.getAnnotation(NewElementImplement.class);
+            NewElementImplementCore elementImplement = implement.getAnnotation(NewElementImplementCore.class);
             String tempName = HStringHelper.notNullOrEmpty(elementImplement.elementName());
             Class<? extends ElementUtil<?>> elementUtil = null;
             for (Class<? extends ElementUtil<?>> util: elementUtils) {
-                NewElementUtil tempUtil = util.getAnnotation(NewElementUtil.class);
+                NewElementUtilCore tempUtil = util.getAnnotation(NewElementUtilCore.class);
                 if (tempUtil == null)
                     continue;
                 if (tempName.equals(HStringHelper.notNullOrEmpty(tempUtil.elementName()))) {
@@ -253,11 +253,11 @@ class ModClassesLoader {
             elementPairList.put(tempName, new Pair<>(implement, elementUtil));
         }
         for (Class<? extends ElementUtil<?>> util: elementUtils) {
-            NewElementUtil elementUtil = util.getAnnotation(NewElementUtil.class);
+            NewElementUtilCore elementUtil = util.getAnnotation(NewElementUtilCore.class);
             String tempName = HStringHelper.notNullOrEmpty(elementUtil.elementName());
             Class<? extends ElementImplement> elementImplement = null;
             for (Class<? extends ElementImplement> implement: elementImplements) {
-                NewElementImplement tempImplement = implement.getAnnotation(NewElementImplement.class);
+                NewElementImplementCore tempImplement = implement.getAnnotation(NewElementImplementCore.class);
                 if (tempImplement == null)
                     continue;
                 if (tempName.equals(HStringHelper.notNullOrEmpty(tempImplement.elementName()))) {

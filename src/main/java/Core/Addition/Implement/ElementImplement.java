@@ -1,6 +1,10 @@
 package Core.Addition.Implement;
 
-import java.io.Serializable;
-
-public interface ElementImplement extends Serializable {
+/**
+ * Implement at new mods element implement classes.
+ * @author xuxiaocheng
+ * @see NewElementImplementCore
+ */
+@SuppressWarnings("unused")
+public interface ElementImplement {
 }

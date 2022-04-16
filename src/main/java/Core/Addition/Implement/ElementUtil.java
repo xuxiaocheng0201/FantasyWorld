@@ -7,6 +7,12 @@ import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Implement at new mods  element util classes.
+ * @author xuxiaocheng
+ * @see NewElementUtilCore
+ */
+@SuppressWarnings("unused")
 public abstract class ElementUtil<T extends ElementImplement> extends HMapRegisterer<String, Class<? extends T>> {
     public T getElementInstance(String name) throws HElementNotRegisteredException, NoSuchMethodException {
         Class<? extends T> aClass = this.getElement(name);

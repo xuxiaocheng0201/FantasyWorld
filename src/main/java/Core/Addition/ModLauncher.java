@@ -3,7 +3,7 @@ package Core.Addition;
 import Core.Addition.Mod.ModImplement;
 import Core.EventBus.EventBusManager;
 import Core.Events.*;
-import Core.Exceptions.ModRequirementsException;
+import Core.Exceptions.ModInformationException;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -67,7 +67,7 @@ public class ModLauncher {
         return false;
     }
 
-    public static List<ModRequirementsException> getSorterExceptions() {
+    public static List<ModInformationException> getSorterExceptions() {
         return ModClassesSorter.getExceptions();
     }
 

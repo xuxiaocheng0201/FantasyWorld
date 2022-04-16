@@ -5,7 +5,7 @@ import Core.Addition.ModLauncher;
 import Core.Addition.ModManager;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
-import Core.Exceptions.ModRequirementsException;
+import Core.Exceptions.ModInformationException;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfigElement;
 import HeadLibs.Configuration.HConfigType;
@@ -233,7 +233,7 @@ public class Craftworld {
         logger.log(HLogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
         if (ModLauncher.sortMods()) {
             logger.log(HLogLevel.ERROR, ModLauncher.getSorterExceptions());
-            for (ModRequirementsException exception: ModLauncher.getSorterExceptions())
+            for (ModInformationException exception: ModLauncher.getSorterExceptions())
                 HLog.logger(HLogLevel.ERROR, exception);
             return false;
         }
