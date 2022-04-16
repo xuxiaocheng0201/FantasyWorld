@@ -28,9 +28,9 @@ import java.io.IOException;
 import java.util.jar.JarFile;
 
 public class Craftworld {
-    public static final String CURRENT_VERSION_STRING = "0.0.0";
+    public static final String CURRENT_VERSION_STRING = "0.0.1";
     public static final HStringVersion CURRENT_VERSION;
-    public static final String RUNTIME_PATH = "Craftworld\\" + Craftworld.CURRENT_VERSION_STRING + "\\";
+    public static final String RUNTIME_PATH = (new File("Craftworld\\" + Craftworld.CURRENT_VERSION_STRING)).getAbsolutePath() + "\\";
     public static final String GLOBAL_CONFIGURATION_PATH = RUNTIME_PATH + "global.cfg";
     public static final String ASSETS_PATH = RUNTIME_PATH + "assets\\";
     public static final String LOG_PATH;

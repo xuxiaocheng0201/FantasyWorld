@@ -199,19 +199,19 @@ class ModClassesLoader {
     static void checkSameElementUtils() {
         for (Class<? extends ElementUtil<?>> classClass: elementUtils) {
             NewElementUtil classMod = classClass.getAnnotation(NewElementUtil.class);
-            String className = HStringHelper.notNullOrEmpty(classMod.name());
+            String className = HStringHelper.notNullOrEmpty(classMod.elementName());
             boolean not_found = true;
             for (Class<? extends ElementUtil<?>> savedClass: utilList) {
                 NewElementUtil savedUtil = savedClass.getAnnotation(NewElementUtil.class);
-                if (className.equals(HStringHelper.notNullOrEmpty(savedUtil.name()))) {
+                if (className.equals(HStringHelper.notNullOrEmpty(savedUtil.elementName()))) {
                     not_found = false;
-                    logger.log(HLogLevel.FAULT, "Same element util name '", savedUtil.name(), "'.");
+                    logger.log(HLogLevel.FAULT, "Same element util name '", savedUtil.elementName(), "'.");
                     boolean notFound = true;
                     for (List<Class<? extends ElementUtil<?>>> sameUtilFound: sameUtils) {
                         if (sameUtilFound.isEmpty())
                             continue;
                         NewElementUtil util = sameUtilFound.get(0).getAnnotation(NewElementUtil.class);
-                        if (className.equals(HStringHelper.notNullOrEmpty(util.name()))) {
+                        if (className.equals(HStringHelper.notNullOrEmpty(util.elementName()))) {
                             notFound = false;
                             sameUtilFound.add(classClass);
                             break;
@@ -240,7 +240,7 @@ class ModClassesLoader {
                 NewElementUtil tempUtil = util.getAnnotation(NewElementUtil.class);
                 if (tempUtil == null)
                     continue;
-                if (tempName.equals(HStringHelper.notNullOrEmpty(tempUtil.name()))) {
+                if (tempName.equals(HStringHelper.notNullOrEmpty(tempUtil.elementName()))) {
                     elementUtil = util;
                     break;
                 }
@@ -254,7 +254,7 @@ class ModClassesLoader {
         }
         for (Class<? extends ElementUtil<?>> util: elementUtils) {
             NewElementUtil elementUtil = util.getAnnotation(NewElementUtil.class);
-            String tempName = HStringHelper.notNullOrEmpty(elementUtil.name());
+            String tempName = HStringHelper.notNullOrEmpty(elementUtil.elementName());
             Class<? extends ElementImplement> elementImplement = null;
             for (Class<? extends ElementImplement> implement: elementImplements) {
                 NewElementImplement tempImplement = implement.getAnnotation(NewElementImplement.class);

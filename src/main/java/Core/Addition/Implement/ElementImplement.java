@@ -1,4 +1,6 @@
 package Core.Addition.Implement;
 
-public interface ElementImplement {
+import java.io.Serializable;
+
+public interface ElementImplement extends Serializable {
 }

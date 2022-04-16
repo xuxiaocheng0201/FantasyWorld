@@ -44,11 +44,6 @@ public class CraftWorld implements ModImplement {
         Craftworld.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
 
-    @Override
-    public void mainInitialize() throws Exception {
-        throw new Exception();
-    }
-
     public void start(ServerSocket server) throws InterruptedException {
         logger.log(HLogLevel.FINEST, "Loading world..." );
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());

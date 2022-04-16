@@ -34,11 +34,12 @@ public class LanguageI18N {
 
     public static String get(Class<? extends ModImplement> modClass, String name, String lang) throws IOException {
         String lang1 = lang == null ? Craftworld.CURRENT_LANGUAGE : lang.toLowerCase();
-        if (!languages.isRegisteredKey(lang1)) {
-            HConfigurationsSimple language = new HConfigurationsSimple(getLanguageFilePath(modClass, lang1));
+        HConfigurationsSimple language = languages.getElementNullable(lang1);
+        if (language == null) {
+            language = new HConfigurationsSimple(getLanguageFilePath(modClass, lang1));
             languages.reset(lang1, language);
         }
-        HConfigElementSimple translation = languages.getElementNullable(lang1).getByName(name);
+        HConfigElementSimple translation = language.getByName(name);
         if (translation != null)
             return translation.getValue();
         if (lang1.equals(DEFAULT_LANGUAGE)) {
