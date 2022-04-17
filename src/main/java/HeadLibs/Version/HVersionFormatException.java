@@ -15,7 +15,7 @@ public class HVersionFormatException extends Exception{
     private static final long serialVersionUID = -2079369912007846357L;
 
     private static final String DEFAULT_MESSAGE = "Wrong formation of version string.";
-    private static @NotNull String getMessage(@Nullable String message) {
+    private static @NotNull String getVersionFormatMessage(@Nullable String message) {
         return (message == null) ? DEFAULT_MESSAGE : message;
     }
 
@@ -28,14 +28,14 @@ public class HVersionFormatException extends Exception{
     }
 
     public HVersionFormatException(@Nullable String message) {
-        super(getMessage(message));
+        super(getVersionFormatMessage(message));
     }
 
     public HVersionFormatException(@Nullable String message, @Nullable String version) {
-        super(getMessage(message) + " Version='" + (version == null ? "null" : version) + "'");
+        super(getVersionFormatMessage(message) + " Version='" + (version == null ? "null" : version) + "'");
     }
 
     public HVersionFormatException(@Nullable String message, @Nullable HStringVersion version) {
-        super(getMessage(message) + " Version='" + (version == null ? "null" : version.getVersion()) + "'");
+        super(getVersionFormatMessage(message) + " Version='" + (version == null ? "null" : version.getVersion()) + "'");
     }
 }

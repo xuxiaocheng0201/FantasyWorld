@@ -136,7 +136,7 @@ class ModClassesSorter {
                             break;
                         }
                     if (flag)
-                        exceptions.add(new ModMissingException("Need mod '" + requireModName + "'" +
+                        exceptions.add(new ModDependencyMissingException("Need mod '" + requireModName + "'" +
                                 " for class: '" + mod.getKey().getKey() + "' name: '" + mod.getKey().getValue().getKey() + "'."));
                 }
             }
@@ -152,7 +152,7 @@ class ModClassesSorter {
                             break;
                         }
                     if (flag)
-                        exceptions.add(new ModMissingException("Need mod '" + requireModName + "'" +
+                        exceptions.add(new ModDependencyMissingException("Need mod '" + requireModName + "'" +
                                 " for class: '" + mod.getKey().getKey() + "' name: '" + mod.getKey().getValue().getKey() + "'."));
                 }
             }
@@ -175,7 +175,7 @@ class ModClassesSorter {
                                 Pair<Boolean, Boolean>>> b: modContainer)
                     if (requirements.getValue().getKey().equals(b.getKey().getValue().getKey()))
                         if (!requirements.getValue().getValue().versionInRange(b.getKey().getValue().getValue().getKey()))
-                            exceptions.add(new ModVersionUnmatchedException("Have had mod '" + b.getKey().getValue().getKey() + "@" + b.getKey().getValue().getValue() + "' but need version in '" + requirements.getValue().getValue() + "'." +
+                            exceptions.add(new ModDependencyVersionUnmatchedException("Have had mod '" + b.getKey().getValue().getKey() + "@" + b.getKey().getValue().getValue() + "' but need version in '" + requirements.getValue().getValue() + "'." +
                                     " At class: '" + mod.getKey().getKey() + "' name: '" + mod.getKey().getValue().getKey() + "'."));
             for (Pair<Boolean, Pair<String, HVersionComplex>> requirements: mod.getValue().getKey().getValue())
                 for (Pair<Pair<Class<? extends ModImplement>, Pair<String, Pair<HStringVersion, HVersionComplex>>>,
@@ -183,7 +183,7 @@ class ModClassesSorter {
                                 Pair<Boolean, Boolean>>> b: modContainer)
                     if (requirements.getValue().getKey().equals(b.getKey().getValue().getKey()))
                         if (!requirements.getValue().getValue().versionInRange(b.getKey().getValue().getValue().getKey()))
-                            exceptions.add(new ModVersionUnmatchedException("Have had mod '" + b.getKey().getValue().getKey() + "@" + b.getKey().getValue().getValue() + "' but need version in '" + requirements.getValue().getValue() + "'." +
+                            exceptions.add(new ModDependencyVersionUnmatchedException("Have had mod '" + b.getKey().getValue().getKey() + "@" + b.getKey().getValue().getValue() + "' but need version in '" + requirements.getValue().getValue() + "'." +
                                     " At class: '" + mod.getKey().getKey() + "' name: '" + mod.getKey().getValue().getKey() + "'."));
         }
     }

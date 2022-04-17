@@ -6,6 +6,8 @@ import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.List;
@@ -32,7 +34,12 @@ public class ModManager {
         return ModClassesLoader.getElementPairList();
     }
 
-    public static String crashClassInformation(Class<? extends ModImplement> modClass) {
-        return " At class '" + modClass.toString() + "' in file '" + getAllClassesWithJarFiles().get(modClass).getAbsolutePath() + "'.";
+    public static @NotNull String crashClassInformation(@Nullable Class<? extends ModImplement> modClass) {
+        if (modClass == null)
+            return " At a null class.";
+        File file = getAllClassesWithJarFiles().get(modClass);
+        if (file == null)
+            return " At class '" + modClass + "'.";
+        return " At class '" + modClass + "' in file '" + file.getAbsolutePath() + "'.";
     }
 }

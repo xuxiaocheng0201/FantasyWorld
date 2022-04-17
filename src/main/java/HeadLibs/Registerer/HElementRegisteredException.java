@@ -15,7 +15,7 @@ public class HElementRegisteredException extends Exception{
     private static final long serialVersionUID = 5758033473623251615L;
 
     private static final String DEFAULT_MESSAGE = "Element has been registered!";
-    private static @NotNull String getMessage(@Nullable String message) {
+    private static @NotNull String getElementRegisteredMessage(@Nullable String message) {
         return (message == null) ? DEFAULT_MESSAGE : message;
     }
 
@@ -24,14 +24,14 @@ public class HElementRegisteredException extends Exception{
     }
 
     public HElementRegisteredException(@Nullable String message) {
-        super(getMessage(message));
+        super(getElementRegisteredMessage(message));
     }
 
     public HElementRegisteredException(@Nullable String message, @Nullable Object element) {
-        super(getMessage(message) + " element=" + element);
+        super(getElementRegisteredMessage(message) + " element=" + element);
     }
 
     public HElementRegisteredException(@Nullable String message, @Nullable  Object key, @Nullable Object value) {
-        super(getMessage(message) + " key=" + value + " element=" + value);
+        super(getElementRegisteredMessage(message) + " key=" + value + " element=" + value);
     }
 }

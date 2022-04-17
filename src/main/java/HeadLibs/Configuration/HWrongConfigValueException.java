@@ -15,7 +15,7 @@ public class HWrongConfigValueException extends Exception {
     private static final long serialVersionUID = -4695385007029343114L;
 
     private static final String DEFAULT_MESSAGE = "Configuration value is no longer suitable.";
-    private static @NotNull String getMessage(@Nullable String message) {
+    private static @NotNull String getWrongConfigValueMessage(@Nullable String message) {
         return (message == null) ? DEFAULT_MESSAGE : message;
     }
 
@@ -32,14 +32,14 @@ public class HWrongConfigValueException extends Exception {
     }
 
     public HWrongConfigValueException(@Nullable String message) {
-        super(getMessage(message));
+        super(getWrongConfigValueMessage(message));
     }
 
     public HWrongConfigValueException(@Nullable String message, @NotNull HConfigType type) {
-        super(getMessage(message) + " type=" + type.getName());
+        super(getWrongConfigValueMessage(message) + " type=" + type.getName());
     }
 
     public HWrongConfigValueException(@Nullable String message, @NotNull HConfigType type, @Nullable String value) {
-        super(getMessage(message) + "type=" + type.getName() + " value='" + value + "'");
+        super(getWrongConfigValueMessage(message) + "type=" + type.getName() + " value='" + value + "'");
     }
 }

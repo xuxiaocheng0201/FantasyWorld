@@ -1,5 +1,6 @@
 package Core.Addition.Mod.BasicInformation;
 
+import Core.Exceptions.ModRequirementFormatException;
 import HeadLibs.Version.HVersionComplex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,16 +17,32 @@ public class ModRequirements {
     }
 
     public static class Requirement {
-        private @NotNull Modifier modifier;
-        private @NotNull ModName modName;
-        private @NotNull HVersionComplex versionComplex;
+        private @NotNull Modifier modifier = Modifier.AFTER;
+        private @NotNull ModName modName = new ModName();
+        private @NotNull HVersionComplex versionComplex = new HVersionComplex();
 
         public Requirement() {
             super();
-            this.modifier = Modifier.AFTER;
-            this.modName = new ModName();
-            this.versionComplex = new HVersionComplex();
             this.versionComplex.setAll();
+        }
+
+        public Requirement(@Nullable ModName modName) {
+            super();
+            this.setModName(modName);
+            this.versionComplex.setAll();
+        }
+
+        public Requirement(@Nullable ModName modName, @Nullable HVersionComplex versionComplex) {
+            super();
+            this.setModName(modName);
+            this.setVersionComplex(versionComplex);
+        }
+
+        public Requirement(@Nullable Modifier modifier, @Nullable ModName modName, @Nullable HVersionComplex versionComplex) {
+            super();
+            this.setModifier(modifier);
+            this.setModName(modName);
+            this.setVersionComplex(versionComplex);
         }
 
         public @NotNull Modifier getModifier() {
@@ -64,6 +81,10 @@ public class ModRequirements {
             this.versionComplex = versionComplex;
         }
 
+        public void setRequirement(String requirement) throws ModRequirementFormatException {
+            //TODO
+        }
+
         @Override
         public @NotNull String toString() {
             return this.modifier + this.modName.toString() + '@' + this.versionComplex;
@@ -82,7 +103,7 @@ public class ModRequirements {
             return Objects.hash(this.modName, this.versionComplex);
         }
 
-        public enum Modifier {
+        public static enum Modifier {
             BEFORE(BasicModifier.BEFORE, false),
             REQUIRE_BEFORE(BasicModifier.BEFORE, true),
             AFTER(BasicModifier.AFTER, false),
@@ -109,7 +130,7 @@ public class ModRequirements {
                 return (this.required ? "require-" : "") + this.basic.toString();
             }
 
-            public enum BasicModifier {
+            public static enum BasicModifier {
                 BEFORE("before"),
                 AFTER("after");
 
