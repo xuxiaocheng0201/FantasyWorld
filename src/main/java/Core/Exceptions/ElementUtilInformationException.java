@@ -18,7 +18,7 @@ public class ElementUtilInformationException extends IllegalArgumentException {
     private static final long serialVersionUID = 7451632741693899278L;
 
     private static final String DEFAULT_MESSAGE = "Element util basic information was wrong!";
-    private static @NotNull String getElementInformationMessage(@Nullable String message) {
+    private static @NotNull String getElementUtilInformationMessage(@Nullable String message) {
         return (message == null) ? DEFAULT_MESSAGE : message;
     }
 
@@ -35,15 +35,15 @@ public class ElementUtilInformationException extends IllegalArgumentException {
     }
 
     public ElementUtilInformationException(@Nullable String message) {
-        super(getElementInformationMessage(message));
+        super(getElementUtilInformationMessage(message));
     }
 
     public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> elementUtilClass) {
-        super(getElementInformationMessage(message) + ModManager.crashClassInformation(elementUtilClass));
+        super(getElementUtilInformationMessage(message) + ModManager.crashClassInformation(elementUtilClass));
     }
 
     public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> elementUtilClass, @Nullable String moreMessage) {
-        super(getElementInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementUtilClass));
+        super(getElementUtilInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementUtilClass));
     }
 
     public ElementUtilInformationException(@Nullable Throwable throwable) {
@@ -59,14 +59,14 @@ public class ElementUtilInformationException extends IllegalArgumentException {
     }
 
     public ElementUtilInformationException(@Nullable String message, @Nullable Throwable throwable) {
-        super(getElementInformationMessage(message), throwable);
+        super(getElementUtilInformationMessage(message), throwable);
     }
 
     public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> elementUtilClass, @Nullable Throwable throwable) {
-        super(getElementInformationMessage(message) + ModManager.crashClassInformation(elementUtilClass), throwable);
+        super(getElementUtilInformationMessage(message) + ModManager.crashClassInformation(elementUtilClass), throwable);
     }
 
     public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> elementUtilClass, @Nullable String moreMessage, @Nullable Throwable throwable) {
-        super(getElementInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementUtilClass), throwable);
+        super(getElementUtilInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementUtilClass), throwable);
     }
 }

@@ -7,36 +7,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="More RuntimeExceptions about BasicModInformation.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/BasicInformation/ElementName.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/ElementImplement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/ElementUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementInformationException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementNameClashException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilInformationException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilNameClashException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Improve same mods and elements checker.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementNotPairException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Implement/ElementImplement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Implement/ElementUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Implement/NewElementImplementCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementImplementCore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Implement/NewElementUtilCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementUtilCore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModRequirements.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModRequirements.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/ModImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/ModImplement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModLauncher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/GCThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/GCThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/IBlockBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/IBlockBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/DimensionUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/DimensionUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/IDimensionBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/IDimensionBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementInformationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementInformationException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementNameClashException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementNameClashException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilInformationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilInformationException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilNameClashException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilNameClashException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HFileHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HFileHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +77,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Pair.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Craftworld.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilNameClashException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementNameClashException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilInformationException.java" root0="SKIP_INSPECTION" />
@@ -108,6 +92,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementImplementCore.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/ModImplement.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementUtilCore.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" root0="SKIP_INSPECTION" />
@@ -119,6 +104,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModDependencyVersionUnmatchedException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HSetRegisterer.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementNotPairException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModRequirements.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HElementRegisteredException.java" root0="SKIP_INSPECTION" />
@@ -133,10 +119,13 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HStringHelper.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HWrongConfigValueException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-17.0.2/lib/src.zip!/java.base/java/lang/reflect/ParameterizedType.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigurations.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigType.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigElement.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-17.0.2/lib/src.zip!/java.base/java/lang/reflect/TypeVariable.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionFormatException.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-17.0.2/lib/src.zip!/java.base/java/lang/Class.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModVersion.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModName.java" root0="SKIP_INSPECTION" />
   </component>
@@ -170,12 +159,16 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindow运行.ShowToolbar" value="false" />
+    <property name="com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件" value="JAVA" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang" />
     <property name="project.structure.last.edited" value="模块" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.21609196" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="ReaderModeSettings">
+    <option name="showRenderedDocs" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -192,11 +185,11 @@
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets.CraftWorld.lang" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="Core.Addition.ModClassesLoader" />
       <recent name="Core.FileTreeStorage" />
       <recent name="Core.Addition.Mod.ModImplement" />
       <recent name="Core.Mod.ModClassesLoader" />
       <recent name="HeadLibs.Version.HVersion" />
-      <recent name="HeadLibs.Helper.HZipHelper" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="HeadLibs.Version" />
@@ -242,13 +235,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00038" summary="Mod Launcher sorting mods.">
-      <created>1646672617443</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1646672617443</updated>
     </task>
     <task id="LOCAL-00039" summary="Mod Launcher sorting mods.">
       <created>1647185914099</created>
@@ -586,7 +572,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650202424241</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="Improve same mods and elements checker.">
+      <created>1650272078219</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1650272078222</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -628,7 +621,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Allow log throwable." />
     <MESSAGE value="Add some docs." />
     <MESSAGE value="Safer and more efficient." />
     <MESSAGE value="Safer and more efficient code." />
@@ -653,7 +645,8 @@
     <MESSAGE value="Add Mod Basic Information." />
     <MESSAGE value="Add Mod Basic Information Requirement." />
     <MESSAGE value="More RuntimeExceptions about BasicModInformation." />
-    <option name="LAST_COMMIT_MESSAGE" value="More RuntimeExceptions about BasicModInformation." />
+    <MESSAGE value="Improve same mods and elements checker." />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve same mods and elements checker." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

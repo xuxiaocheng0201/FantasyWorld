@@ -1,5 +1,6 @@
 package Core.Addition;
 
+import Core.Addition.Element.BasicInformation.ElementName;
 import Core.Addition.Element.ElementImplement;
 import Core.Addition.Element.ElementUtil;
 import Core.Addition.Mod.ModImplement;
@@ -30,7 +31,7 @@ public class ModManager {
         getModList().removeIf(modClass -> modName.equals(HStringHelper.notNullStrip(modClass.getAnnotation(NewMod.class).name())));
     }
 
-    public static Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+    public static Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
         return ModClassesLoader.getElementPairList();
     }
 

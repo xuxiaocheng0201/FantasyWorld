@@ -18,7 +18,7 @@ public class ElementImplementInformationException extends IllegalArgumentExcepti
     private static final long serialVersionUID = -84232262039498182L;
 
     private static final String DEFAULT_MESSAGE = "Element implement basic information was wrong!";
-    private static @NotNull String getElementInformationMessage(@Nullable String message) {
+    private static @NotNull String getElementImplementInformationMessage(@Nullable String message) {
         return (message == null) ? DEFAULT_MESSAGE : message;
     }
 
@@ -35,15 +35,15 @@ public class ElementImplementInformationException extends IllegalArgumentExcepti
     }
 
     public ElementImplementInformationException(@Nullable String message) {
-        super(getElementInformationMessage(message));
+        super(getElementImplementInformationMessage(message));
     }
 
     public ElementImplementInformationException(@Nullable String message, @Nullable Class<? extends ElementImplement> elementImplementClass) {
-        super(getElementInformationMessage(message) + ModManager.crashClassInformation(elementImplementClass));
+        super(getElementImplementInformationMessage(message) + ModManager.crashClassInformation(elementImplementClass));
     }
 
     public ElementImplementInformationException(@Nullable String message, @Nullable Class<? extends ElementImplement> elementImplementClass, @Nullable String moreMessage) {
-        super(getElementInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementImplementClass));
+        super(getElementImplementInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementImplementClass));
     }
 
     public ElementImplementInformationException(@Nullable Throwable throwable) {
@@ -59,14 +59,14 @@ public class ElementImplementInformationException extends IllegalArgumentExcepti
     }
 
     public ElementImplementInformationException(@Nullable String message, @Nullable Throwable throwable) {
-        super(getElementInformationMessage(message), throwable);
+        super(getElementImplementInformationMessage(message), throwable);
     }
 
     public ElementImplementInformationException(@Nullable String message, @Nullable Class<? extends ElementImplement> elementImplementClass, @Nullable Throwable throwable) {
-        super(getElementInformationMessage(message) + ModManager.crashClassInformation(elementImplementClass), throwable);
+        super(getElementImplementInformationMessage(message) + ModManager.crashClassInformation(elementImplementClass), throwable);
     }
 
     public ElementImplementInformationException(@Nullable String message, @Nullable Class<? extends ElementImplement> elementImplementClass, @Nullable String moreMessage, @Nullable Throwable throwable) {
-        super(getElementInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementImplementClass), throwable);
+        super(getElementImplementInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementImplementClass), throwable);
     }
 }

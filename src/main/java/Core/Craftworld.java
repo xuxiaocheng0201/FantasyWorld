@@ -1,6 +1,7 @@
 package Core;
 
 import Core.Addition.Mod.ModImplement;
+import Core.Addition.ModClassesLoader;
 import Core.Addition.ModLauncher;
 import Core.Addition.ModManager;
 import Core.EventBus.EventBusManager;
@@ -24,6 +25,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarFile;
 
 public class Craftworld {
@@ -214,8 +217,16 @@ public class Craftworld {
 
     private static boolean loadMods() {
         HLog logger = new HLog(Thread.currentThread().getName());
-        if (ModLauncher.loadModClasses()) {
+        List<IllegalArgumentException> exceptions = new ArrayList<>();
+        try {
+            exceptions = ModClassesLoader.loadModClasses();
+        } catch (IOException exception) {
+            logger.log(HLogLevel.ERROR, exception);
+        }
+        if (exceptions != null) {
             logger.log(HLogLevel.BUG, "Mod Loading Error in loading classes!");
+            for (IllegalArgumentException exception: exceptions)
+                logger.log(HLogLevel.FAULT, exception);
             return false;
         }
         logger.log(HLogLevel.DEBUG, "Checked mods: ", ModManager.getModList());

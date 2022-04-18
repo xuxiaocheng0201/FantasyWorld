@@ -2,7 +2,10 @@ package Core.Addition;
 
 import Core.Addition.Mod.ModImplement;
 import Core.EventBus.EventBusManager;
-import Core.Events.*;
+import Core.Events.ModInitializedEvent;
+import Core.Events.ModInitializingEvent;
+import Core.Events.PostInitializationModsEvent;
+import Core.Events.PreInitializationModsEvent;
 import Core.Exceptions.ModInformationException;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Logger.HLog;
@@ -12,30 +15,6 @@ import java.util.List;
 
 public class ModLauncher {
     private static HLog logger;
-
-    public static boolean loadModClasses() {
-        logger = new HLog("ModClassesLoader", Thread.currentThread().getName());
-        ModClassesLoader.setLogger(logger);
-        logger.log(HLogLevel.INFO, "Searching mods in '", ModClassesLoader.MODS_FILE.getPath(), "'.");
-        ModClassesLoader.pickAllClasses();
-        for (Class<?> aClass: ModClassesLoader.getAllClasses())
-            try {
-                EventBusManager.register(aClass);
-            } catch (NoSuchMethodException exception) {
-                HLog.logger(HLogLevel.ERROR, exception);
-            }
-        EventBusManager.getDefaultEventBus().post(new ElementsCheckingEvent());
-        ModClassesLoader.checkSameMods();
-        ModClassesLoader.checkSameElementImplements();
-        ModClassesLoader.checkSameElementUtils();
-        if (!ModClassesLoader.getSameMods().isEmpty() || !ModClassesLoader.getSameImplements().isEmpty() || !ModClassesLoader.getSameUtils().isEmpty())
-            return true;
-        ModClassesLoader.checkElementsPair();
-        if (!ModClassesLoader.getSingleImplements().isEmpty() || !ModClassesLoader.getSingleUtils().isEmpty())
-            return true;
-        EventBusManager.getDefaultEventBus().post(new ElementsCheckedEvent());
-        return false;
-    }
 
     public static boolean sortMods() {
         logger = new HLog("ModSorter", Thread.currentThread().getName());
@@ -79,7 +58,6 @@ public class ModLauncher {
     }
 
     public static void gc() {
-        ModClassesLoader.gc();
         ModClassesSorter.gc();
         System.gc();
     }

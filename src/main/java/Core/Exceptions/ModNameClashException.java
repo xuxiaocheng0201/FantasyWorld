@@ -36,6 +36,7 @@ public class ModNameClashException extends ModInformationException {
     }
 
     public ModNameClashException(@Nullable Class<? extends ModImplement> modClass1, @Nullable Class<? extends ModImplement> modClass2) {
+        //TODO List classes.
         super(DEFAULT_MESSAGE + "Mod names are '" + ModImplement.getModNameFromClass(modClass1) + "'." + ModManager.crashClassInformation(modClass1) + ModManager.crashClassInformation(modClass2));
     }
 

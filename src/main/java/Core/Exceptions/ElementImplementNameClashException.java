@@ -19,7 +19,7 @@ public class ElementImplementNameClashException extends ElementImplementInformat
     private static final long serialVersionUID = -6343355127183664028L;
 
     private static final String DEFAULT_MESSAGE = "Element implements name clash!";
-    private static @NotNull String getModNameClashMessage(@Nullable String message) {
+    private static @NotNull String getElementImplementNameClashMessage(@Nullable String message) {
         return (message == null) ? DEFAULT_MESSAGE : message;
     }
 
@@ -44,23 +44,23 @@ public class ElementImplementNameClashException extends ElementImplementInformat
     }
 
     public ElementImplementNameClashException(@Nullable String message) {
-        super(getModNameClashMessage(message));
+        super(getElementImplementNameClashMessage(message));
     }
 
     public ElementImplementNameClashException(@Nullable String message, @Nullable ElementName ElementImplementName) {
-        super(getModNameClashMessage(message) + "Element implement names are '" + ElementImplementName + "'.");
+        super(getElementImplementNameClashMessage(message) + "Element implement names are '" + ElementImplementName + "'.");
     }
 
     public ElementImplementNameClashException(@Nullable String message, @Nullable ElementName ElementImplementName, @Nullable String moreMessage) {
-        super(getModNameClashMessage(message) + "Element implement names are '" + ElementImplementName + "'." + moreMessage);
+        super(getElementImplementNameClashMessage(message) + "Element implement names are '" + ElementImplementName + "'." + moreMessage);
     }
 
     public ElementImplementNameClashException(@Nullable String message, @Nullable Class<? extends ElementImplement> ElementImplementClass1, @Nullable Class<? extends ElementImplement> ElementImplementClass2) {
-        super(getModNameClashMessage(message) + "Element implement names are '" + ElementImplement.getElementNameFromClass(ElementImplementClass1) + "'." + ModManager.crashClassInformation(ElementImplementClass1) + ModManager.crashClassInformation(ElementImplementClass2));
+        super(getElementImplementNameClashMessage(message) + "Element implement names are '" + ElementImplement.getElementNameFromClass(ElementImplementClass1) + "'." + ModManager.crashClassInformation(ElementImplementClass1) + ModManager.crashClassInformation(ElementImplementClass2));
     }
 
     public ElementImplementNameClashException(@Nullable String message, @Nullable Class<? extends ElementImplement> ElementImplementClass1, @Nullable Class<? extends ElementImplement> ElementImplementClass2, @Nullable String moreMessage) {
-        super(getModNameClashMessage(message) + "Element implement names are '" + ElementImplement.getElementNameFromClass(ElementImplementClass1) + "'." + moreMessage + ModManager.crashClassInformation(ElementImplementClass1) + ModManager.crashClassInformation(ElementImplementClass2));
+        super(getElementImplementNameClashMessage(message) + "Element implement names are '" + ElementImplement.getElementNameFromClass(ElementImplementClass1) + "'." + moreMessage + ModManager.crashClassInformation(ElementImplementClass1) + ModManager.crashClassInformation(ElementImplementClass2));
     }
 
     public ElementImplementNameClashException(@Nullable Throwable throwable) {
@@ -84,22 +84,22 @@ public class ElementImplementNameClashException extends ElementImplementInformat
     }
 
     public ElementImplementNameClashException(@Nullable String message, @Nullable Throwable throwable) {
-        super(getModNameClashMessage(message), throwable);
+        super(getElementImplementNameClashMessage(message), throwable);
     }
 
     public ElementImplementNameClashException(@Nullable String message, @Nullable ElementName ElementImplementName, @Nullable Throwable throwable) {
-        super(getModNameClashMessage(message) + "Element implement names are '" + ElementImplementName + "'.", throwable);
+        super(getElementImplementNameClashMessage(message) + "Element implement names are '" + ElementImplementName + "'.", throwable);
     }
 
     public ElementImplementNameClashException(@Nullable String message, @Nullable ElementName ElementImplementName, @Nullable String moreMessage, @Nullable Throwable throwable) {
-        super(getModNameClashMessage(message) + "Element implement names are '" + ElementImplementName + "'." + moreMessage, throwable);
+        super(getElementImplementNameClashMessage(message) + "Element implement names are '" + ElementImplementName + "'." + moreMessage, throwable);
     }
 
     public ElementImplementNameClashException(@Nullable String message, @Nullable Class<? extends ElementImplement> ElementImplementClass1, @Nullable Class<? extends ElementImplement> ElementImplementClass2, @Nullable Throwable throwable) {
-        super(getModNameClashMessage(message) + "Element implement names are '" + ElementImplement.getElementNameFromClass(ElementImplementClass1) + "'." + ModManager.crashClassInformation(ElementImplementClass1) + ModManager.crashClassInformation(ElementImplementClass2), throwable);
+        super(getElementImplementNameClashMessage(message) + "Element implement names are '" + ElementImplement.getElementNameFromClass(ElementImplementClass1) + "'." + ModManager.crashClassInformation(ElementImplementClass1) + ModManager.crashClassInformation(ElementImplementClass2), throwable);
     }
 
     public ElementImplementNameClashException(@Nullable String message, @Nullable Class<? extends ElementImplement> ElementImplementClass1, @Nullable Class<? extends ElementImplement> ElementImplementClass2, @Nullable String moreMessage, @Nullable Throwable throwable) {
-        super(getModNameClashMessage(message) + "Element implement names are '" + ElementImplement.getElementNameFromClass(ElementImplementClass1) + "'." + moreMessage + ModManager.crashClassInformation(ElementImplementClass1) + ModManager.crashClassInformation(ElementImplementClass2), throwable);
+        super(getElementImplementNameClashMessage(message) + "Element implement names are '" + ElementImplement.getElementNameFromClass(ElementImplementClass1) + "'." + moreMessage + ModManager.crashClassInformation(ElementImplementClass1) + ModManager.crashClassInformation(ElementImplementClass2), throwable);
     }
 }

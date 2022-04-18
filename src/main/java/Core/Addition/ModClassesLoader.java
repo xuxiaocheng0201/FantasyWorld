@@ -8,12 +8,15 @@ import Core.Addition.Element.NewElementUtilCore;
 import Core.Addition.Mod.BasicInformation.ModName;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
+import Core.EventBus.EventBusManager;
+import Core.Events.ElementsCheckedEvent;
+import Core.Events.ElementsCheckingEvent;
 import Core.Exceptions.ElementImplementNameClashException;
+import Core.Exceptions.ElementNotPairException;
 import Core.Exceptions.ElementUtilNameClashException;
 import Core.Exceptions.ModNameClashException;
 import Core.FileTreeStorage;
 import HeadLibs.ClassFinder.HClassFinder;
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Pair;
@@ -22,23 +25,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-class ModClassesLoader {
-    @SuppressWarnings("FieldHasSetterButNoGetter")
-    private static HLog logger;
-    static final File MODS_FILE = (new File(FileTreeStorage.MOD_PATH)).getAbsoluteFile();
-
-    static void setLogger(HLog logger) {
-        ModClassesLoader.logger = logger;
-    }
+/**
+ * Load mod classes in {@link FileTreeStorage#MOD_PATH}.
+ * Initialize all classes, register eventbuses and collect mod classes and element classes.
+ * @author xuxiaocheng
+ */
+public class ModClassesLoader {
+    public static final File MODS_FILE = (new File(FileTreeStorage.MOD_PATH)).getAbsoluteFile();
 
     private static Set<Class<?>> allClasses;
     private static Map<Class<?>, File> allClassesWithJarFiles;
 
-    static Set<Class<?>> getAllClasses() {
+    public static Set<Class<?>> getAllClasses() {
         return allClasses;
     }
 
-    static Map<Class<?>, File> getAllClassesWithJarFiles() {
+    public static Map<Class<?>, File> getAllClassesWithJarFiles() {
         return allClassesWithJarFiles;
     }
 
@@ -49,9 +51,9 @@ class ModClassesLoader {
 
     // checked
     private static final List<Class<? extends ModImplement>> modList = new ArrayList<>();
-    private static final List<Class<? extends ElementImplement>> implementList = new ArrayList<>();
-    private static final List<Class<? extends ElementUtil<?>>> utilList = new ArrayList<>();
-    private static final Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementPairList = new HashMap<>();
+    private static final Collection<Class<? extends ElementImplement>> implementList = new ArrayList<>();
+    private static final Collection<Class<? extends ElementUtil<?>>> utilList = new ArrayList<>();
+    private static final Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementPairList = new HashMap<>();
 
     private static final List<List<Class<? extends ModImplement>>> sameMods = new ArrayList<>();
     private static final List<List<Class<? extends ElementImplement>>> sameImplements = new ArrayList<>();
@@ -60,49 +62,45 @@ class ModClassesLoader {
     private static final List<Class<? extends ElementImplement>> singleImplements = new ArrayList<>();
     private static final List<Class<? extends ElementUtil<?>>> singleUtils = new ArrayList<>();
 
-    static List<Class<? extends ModImplement>> getModList() {
+    private static final List<IllegalArgumentException> exceptions = new ArrayList<>();
+
+    public static List<Class<? extends ModImplement>> getModList() {
         return modList;
     }
 
-    static Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+    public static Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
         return elementPairList;
     }
 
-    static List<List<Class<? extends ModImplement>>> getSameMods() {
+    public static List<List<Class<? extends ModImplement>>> getSameMods() {
         return sameMods;
     }
 
-    static List<List<Class<? extends ElementImplement>>> getSameImplements() {
+    public static List<List<Class<? extends ElementImplement>>> getSameImplements() {
         return sameImplements;
     }
 
-    static List<List<Class<? extends ElementUtil<?>>>> getSameUtils() {
+    public static List<List<Class<? extends ElementUtil<?>>>> getSameUtils() {
         return sameUtils;
     }
 
-    static List<Class<? extends ElementImplement>> getSingleImplements() {
+    public static List<Class<? extends ElementImplement>> getSingleImplements() {
         return singleImplements;
     }
 
-    static List<Class<? extends ElementUtil<?>>> getSingleUtils() {
+    public static List<Class<? extends ElementUtil<?>>> getSingleUtils() {
         return singleUtils;
     }
 
-    private static final List<IllegalArgumentException> exceptions = new ArrayList<>();
-
-    static List<IllegalArgumentException> getExceptions() {
+    public static List<IllegalArgumentException> getExceptions() {
         return exceptions;
     }
 
     @SuppressWarnings("unchecked")
-    static void pickAllClasses() {
+    private static void pickAllClasses() throws IOException {
         HClassFinder modsFinder = new HClassFinder();
         modsFinder.addJarFilesInDirectory(MODS_FILE);
-        try {
-            modsFinder.startFind();
-        } catch (IOException exception) {
-            logger.log(HLogLevel.ERROR, exception);
-        }
+        modsFinder.startFind();
         allClasses = modsFinder.getClassList();
         allClassesWithJarFiles = modsFinder.getClassListWithJarFile();
         HClassFinder modFilter = new HClassFinder();
@@ -124,7 +122,7 @@ class ModClassesLoader {
         }
     }
 
-    static void checkSameMods() {
+    private static void checkSameMods() {
         for (Class<? extends ModImplement> classClass: mods) {
             ModName className = ModImplement.getModNameFromClass(classClass);
             boolean not_found = true;
@@ -156,7 +154,7 @@ class ModClassesLoader {
         }
     }
 
-    static void checkSameElementImplements() {
+    private static void checkSameElementImplements() {
         for (Class<? extends ElementImplement> classClass: elementImplements) {
             ElementName className = ElementImplement.getElementNameFromClass(classClass);
             boolean not_found = true;
@@ -188,7 +186,7 @@ class ModClassesLoader {
         }
     }
 
-    static void checkSameElementUtils() {
+    private static void checkSameElementUtils() {
         for (Class<? extends ElementUtil<?>> classClass: elementUtils) {
             ElementName className = ElementUtil.getElementNameFromClass(classClass);
             boolean not_found = true;
@@ -220,60 +218,66 @@ class ModClassesLoader {
         }
     }
 
-    static void checkElementsPair() {
+    private static void checkElementsPair() {
         for (Class<? extends ElementImplement> implement: elementImplements) {
-            NewElementImplementCore elementImplement = implement.getAnnotation(NewElementImplementCore.class);
-            String tempName = HStringHelper.notNullOrEmpty(elementImplement.elementName());
+            ElementName implementName = ElementImplement.getElementNameFromClass(implement);
             Class<? extends ElementUtil<?>> elementUtil = null;
             for (Class<? extends ElementUtil<?>> util: elementUtils) {
-                NewElementUtilCore tempUtil = util.getAnnotation(NewElementUtilCore.class);
-                if (tempUtil == null)
-                    continue;
-                if (tempName.equals(HStringHelper.notNullOrEmpty(tempUtil.elementName()))) {
+                ElementName utilName = ElementUtil.getElementNameFromClass(util);
+                if (implementName.equals(utilName)) {
                     elementUtil = util;
                     break;
                 }
             }
             if (elementUtil == null) {
-                logger.log(HLogLevel.ERROR, "No pair util for implement '", tempName, "'. Ignore it!");
+                exceptions.add(new ElementNotPairException(implement, (Object) null));
                 singleImplements.add(implement);
                 continue;
             }
-            elementPairList.put(tempName, new Pair<>(implement, elementUtil));
+            elementPairList.put(implementName, new Pair<>(implement, elementUtil));
         }
         for (Class<? extends ElementUtil<?>> util: elementUtils) {
-            NewElementUtilCore elementUtil = util.getAnnotation(NewElementUtilCore.class);
-            String tempName = HStringHelper.notNullOrEmpty(elementUtil.elementName());
+            ElementName utilName = ElementUtil.getElementNameFromClass(util);
             Class<? extends ElementImplement> elementImplement = null;
             for (Class<? extends ElementImplement> implement: elementImplements) {
-                NewElementImplementCore tempImplement = implement.getAnnotation(NewElementImplementCore.class);
-                if (tempImplement == null)
-                    continue;
-                if (tempName.equals(HStringHelper.notNullOrEmpty(tempImplement.elementName()))) {
+                ElementName implementName = ElementImplement.getElementNameFromClass(implement);
+                if (utilName.equals(implementName)) {
                     elementImplement = implement;
                     break;
                 }
             }
             if (elementImplement == null) {
-                logger.log(HLogLevel.ERROR, "No pair implement for util '", tempName, "'. Ignore it!");
+                exceptions.add(new ElementNotPairException((Object) null, util));
                 singleUtils.add(util);
             }
         }
     }
 
-    static void gc() {
-        logger = null;
-        if (!ModClassesSorter.getSortedMods().isEmpty())
-            mods.clear();
+    public static List<IllegalArgumentException> loadModClasses() throws IOException {
+        (new HLog("ModClassesLoader", Thread.currentThread().getName()))
+                .log(HLogLevel.INFO, "Searching mods in '", MODS_FILE.getPath(), "'.");
+        pickAllClasses();
+        for (Class<?> aClass: allClasses)
+            try {
+                EventBusManager.register(aClass);
+            } catch (NoSuchMethodException exception) {
+                HLog.logger(HLogLevel.ERROR, exception);
+            }
+        EventBusManager.getDefaultEventBus().post(new ElementsCheckingEvent());
+        checkSameMods();
+        checkSameElementImplements();
+        checkSameElementUtils();
+        if (!exceptions.isEmpty())
+            return exceptions;
+        checkElementsPair();
+        if (!exceptions.isEmpty())
+            return exceptions;
+        EventBusManager.getDefaultEventBus().post(new ElementsCheckedEvent());
+        mods.clear();
         elementImplements.clear();
         elementUtils.clear();
-        modList.clear();
         implementList.clear();
         utilList.clear();
-        sameMods.clear();
-        sameImplements.clear();
-        sameUtils.clear();
-        singleImplements.clear();
-        singleUtils.clear();
+        return null;
     }
 }
