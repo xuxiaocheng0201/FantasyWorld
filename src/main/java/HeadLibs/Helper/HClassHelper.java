@@ -4,6 +4,7 @@ import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -31,6 +32,28 @@ public class HClassHelper {
             return instance;
         } catch (Exception exception) {
             if (!(exception instanceof NoSuchMethodException)) {
+                HLog.logger(HLogLevel.ERROR, exception);
+                return null;
+            }
+        }
+        try {
+            Method get = aClass.getDeclaredMethod("instance");
+            T instance = (T) get.invoke(null);
+            if (instance == null)
+                throw new NoSuchMethodException();
+            return instance;
+        } catch (Exception exception) {
+            if (!(exception instanceof NoSuchMethodException)) {
+                HLog.logger(HLogLevel.ERROR, exception);
+                return null;
+            }
+        }
+        try {
+            Field instance = aClass.getDeclaredField("instance");
+            return (T) instance.get(null);
+        } catch (NullPointerException ignore) {
+        } catch (Exception exception) {
+            if (!(exception instanceof NoSuchFieldException)) {
                 HLog.logger(HLogLevel.ERROR, exception);
                 return null;
             }

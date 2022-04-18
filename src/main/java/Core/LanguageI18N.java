@@ -20,7 +20,7 @@ public class LanguageI18N {
     private static String getLanguageFilePath(Class<? extends ModImplement> modClass, String lang) {
         ModImplement mod = HClassHelper.getInstance(modClass);
         if (mod == null)
-            return Craftworld.ASSETS_PATH + "Core\\lang\\" + lang + ".lang";
+            return FileTreeStorage.ASSETS_PATH + "Core\\lang\\" + lang + ".lang";
         return mod.getLanguagePath(lang);
     }
 

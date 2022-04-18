@@ -1,7 +1,7 @@
 package CraftWorld.DST;
 
-import Core.Addition.Implement.ElementUtil;
-import Core.Addition.Implement.NewElementUtilCore;
+import Core.Addition.Element.ElementUtil;
+import Core.Addition.Element.NewElementUtilCore;
 
 @NewElementUtilCore(elementName = "DST")
 public class DSTUtils extends ElementUtil<IDSTBase> {

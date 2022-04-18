@@ -1,12 +1,17 @@
 package Core.Addition;
 
-import Core.Addition.Implement.ElementImplement;
-import Core.Addition.Implement.ElementUtil;
-import Core.Addition.Implement.NewElementImplementCore;
-import Core.Addition.Implement.NewElementUtilCore;
+import Core.Addition.Element.BasicInformation.ElementName;
+import Core.Addition.Element.ElementImplement;
+import Core.Addition.Element.ElementUtil;
+import Core.Addition.Element.NewElementImplementCore;
+import Core.Addition.Element.NewElementUtilCore;
+import Core.Addition.Mod.BasicInformation.ModName;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
-import Core.Craftworld;
+import Core.Exceptions.ElementImplementNameClashException;
+import Core.Exceptions.ElementUtilNameClashException;
+import Core.Exceptions.ModNameClashException;
+import Core.FileTreeStorage;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
@@ -20,22 +25,17 @@ import java.util.*;
 class ModClassesLoader {
     @SuppressWarnings("FieldHasSetterButNoGetter")
     private static HLog logger;
-    static final File MODS_FILE = (new File(Craftworld.RUNTIME_PATH + "mods")).getAbsoluteFile();
-    static {
-        if (MODS_FILE.exists() && !MODS_FILE.isDirectory())
-            HLog.logger(HLogLevel.ERROR, "Mods path is a file! MODS_PATH='", MODS_FILE.getPath(), "'.");
-        else if (!MODS_FILE.exists() && !MODS_FILE.mkdirs())
-            HLog.logger(HLogLevel.ERROR, "Creating MODS_PATH directory failed. MODS_PATH='", MODS_FILE.getPath(), "'.");
-    }
+    static final File MODS_FILE = (new File(FileTreeStorage.MOD_PATH)).getAbsoluteFile();
 
     static void setLogger(HLog logger) {
         ModClassesLoader.logger = logger;
     }
 
+    private static Set<Class<?>> allClasses;
     private static Map<Class<?>, File> allClassesWithJarFiles;
 
     static Set<Class<?>> getAllClasses() {
-        return allClassesWithJarFiles.keySet();
+        return allClasses;
     }
 
     static Map<Class<?>, File> getAllClassesWithJarFiles() {
@@ -51,6 +51,7 @@ class ModClassesLoader {
     private static final List<Class<? extends ModImplement>> modList = new ArrayList<>();
     private static final List<Class<? extends ElementImplement>> implementList = new ArrayList<>();
     private static final List<Class<? extends ElementUtil<?>>> utilList = new ArrayList<>();
+    private static final Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementPairList = new HashMap<>();
 
     private static final List<List<Class<? extends ModImplement>>> sameMods = new ArrayList<>();
     private static final List<List<Class<? extends ElementImplement>>> sameImplements = new ArrayList<>();
@@ -63,12 +64,8 @@ class ModClassesLoader {
         return modList;
     }
 
-    static List<Class<? extends ElementImplement>> getImplementList() {
-        return implementList;
-    }
-
-    static List<Class<? extends ElementUtil<?>>> getUtilList() {
-        return utilList;
+    static Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+        return elementPairList;
     }
 
     static List<List<Class<? extends ModImplement>>> getSameMods() {
@@ -91,9 +88,10 @@ class ModClassesLoader {
         return singleUtils;
     }
 
-    private static final Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementPairList = new HashMap<>();
-    static Map<String, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
-        return elementPairList;
+    private static final List<IllegalArgumentException> exceptions = new ArrayList<>();
+
+    static List<IllegalArgumentException> getExceptions() {
+        return exceptions;
     }
 
     @SuppressWarnings("unchecked")
@@ -105,6 +103,7 @@ class ModClassesLoader {
         } catch (IOException exception) {
             logger.log(HLogLevel.ERROR, exception);
         }
+        allClasses = modsFinder.getClassList();
         allClassesWithJarFiles = modsFinder.getClassListWithJarFile();
         HClassFinder modFilter = new HClassFinder();
         modFilter.addAnnotationClass(NewMod.class);
@@ -115,7 +114,7 @@ class ModClassesLoader {
         HClassFinder utilFilter = new HClassFinder();
         utilFilter.addAnnotationClass(NewElementUtilCore.class);
         utilFilter.addSuperClass(ElementUtil.class);
-        for (Class<?> aClass: modsFinder.getClassList()) {
+        for (Class<?> aClass: allClasses) {
             if (modFilter.checkAnnotation(aClass) && modFilter.checkSuper(aClass))
                 mods.add((Class<? extends ModImplement>) aClass);
             if (implementFilter.checkAnnotation(aClass) && implementFilter.checkSuper(aClass))
@@ -127,21 +126,17 @@ class ModClassesLoader {
 
     static void checkSameMods() {
         for (Class<? extends ModImplement> classClass: mods) {
-            NewMod classMod = classClass.getAnnotation(NewMod.class);
-            String className = HStringHelper.notNullOrEmpty(classMod.name().strip());
+            ModName className = ModImplement.getModNameFromClass(classClass);
             boolean not_found = true;
             for (Class<? extends ModImplement> savedClass: modList) {
-                NewMod savedMod = savedClass.getAnnotation(NewMod.class);
-                if (className.equals(HStringHelper.notNullOrEmpty(savedMod.name().strip()))) {
+                ModName savedName = ModImplement.getModNameFromClass(savedClass);
+                if (className.equals(savedName)) {
                     not_found = false;
-                    logger.log(HLogLevel.FAULT, "Same mod name '", savedMod.name(), "'. ",
-                            "From: '", allClassesWithJarFiles.get(savedClass), "' and '", allClassesWithJarFiles.get(classClass), "'.");
+                    exceptions.add(new ModNameClashException(classClass, savedClass));
                     boolean notFound = true;
                     for (List<Class<? extends ModImplement>> sameModFound: sameMods) {
-                        if (sameModFound.isEmpty())
-                            continue;
-                        NewMod mod = sameModFound.get(0).getAnnotation(NewMod.class);
-                        if (className.equals(HStringHelper.notNullOrEmpty(mod.name()))) {
+                        ModName sameName = ModImplement.getModNameFromClass(sameModFound.get(0));
+                        if (className.equals(sameName)) {
                             notFound = false;
                             sameModFound.add(classClass);
                             break;
@@ -163,20 +158,17 @@ class ModClassesLoader {
 
     static void checkSameElementImplements() {
         for (Class<? extends ElementImplement> classClass: elementImplements) {
-            NewElementImplementCore classImplement = classClass.getAnnotation(NewElementImplementCore.class);
-            String className = HStringHelper.notNullOrEmpty(classImplement.elementName());
+            ElementName className = ElementImplement.getElementNameFromClass(classClass);
             boolean not_found = true;
             for (Class<? extends ElementImplement> savedClass: implementList) {
-                NewElementImplementCore savedImplement = savedClass.getAnnotation(NewElementImplementCore.class);
-                if (className.equals(HStringHelper.notNullOrEmpty(savedImplement.elementName()))) {
+                ElementName savedName = ElementImplement.getElementNameFromClass(savedClass);
+                if (className.equals(savedName)) {
                     not_found = false;
-                    logger.log(HLogLevel.FAULT, "Same element implement name '", savedImplement.elementName(), "'.");
+                    exceptions.add(new ElementImplementNameClashException(classClass, savedClass));
                     boolean notFound = true;
                     for (List<Class<? extends ElementImplement>> sameImplementFound: sameImplements) {
-                        if (sameImplementFound.isEmpty())
-                            continue;
-                        NewElementImplementCore implement = sameImplementFound.get(0).getAnnotation(NewElementImplementCore.class);
-                        if (className.equals(HStringHelper.notNullOrEmpty(implement.elementName()))) {
+                        ElementName sameName = ElementImplement.getElementNameFromClass(sameImplementFound.get(0));
+                        if (className.equals(sameName)) {
                             notFound = false;
                             sameImplementFound.add(classClass);
                             break;
@@ -198,20 +190,17 @@ class ModClassesLoader {
 
     static void checkSameElementUtils() {
         for (Class<? extends ElementUtil<?>> classClass: elementUtils) {
-            NewElementUtilCore classMod = classClass.getAnnotation(NewElementUtilCore.class);
-            String className = HStringHelper.notNullOrEmpty(classMod.elementName());
+            ElementName className = ElementUtil.getElementNameFromClass(classClass);
             boolean not_found = true;
             for (Class<? extends ElementUtil<?>> savedClass: utilList) {
-                NewElementUtilCore savedUtil = savedClass.getAnnotation(NewElementUtilCore.class);
-                if (className.equals(HStringHelper.notNullOrEmpty(savedUtil.elementName()))) {
+                ElementName savedName = ElementUtil.getElementNameFromClass(savedClass);
+                if (className.equals(savedName)) {
                     not_found = false;
-                    logger.log(HLogLevel.FAULT, "Same element util name '", savedUtil.elementName(), "'.");
+                    exceptions.add(new ElementUtilNameClashException(classClass, savedClass));
                     boolean notFound = true;
                     for (List<Class<? extends ElementUtil<?>>> sameUtilFound: sameUtils) {
-                        if (sameUtilFound.isEmpty())
-                            continue;
-                        NewElementUtilCore util = sameUtilFound.get(0).getAnnotation(NewElementUtilCore.class);
-                        if (className.equals(HStringHelper.notNullOrEmpty(util.elementName()))) {
+                        ElementName sameName = ElementUtil.getElementNameFromClass(sameUtilFound.get(0));
+                        if (className.equals(sameName)) {
                             notFound = false;
                             sameUtilFound.add(classClass);
                             break;

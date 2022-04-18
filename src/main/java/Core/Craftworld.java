@@ -12,7 +12,6 @@ import HeadLibs.Configuration.HConfigType;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Configuration.HWrongConfigValueException;
 import HeadLibs.Helper.HFileHelper;
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Helper.HZipHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -30,10 +29,6 @@ import java.util.jar.JarFile;
 public class Craftworld {
     public static final String CURRENT_VERSION_STRING = "0.0.1";
     public static final HStringVersion CURRENT_VERSION;
-    public static final String RUNTIME_PATH = (new File("Craftworld\\" + Craftworld.CURRENT_VERSION_STRING)).getAbsolutePath() + "\\";
-    public static final String GLOBAL_CONFIGURATION_PATH = RUNTIME_PATH + "global.cfg";
-    public static final String ASSETS_PATH = RUNTIME_PATH + "assets\\";
-    public static final String LOG_PATH;
     static {
         HStringVersion current_version;
         try {
@@ -44,12 +39,6 @@ public class Craftworld {
             current_version = null;
         }
         CURRENT_VERSION = current_version;
-        String temp = RUNTIME_PATH + "log\\" + HStringHelper.getDate("yyyy-MM-dd");
-        String log_path = temp + ".log";
-        int i = 1;
-        while ((new File(log_path)).exists())
-            log_path = temp + "_" + ++i + ".log";
-        LOG_PATH = log_path;
     }
     private static final String EXTRACT_TEMP_FILE = "extract_temp";
 
@@ -57,9 +46,9 @@ public class Craftworld {
         File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
         if (jarFilePath == null)
             throw new IOException("Null jar file path for class '" + modClass + "'.s");
-        File targetFilePath = new File(RUNTIME_PATH + targetPath).getAbsoluteFile();
+        File targetFilePath = new File(FileTreeStorage.RUNTIME_PATH + targetPath).getAbsoluteFile();
         if (System.console() == null) {
-            File runtimeFile = new File(Craftworld.RUNTIME_PATH).getAbsoluteFile();
+            File runtimeFile = new File(FileTreeStorage.RUNTIME_PATH).getAbsoluteFile();
             String srcResourcePath = runtimeFile.getParentFile().getParentFile().getParentFile().getPath() + "\\src\\main\\resources";
             HFileHelper.copyFiles(srcResourcePath + "\\" + sourcePath, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
         } else {
@@ -93,7 +82,7 @@ public class Craftworld {
         HConfigurations canOverwrite;
         HConfigElement overwrite_when_extracting = null;
         try {
-            canOverwrite = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
+            canOverwrite = new HConfigurations(FileTreeStorage.GLOBAL_CONFIGURATION_FILE);
             canOverwrite.read();
             overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
         } catch (IOException | HWrongConfigValueException | HElementRegisteredException | HElementNotRegisteredException exception) {
@@ -113,12 +102,12 @@ public class Craftworld {
                 isClient = false;
         }
         GetConfigurations();
-        HLog.saveLogs(LOG_PATH);
+        HLog.saveLogs(FileTreeStorage.LOG_FILE);
         Runtime.getRuntime().addShutdownHook(new Thread(Thread.currentThread().getName()) {
             @Override
             public void run() {
                 logger.log(HLogLevel.INFO, "Welcome to play again!");
-                HLog.saveLogs(LOG_PATH);
+                HLog.saveLogs(FileTreeStorage.LOG_FILE);
             }
         });
         try {
@@ -142,7 +131,7 @@ public class Craftworld {
 
     private static void GetConfigurations() throws IOException {
         try {
-            GLOBAL_CONFIGURATIONS = new HConfigurations(GLOBAL_CONFIGURATION_PATH);
+            GLOBAL_CONFIGURATIONS = new HConfigurations(FileTreeStorage.GLOBAL_CONFIGURATION_FILE);
             GLOBAL_CONFIGURATIONS.read();
         } catch (IOException | HWrongConfigValueException | HElementRegisteredException | HElementNotRegisteredException exception) {
             logger.log(HLogLevel.CONFIGURATION, exception);

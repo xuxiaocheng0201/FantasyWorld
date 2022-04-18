@@ -1,7 +1,7 @@
 package Core.Addition;
 
-import Core.Addition.Implement.ElementImplement;
-import Core.Addition.Implement.ElementUtil;
+import Core.Addition.Element.ElementImplement;
+import Core.Addition.Element.ElementUtil;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
 import HeadLibs.Helper.HStringHelper;
@@ -34,12 +34,12 @@ public class ModManager {
         return ModClassesLoader.getElementPairList();
     }
 
-    public static @NotNull String crashClassInformation(@Nullable Class<? extends ModImplement> modClass) {
-        if (modClass == null)
+    public static @NotNull String crashClassInformation(@Nullable Class<?> aClass) {
+        if (aClass == null)
             return " At a null class.";
-        File file = getAllClassesWithJarFiles().get(modClass);
+        File file = getAllClassesWithJarFiles().get(aClass);
         if (file == null)
-            return " At class '" + modClass + "'.";
-        return " At class '" + modClass + "' in file '" + file.getAbsolutePath() + "'.";
+            return " At class '" + aClass.getName() + "'.";
+        return " At class '" + aClass + "' in file '" + file.getAbsolutePath() + "'.";
     }
 }

@@ -1,4 +1,4 @@
-package Core.Addition.Implement;
+package Core.Addition.Element;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -8,15 +8,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Announce at new mods element implement classes.
+ * Announce at new mods element util classes.
  * @author xuxiaocheng
- * @see ElementImplement
+ * @see ElementUtil
  */
 @SuppressWarnings("unused")
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NewElementImplementCore {
+public @interface NewElementUtilCore {
     @NotNull String modName() default "Craftworld";
     @NotNull String elementName();
-    @NotNull String parentElements() default "";
 }

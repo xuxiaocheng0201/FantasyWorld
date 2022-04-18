@@ -11,17 +11,10 @@ import HeadLibs.Logger.HLogLevel;
 import java.util.List;
 
 public class ModLauncher {
-    @SuppressWarnings("FieldHasSetterButNoGetter")
     private static HLog logger;
-
-    public static void setLogger(HLog logger) {
-        ModLauncher.logger = logger;
-    }
 
     public static boolean loadModClasses() {
         logger = new HLog("ModClassesLoader", Thread.currentThread().getName());
-        if (!ModClassesLoader.MODS_FILE.exists() || !ModClassesLoader.MODS_FILE.isDirectory())
-            return true;
         ModClassesLoader.setLogger(logger);
         logger.log(HLogLevel.INFO, "Searching mods in '", ModClassesLoader.MODS_FILE.getPath(), "'.");
         ModClassesLoader.pickAllClasses();
@@ -33,18 +26,12 @@ public class ModLauncher {
             }
         EventBusManager.getDefaultEventBus().post(new ElementsCheckingEvent());
         ModClassesLoader.checkSameMods();
-        if (!ModClassesLoader.getSameMods().isEmpty())
-            return true;
         ModClassesLoader.checkSameElementImplements();
-        if (!ModClassesLoader.getSameImplements().isEmpty())
-            return true;
         ModClassesLoader.checkSameElementUtils();
-        if (!ModClassesLoader.getSameUtils().isEmpty())
+        if (!ModClassesLoader.getSameMods().isEmpty() || !ModClassesLoader.getSameImplements().isEmpty() || !ModClassesLoader.getSameUtils().isEmpty())
             return true;
         ModClassesLoader.checkElementsPair();
-        if (!ModClassesLoader.getSingleImplements().isEmpty())
-            return true;
-        if (!ModClassesLoader.getSingleUtils().isEmpty())
+        if (!ModClassesLoader.getSingleImplements().isEmpty() || !ModClassesLoader.getSingleUtils().isEmpty())
             return true;
         EventBusManager.getDefaultEventBus().post(new ElementsCheckedEvent());
         return false;

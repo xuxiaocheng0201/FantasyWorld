@@ -1,7 +1,7 @@
 package CraftWorld.Block;
 
-import Core.Addition.Implement.ElementUtil;
-import Core.Addition.Implement.NewElementUtilCore;
+import Core.Addition.Element.ElementUtil;
+import Core.Addition.Element.NewElementUtilCore;
 
 @NewElementUtilCore(elementName = "Block")
 public class BlockUtils extends ElementUtil<IBlockBase> {

@@ -2,10 +2,12 @@ package Core.Addition.Mod;
 
 import Core.Addition.Mod.BasicInformation.ModAvailableCraftworldVersion;
 import Core.Addition.Mod.BasicInformation.ModName;
+import Core.Addition.Mod.BasicInformation.ModRequirements;
 import Core.Addition.Mod.BasicInformation.ModVersion;
 import Core.Addition.ModLauncher;
 import Core.Addition.ModManager;
 import Core.Craftworld;
+import Core.FileTreeStorage;
 import HeadLibs.Version.HVersionFormatException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +31,7 @@ public interface ModImplement {
         NewMod mod = this.getClass().getAnnotation(NewMod.class);
         if (mod == null)
             return null;
-        return Craftworld.ASSETS_PATH + ModImplement.getModNameFromClass(this.getClass()) + "\\lang\\" +
+        return FileTreeStorage.ASSETS_PATH + ModImplement.getModNameFromClass(this.getClass()) + "\\lang\\" +
                 (lang == null ? Craftworld.CURRENT_LANGUAGE : lang) + ".lang";
     }
 
@@ -71,12 +73,12 @@ public interface ModImplement {
         }
     }
 
-    static @NotNull String getModRequirementsFromClass(@Nullable Class<? extends ModImplement> modClass) {
+    static @NotNull ModRequirements getModRequirementsFromClass(@Nullable Class<? extends ModImplement> modClass) {
         if (modClass == null)
-            return "";
+            return new ModRequirements();
         NewMod modAnnouncement = modClass.getAnnotation(NewMod.class);
         if (modAnnouncement == null)
-            return "";
-        return modAnnouncement.requirements();
+            return new ModRequirements();
+        return new ModRequirements(modAnnouncement.requirements());
     }
 }

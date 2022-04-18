@@ -7,7 +7,7 @@ public class GCThread implements Runnable {
     public void run() {
         Thread.currentThread().setName("GCThread");
         while (true) {
-            HLog.saveLogs(Craftworld.LOG_PATH);
+            HLog.saveLogs(FileTreeStorage.LOG_FILE);
             System.gc();
             synchronized (this) {
                 try {

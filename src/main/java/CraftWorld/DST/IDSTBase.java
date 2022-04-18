@@ -1,7 +1,7 @@
 package CraftWorld.DST;
 
-import Core.Addition.Implement.ElementImplement;
-import Core.Addition.Implement.NewElementImplementCore;
+import Core.Addition.Element.ElementImplement;
+import Core.Addition.Element.NewElementImplementCore;
 
 import java.io.DataInput;
 import java.io.DataOutput;
