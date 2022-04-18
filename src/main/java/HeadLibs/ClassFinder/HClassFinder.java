@@ -1,6 +1,5 @@
 package HeadLibs.ClassFinder;
 
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import org.jetbrains.annotations.NotNull;
@@ -341,14 +340,14 @@ public class HClassFinder {
             if (files == null)
                 return;
             for (File file: files) {
-                String subPackageName = packageName.isEmpty() ? "" : HStringHelper.concat(packageName, ".");
+                String subPackageName = packageName.isEmpty() ? "" : packageName + ".";
                 String filePath = file.getAbsolutePath().replace('\\', '.').replace('/', '.');
                 String subClassName = filePath.substring(filePath.lastIndexOf('.') + 1);
                 if ("class".equals(subClassName)) {
                     String filePathWithoutSuffix = filePath.substring(0, filePath.lastIndexOf('.'));
                     subClassName = filePathWithoutSuffix.substring(filePathWithoutSuffix.lastIndexOf('.') + 1);
                 }
-                this.findInFile(file, HStringHelper.concat(subPackageName, subClassName));
+                this.findInFile(file, subPackageName + subClassName);
             }
             return;
         }

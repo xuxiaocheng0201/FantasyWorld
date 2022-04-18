@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Some tools about {@link Class}
@@ -72,7 +72,7 @@ public class HClassHelper {
         for (Constructor<?> constructor: constructors) {
             @SuppressWarnings("SuspiciousArrayCast")
             Class<?>[] types = (Class<?>[]) constructor.getGenericParameterTypes();
-            List<Object> args = new ArrayList<>(types.length);
+            Collection<Object> args = new ArrayList<>(types.length);
             for (Class<?> type: types) {
                 //noinspection IfStatementWithTooManyBranches
                 if (type.equals(boolean.class))
@@ -90,13 +90,10 @@ public class HClassHelper {
                     //todo: Add more common types.
                     args.add(null);
             }
-            T instance;
             try {
-                instance = (T) constructor.newInstance(args.toArray());
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException exception) {
-                continue;
+                return (T) constructor.newInstance(args.toArray());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException ignore) {
             }
-            return instance;
         }
         return null;
     }

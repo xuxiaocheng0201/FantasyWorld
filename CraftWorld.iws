@@ -7,18 +7,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Improve same mods and elements checker.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementNotPairException.java" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Improve elements pair checker.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModLauncher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementInformationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementInformationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementNameClashException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementNameClashException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilInformationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilInformationException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilNameClashException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilNameClashException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" afterDir="false" />
     </list>
@@ -235,13 +225,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Mod Launcher sorting mods.">
-      <created>1647185914099</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1647185914100</updated>
     </task>
     <task id="LOCAL-00040" summary="Fix a small amount of bugs...">
       <created>1647227223306</created>
@@ -579,7 +562,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650272078222</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="Improve elements pair checker.">
+      <created>1650290678389</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1650290678391</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -621,7 +611,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Add some docs." />
     <MESSAGE value="Safer and more efficient." />
     <MESSAGE value="Safer and more efficient code." />
     <MESSAGE value="Add map and set element registerer." />
@@ -646,7 +635,8 @@
     <MESSAGE value="Add Mod Basic Information Requirement." />
     <MESSAGE value="More RuntimeExceptions about BasicModInformation." />
     <MESSAGE value="Improve same mods and elements checker." />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve same mods and elements checker." />
+    <MESSAGE value="Improve elements pair checker." />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve elements pair checker." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
