@@ -3,7 +3,6 @@ package CraftWorld;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
 import Core.Craftworld;
-import Core.EventBus.EventBusCreator;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.Events.PreInitializationModsEvent;
@@ -11,6 +10,7 @@ import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -27,11 +27,15 @@ public class CraftWorld implements ModImplement {
 
     private static final HLog logger = new HLog(Thread.currentThread().getName());
 
-    private static final EventBus CRAFT_WORLD_EVENT_BUS = EventBusCreator.loggerEventBusBuilder(logger)
+    private static final EventBus CRAFT_WORLD_EVENT_BUS = EventBusManager.loggerEventBusBuilder(logger)
             .throwSubscriberException(false).logSubscriberExceptions(true).sendSubscriberExceptionEvent(true)
             .logNoSubscriberMessages(false).sendNoSubscriberEvent(true).build();
     static {
-        EventBusManager.addEventBus("CraftWorld", CRAFT_WORLD_EVENT_BUS);
+        try {
+            EventBusManager.addEventBus("CraftWorld", CRAFT_WORLD_EVENT_BUS);
+        } catch (HElementRegisteredException exception) {
+            HLog.logger(HLogLevel.ERROR, exception);
+        }
     }
     public static EventBus getCraftWorldEventBus() {
         return CRAFT_WORLD_EVENT_BUS;

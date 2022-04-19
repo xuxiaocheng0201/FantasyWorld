@@ -3,16 +3,20 @@ package Core;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.ModClassesLoader;
 import Core.Addition.ModClassesSorter;
-import Core.Addition.ModLauncher;
 import Core.Addition.ModManager;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
+import Core.Events.ModInitializedEvent;
+import Core.Events.ModInitializingEvent;
+import Core.Events.PostInitializationModsEvent;
+import Core.Events.PreInitializationModsEvent;
 import Core.Exceptions.ModInformationException;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfigElement;
 import HeadLibs.Configuration.HConfigType;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Configuration.HWrongConfigValueException;
+import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HZipHelper;
 import HeadLibs.Logger.HLog;
@@ -216,7 +220,7 @@ public class Craftworld {
     }
 
     private static boolean loadMods() {
-        HLog logger = new HLog(Thread.currentThread().getName());
+        HLog logger = new HLog("ModLauncher", Thread.currentThread().getName());
         List<IllegalArgumentException> loaderExceptions = new ArrayList<>();
         try {
             loaderExceptions = ModClassesLoader.loadModClasses();
@@ -231,7 +235,6 @@ public class Craftworld {
         }
         logger.log(HLogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
         logger.log(HLogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
-
         List<ModInformationException> sorterExceptions = ModClassesSorter.sortMods();
         if (sorterExceptions != null) {
             logger.log(HLogLevel.BUG, "Mod Loading Error in sorting classes!");
@@ -240,7 +243,22 @@ public class Craftworld {
             return false;
         }
         logger.log(HLogLevel.FINEST, "Sorted Mod list: ", ModManager.getModList());
-        ModLauncher.launchMods();
+        EventBusManager.getDefaultEventBus().post(new PreInitializationModsEvent());
+        for (Class<? extends ModImplement> aClass: ModClassesSorter.getSortedMods()) {
+            EventBusManager.getDefaultEventBus().post(new ModInitializingEvent(aClass));
+            ModImplement instance = HClassHelper.getInstance(aClass);
+            if (instance == null) {
+                logger.log(HLogLevel.ERROR, "No Common Constructor for creating Mod class." + ModManager.crashClassInformation(aClass));
+                continue;
+            }
+            try {
+                instance.mainInitialize();
+                EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, true));
+            } catch (Exception exception) {
+                EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, false));
+            }
+        }
+        EventBusManager.getDefaultEventBus().post(new PostInitializationModsEvent());
         return true;
     }
 

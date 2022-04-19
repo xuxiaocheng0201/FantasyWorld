@@ -69,7 +69,7 @@ public class HZipHelper {
                 if (!name.startsWith(sourceFileInJar))
                     continue;
                 name = name.replace(sourceFileInJar, "");
-                File file = new File(HStringHelper.concat(targetDir, File.separator, name));
+                File file = new File(targetDir + File.separator + name);
                 if (jarEntry.isDirectory()) {
                     if (!file.mkdirs())
                         HLog.logger(HLogLevel.ERROR, "Making directories failed!");

@@ -4,7 +4,6 @@ import Core.Addition.Mod.BasicInformation.ModAvailableCraftworldVersion;
 import Core.Addition.Mod.BasicInformation.ModName;
 import Core.Addition.Mod.BasicInformation.ModRequirements;
 import Core.Addition.Mod.BasicInformation.ModVersion;
-import Core.Addition.ModLauncher;
 import Core.Addition.ModManager;
 import Core.Craftworld;
 import Core.FileTreeStorage;
@@ -21,9 +20,8 @@ import org.jetbrains.annotations.Nullable;
 public interface ModImplement {
     /**
      * Main method. Be called when mod initializing.
-     * @see ModLauncher#launchMods()
      */
-    @SuppressWarnings("ProhibitedExceptionDeclared")
+    @SuppressWarnings("RedundantThrows")
     default void mainInitialize() throws Exception {
     }
 

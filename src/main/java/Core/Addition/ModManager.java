@@ -3,9 +3,8 @@ package Core.Addition;
 import Core.Addition.Element.BasicInformation.ElementName;
 import Core.Addition.Element.ElementImplement;
 import Core.Addition.Element.ElementUtil;
+import Core.Addition.Mod.BasicInformation.ModName;
 import Core.Addition.Mod.ModImplement;
-import Core.Addition.Mod.NewMod;
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,10 +24,10 @@ public class ModManager {
         return ModClassesSorter.getSortedMods();
     }
 
-    public static void deleteMod(String modName) {
+    public static void deleteMod(ModName modName) {
         if (modName == null)
             return;
-        getModList().removeIf(modClass -> modName.equals(HStringHelper.notNullStrip(modClass.getAnnotation(NewMod.class).name())));
+        getModList().removeIf(modClass -> modName.equals(ModImplement.getModNameFromClass(modClass)));
     }
 
     public static Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {

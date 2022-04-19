@@ -56,7 +56,7 @@ public class HSystemHelp {
      * @param output log stream
      * @throws IOException log error
      */
-    @SuppressWarnings("MagicNumber")
+    @SuppressWarnings({"MagicNumber", "deprecation"})
     public static void outputSystemDetail(@NotNull Writer output) throws IOException {
         output.write("System Detail:\n");
         output.write(HStringHelper.concat("\tOperating Machine: ", getRunningType(), "\n"));
