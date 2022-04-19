@@ -17,9 +17,12 @@ import Core.Exceptions.ElementUtilNameClashException;
 import Core.Exceptions.ModNameClashException;
 import Core.FileTreeStorage;
 import HeadLibs.ClassFinder.HClassFinder;
+import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,17 +33,18 @@ import java.util.*;
  * Initialize all classes, register eventbuses and collect mod classes and element classes.
  * @author xuxiaocheng
  */
+@SuppressWarnings("unused")
 public class ModClassesLoader {
     public static final File MODS_FILE = (new File(FileTreeStorage.MOD_PATH)).getAbsoluteFile();
 
     private static Set<Class<?>> allClasses;
     private static Map<Class<?>, File> allClassesWithJarFiles;
 
-    public static Set<Class<?>> getAllClasses() {
+    public static @NotNull Set<Class<?>> getAllClasses() {
         return allClasses;
     }
 
-    public static Map<Class<?>, File> getAllClassesWithJarFiles() {
+    public static @NotNull Map<Class<?>, File> getAllClassesWithJarFiles() {
         return allClassesWithJarFiles;
     }
 
@@ -64,36 +68,32 @@ public class ModClassesLoader {
 
     private static final List<IllegalArgumentException> exceptions = new ArrayList<>();
 
-    public static List<Class<? extends ModImplement>> getModList() {
+    public static @NotNull List<Class<? extends ModImplement>> getModList() {
         return modList;
     }
 
-    public static Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+    public static @NotNull Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
         return elementPairList;
     }
 
-    public static List<List<Class<? extends ModImplement>>> getSameMods() {
+    public static @NotNull List<List<Class<? extends ModImplement>>> getSameMods() {
         return sameMods;
     }
 
-    public static List<List<Class<? extends ElementImplement>>> getSameImplements() {
+    public static @NotNull List<List<Class<? extends ElementImplement>>> getSameImplements() {
         return sameImplements;
     }
 
-    public static List<List<Class<? extends ElementUtil<?>>>> getSameUtils() {
+    public static @NotNull List<List<Class<? extends ElementUtil<?>>>> getSameUtils() {
         return sameUtils;
     }
 
-    public static List<Class<? extends ElementImplement>> getSingleImplements() {
+    public static @NotNull List<Class<? extends ElementImplement>> getSingleImplements() {
         return singleImplements;
     }
 
-    public static List<Class<? extends ElementUtil<?>>> getSingleUtils() {
+    public static @NotNull List<Class<? extends ElementUtil<?>>> getSingleUtils() {
         return singleUtils;
-    }
-
-    public static List<IllegalArgumentException> getExceptions() {
-        return exceptions;
     }
 
     @SuppressWarnings("unchecked")
@@ -113,11 +113,11 @@ public class ModClassesLoader {
         utilFilter.addAnnotationClass(NewElementUtilCore.class);
         utilFilter.addSuperClass(ElementUtil.class);
         for (Class<?> aClass: allClasses) {
-            if (modFilter.checkAnnotation(aClass) && modFilter.checkSuper(aClass))
+            if (modFilter.checkAnnotation(aClass) && modFilter.checkSuper(aClass) && HClassHelper.isClass(aClass))
                 mods.add((Class<? extends ModImplement>) aClass);
-            if (implementFilter.checkAnnotation(aClass) && implementFilter.checkSuper(aClass))
+            if (implementFilter.checkAnnotation(aClass) && implementFilter.checkSuper(aClass) && HClassHelper.isInterface(aClass))
                 elementImplements.add((Class<? extends ElementImplement>) aClass);
-            if (utilFilter.checkAnnotation(aClass) && utilFilter.checkSuper(aClass))
+            if (utilFilter.checkAnnotation(aClass) && utilFilter.checkSuper(aClass) && HClassHelper.isClass(aClass))
                 elementUtils.add((Class<? extends ElementUtil<?>>) aClass);
         }
     }
@@ -253,7 +253,7 @@ public class ModClassesLoader {
         }
     }
 
-    public static List<IllegalArgumentException> loadModClasses() throws IOException {
+    public static @Nullable List<IllegalArgumentException> loadModClasses() throws IOException {
         (new HLog("ModClassesLoader", Thread.currentThread().getName()))
                 .log(HLogLevel.INFO, "Searching mods in '", MODS_FILE.getPath(), "'.");
         pickAllClasses();

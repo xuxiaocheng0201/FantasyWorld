@@ -2,6 +2,7 @@ package Core;
 
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.ModClassesLoader;
+import Core.Addition.ModClassesSorter;
 import Core.Addition.ModLauncher;
 import Core.Addition.ModManager;
 import Core.EventBus.EventBusManager;
@@ -117,7 +118,6 @@ public class Craftworld {
             Thread gc = new Thread(new GCThread());
             gc.start();
             if (loadMods()) {
-                ModLauncher.gc();
                 Thread main;
                 if (isClient)
                     main = new Thread(new CraftworldClient());
@@ -217,24 +217,26 @@ public class Craftworld {
 
     private static boolean loadMods() {
         HLog logger = new HLog(Thread.currentThread().getName());
-        List<IllegalArgumentException> exceptions = new ArrayList<>();
+        List<IllegalArgumentException> loaderExceptions = new ArrayList<>();
         try {
-            exceptions = ModClassesLoader.loadModClasses();
+            loaderExceptions = ModClassesLoader.loadModClasses();
         } catch (IOException exception) {
             logger.log(HLogLevel.ERROR, exception);
         }
-        if (exceptions != null) {
+        if (loaderExceptions != null) {
             logger.log(HLogLevel.BUG, "Mod Loading Error in loading classes!");
-            for (IllegalArgumentException exception: exceptions)
+            for (IllegalArgumentException exception: loaderExceptions)
                 logger.log(HLogLevel.FAULT, exception);
             return false;
         }
         logger.log(HLogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
         logger.log(HLogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
-        if (ModLauncher.sortMods()) {
-            logger.log(HLogLevel.ERROR, ModLauncher.getSorterExceptions());
-            for (ModInformationException exception: ModLauncher.getSorterExceptions())
-                HLog.logger(HLogLevel.ERROR, exception);
+
+        List<ModInformationException> sorterExceptions = ModClassesSorter.sortMods();
+        if (sorterExceptions != null) {
+            logger.log(HLogLevel.BUG, "Mod Loading Error in sorting classes!");
+            for (ModInformationException exception: sorterExceptions)
+                logger.log(HLogLevel.ERROR, exception);
             return false;
         }
         logger.log(HLogLevel.FINEST, "Sorted Mod list: ", ModManager.getModList());

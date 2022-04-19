@@ -40,10 +40,6 @@ public class HClassFinder {
      */
     private final Set<Class<? extends Annotation>> annotationClass = new HashSet<>();
     /**
-     * Found classes allowed types.
-     */
-    private final Set<Class<? extends Annotation>> allowTypes = new HashSet<>();
-    /**
      * Recursively search classes in package.
      */
     private boolean recursive = true;

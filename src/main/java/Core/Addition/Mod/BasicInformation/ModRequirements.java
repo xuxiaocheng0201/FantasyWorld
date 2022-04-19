@@ -17,6 +17,7 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class ModRequirements {
     private final List<Requirement> requirements = new ArrayList<>();
+    private @Nullable Requirement.Modifier.BasicModifier all;
 
     public ModRequirements() {
         super();
@@ -27,17 +28,35 @@ public class ModRequirements {
         this.setRequirements(requirements);
     }
 
+    public @Nullable Requirement.Modifier.BasicModifier getAll() {
+        return this.all;
+    }
+
+    public void setAll(@Nullable Requirement.Modifier.BasicModifier all) {
+        this.all = all;
+    }
+
     public @NotNull List<Requirement> getRequirements() {
         return this.requirements;
     }
 
     public void setRequirements(@Nullable String requirements) throws ModRequirementFormatException {
         this.requirements.clear();
+        this.all = null;
         if (requirements == null || requirements.isBlank())
             return;
         String[] requirementStrings = requirements.split(";");
-        for (String requirement: requirementStrings)
+        for (String requirement: requirementStrings) {
+            if ("before:*".equalsIgnoreCase(requirement.strip())) {
+                this.all = Requirement.Modifier.BasicModifier.BEFORE;
+                continue;
+            }
+            if ("after:*".equalsIgnoreCase(requirement.strip())) {
+                this.all = Requirement.Modifier.BasicModifier.AFTER;
+                continue;
+            }
             this.requirements.add(new Requirement(requirement));
+        }
     }
 
     @Override
@@ -145,12 +164,15 @@ public class ModRequirements {
             }
             int locationColon = modRequirement.indexOf(':');
             if (locationColon == -1)
-                throw new ModRequirementFormatException("No colon in requirement.");
+                throw new ModRequirementFormatException("No modifier in requirement.");
             this.modifier = Modifier.getByName(modRequirement.substring(0, locationColon));
             String modComplexString = modRequirement.substring(locationColon + 1);
             int locationAt = modComplexString.lastIndexOf('@');
-            if (locationAt == -1)
-                throw new ModRequirementFormatException("No at in requirement.");
+            if (locationAt == -1) {
+                this.modName.setName(modComplexString);
+                this.versionComplex.setAll();
+                return;
+            }
             this.modName.setName(modComplexString.substring(0, locationAt));
             try {
                 this.versionComplex.setVersions(modComplexString.substring(locationAt + 1));

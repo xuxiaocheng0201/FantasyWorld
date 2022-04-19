@@ -7,8 +7,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Improve elements pair checker.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="More common instance getter.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModRequirements.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModRequirements.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesSorter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesSorter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModLauncher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" afterDir="false" />
     </list>
@@ -45,6 +50,7 @@
         <option value="AnnotationType" />
         <option value="Record" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -75,14 +81,15 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesSorter.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModLauncher.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/ElementImplement.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/NewMod.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementInformationException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementImplementCore.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/ModImplement.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementUtilCore.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HDynamicJarClassLoader.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" root0="SKIP_INSPECTION" />
@@ -175,11 +182,11 @@
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets.CraftWorld.lang" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="Core.Addition.ModClassesSorter" />
       <recent name="Core.Addition.ModClassesLoader" />
       <recent name="Core.FileTreeStorage" />
       <recent name="Core.Addition.Mod.ModImplement" />
       <recent name="Core.Mod.ModClassesLoader" />
-      <recent name="HeadLibs.Version.HVersion" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="HeadLibs.Version" />
@@ -225,13 +232,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00040" summary="Fix a small amount of bugs...">
-      <created>1647227223306</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1647227223324</updated>
     </task>
     <task id="LOCAL-00041" summary="Fix a small amount of bugs...">
       <created>1647270820499</created>
@@ -569,7 +569,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650290678391</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <task id="LOCAL-00089" summary="More common instance getter.">
+      <created>1650290890057</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1650290890058</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -611,7 +618,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Safer and more efficient." />
     <MESSAGE value="Safer and more efficient code." />
     <MESSAGE value="Add map and set element registerer." />
     <MESSAGE value="Use map element registerer." />
@@ -636,7 +642,8 @@
     <MESSAGE value="More RuntimeExceptions about BasicModInformation." />
     <MESSAGE value="Improve same mods and elements checker." />
     <MESSAGE value="Improve elements pair checker." />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve elements pair checker." />
+    <MESSAGE value="More common instance getter." />
+    <option name="LAST_COMMIT_MESSAGE" value="More common instance getter." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
