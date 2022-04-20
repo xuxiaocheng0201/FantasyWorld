@@ -6,18 +6,28 @@ import HeadLibs.Configuration.SimpleMode.HConfigurationsSimple;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
 /**
  * I18N string from *.lang file in directory assets/%modName%/lang.
+ * @author xuxiaocheng
  */
 public class LanguageI18N {
     public static final String DEFAULT_LANGUAGE = "en_us";
 
     private static final HMapRegisterer<String, HConfigurationsSimple> languages = new HMapRegisterer<>();
 
-    private static String getLanguageFilePath(Class<? extends ModImplement> modClass, String lang) {
+    /**
+     * Get *.lang file path.
+     * @param modClass main mod class
+     * @param lang language
+     * @return file path
+     * @see ModImplement#getLanguagePath(String)
+     */
+    private static @NotNull String getLanguageFilePath(@Nullable Class<? extends ModImplement> modClass, @Nullable String lang) {
         ModImplement mod = HClassHelper.getInstance(modClass);
         if (mod == null)
             return FileTreeStorage.ASSETS_PATH + "Core\\lang\\" + lang + ".lang";

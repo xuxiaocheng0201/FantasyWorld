@@ -2,6 +2,9 @@ package HeadLibs.Helper;
 
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HElementNotRegisteredException;
+import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
@@ -14,8 +17,11 @@ import java.util.HashSet;
 
 /**
  * Some tools about {@link Class}
+ * @author xuxiaocheng
  */
+@SuppressWarnings("unused")
 public class HClassHelper {
+    private static final HMapRegisterer<Class<?>, Object> cacheClasses = new HMapRegisterer<>(false);
     private static final Collection<Class<?>> gottenFlags = new HashSet<>();
 
     /**
@@ -26,22 +32,45 @@ public class HClassHelper {
      * @return null - failed. notNull - the instance
      */
     public static <T> @Nullable T getInstance(@Nullable Class<T> aClass) {
+        return getInstance(aClass, true);
+    }
+
+    /**
+     * Get a new instance from a class.
+     * If the class contains {@code getInstance()}, it will try invoking it.
+     * @param aClass the class
+     * @param useCache use {@link HClassHelper#cacheClasses} to record instances.
+     * @param <T> class's type
+     * @return null - failed. notNull - the instance
+     */
+    public static synchronized <T> @Nullable T getInstance(@Nullable Class<T> aClass, boolean useCache) {
         if (aClass == null)
             return null;
-        T instance = getInstance0(aClass);
+        T instance = getInstance0(aClass, useCache);
         gottenFlags.clear();
         return instance;
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> @Nullable T getInstance0(@Nullable Class<T> aClass) {
+    private static synchronized <T> @Nullable T getInstance0(@Nullable Class<T> aClass, boolean useCache) {
         if (aClass == null || gottenFlags.contains(aClass))
             return null;
+        if (useCache)
+            try {
+                //noinspection unchecked
+                return (T) cacheClasses.getElement(aClass);
+            } catch (HElementNotRegisteredException ignore) {
+            }
         try {
             Method get = aClass.getDeclaredMethod("getInstance");
             T instance = (T) get.invoke(null);
             if (instance == null)
                 throw new NoSuchMethodException();
+            if (useCache)
+                try {
+                    cacheClasses.register(aClass, instance);
+                } catch (HElementRegisteredException ignore) {
+                }
             return instance;
         } catch (NoSuchMethodException ignore) {
         } catch (Exception exception) {
@@ -53,6 +82,11 @@ public class HClassHelper {
             T instance = (T) get.invoke(null);
             if (instance == null)
                 throw new NoSuchMethodException();
+            if (useCache)
+                try {
+                    cacheClasses.register(aClass, instance);
+                } catch (HElementRegisteredException ignore) {
+                }
             return instance;
         } catch (NoSuchMethodException ignore) {
         } catch (Exception exception) {
@@ -60,15 +94,29 @@ public class HClassHelper {
             return null;
         }
         try {
-            Field instance = aClass.getDeclaredField("instance");
-            return (T) instance.get(null);
+            Field instanceField = aClass.getDeclaredField("instance");
+            T instance = (T) instanceField.get(null);
+            if (instance == null)
+                throw new NoSuchFieldException();
+            if (useCache)
+                try {
+                    cacheClasses.register(aClass, instance);
+                } catch (HElementRegisteredException ignore) {
+                }
+            return instance;
         } catch (NullPointerException | NoSuchFieldException ignore) {
         } catch (Exception exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             return null;
         }
         try {
-            return aClass.getDeclaredConstructor().newInstance();
+            T instance = aClass.getDeclaredConstructor().newInstance();
+            if (useCache)
+                try {
+                    cacheClasses.register(aClass, instance);
+                } catch (HElementRegisteredException ignore) {
+                }
+            return instance;
         } catch (NoSuchMethodException ignore) {
         } catch (Exception exception) {
             HLog.logger(HLogLevel.ERROR, exception);
@@ -102,10 +150,16 @@ public class HClassHelper {
                     continue;
                 }
                 gottenFlags.add(aClass);
-                args.add(getInstance0(type));
+                args.add(getInstance0(type, useCache));
             }
             try {
-                return (T) constructor.newInstance(args.toArray());
+                T instance = (T) constructor.newInstance(args.toArray());
+                if (useCache)
+                    try {
+                        cacheClasses.register(aClass, instance);
+                    } catch (HElementRegisteredException ignore) {
+                    }
+                return instance;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException ignore) {
             }
         }

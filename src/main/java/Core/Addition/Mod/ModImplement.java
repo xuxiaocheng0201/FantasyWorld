@@ -21,14 +21,11 @@ public interface ModImplement {
     /**
      * Main method. Be called when mod initializing.
      */
-    @SuppressWarnings("RedundantThrows")
+    @SuppressWarnings({"RedundantThrows", "ProhibitedExceptionDeclared"})
     default void mainInitialize() throws Exception {
     }
 
-    default @Nullable String getLanguagePath(@Nullable String lang) {
-        NewMod mod = this.getClass().getAnnotation(NewMod.class);
-        if (mod == null)
-            return null;
+    default @NotNull String getLanguagePath(@Nullable String lang) {
         return FileTreeStorage.ASSETS_PATH + ModImplement.getModNameFromClass(this.getClass()) + "\\lang\\" +
                 (lang == null ? Craftworld.CURRENT_LANGUAGE : lang) + ".lang";
     }
