@@ -13,24 +13,40 @@ import org.greenrobot.eventbus.EventBusBuilder;
 import org.greenrobot.eventbus.Logger;
 import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.logging.Level;
 
+/**
+ * Event bus manager.
+ * @author xuxiaocheng
+ */
+@SuppressWarnings("unused")
 public class EventBusManager {
     private static final HMapRegisterer<String, EventBus> ALL_EVENT_BUS = new HMapRegisterer<>(false);
     private static final HMapRegisterer<EventBus, String> ALL_EVENT_BUS_REVERSE = new HMapRegisterer<>(false);
 
-    public static void addEventBus(String name, EventBus eventBus) throws HElementRegisteredException {
+    /**
+     * Register a new event bus.
+     * @param name event bus name
+     * @param eventBus event bus
+     * @throws HElementRegisteredException Registered event bus or illegal name.
+     */
+    public static void addEventBus(@Nullable String name, EventBus eventBus) throws HElementRegisteredException {
+        if (eventBus == null)
+            throw new HElementRegisteredException("Null eventbus.");
         String s = HStringHelper.notNullStrip(name);
         if ("*".equals(s))
             throw new HElementRegisteredException("Illegal eventbus name with '*'.");
+        if (s.isEmpty())
+            throw new HElementRegisteredException("Empty eventbus name.");
         ALL_EVENT_BUS.register(s, eventBus);
         ALL_EVENT_BUS_REVERSE.register(eventBus, s);
     }
 
-    private static final EventBus DEFAULT_EVENT_BUS = defaultLoggerEventBusBuilder()
+    private static final EventBus DEFAULT_EVENT_BUS = loggerEventBusBuilder(new HLog("DefaultEventBus", Thread.currentThread().getName()))
             .throwSubscriberException(false).logSubscriberExceptions(true).sendSubscriberExceptionEvent(true)
             .logNoSubscriberMessages(false).sendNoSubscriberEvent(true).build();
     public static EventBus getDefaultEventBus() {
@@ -64,6 +80,11 @@ public class EventBusManager {
         return ALL_EVENT_BUS_REVERSE.getMap().keySet();
     }
 
+    /**
+     * Register the class to eventbus by {@link EventSubscribe} annotation.
+     * @param aClass the class to register
+     * @throws NoSuchMethodException Failed to get instance.
+     */
     public static void register(@NotNull Class<?> aClass) throws NoSuchMethodException {
         EventSubscribe subscribe = aClass.getAnnotation(EventSubscribe.class);
         if (subscribe == null)
@@ -89,7 +110,11 @@ public class EventBusManager {
         eventBus.register(instance);
     }
 
-    public static EventBusBuilder defaultLoggerEventBusBuilder() {
+    /**
+     * Get {@link EventBusBuilder} with HLog.
+     * @return {@code EventBusBuilder}
+     */
+    public static @NotNull EventBusBuilder defaultLoggerEventBusBuilder() {
         return EventBus.builder().logger(new Logger() {
             @Override
             public void log(Level level, String msg) {
@@ -103,7 +128,14 @@ public class EventBusManager {
         });
     }
 
-    public static EventBusBuilder loggerEventBusBuilder(HLog logger) {
+    /**
+     * Get {@link EventBusBuilder} with param logger.
+     * @param logger event logger
+     * @return {@code EventBusBuilder}
+     */
+    public static @NotNull EventBusBuilder loggerEventBusBuilder(@Nullable HLog logger) {
+        if (logger == null)
+            return defaultLoggerEventBusBuilder();
         return EventBus.builder().logger(new Logger() {
             @Override
             public void log(Level level, String msg) {
