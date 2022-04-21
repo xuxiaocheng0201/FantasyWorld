@@ -1108,6 +1108,15 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
   <component name="libraryTable">
+    <library name="Gradle: cn.hutool:hutool-all:5.1.2">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/cn.hutool/hutool-all/5.1.2/b176d76f174324ed61221f642fdf5df35ee3aeee/hutool-all-5.1.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/cn.hutool/hutool-all/5.1.2/a7271fb2d0dde006852b0c85cc51e3d96e2d4331/hutool-all-5.1.2-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: javassist:javassist:3.12.1.GA">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javassist/javassist/3.12.1.GA/526633327faa61aee448a519e8a4d53ec3057885/javassist-3.12.1.GA.jar!/" />
@@ -1196,6 +1205,17 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/lib/eventbus-3.3.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="hutool-all-5.1.2">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/hutool-all-5.1.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$PROJECT_DIR$/lib/hutool-all-5.1.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/hutool-all-5.1.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="javassist" type="repository">

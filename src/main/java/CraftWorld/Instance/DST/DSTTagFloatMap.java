@@ -19,8 +19,8 @@ public class DSTTagFloatMap implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -8243981388503064375L;
     public static final String id = "FloatMap";
-    public static final String prefix = DSTUtils.prefix(id);
-    public static final String suffix = DSTUtils.suffix(id);
+    public static final String prefix = IDSTBase.prefix(id);
+    public static final String suffix = IDSTBase.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, DSTTagFloatMap.class);

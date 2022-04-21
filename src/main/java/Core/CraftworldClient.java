@@ -1,7 +1,7 @@
 package Core;
 
 import Core.EventBus.EventBusManager;
-import Core.Events.ClientStoppingEvent;
+import Core.EventBus.Events.ClientStoppingEvent;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 

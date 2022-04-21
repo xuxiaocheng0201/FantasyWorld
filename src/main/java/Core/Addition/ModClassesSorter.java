@@ -29,6 +29,10 @@ public class ModClassesSorter {
         return sortedMods;
     }
 
+    public static List<ModInformationException> getExceptions() {
+        return exceptions;
+    }
+
     private static final Collection<Pair<Pair<Class<? extends ModImplement>, Pair<Pair<ModName, ModVersion>, ModAvailableCraftworldVersion>>, ModRequirements>> modContainer = new HashSet<>();
     private static final Collection<Pair<Pair<Class<? extends ModImplement>, ModName>, Pair<Pair<Set<ModName>, Set<ModName>>, ModRequirements.Requirement.Modifier.BasicModifier>>> simpleModContainer = new HashSet<>();
 
@@ -162,6 +166,7 @@ public class ModClassesSorter {
         sortFromSimpleModContainer();
         if (!exceptions.isEmpty())
             return exceptions;
+        ModClassesLoader.getModList().clear();
         return null;
     }
 }

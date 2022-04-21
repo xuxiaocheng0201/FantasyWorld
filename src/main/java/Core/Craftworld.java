@@ -1,22 +1,14 @@
 package Core;
 
 import Core.Addition.Mod.ModImplement;
-import Core.Addition.ModClassesLoader;
-import Core.Addition.ModClassesSorter;
 import Core.Addition.ModManager;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
-import Core.Events.ModInitializedEvent;
-import Core.Events.ModInitializingEvent;
-import Core.Events.PostInitializationModsEvent;
-import Core.Events.PreInitializationModsEvent;
-import Core.Exceptions.ModInformationException;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfigElement;
 import HeadLibs.Configuration.HConfigType;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Configuration.HWrongConfigValueException;
-import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HZipHelper;
 import HeadLibs.Logger.HLog;
@@ -27,14 +19,14 @@ import HeadLibs.Version.HStringVersion;
 import HeadLibs.Version.HVersionFormatException;
 import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.jar.JarFile;
 
-public class Craftworld {
+public class Craftworld implements ModImplement {
     public static final String CURRENT_VERSION_STRING = "0.0.1";
     public static final HStringVersion CURRENT_VERSION;
     static {
@@ -73,7 +65,7 @@ public class Craftworld {
     public static boolean OVERWRITE_FILES_WHEN_EXTRACTING; // false
     @SuppressWarnings("MagicNumber")
     public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
-    public static int PORT = PortManager.getNextAvailablePort();
+    public static int PORT = PortManager.getNextAvailablePortRandom("localhost");
     /*
         Random random = new Random("Craftworld".hashCode());
         int r = random.nextInt();
@@ -93,7 +85,7 @@ public class Craftworld {
             canOverwrite = new HConfigurations(FileTreeStorage.GLOBAL_CONFIGURATION_FILE);
             canOverwrite.read();
             overwrite_when_extracting = canOverwrite.getByName("overwrite_when_extracting");
-        } catch (IOException | HWrongConfigValueException | HElementRegisteredException | HElementNotRegisteredException exception) {
+        } catch (IOException | HElementRegisteredException | HElementNotRegisteredException exception) {
             logger.log(HLogLevel.ERROR, exception);
         }
         if (overwrite_when_extracting != null)
@@ -121,7 +113,7 @@ public class Craftworld {
         try {
             Thread gc = new Thread(new GCThread());
             gc.start();
-            if (loadMods()) {
+            if (ModManager.addModFilePath((new File(FileTreeStorage.MOD_PATH)).getAbsoluteFile())) {
                 Thread main;
                 if (isClient)
                     main = new Thread(new CraftworldClient());
@@ -134,13 +126,21 @@ public class Craftworld {
         } catch (InterruptedException exception) {
             logger.log(HLogLevel.ERROR, exception);
         }
+
+
+        for (int i = 0; i < 50; ++i)
+            if (PortManager.portIsAvailable("localhost", PORT)) {
+                int availablePort = PortManager.getNextAvailablePortRandom("localhost");
+                logger.log(HLogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
+                PORT = availablePort;
+            }
     }
 
     private static void GetConfigurations() throws IOException {
         try {
             GLOBAL_CONFIGURATIONS = new HConfigurations(FileTreeStorage.GLOBAL_CONFIGURATION_FILE);
             GLOBAL_CONFIGURATIONS.read();
-        } catch (IOException | HWrongConfigValueException | HElementRegisteredException | HElementNotRegisteredException exception) {
+        } catch (IOException | HElementRegisteredException | HElementNotRegisteredException exception) {
             logger.log(HLogLevel.CONFIGURATION, exception);
         }
         HConfigElement language = GLOBAL_CONFIGURATIONS.getByName("language");
@@ -150,9 +150,9 @@ public class Craftworld {
 
         try {
             if (language == null)
-                language = new HConfigElement("language", LanguageI18N.get("Core.configuration.language.name"), CURRENT_LANGUAGE);
+                language = new HConfigElement("language", LanguageI18N.get(Craftworld.class, "Core.configuration.language.name"), CURRENT_LANGUAGE);
             CURRENT_LANGUAGE = language.getValue();
-            language.setNote(LanguageI18N.get("Core.configuration.language.name"));
+            language.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.language.name"));
         } catch (HWrongConfigValueException exception) {
             logger.log(HLogLevel.ERROR, exception);
             language = new HConfigElement();
@@ -160,9 +160,9 @@ public class Craftworld {
 
         try {
             if (overwrite_when_extracting == null)
-                overwrite_when_extracting = new HConfigElement("overwrite_when_extracting", LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"), HConfigType.BOOLEAN, OVERWRITE_FILES_WHEN_EXTRACTING ? "true" : "false");
+                overwrite_when_extracting = new HConfigElement("overwrite_when_extracting", LanguageI18N.get(Craftworld.class, "Core.configuration.overwrite_when_extracting.name"), HConfigType.BOOLEAN, OVERWRITE_FILES_WHEN_EXTRACTING ? "true" : "false");
             else
-                overwrite_when_extracting.setNote(LanguageI18N.get("Core.configuration.overwrite_when_extracting.name"));
+                overwrite_when_extracting.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.overwrite_when_extracting.name"));
             OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
         } catch (HWrongConfigValueException exception) {
             logger.log(HLogLevel.ERROR, exception);
@@ -171,9 +171,9 @@ public class Craftworld {
 
         try {
             if (garbage_collector_time_interval == null)
-                garbage_collector_time_interval = new HConfigElement("garbage_collector_time_interval", LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"), HConfigType.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
+                garbage_collector_time_interval = new HConfigElement("garbage_collector_time_interval", LanguageI18N.get(Craftworld.class, "Core.configuration.garbage_collector_time_interval.name"), HConfigType.INT, String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
             else
-                garbage_collector_time_interval.setNote(LanguageI18N.get("Core.configuration.garbage_collector_time_interval.name"));
+                garbage_collector_time_interval.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.garbage_collector_time_interval.name"));
             if (Integer.parseInt(garbage_collector_time_interval.getValue()) < 10) {
                 HLog.logger(HLogLevel.CONFIGURATION, "Garbage collector time interval too short: ", garbage_collector_time_interval.getValue(), ". Now use:", GARBAGE_COLLECTOR_TIME_INTERVAL);
                 garbage_collector_time_interval.setValue(String.valueOf(GARBAGE_COLLECTOR_TIME_INTERVAL));
@@ -187,12 +187,12 @@ public class Craftworld {
 
         try {
             if (port == null)
-                port = new HConfigElement("port", LanguageI18N.get("Core.configuration.port.name"), HConfigType.INT, String.valueOf(PORT));
+                port = new HConfigElement("port", LanguageI18N.get(Craftworld.class, "Core.configuration.port.name"), HConfigType.INT, String.valueOf(PORT));
             else
-                port.setNote(LanguageI18N.get("Core.configuration.port.name"));
+                port.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.port.name"));
             PORT = Integer.parseInt(port.getValue());
-            if (PortManager.checkPortUnavailable(PORT)) {
-                int availablePort = PortManager.getNextAvailablePort();
+            if (PortManager.portIsAvailable("localhost", PORT)) {
+                int availablePort = PortManager.getNextAvailablePortRandom("localhost");
                 logger.log(HLogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
                 port.setValue(String.valueOf(availablePort));
                 PORT = availablePort;
@@ -219,47 +219,9 @@ public class Craftworld {
         }
     }
 
-    private static boolean loadMods() {
-        HLog logger = new HLog("ModLauncher", Thread.currentThread().getName());
-        List<IllegalArgumentException> loaderExceptions = new ArrayList<>();
-        try {
-            loaderExceptions = ModClassesLoader.loadModClasses();
-        } catch (IOException exception) {
-            logger.log(HLogLevel.ERROR, exception);
-        }
-        if (loaderExceptions != null) {
-            logger.log(HLogLevel.BUG, "Mod Loading Error in loading classes!");
-            for (IllegalArgumentException exception: loaderExceptions)
-                logger.log(HLogLevel.FAULT, exception);
-            return false;
-        }
-        logger.log(HLogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
-        logger.log(HLogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
-        List<ModInformationException> sorterExceptions = ModClassesSorter.sortMods();
-        if (sorterExceptions != null) {
-            logger.log(HLogLevel.BUG, "Mod Loading Error in sorting classes!");
-            for (ModInformationException exception: sorterExceptions)
-                logger.log(HLogLevel.ERROR, exception);
-            return false;
-        }
-        logger.log(HLogLevel.FINEST, "Sorted Mod list: ", ModManager.getModList());
-        EventBusManager.getDefaultEventBus().post(new PreInitializationModsEvent());
-        for (Class<? extends ModImplement> aClass: ModClassesSorter.getSortedMods()) {
-            EventBusManager.getDefaultEventBus().post(new ModInitializingEvent(aClass));
-            ModImplement instance = HClassHelper.getInstance(aClass);
-            if (instance == null) {
-                logger.log(HLogLevel.ERROR, "No Common Constructor for creating Mod class." + ModManager.crashClassInformation(aClass));
-                continue;
-            }
-            try {
-                instance.mainInitialize();
-                EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, true));
-            } catch (Exception exception) {
-                EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, false));
-            }
-        }
-        EventBusManager.getDefaultEventBus().post(new PostInitializationModsEvent());
-        return true;
+    @Override
+    public @NotNull String getLanguagePath(@Nullable String lang) {
+        return FileTreeStorage.ASSETS_PATH + "Core\\lang\\" + lang + ".lang";
     }
 
     @SuppressWarnings("unused")

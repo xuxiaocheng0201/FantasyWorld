@@ -61,7 +61,7 @@ public class Block implements IDSTBase {
             return;
         }
         try {
-            this.instance = BlockUtils.getInstance().getElementInstance(BlockUtils.dePrefix(name));
+            this.instance = BlockUtils.getInstance().getElementInstance(IDSTBase.dePrefix(name));
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
         }

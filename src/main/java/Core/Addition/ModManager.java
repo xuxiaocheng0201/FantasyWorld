@@ -12,25 +12,34 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ModManager {
-    public static Map<Class<?>, File> getAllClassesWithJarFiles() {
+    public static @NotNull Set<Class<?>> getAllClasses() {
+        return ModClassesLoader.getAllClasses();
+    }
+
+    public static @NotNull Map<Class<?>, File> getAllClassesWithJarFiles() {
         return ModClassesLoader.getAllClassesWithJarFiles();
     }
 
-    public static List<Class<? extends ModImplement>> getModList() {
+    public static @NotNull List<Class<? extends ModImplement>> getModList() {
         if (ModClassesSorter.getSortedMods().isEmpty())
             return ModClassesLoader.getModList();
         return ModClassesSorter.getSortedMods();
     }
 
-    public static void deleteMod(ModName modName) {
+    public static boolean addModFilePath(@Nullable File modsFile) {
+        return ModClassesLoader.addMod(modsFile);
+    }
+
+    public static void deleteMod(@Nullable ModName modName) {
         if (modName == null)
             return;
         getModList().removeIf(modClass -> modName.equals(ModImplement.getModNameFromClass(modClass)));
     }
 
-    public static Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+    public static @NotNull Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
         return ModClassesLoader.getElementPairList();
     }
 

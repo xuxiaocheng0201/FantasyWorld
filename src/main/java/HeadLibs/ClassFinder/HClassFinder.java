@@ -121,6 +121,14 @@ public class HClassFinder {
      * @param directory available jars in.
      */
     public void addJarFilesInDirectory(@Nullable File directory) {
+        this.addJarFilesInDirectory(directory, false);
+    }
+
+    /**
+     * Add available jars in directory for searching.
+     * @param directory available jars in.
+     */
+    public void addJarFilesInDirectory(@Nullable File directory, boolean recursive) {
         if (directory == null || !directory.exists())
             return;
         if (directory.isFile())
@@ -130,7 +138,10 @@ public class HClassFinder {
             if (files == null)
                 return;
             for (File file: files)
-                this.addJarFile(file);
+                if (recursive && file.isDirectory())
+                    this.addJarFilesInDirectory(file, true);
+                else
+                    this.addJarFile(file);
         }
     }
 

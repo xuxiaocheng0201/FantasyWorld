@@ -19,8 +19,8 @@ public class DSTTagBooleanMap implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -3458780033002101008L;
     public static final String id = "BooleanMap";
-    public static final String prefix = DSTUtils.prefix(id);
-    public static final String suffix = DSTUtils.suffix(id);
+    public static final String prefix = IDSTBase.prefix(id);
+    public static final String suffix = IDSTBase.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, DSTTagBooleanMap.class);

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -80,6 +81,7 @@ public class EventBusManager {
         return ALL_EVENT_BUS_REVERSE.getMap().keySet();
     }
 
+    private static final Set<Class<?>> registeredClassesFlag = new HashSet<>();
     /**
      * Register the class to eventbus by {@link EventSubscribe} annotation.
      * @param aClass the class to register
@@ -101,6 +103,9 @@ public class EventBusManager {
         if (instance == null)
             throw new NoSuchMethodException("Get instance failed. Can't register class to event bus '" + subscribe.eventBus() + "'."
                     + ModManager.crashClassInformation(aClass));
+        if (registeredClassesFlag.contains(aClass))
+            return;
+        registeredClassesFlag.add(aClass);
         if ("*".equals(HStringHelper.notNullStrip(subscribe.eventBus()))) {
             for (EventBus eventBus: EventBusManager.getAllEventBus())
                 eventBus.register(instance);

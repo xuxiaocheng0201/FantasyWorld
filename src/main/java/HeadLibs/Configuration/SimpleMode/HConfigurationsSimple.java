@@ -143,7 +143,7 @@ public class HConfigurationsSimple {
     /**
      * Read configurations from file.
      */
-    public void read() throws IOException, HWrongConfigValueException, HElementRegisteredException {
+    public void read() throws IOException, HElementRegisteredException {
         this.data.deregisterAll();
         BufferedReader reader = new BufferedReader(new FileReader(this.file));
         String temp = reader.readLine();

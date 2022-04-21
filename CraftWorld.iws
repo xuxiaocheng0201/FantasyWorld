@@ -8,12 +8,50 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Improve eventbus manager.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Cached HClassHelper#getInstance(Class, boolean).">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/InvokeBeforeEventsRegister.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/ModImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/ModImplement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/ElementUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/ElementUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesSorter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesSorter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ClientStoppingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ClientStoppingEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ElementsCheckedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ElementsCheckingEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ModInitializedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ModInitializedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ModInitializingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ModInitializingEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/PostInitializationModsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/PostInitializationModsEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/PreInitializationModsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/PreInitializationModsEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ServerStartEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ServerStartEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Events/ServerStopEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ServerStopEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/PortManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/PortManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/Dimension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/Dimension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTMetaCompound.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTMetaCompound.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigurations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HConfigurations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HWrongConfigValueException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/HWrongConfigValueException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/SimpleMode/HConfigurationsSimple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/SimpleMode/HConfigurationsSimple.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,10 +83,10 @@
       <list>
         <option value="JavaFXApplication" />
         <option value="Interface" />
-        <option value="AnnotationType" />
         <option value="Record" />
         <option value="Class" />
         <option value="Enum" />
+        <option value="AnnotationType" />
       </list>
     </option>
   </component>
@@ -68,17 +106,19 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Tree.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Pair.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Craftworld.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilNameClashException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementNameClashException.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/PortManager.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilInformationException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/SimpleMode/HConfigurationsSimple.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/InvokeBeforeEventsRegister.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesSorter.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/ElementImplement.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/NewMod.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementImplementInformationException.java" root0="SKIP_INSPECTION" />
@@ -87,21 +127,21 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementUtilCore.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HDynamicJarClassLoader.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Events/ModInitializedEvent.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckingEvent.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Events/ElementsCheckedEvent.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Events/ModInitializingEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ModInitializedEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ElementsCheckingEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ElementsCheckedEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ModInitializingEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Events/ClientStoppingEvent.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Events/ServerStopEvent.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Events/PostInitializationModsEvent.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Events/PreInitializationModsEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ClientStoppingEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ServerStopEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/PostInitializationModsEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/PreInitializationModsEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Events/ServerStartEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ServerStartEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/EventSubscribe.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/BasicInformation/ElementName.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModUnsupportedCraftworldVersionException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModRequirementFormatException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModInformationException.java" root0="SKIP_INSPECTION" />
@@ -112,6 +152,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementNotPairException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModRequirements.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HElementRegisteredException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HMapRegisterer.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HElementNotRegisteredException.java" root0="SKIP_INSPECTION" />
@@ -165,7 +206,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindow运行.ShowToolbar" value="false" />
     <property name="com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件" value="JAVA" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/assets/CraftWorld/lang" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/hutool-all-5.1.2-javadoc.jar" />
     <property name="project.structure.last.edited" value="模块" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.21609196" />
@@ -190,11 +231,11 @@
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets.CraftWorld.lang" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="Core.Addition.ModClassesLoader" />
+      <recent name="Core.Addition.ModManager" />
+      <recent name="CraftWorld.DST.IDSTBase" />
       <recent name="Core.EventBus.EventBusManager" />
       <recent name="Core.Addition.ModClassesSorter" />
-      <recent name="Core.Addition.ModClassesLoader" />
-      <recent name="Core.FileTreeStorage" />
-      <recent name="Core.Addition.Mod.ModImplement" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="HeadLibs.Version" />
@@ -240,13 +281,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00044" summary="Package.">
-      <created>1647400424736</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1647400424736</updated>
     </task>
     <task id="LOCAL-00045" summary="build mod container">
       <created>1647482635580</created>
@@ -584,7 +618,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650418909616</updated>
     </task>
-    <option name="localTasksCounter" value="93" />
+    <task id="LOCAL-00093" summary="Cached HClassHelper#getInstance(Class, boolean).">
+      <created>1650425342975</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1650425342975</updated>
+    </task>
+    <option name="localTasksCounter" value="94" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -626,7 +667,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix some important bugs." />
     <MESSAGE value="Fix some deadly bugs." />
     <MESSAGE value="Add some javadocs and Tree.java" />
     <MESSAGE value="Add some javadocs." />
@@ -651,7 +691,8 @@
     <MESSAGE value="Improve mod sorter." />
     <MESSAGE value="Improve eventbus creator." />
     <MESSAGE value="Improve eventbus manager." />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve eventbus manager." />
+    <MESSAGE value="Cached HClassHelper#getInstance(Class, boolean)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Cached HClassHelper#getInstance(Class, boolean)." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -669,6 +710,12 @@
         <PinnedItemInfo parentTag="HeadLibs.Logger.HLog" memberName="DATE_FORMAT" />
       </pinned-members>
     </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="GradleRunConfiguration">
+        <watch expression="ModClassesLoader.MODS_FILES" language="JAVA" custom="Core.Addition.ModClassesLoader" />
+        <watch expression="ModClassesLoader.mods" language="JAVA" custom="Core.Addition.ModClassesLoader" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

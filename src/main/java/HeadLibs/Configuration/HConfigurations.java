@@ -144,7 +144,7 @@ public class HConfigurations implements Serializable {
     /**
      * Read configurations from file.
      */
-    public void read() throws IOException, HWrongConfigValueException, HElementRegisteredException, HElementNotRegisteredException {
+    public void read() throws IOException, HElementRegisteredException, HElementNotRegisteredException {
         this.data.deregisterAll();
         BufferedReader reader = new BufferedReader(new FileReader(this.file));
         String temp = reader.readLine();

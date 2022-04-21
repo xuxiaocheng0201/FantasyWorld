@@ -3,6 +3,7 @@ package HeadLibs.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.io.Serial;
 
 /**
@@ -10,7 +11,7 @@ import java.io.Serial;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HWrongConfigValueException extends Exception {
+public class HWrongConfigValueException extends IOException {
     @Serial
     private static final long serialVersionUID = -4695385007029343114L;
 

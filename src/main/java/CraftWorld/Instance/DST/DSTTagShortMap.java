@@ -19,8 +19,8 @@ public class DSTTagShortMap implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -8133206058269937530L;
     public static final String id = "ShortMap";
-    public static final String prefix = DSTUtils.prefix(id);
-    public static final String suffix = DSTUtils.suffix(id);
+    public static final String prefix = IDSTBase.prefix(id);
+    public static final String suffix = IDSTBase.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, DSTTagShortMap.class);

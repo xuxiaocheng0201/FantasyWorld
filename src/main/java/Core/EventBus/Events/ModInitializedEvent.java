@@ -1,4 +1,4 @@
-package Core.Events;
+package Core.EventBus.Events;
 
 import Core.Addition.Mod.ModImplement;
 

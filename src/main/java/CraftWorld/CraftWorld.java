@@ -2,10 +2,12 @@ package CraftWorld;
 
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
+import Core.Addition.ModManager;
 import Core.Craftworld;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
-import Core.Events.PreInitializationModsEvent;
+import Core.EventBus.Events.PreInitializationModsEvent;
+import Core.FileTreeStorage;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import HeadLibs.Logger.HLog;
@@ -14,6 +16,7 @@ import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -46,6 +49,11 @@ public class CraftWorld implements ModImplement {
     public void preInitialize(PreInitializationModsEvent event) throws IOException {
         logger.setName("CraftWorld", logger);
         Craftworld.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
+    }
+
+    @Override
+    public void mainInitialize() throws Exception {
+        ModManager.addModFilePath(new File(FileTreeStorage.RUNTIME_PATH + "assets"));
     }
 
     public void start(ServerSocket server) throws InterruptedException {

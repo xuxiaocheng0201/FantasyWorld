@@ -20,8 +20,8 @@ public final class DSTMetaCompound implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 5912925151440251840L;
     public static final String id = "Compound";
-    public static final String prefix = DSTUtils.prefix(id);
-    public static final String suffix = DSTUtils.suffix(id);
+    public static final String prefix = IDSTBase.prefix(id);
+    public static final String suffix = IDSTBase.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, DSTMetaCompound.class);
@@ -50,7 +50,7 @@ public final class DSTMetaCompound implements IDSTBase {
         while (!suffix.equals(name)) {
             IDSTBase dst = null;
             try {
-                dst = DSTUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()));
+                dst = DSTUtils.getInstance().getElementInstance(IDSTBase.dePrefix(input.readUTF()));
             } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
                 HLog.logger(HLogLevel.ERROR, exception);
             }

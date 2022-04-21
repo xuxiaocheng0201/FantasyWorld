@@ -6,15 +6,12 @@ import Core.Addition.Element.ElementUtil;
 import Core.Addition.Element.NewElementImplementCore;
 import Core.Addition.Element.NewElementUtilCore;
 import Core.Addition.Mod.BasicInformation.ModName;
+import Core.Addition.Mod.InvokeBeforeEventsRegister;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
 import Core.EventBus.EventBusManager;
-import Core.Events.ElementsCheckedEvent;
-import Core.Events.ElementsCheckingEvent;
-import Core.Exceptions.ElementImplementNameClashException;
-import Core.Exceptions.ElementNotPairException;
-import Core.Exceptions.ElementUtilNameClashException;
-import Core.Exceptions.ModNameClashException;
+import Core.EventBus.Events.*;
+import Core.Exceptions.*;
 import Core.FileTreeStorage;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HClassHelper;
@@ -26,6 +23,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -35,7 +34,15 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 public class ModClassesLoader {
-    public static final File MODS_FILE = (new File(FileTreeStorage.MOD_PATH)).getAbsoluteFile();
+    private static final List<File> MODS_FILES = new ArrayList<>();
+
+    /**
+     * Modifier mods file path;
+     * @return MODS_FILES
+     */
+    public static List<File> getModsFiles() {
+        return MODS_FILES;
+    }
 
     private static Set<Class<?>> allClasses;
     private static Map<Class<?>, File> allClassesWithJarFiles;
@@ -99,7 +106,8 @@ public class ModClassesLoader {
     @SuppressWarnings("unchecked")
     private static void pickAllClasses() throws IOException {
         HClassFinder modsFinder = new HClassFinder();
-        modsFinder.addJarFilesInDirectory(MODS_FILE);
+        for (File file: MODS_FILES)
+            modsFinder.addJarFilesInDirectory(file);
         modsFinder.startFind();
         allClasses = modsFinder.getClassList();
         allClassesWithJarFiles = modsFinder.getClassListWithJarFile();
@@ -253,17 +261,34 @@ public class ModClassesLoader {
         }
     }
 
-    public static @Nullable List<IllegalArgumentException> loadModClasses() throws IOException {
+    private static @Nullable List<IllegalArgumentException> loadModClasses(boolean firstTime) throws IOException {
+        if (MODS_FILES.isEmpty())
+            return null;
+        StringBuilder builder = new StringBuilder(MODS_FILES.get(0).getPath());
+        for (int i = 1; i < MODS_FILES.size(); ++i)
+            builder.append("; ").append(MODS_FILES.get(i));
         (new HLog("ModClassesLoader", Thread.currentThread().getName()))
-                .log(HLogLevel.INFO, "Searching mods in '", MODS_FILE.getPath(), "'.");
+                .log(HLogLevel.INFO, "Searching mods in '", builder.toString(), "'.");
         pickAllClasses();
+        Collection<Method> needInvokeMethods = new ArrayList<>();
         for (Class<?> aClass: allClasses)
+            for (Method method: aClass.getDeclaredMethods())
+                if (method.getAnnotation(InvokeBeforeEventsRegister.class) != null)
+                    needInvokeMethods.add(method);
+        for (Method method: needInvokeMethods)
+            try {
+                method.invoke(null);
+            } catch (IllegalAccessException | InvocationTargetException exception) {
+                HLog.logger(HLogLevel.ERROR, exception);
+            }
+        for (Class<?> aClass: allClasses) {
             try {
                 EventBusManager.register(aClass);
             } catch (NoSuchMethodException exception) {
                 HLog.logger(HLogLevel.ERROR, exception);
             }
-        EventBusManager.getDefaultEventBus().post(new ElementsCheckingEvent());
+        }
+        EventBusManager.getDefaultEventBus().post(new ElementsCheckingEvent(firstTime));
         checkSameMods();
         checkSameElementImplements();
         checkSameElementUtils();
@@ -272,12 +297,83 @@ public class ModClassesLoader {
         checkElementsPair();
         if (!exceptions.isEmpty())
             return exceptions;
-        EventBusManager.getDefaultEventBus().post(new ElementsCheckedEvent());
+        EventBusManager.getDefaultEventBus().post(new ElementsCheckedEvent(firstTime));
         mods.clear();
         elementImplements.clear();
         elementUtils.clear();
         implementList.clear();
         utilList.clear();
         return null;
+    }
+
+    private static final Collection<Class<? extends ModImplement>> initializedModsFlag = new HashSet<>();
+
+    private static boolean loadMods(boolean firstTime) {
+        HLog logger = new HLog("ModLauncher", Thread.currentThread().getName());
+        List<IllegalArgumentException> loaderExceptions = List.of();
+        try {
+            loaderExceptions = loadModClasses(firstTime);
+        } catch (IOException exception) {
+            logger.log(HLogLevel.ERROR, exception);
+        }
+        if (loaderExceptions != null) {
+            logger.log(HLogLevel.BUG, "Mod Loading Error in loading classes!");
+            for (IllegalArgumentException exception: loaderExceptions)
+                logger.log(HLogLevel.FAULT, exception);
+            return false;
+        }
+        logger.log(HLogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
+        logger.log(HLogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
+        List<ModInformationException> sorterExceptions = ModClassesSorter.sortMods();
+        if (sorterExceptions != null) {
+            logger.log(HLogLevel.BUG, "Mod Loading Error in sorting classes!");
+            for (ModInformationException exception: sorterExceptions)
+                logger.log(HLogLevel.ERROR, exception);
+            return false;
+        }
+        logger.log(HLogLevel.FINEST, "Sorted Mod list: ", ModManager.getModList());
+        return true;
+    }
+
+    private static void initializeMods(boolean firstTime) {
+        EventBusManager.getDefaultEventBus().post(new PreInitializationModsEvent(firstTime));
+        Collection<Class<? extends ModImplement>> sortedMods = new ArrayList<>(ModClassesSorter.getSortedMods());
+        for (Class<? extends ModImplement> aClass: sortedMods) {
+            if (initializedModsFlag.contains(aClass))
+                continue;
+            initializedModsFlag.add(aClass);
+            EventBusManager.getDefaultEventBus().post(new ModInitializingEvent(aClass));
+            ModImplement instance = HClassHelper.getInstance(aClass);
+            if (instance == null) {
+                (new HLog("ModLauncher", Thread.currentThread().getName()))
+                        .log(HLogLevel.ERROR, "No Common Constructor for creating Mod instance." + ModManager.crashClassInformation(aClass));
+                continue;
+            }
+            try {
+                instance.mainInitialize();
+                EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, true));
+            } catch (Exception exception) {
+                EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, false));
+            }
+            if (!sortedMods.equals(ModClassesSorter.getSortedMods()))
+                break;
+        }
+        EventBusManager.getDefaultEventBus().post(new PostInitializationModsEvent(firstTime));
+    }
+
+    private static boolean firstTime = true;
+    
+    static boolean addMod(@Nullable File modsFile) {
+        if (modsFile == null || !modsFile.exists() || ModClassesLoader.getModsFiles().contains(modsFile))
+            return false;
+        boolean first = firstTime;
+        firstTime = false;
+        ModClassesSorter.getSortedMods().clear();
+        ModClassesLoader.getModsFiles().add(modsFile);
+        if (loadMods(first)) {
+            initializeMods(first);
+            return ModClassesSorter.getExceptions().isEmpty();
+        }
+        return false;
     }
 }

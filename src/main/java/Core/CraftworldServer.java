@@ -1,8 +1,8 @@
 package Core;
 
 import Core.EventBus.EventBusManager;
-import Core.Events.ServerStartEvent;
-import Core.Events.ServerStopEvent;
+import Core.EventBus.Events.ServerStartEvent;
+import Core.EventBus.Events.ServerStopEvent;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 
