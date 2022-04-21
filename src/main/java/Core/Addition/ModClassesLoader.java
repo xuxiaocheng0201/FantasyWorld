@@ -12,7 +12,6 @@ import Core.Addition.Mod.NewMod;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.Events.*;
 import Core.Exceptions.*;
-import Core.FileTreeStorage;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Logger.HLog;
@@ -28,7 +27,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * Load mod classes in {@link FileTreeStorage#MOD_PATH}.
+ * Load mod classes in {@link ModClassesLoader#MODS_FILES}.
  * Initialize all classes, register eventbuses and collect mod classes and element classes.
  * @author xuxiaocheng
  */
@@ -36,10 +35,6 @@ import java.util.*;
 public class ModClassesLoader {
     private static final List<File> MODS_FILES = new ArrayList<>();
 
-    /**
-     * Modifier mods file path;
-     * @return MODS_FILES
-     */
     public static List<File> getModsFiles() {
         return MODS_FILES;
     }

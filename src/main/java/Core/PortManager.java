@@ -12,7 +12,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.random.RandomGenerator;
 
-@SuppressWarnings("MagicNumber")
+/**
+ * Get available port.
+ * @author xuxiaocheng
+ */
+@SuppressWarnings({"MagicNumber", "unused"})
 public class PortManager {
     private static final Collection<Integer> checkedPortsFlag = new HashSet<>();
     private static boolean checkPortAvailableInFlag(@NotNull String host, @Range(from = 1, to = 65535) int port) {
@@ -22,6 +26,11 @@ public class PortManager {
         return portIsAvailable(host, port);
     }
 
+    /**
+     * Get next available port in the host with random.
+     * @param hostIn the host
+     * @return 0 - failed. others - found port.
+     */
     @Range(from = 0, to = 65535)
     public static int getNextAvailablePortRandom(@Nullable String hostIn) {
         if (hostIn == null)
@@ -47,6 +56,11 @@ public class PortManager {
         return r;
     }
 
+    /**
+     * Get next available port in the host with order.
+     * @param hostIn the host
+     * @return 0 - failed. others - found port.
+     */
     @Range(from = 0, to = 65535)
     public static int getNextAvailablePortQuickly(@Nullable String hostIn) {
         if (hostIn == null)
@@ -63,6 +77,12 @@ public class PortManager {
         return 0;
     }
 
+    /**
+     * Check port is available with the host.
+     * @param hostIn the host
+     * @param port the port
+     * @return true - available. false - unavailable.
+     */
     public static boolean portIsAvailable(@Nullable String hostIn, int port) {
         if (hostIn == null)
             return false;

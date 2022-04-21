@@ -126,14 +126,6 @@ public class Craftworld implements ModImplement {
         } catch (InterruptedException exception) {
             logger.log(HLogLevel.ERROR, exception);
         }
-
-
-        for (int i = 0; i < 50; ++i)
-            if (PortManager.portIsAvailable("localhost", PORT)) {
-                int availablePort = PortManager.getNextAvailablePortRandom("localhost");
-                logger.log(HLogLevel.CONFIGURATION, "Unavailable port: ", PORT, ". Now use:", availablePort);
-                PORT = availablePort;
-            }
     }
 
     private static void GetConfigurations() throws IOException {
