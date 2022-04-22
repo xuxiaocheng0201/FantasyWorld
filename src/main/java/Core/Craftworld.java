@@ -10,6 +10,7 @@ import HeadLibs.Configuration.HConfigType;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Configuration.HWrongConfigValueException;
 import HeadLibs.Helper.HFileHelper;
+import HeadLibs.Helper.HMathHelper;
 import HeadLibs.Helper.HZipHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -126,6 +127,15 @@ public class Craftworld implements ModImplement {
         } catch (InterruptedException exception) {
             logger.log(HLogLevel.ERROR, exception);
         }
+
+        logger.log(HMathHelper.roundDownInterval(1, 10));
+        logger.log(HMathHelper.roundDownInterval(10, 10));
+        logger.log(HMathHelper.roundDownInterval(20, 10));
+        logger.log(HMathHelper.roundDownInterval(15, 10));
+        logger.log(HMathHelper.roundDownInterval(13, 10));
+        logger.log(HMathHelper.roundDownInterval(12, 10));
+        logger.log(HMathHelper.roundDownInterval(6, 10));
+        logger.log(HMathHelper.roundDownInterval(4, 10));
     }
 
     private static void GetConfigurations() throws IOException {

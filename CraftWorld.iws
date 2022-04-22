@@ -8,13 +8,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Allow mods to add MODS FILE PATH.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Math helper.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HColorHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/PortManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/PortManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HMathHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HMathHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HRandomHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HRandomHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,9 +51,9 @@
         <option value="JavaFXApplication" />
         <option value="Interface" />
         <option value="Record" />
-        <option value="Class" />
         <option value="Enum" />
         <option value="AnnotationType" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -78,7 +82,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/PortManager.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilInformationException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Configuration/SimpleMode/HConfigurationsSimple.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/InvokeBeforeEventsRegister.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesSorter.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" root0="SKIP_INSPECTION" />
@@ -104,13 +108,13 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/EventSubscribe.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/BasicInformation/ElementName.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModUnsupportedCraftworldVersionException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModRequirementFormatException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModInformationException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModDependencyMissingException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModDependencyVersionUnmatchedException.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HSetRegisterer.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementNotPairException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModRequirements.java" root0="SKIP_INSPECTION" />
@@ -163,15 +167,15 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="Downloaded.Files.Path.Enabled" value="true" />
-    <property name="Repository.Attach.Annotations" value="true" />
+    <property name="Repository.Attach.Annotations" value="false" />
     <property name="Repository.Attach.JavaDocs" value="true" />
-    <property name="Repository.Attach.Sources" value="true" />
+    <property name="Repository.Attach.Sources" value="false" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindow运行.ShowToolbar" value="false" />
     <property name="com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件" value="JAVA" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/hutool-all-5.1.2-javadoc.jar" />
-    <property name="project.structure.last.edited" value="模块" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/commons-math3-3.6.1-src.zip" />
+    <property name="project.structure.last.edited" value="库" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.21609196" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
@@ -195,11 +199,11 @@
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets.CraftWorld.lang" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="HeadLibs.Helper.HRandomHelper" />
       <recent name="Core.Addition.ModClassesLoader" />
       <recent name="Core.Addition.ModManager" />
       <recent name="CraftWorld.DST.IDSTBase" />
       <recent name="Core.EventBus.EventBusManager" />
-      <recent name="Core.Addition.ModClassesSorter" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="HeadLibs.Version" />
@@ -245,20 +249,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00046" summary="Mod version checking.">
-      <created>1647498823758</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1647498823758</updated>
-    </task>
-    <task id="LOCAL-00047" summary="Mod sort function finished.">
-      <created>1647590046210</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1647590046211</updated>
     </task>
     <task id="LOCAL-00048" summary="Fix some bugs.">
       <created>1647619919069</created>
@@ -589,7 +579,21 @@
       <option name="project" value="LOCAL" />
       <updated>1650532887831</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="Add more javadocs.">
+      <created>1650533933008</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1650533933008</updated>
+    </task>
+    <task id="LOCAL-00096" summary="Math helper.">
+      <created>1650544896130</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1650544896130</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -631,8 +635,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Add some javadocs." />
-    <MESSAGE value="Log Level can be registered." />
     <MESSAGE value="Fix some bugs." />
     <MESSAGE value="Doing version range." />
     <MESSAGE value="Doing version range and more HStringHelper methods." />
@@ -656,7 +658,9 @@
     <MESSAGE value="Cached HClassHelper#getInstance(Class, boolean)." />
     <MESSAGE value="Allow mods add MODS FILE PATH." />
     <MESSAGE value="Allow mods to add MODS FILE PATH." />
-    <option name="LAST_COMMIT_MESSAGE" value="Allow mods to add MODS FILE PATH." />
+    <MESSAGE value="Add more javadocs." />
+    <MESSAGE value="Math helper." />
+    <option name="LAST_COMMIT_MESSAGE" value="Math helper." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
