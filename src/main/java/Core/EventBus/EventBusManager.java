@@ -91,7 +91,7 @@ public class EventBusManager {
      */
     public static void register(@NotNull Class<?> aClass) throws NoSuchMethodException {
         EventSubscribe subscribe = aClass.getAnnotation(EventSubscribe.class);
-        if (subscribe == null)
+        if (subscribe == null || !HClassHelper.isClass(aClass))
             return;
         boolean noSubscriber = true;
         for (Method method: aClass.getMethods())

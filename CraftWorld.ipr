@@ -626,6 +626,13 @@
       <inspection_tool class="FieldMayBeStatic" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="FloatingPointEquality" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="GrStringStyleViolation" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+      <inspection_tool class="GradlePackageUpdate" enabled="true" level="WARNING" enabled_by_default="true">
+        <option name="excludeList">
+          <list>
+            <option value="cn.hutool:hutool-all" />
+          </list>
+        </option>
+      </inspection_tool>
       <inspection_tool class="GroovyBusyWait" enabled="true" level="WARNING" enabled_by_default="true" />
       <inspection_tool class="GroovyConstantNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
         <option name="m_regex" value="[A-Z\d]*" />
@@ -1126,11 +1133,6 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javassist/javassist/3.12.1.GA/cc64c85182743e0e8166cfc072a4359e54bbc7e9/javassist-3.12.1.GA-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.apache:commons-math3:3.6.1">
-      <CLASSES />
-      <JAVADOC />
-      <SOURCES />
-    </library>
     <library name="Gradle: org.apiguardian:apiguardian-api:1.1.2">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apiguardian/apiguardian-api/1.1.2/a231e0d844d2721b0fa1b238006d15c6ded6842a/apiguardian-api-1.1.2.jar!/" />
@@ -1243,6 +1245,17 @@
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/lib/javassist-3.12.1.GA-sources.jar!/" />
       </SOURCES>
+    </library>
+    <library name="lib">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/lib" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" type="SOURCES" />
     </library>
   </component>
   <component name="masterDetails">

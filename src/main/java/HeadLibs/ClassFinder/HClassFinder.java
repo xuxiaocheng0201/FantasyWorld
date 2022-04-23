@@ -256,11 +256,8 @@ public class HClassFinder {
         Class<?> aClass;
         try {
             aClass = Class.forName(className);
-        } catch (ClassNotFoundException classNotFoundException) {
+        } catch (ClassNotFoundException | NoClassDefFoundError exception) {
             aClass = loadClassInJar(this.doingJar, className);
-        } catch (NoClassDefFoundError error) {
-            HLog.logger(HLogLevel.MISTAKE, "Class.forName(\"", className, "\") failed. Message: ", error.getMessage(), ".");
-            return;
         }
         if (aClass != null && this.checkSuper(aClass) && this.checkAnnotation(aClass)) {
             this.classList.add(aClass);

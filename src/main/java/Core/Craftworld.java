@@ -68,16 +68,16 @@ public class Craftworld implements ModImplement {
         }
         if (overwrite_when_extracting != null)
             OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
-        try {
-            FileTreeStorage.extractFiles(null, "assets\\Core", "assets\\Core");
-        } catch (IOException exception) {
-            logger.log(HLogLevel.ERROR, exception);
-        }
         for (String arg: args) {
             if ("runClient".equals(arg))
                 isClient = true;
             if ("runServer".equals(arg))
                 isClient = false;
+        }
+        try {
+            FileTreeStorage.extractFiles(null, "assets\\Core", "assets\\Core");
+        } catch (IOException exception) {
+            logger.log(HLogLevel.ERROR, exception);
         }
         GetConfigurations();
         HLog.saveLogs(FileTreeStorage.LOG_FILE);

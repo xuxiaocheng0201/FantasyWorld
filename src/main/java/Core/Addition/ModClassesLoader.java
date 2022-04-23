@@ -9,6 +9,7 @@ import Core.Addition.Mod.BasicInformation.ModName;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
 import Core.EventBus.EventBusManager;
+import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.*;
 import Core.Exceptions.*;
 import HeadLibs.ClassFinder.HClassFinder;
@@ -264,23 +265,26 @@ public class ModClassesLoader {
         (new HLog("ModClassesLoader", Thread.currentThread().getName()))
                 .log(HLogLevel.INFO, "Searching mods in '", builder.toString(), "'.");
         pickAllClasses();
+        List<IllegalArgumentException> errors = new ArrayList<>();
         Collection<Method> needInvokeMethods = new ArrayList<>();
-        for (Class<?> aClass: allClasses)
-            for (Method method: aClass.getDeclaredMethods())
-                if (method.getAnnotation(InvokeBeforeEventsRegister.class) != null)
-                    needInvokeMethods.add(method);
+        for (Class<?> aClass : allClasses)
+            if (aClass.getAnnotation(InvokeBeforeEventsRegister.class) != null && HClassHelper.isClass(aClass))
+                for (Method method : aClass.getDeclaredMethods())
+                    if (method.getAnnotation(InvokeBeforeEventsRegister.class) != null)
+                        needInvokeMethods.add(method);
         for (Method method: needInvokeMethods)
             try {
                 method.invoke(null);
             } catch (IllegalAccessException | InvocationTargetException exception) {
-                HLog.logger(HLogLevel.ERROR, exception);
+                errors.add(new IllegalArgumentException(exception));
             }
         for (Class<?> aClass: allClasses) {
-            try {
-                EventBusManager.register(aClass);
-            } catch (NoSuchMethodException exception) {
-                HLog.logger(HLogLevel.ERROR, exception);
-            }
+            if (aClass.getAnnotation(EventSubscribe.class) != null && HClassHelper.isClass(aClass))
+                try {
+                    EventBusManager.register(aClass);
+                } catch (NoSuchMethodException exception) {
+                    errors.add(new IllegalArgumentException(exception));
+                }
         }
         EventBusManager.getDefaultEventBus().post(new ElementsCheckingEvent(firstTime));
         checkSameMods();
@@ -297,6 +301,8 @@ public class ModClassesLoader {
         elementUtils.clear();
         implementList.clear();
         utilList.clear();
+        if (!errors.isEmpty())
+            return errors;
         return null;
     }
 
