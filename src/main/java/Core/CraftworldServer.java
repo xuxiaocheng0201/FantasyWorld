@@ -20,7 +20,7 @@ public class CraftworldServer implements Runnable {
         isRunning = true;
         EventBusManager.getDefaultEventBus().post(new ServerStartEvent());
         try {
-            ServerSocket server = new ServerSocket(Craftworld.PORT);
+            ServerSocket server = new ServerSocket(GlobalConfigurations.PORT);
             /* ********** Special Modifier ********** */
             CraftWorld.CraftWorld.getInstance().start(server);
             /* ********** \Special Modifier ********** */

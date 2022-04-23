@@ -20,19 +20,26 @@ public class HConfigElementSimple implements Serializable {
     /**
      * Configuration name.
      */
-    private @NotNull String name = "";
+    private @NotNull String name = "null";
     /**
      * Configuration value.
      */
-    private @NotNull String value = "";
+    private @NotNull String value = "null";
 
     /**
      * Construct a null Config element.
      */
     public HConfigElementSimple() {
         super();
-        this.name = "null";
-        this.value = "null";
+    }
+
+    /**
+     * Construct a new Config element.
+     * @param name configuration name
+     */
+    public HConfigElementSimple(@Nullable String name) {
+        super();
+        this.setName(name);
     }
 
     /**

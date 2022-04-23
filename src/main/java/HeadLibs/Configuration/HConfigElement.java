@@ -20,26 +20,25 @@ public class HConfigElement implements Serializable {
     /**
      * Configuration name.
      */
-    private @NotNull String name = "";
+    private @NotNull String name = "null";
     /**
      * Configuration note.
      */
-    private @NotNull String note = "";
+    private @NotNull String note = "null";
     /**
      * Configuration type.
      */
-    private @NotNull HConfigType type;
+    private @NotNull HConfigType type = HConfigType.STRING;
     /**
      * Configuration value.
      */
-    private @NotNull String value = "";
+    private @NotNull String value = "null";
 
     /**
      * Construct an empty Config element.
      */
     public HConfigElement() {
         super();
-        this.type = HConfigType.STRING;
     }
 
     /**
@@ -64,7 +63,10 @@ public class HConfigElement implements Serializable {
      * @param value configuration value
      */
     public HConfigElement(@Nullable String name, @Nullable String note, @Nullable String value) throws HWrongConfigValueException {
-        this(name, note, HConfigType.STRING, value);
+        super();
+        this.setName(name);
+        this.setNote(note);
+        this.setValue(value);
     }
 
     /**
@@ -74,7 +76,10 @@ public class HConfigElement implements Serializable {
      * @param value configuration value
      */
     public HConfigElement(@Nullable String name, @NotNull HConfigType type, @Nullable String value) throws HWrongConfigValueException {
-        this(name, "null", type, value);
+        super();
+        this.setName(name);
+        this.type = type;
+        this.setValue(value);
     }
 
     /**
@@ -83,7 +88,18 @@ public class HConfigElement implements Serializable {
      * @param value configuration value
      */
     public HConfigElement(@Nullable String name, @Nullable String value) throws HWrongConfigValueException {
-        this(name, "null", HConfigType.STRING, value);
+        super();
+        this.setName(name);
+        this.setValue(value);
+    }
+
+    /**
+     * Construct a new Config element.
+     * @param name configuration name
+     */
+    public HConfigElement(@Nullable String name) {
+        super();
+        this.setName(name);
     }
 
     public @NotNull String getName() {

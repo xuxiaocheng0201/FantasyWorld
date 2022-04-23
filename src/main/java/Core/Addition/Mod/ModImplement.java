@@ -5,8 +5,8 @@ import Core.Addition.Mod.BasicInformation.ModName;
 import Core.Addition.Mod.BasicInformation.ModRequirements;
 import Core.Addition.Mod.BasicInformation.ModVersion;
 import Core.Addition.ModManager;
-import Core.Craftworld;
 import Core.FileTreeStorage;
+import Core.GlobalConfigurations;
 import HeadLibs.Version.HVersionFormatException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +27,7 @@ public interface ModImplement {
 
     default @NotNull String getLanguagePath(@Nullable String lang) {
         return FileTreeStorage.ASSETS_PATH + ModImplement.getModNameFromClass(this.getClass()) + "\\lang\\" +
-                (lang == null ? Craftworld.CURRENT_LANGUAGE : lang) + ".lang";
+                (lang == null ? GlobalConfigurations.CURRENT_LANGUAGE : lang) + ".lang";
     }
 
 

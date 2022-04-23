@@ -27,7 +27,7 @@ public class CraftworldClient implements Runnable {
                 synchronized (this) {
                     this.wait(100);
                 }
-                Closeable client = new Socket("localhost", Craftworld.PORT);
+                Closeable client = new Socket("localhost", GlobalConfigurations.PORT);
                 //TODO: Client
                 synchronized (this) {
                     this.wait(100);

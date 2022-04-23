@@ -49,7 +49,7 @@ public class LanguageI18N {
      * @throws IOException Fail to read file.
      */
     public static String get(@NotNull Class<? extends ModImplement> modClass, @Nullable String name) throws IOException {
-        return get(modClass, name, Craftworld.CURRENT_LANGUAGE);
+        return get(modClass, name, GlobalConfigurations.CURRENT_LANGUAGE);
     }
 
     /**
@@ -60,7 +60,7 @@ public class LanguageI18N {
      */
     public static String getNoException(@NotNull Class<? extends ModImplement> modClass, @Nullable String name) {
         try {
-            return get(modClass, name, Craftworld.CURRENT_LANGUAGE);
+            return get(modClass, name, GlobalConfigurations.CURRENT_LANGUAGE);
         } catch (IOException exception) {
             return name;
         }
@@ -77,7 +77,7 @@ public class LanguageI18N {
     public static String get(@NotNull Class<? extends ModImplement> modClass, @Nullable String name, @Nullable String lang) throws IOException {
         if (name == null)
             return "null";
-        String lang1 = lang == null ? Craftworld.CURRENT_LANGUAGE : lang.toLowerCase();
+        String lang1 = lang == null ? GlobalConfigurations.CURRENT_LANGUAGE : lang.toLowerCase();
         HConfigurationsSimple language = languages.getElementNullable(lang1);
         if (language == null) {
             language = new HConfigurationsSimple(getLanguageFilePath(modClass, lang1));
