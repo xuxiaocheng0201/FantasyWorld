@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'Craftworld'
-version = '0.0.0'
+version = '0.0.1'
 description = 'Craft world!'
 
 repositories {
@@ -18,7 +18,7 @@ java {
 
 jar {
     baseName('Craftworld')
-    version('0.0.0')
+    version('0.0.1')
     manifest() {
         attributes "Main-Class": 'Core.Craftworld'
     }
@@ -29,7 +29,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     implementation 'org.greenrobot:eventbus-java:3.3.1'
-    implementation 'org.apache:commons-math3:3.6.1'
     implementation 'cn.hutool:hutool-all:5.1.2'
     implementation 'javassist:javassist:3.12.1.GA'
 //    implementation 'com.google.code.gson:gson:2.9.0'

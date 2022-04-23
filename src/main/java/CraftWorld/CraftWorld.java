@@ -2,10 +2,10 @@ package CraftWorld;
 
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
-import Core.Craftworld;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
+import Core.FileTreeStorage;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import HeadLibs.Logger.HLog;
@@ -45,7 +45,7 @@ public class CraftWorld implements ModImplement {
     @SuppressWarnings({"unused", "MethodMayBeStatic"})
     public void preInitialize(PreInitializationModsEvent event) throws IOException {
         logger.setName("CraftWorld", logger);
-        Craftworld.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
+        FileTreeStorage.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
 
     public void start(ServerSocket server) throws InterruptedException {

@@ -6,7 +6,6 @@ import Core.Addition.Element.ElementUtil;
 import Core.Addition.Element.NewElementImplementCore;
 import Core.Addition.Element.NewElementUtilCore;
 import Core.Addition.Mod.BasicInformation.ModName;
-import Core.Addition.Mod.InvokeBeforeEventsRegister;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
 import Core.EventBus.EventBusManager;

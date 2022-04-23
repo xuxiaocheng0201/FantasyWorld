@@ -4,14 +4,10 @@ import Core.Addition.Mod.ModImplement;
 import Core.Addition.ModManager;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
-import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Configuration.HConfigElement;
 import HeadLibs.Configuration.HConfigType;
 import HeadLibs.Configuration.HConfigurations;
 import HeadLibs.Configuration.HWrongConfigValueException;
-import HeadLibs.Helper.HFileHelper;
-import HeadLibs.Helper.HMathHelper;
-import HeadLibs.Helper.HZipHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
@@ -25,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.jar.JarFile;
 
 public class Craftworld implements ModImplement {
     public static final String CURRENT_VERSION_STRING = "0.0.1";
@@ -41,29 +36,12 @@ public class Craftworld implements ModImplement {
         }
         CURRENT_VERSION = current_version;
     }
-    private static final String EXTRACT_TEMP_FILE = "extract_temp";
-
-    public static void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) throws IOException {
-        File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
-        if (jarFilePath == null)
-            throw new IOException("Null jar file path for class '" + modClass + "'.s");
-        File targetFilePath = new File(FileTreeStorage.RUNTIME_PATH + targetPath).getAbsoluteFile();
-        if (System.console() == null) {
-            File runtimeFile = new File(FileTreeStorage.RUNTIME_PATH).getAbsoluteFile();
-            String srcResourcePath = runtimeFile.getParentFile().getParentFile().getParentFile().getPath() + "\\src\\main\\resources";
-            HFileHelper.copyFiles(srcResourcePath + "\\" + sourcePath, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
-        } else {
-            HZipHelper.extractFilesFromJar(new JarFile(jarFilePath), sourcePath, Craftworld.EXTRACT_TEMP_FILE);
-            HFileHelper.copyFiles(Craftworld.EXTRACT_TEMP_FILE, targetFilePath.getPath(), Craftworld.OVERWRITE_FILES_WHEN_EXTRACTING);
-            HFileHelper.deleteDirectories(Craftworld.EXTRACT_TEMP_FILE);
-        }
-    }
 
     public static boolean isClient = true;
 
     public static HConfigurations GLOBAL_CONFIGURATIONS;
     public static String CURRENT_LANGUAGE = "zh_cn";
-    public static boolean OVERWRITE_FILES_WHEN_EXTRACTING; // false
+    public static boolean OVERWRITE_FILES_WHEN_EXTRACTING;
     @SuppressWarnings("MagicNumber")
     public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
     public static int PORT = PortManager.getNextAvailablePortRandom("localhost");
@@ -74,11 +52,10 @@ public class Craftworld implements ModImplement {
             r = random.nextInt();
         HLog.logger(r);
      */
-    private static HLog logger;
+    private static final HLog logger = new HLog("CraftworldMain");
 
     public static void main(String[] args) throws IOException {
         Thread.currentThread().setName("CraftworldMain");
-        logger = new HLog("CraftworldMain");
         logger.log(HLogLevel.INFO, "Hello Craftworld!");
         HConfigurations canOverwrite;
         HConfigElement overwrite_when_extracting = null;
@@ -92,7 +69,7 @@ public class Craftworld implements ModImplement {
         if (overwrite_when_extracting != null)
             OVERWRITE_FILES_WHEN_EXTRACTING = Boolean.parseBoolean(overwrite_when_extracting.getValue());
         try {
-            extractFiles(null, "assets\\Core", "assets\\Core");
+            FileTreeStorage.extractFiles(null, "assets\\Core", "assets\\Core");
         } catch (IOException exception) {
             logger.log(HLogLevel.ERROR, exception);
         }
@@ -127,15 +104,6 @@ public class Craftworld implements ModImplement {
         } catch (InterruptedException exception) {
             logger.log(HLogLevel.ERROR, exception);
         }
-
-        logger.log(HMathHelper.roundDownInterval(1, 10));
-        logger.log(HMathHelper.roundDownInterval(10, 10));
-        logger.log(HMathHelper.roundDownInterval(20, 10));
-        logger.log(HMathHelper.roundDownInterval(15, 10));
-        logger.log(HMathHelper.roundDownInterval(13, 10));
-        logger.log(HMathHelper.roundDownInterval(12, 10));
-        logger.log(HMathHelper.roundDownInterval(6, 10));
-        logger.log(HMathHelper.roundDownInterval(4, 10));
     }
 
     private static void GetConfigurations() throws IOException {

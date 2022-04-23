@@ -1,5 +1,6 @@
 package Core;
 
+import HeadLibs.Helper.HRandomHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -43,15 +44,15 @@ public class PortManager {
         checkedPortsFlag.clear();
         long t1 = System.currentTimeMillis();
         RandomGenerator random = new SecureRandom("Craftworld".getBytes());
-        int r = random.nextInt();
-        while (r < 1 || r > 65535 || !checkPortAvailableInFlag(host, r)) {
+        int r = HRandomHelper.nextInt(1, 65535);
+        while (!checkPortAvailableInFlag(host, r)) {
             if (System.currentTimeMillis() - t1 > 3000) {
                 for (int i = 1; i < 65536; ++i)
                     if (checkPortAvailableInFlag(host, i))
                         return i;
                 return 0;
             }
-            r = random.nextInt();
+            r = HRandomHelper.nextInt(1, 65535);
         }
         return r;
     }
