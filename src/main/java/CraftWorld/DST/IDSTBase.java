@@ -12,8 +12,8 @@ import java.io.Serializable;
 
 @NewElementImplementCore(elementName = "DST")
 public interface IDSTBase extends ElementImplement, Serializable {
-    String getDSTName();
-    void setDSTName(String name);
+    default String getDSTName(){return null;};
+    default void setDSTName(String name){};
     void read(DataInput input) throws IOException;
     void write(DataOutput output) throws IOException;
 

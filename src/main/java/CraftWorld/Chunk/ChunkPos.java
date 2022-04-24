@@ -3,7 +3,6 @@ package CraftWorld.Chunk;
 import CraftWorld.Block.BlockPos;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -41,6 +40,7 @@ public class ChunkPos implements IDSTBase {
 
     public static final String id = "ChunkPos";
     public static final String prefix = id;
+
     static {
         try {
             DSTUtils.getInstance().register(id, ChunkPos.class);
@@ -333,20 +333,20 @@ public class ChunkPos implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.concat("ChunkPos{",
-                "x=", this.x,
-                ", y=", this.y,
-                ", z=", this.z,
-                '}');
+        return "ChunkPos{" +
+                "x=" + this.x +
+                ", y=" + this.y +
+                ", z=" + this.z +
+                '}';
     }
 
     @Override
-    public boolean equals(Object a) {
-        if (!(a instanceof ChunkPos))
-            return false;
-        return Objects.equals(this.x, ((ChunkPos) a).x) &&
-                Objects.equals(this.y, ((ChunkPos) a).y) &&
-                Objects.equals(this.z, ((ChunkPos) a).z);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        ChunkPos chunkPos = (ChunkPos) o;
+        //noinspection SuspiciousNameCombination
+        return this.x.equals(chunkPos.x) && this.y.equals(chunkPos.y) && this.z.equals(chunkPos.z);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package CraftWorld.Block;
 
+import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -14,9 +14,21 @@ import java.io.Serial;
 import java.math.BigInteger;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class BlockPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -1091178102319329091L;
+    public static final String id = "BlockPos";
+    public static final String prefix = IDSTBase.prefix(id);
+    public static final String suffix = IDSTBase.suffix(id);
+    static {
+        try {
+            DSTUtils.getInstance().register(id, BlockPos.class);
+        } catch (HElementRegisteredException exception) {
+            HLog.logger(HLogLevel.ERROR, exception);
+        }
+    }
+    public static final int SAVE_RADIX = 16;
 
     private BigInteger x, y, z;
 
@@ -33,46 +45,33 @@ public class BlockPos implements IDSTBase {
 
     public BlockPos(BigInteger x, BigInteger y, BigInteger z) {
         super();
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    public static final String id = "BlockPos";
-    public static final String prefix = id;
-    static {
-        try {
-            DSTUtils.getInstance().register(id, BlockPos.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
-
-    private String name = id;
-
-    @Override
-    public String getDSTName() {
-        return this.name;
-    }
-
-    @Override
-    public void setDSTName(String name) {
-        this.name = name;
+        this.x = Objects.requireNonNullElse(x, BigInteger.ZERO);
+        this.y = Objects.requireNonNullElse(y, BigInteger.ZERO);
+        this.z = Objects.requireNonNullElse(z, BigInteger.ZERO);
     }
 
     @Override
     public void read(DataInput input) throws IOException {
-        this.x = new BigInteger(input.readUTF());
-        this.y = new BigInteger(input.readUTF());
-        this.z = new BigInteger(input.readUTF());
+        this.x = new BigInteger(input.readUTF(), SAVE_RADIX);
+        this.y = new BigInteger(input.readUTF(), SAVE_RADIX);
+        this.z = new BigInteger(input.readUTF(), SAVE_RADIX);
+        if (!suffix.equals(input.readUTF()))
+            throw new DSTFormatException();
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(this.x.toString());
-        output.writeUTF(this.y.toString());
-        output.writeUTF(this.z.toString());
+        output.writeUTF(this.x.toString(SAVE_RADIX));
+        output.writeUTF(this.y.toString(SAVE_RADIX));
+        output.writeUTF(this.z.toString(SAVE_RADIX));
+        output.writeUTF(suffix);
+    }
+
+    public void clear() {
+        this.x = BigInteger.ZERO;
+        this.y = BigInteger.ZERO;
+        this.z = BigInteger.ZERO;
     }
 
     public void setX(int x) {
@@ -80,7 +79,7 @@ public class BlockPos implements IDSTBase {
     }
 
     public void setX(BigInteger x) {
-        this.x = x;
+        this.x = Objects.requireNonNullElse(x, BigInteger.ZERO);
     }
 
     public void setY(int y) {
@@ -88,7 +87,7 @@ public class BlockPos implements IDSTBase {
     }
 
     public void setY(BigInteger y) {
-        this.y = y;
+        this.y = Objects.requireNonNullElse(y, BigInteger.ZERO);
     }
 
     public void setZ(int z) {
@@ -96,7 +95,7 @@ public class BlockPos implements IDSTBase {
     }
 
     public void setZ(BigInteger z) {
-        this.z = z;
+        this.z = Objects.requireNonNullElse(z, BigInteger.ZERO);
     }
 
     public void set(int x, int y, int z) {
@@ -106,12 +105,16 @@ public class BlockPos implements IDSTBase {
     }
 
     public void set(BigInteger x, BigInteger y, BigInteger z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.x = Objects.requireNonNullElse(x, BigInteger.ZERO);
+        this.y = Objects.requireNonNullElse(y, BigInteger.ZERO);
+        this.z = Objects.requireNonNullElse(z, BigInteger.ZERO);
     }
 
     public void set(BlockPos pos) {
+        if (pos == null) {
+            this.clear();
+            return;
+        }
         this.x = pos.x;
         this.y = pos.y;
         this.z = pos.z;
@@ -340,20 +343,20 @@ public class BlockPos implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.concat("BlockPos{",
-                "x=", this.x,
-                ", y=", this.y,
-                ", z=", this.z,
-                '}');
+        return "BlockPos{" +
+                "x=" + this.x +
+                ", y=" + this.y +
+                ", z=" + this.z +
+                '}';
     }
 
     @Override
-    public boolean equals(Object a) {
-        if (!(a instanceof BlockPos))
-            return false;
-        return Objects.equals(this.x, ((BlockPos) a).x) &&
-                Objects.equals(this.y, ((BlockPos) a).y) &&
-                Objects.equals(this.z, ((BlockPos) a).z);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        BlockPos blockPos = (BlockPos) o;
+        //noinspection SuspiciousNameCombination
+        return this.x.equals(blockPos.x) && this.y.equals(blockPos.y) && this.z.equals(blockPos.z);
     }
 
     @Override

@@ -6,11 +6,10 @@ import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
 import Core.FileTreeStorage;
-import CraftWorld.Block.Block;
+import CraftWorld.Chunk.Chunk;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import CraftWorld.World.World;
-import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -69,6 +68,17 @@ public class CraftWorld implements ModImplement {
             this.wait(3000);
         }
 
-        logger.log (HClassHelper.getInstance(Block.class));
+        DataOutput dataOutput = new DataOutputStream(new FileOutputStream("test.txt"));
+        Chunk chunk = new Chunk(0,0,0);
+        chunk.write(dataOutput);
+
+        DataInput dataInput = new DataInputStream(new FileInputStream("test.txt"));
+        dataInput.readUTF();
+        Chunk chunk1 = new Chunk();
+        chunk1.read(dataInput);
+
+        logger.log(chunk);
+        logger.log(chunk1);
+        logger.log(chunk.equals(chunk1));
     }
 }

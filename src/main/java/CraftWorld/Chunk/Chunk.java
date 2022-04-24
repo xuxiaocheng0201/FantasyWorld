@@ -2,19 +2,43 @@ package CraftWorld.Chunk;
 
 import CraftWorld.Block.Block;
 import CraftWorld.Block.BlockPos;
+import CraftWorld.DST.DSTFormatException;
+import CraftWorld.DST.DSTUtils;
+import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.Blocks.BlockAir;
-import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HElementRegisteredException;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.Serial;
 import java.math.BigInteger;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
-public class Chunk {
-    public static final int SIZE = 16;
+public class Chunk implements IDSTBase {
+    @Serial
+    private static final long serialVersionUID = -1248493755702372576L;
+    public static final String id = "Chunk";
+    public static final String prefix = IDSTBase.prefix(id);
+    public static final String suffix = IDSTBase.suffix(id);
+    static {
+        try {
+            DSTUtils.getInstance().register(id, Chunk.class);
+        } catch (HElementRegisteredException exception) {
+            HLog.logger(HLogLevel.ERROR, exception);
+        }
+    }
+
+    public static final int SIZE = 2;
     public static final BigInteger SIZE_B = BigInteger.valueOf(SIZE);
 
     private ChunkPos pos;
-    private Block[][][] blocks = new Block[SIZE][SIZE][SIZE];
+    private final List<List<List<Block>>> blocks = Collections.synchronizedList(new ArrayList<>(SIZE));
 
     public Chunk() {
         this(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO);
@@ -27,22 +51,56 @@ public class Chunk {
     public Chunk(BigInteger x, BigInteger y, BigInteger z) {
         super();
         this.pos = new ChunkPos(x, y, z);
-        BigInteger x1 = x.multiply(SIZE_B);
-        BigInteger y1 = y.multiply(SIZE_B);
-        BigInteger z1 = z.multiply(SIZE_B);
-        for (int a = 0; a < SIZE; ++a) {
-            this.blocks[a] = new Block[SIZE][SIZE];
-            for (int b = 0; b < SIZE; ++b) {
-                this.blocks[a][b] = new Block[SIZE];
-                for (int c = 0; c < SIZE; ++c) {
-                    this.blocks[a][b][c] = new Block();
-                    this.blocks[a][b][c].setInstance(new BlockAir());
-                    this.blocks[a][b][c].getInstance().setPos(new BlockPos(
-                            x1.add(BigInteger.valueOf(a)),
-                            y1.add(BigInteger.valueOf(b)),
-                            z1.add(BigInteger.valueOf(c))));
+        this.clearBlocks();
+    }
+
+    @Override
+    public void read(DataInput input) throws IOException {
+        if (!ChunkPos.prefix.equals(input.readUTF()))
+            throw new DSTFormatException();
+        this.pos.read(input);
+        for (List<List<Block>> block_1: this.blocks)
+            for (List<Block> block_2: block_1)
+                for (Block block_3: block_2) {
+                    if (!Block.prefix.equals(input.readUTF()))
+                        throw new DSTFormatException();
+                    block_3.read(input);
                 }
+        if (!suffix.equals(input.readUTF()))
+            throw new DSTFormatException();
+    }
+
+    @Override
+    public void write(DataOutput output) throws IOException {
+        output.writeUTF(prefix);
+        this.pos.write(output);
+        for (List<List<Block>> block_1: this.blocks)
+            for (List<Block> block_2: block_1)
+                for (Block block_3: block_2)
+                    block_3.write(output);
+        output.writeUTF(suffix);
+    }
+
+    public void clearBlocks() {
+        BigInteger x = this.pos.getBigX().multiply(SIZE_B);
+        BigInteger y = this.pos.getBigY().multiply(SIZE_B);
+        BigInteger z = this.pos.getBigZ().multiply(SIZE_B);
+        this.blocks.clear();
+        for (int a = 0; a < SIZE; ++a) {
+            List<List<Block>> block_1 = new ArrayList<>(SIZE);
+            for (int b = 0; b < SIZE; ++b) {
+                List<Block> block_2 = new ArrayList<>(SIZE);
+                for (int c = 0; c < SIZE; ++c) {
+                    Block block_3 = new Block(new BlockAir());
+                    block_3.getInstance().setPos(new BlockPos(
+                            x.add(BigInteger.valueOf(a)),
+                            y.add(BigInteger.valueOf(b)),
+                            z.add(BigInteger.valueOf(c))));
+                    block_2.add(block_3);
+                }
+                block_1.add(block_2);
             }
+            this.blocks.add(block_1);
         }
     }
 
@@ -54,40 +112,32 @@ public class Chunk {
         this.pos = pos;
     }
 
-    public Block[][][] getBlocks() {
-        return this.blocks;
-    }
-
-    public void setBlocks(Block[][][] blocks) {
-        this.blocks = blocks;
-    }
-
     public Block getBlock(int x, int y, int z) {
-        return this.blocks[x][y][z];
+        return this.blocks.get(x).get(y).get(z);
     }
 
     public void setBlock(int x, int y, int z, Block block) {
-        this.blocks[x][y][z] = block;
+        this.blocks.get(x).get(y).set(z, block);
     }
 
     @Override
     public String toString() {
-        return HStringHelper.concat("Chunk{",
-                "pos=", this.pos,
-                ", blocks=", Arrays.toString(this.blocks),
-                '}');
+        return "Chunk{" +
+                "pos=" + this.pos +
+                ", blocks=" + this.blocks +
+                '}';
     }
 
     @Override
-    public boolean equals(Object a) {
-        if (!(a instanceof Chunk))
-            return false;
-        return Objects.equals(this.pos, ((Chunk) a).pos) &&
-                Arrays.deepEquals(this.blocks, ((Chunk) a).blocks);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        Chunk chunk = (Chunk) o;
+        return this.pos.equals(chunk.pos) && this.blocks.equals(chunk.blocks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.pos, Arrays.deepHashCode(this.blocks));
+        return Objects.hash(this.pos);
     }
 }
