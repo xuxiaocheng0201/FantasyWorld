@@ -18,12 +18,13 @@ public class GlobalConfigurations {
     public static String CURRENT_LANGUAGE = "zh_cn";
     public static boolean OVERWRITE_FILES_WHEN_EXTRACTING = false;
     public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
-    public static int PORT = PortManager.getNextAvailablePortRandom("localhost");
+    public static String HOST = "127.0.0.1";
+    public static int PORT = PortManager.getNextAvailablePortRandom(HOST);
     public static boolean JOIN_THE_USER_EXPERIENCE_IMPROVEMENT_PROGRAM = false;
 
     public static void GetConfigurations() throws IOException {
         HLog logger = new HLog("GetGlobalConfigurations", Thread.currentThread().getName());
-        logger.log(HLogLevel.DEBUG, "Read global configurations in '", FileTreeStorage.GLOBAL_CONFIGURATION_FILE + "'.");
+        logger.log(HLogLevel.INFO, "Read global configurations in '", FileTreeStorage.GLOBAL_CONFIGURATION_FILE + "'.");
         GLOBAL_CONFIGURATIONS = new HConfigurations(FileTreeStorage.GLOBAL_CONFIGURATION_FILE);
         try {
             GLOBAL_CONFIGURATIONS.read();
@@ -74,6 +75,18 @@ public class GlobalConfigurations {
         }
         garbage_collector_time_interval.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.garbage_collector_time_interval.name"));
 
+        HConfigElement host = GLOBAL_CONFIGURATIONS.getByName("host");
+        if (host == null)
+            try {
+                host = new HConfigElement("host", HOST);
+            } catch (HWrongConfigValueException exception) {
+                logger.log(HLogLevel.ERROR, exception);
+                host = new HConfigElement("host");
+            }
+        else
+            HOST = host.getValue();
+        host.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.host.name"));
+
         HConfigElement port = GLOBAL_CONFIGURATIONS.getByName("port");
         if (port == null)
             try {
@@ -84,9 +97,12 @@ public class GlobalConfigurations {
             }
         else {
             PORT = Integer.parseInt(port.getValue());
-            if (!PortManager.portIsAvailable("localhost", PORT)) {
-                int availablePort = PortManager.getNextAvailablePortRandom("localhost");
-                logger.log(HLogLevel.CONFIGURATION, "Port is unavailable: ", PORT, ". Now use:", availablePort);
+            if (PortManager.portIsAvailable(HOST, PORT)) {
+                int availablePort = PortManager.getNextAvailablePortRandom(HOST);
+                if (availablePort == 0)
+                    logger.log(HLogLevel.ERROR, "No port is available.");
+                else
+                    logger.log(HLogLevel.CONFIGURATION, "Port is unavailable: ", PORT, ". Now use: ", availablePort);
                 port.setValue(String.valueOf(availablePort));
                 PORT = availablePort;
             }
@@ -110,6 +126,7 @@ public class GlobalConfigurations {
             GLOBAL_CONFIGURATIONS.add(language);
             GLOBAL_CONFIGURATIONS.add(overwrite_when_extracting);
             GLOBAL_CONFIGURATIONS.add(garbage_collector_time_interval);
+            GLOBAL_CONFIGURATIONS.add(host);
             GLOBAL_CONFIGURATIONS.add(port);
             GLOBAL_CONFIGURATIONS.add(join_the_user_experience_improvement_program);
         } catch (HElementRegisteredException ignore) {

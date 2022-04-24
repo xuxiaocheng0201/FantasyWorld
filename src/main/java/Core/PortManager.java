@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.io.IOException;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,6 +19,8 @@ import java.util.random.RandomGenerator;
  */
 @SuppressWarnings({"MagicNumber", "unused"})
 public class PortManager {
+    private static final int timeout = 2000;
+
     private static final Collection<Integer> checkedPortsFlag = new HashSet<>();
     private static boolean checkPortAvailableInFlag(@NotNull String host, @Range(from = 1, to = 65535) int port) {
         if (checkedPortsFlag.contains(port))
@@ -80,26 +82,23 @@ public class PortManager {
 
     /**
      * Check port is available with the host.
-     * @param hostIn the host
+     * @param host the host
      * @param port the port
      * @return true - available. false - unavailable.
      */
-    public static boolean portIsAvailable(@Nullable String hostIn, int port) {
-        if (hostIn == null)
+    public static boolean portIsAvailable(@Nullable String host, int port) {
+        if (host == null)
             return false;
-        String host = hostIn;
-        if (host.startsWith("https://"))
-            host = host.substring(8);
-        if (host.startsWith("http://"))
-            host = host.substring(7);
         if (port < 1 || port > 65535)
             return false;
+        SocketAddress socketAddress = new InetSocketAddress(host, port);
+        Socket socket = new Socket();
         try {
-            InetAddress address = InetAddress.getByAddress(host.getBytes());
-            (new Socket(address, port)).close();
+            socket.connect(socketAddress, timeout);
+            socket.close();
             return true;
-        } catch (IOException exception) {
-            return false;
+        } catch (Exception ignore) {
         }
+        return false;
     }
 }

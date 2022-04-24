@@ -4,7 +4,7 @@ import HeadLibs.Configuration.HWrongConfigValueException;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
-import HeadLibs.Registerer.HMapRegisterer;
+import HeadLibs.Registerer.HLinkedMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +26,7 @@ public class HConfigurationsSimple {
      * Saved configuration elements.
      * @see HConfigElementSimple
      */
-    public final HMapRegisterer<String, HConfigElementSimple> data = new HMapRegisterer<>();
+    public final HLinkedMapRegisterer<String, HConfigElementSimple> data = new HLinkedMapRegisterer<>();
 
     /**
      * Construct a empty configuration.

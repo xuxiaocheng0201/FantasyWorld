@@ -3,7 +3,7 @@ package HeadLibs.Configuration;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
-import HeadLibs.Registerer.HMapRegisterer;
+import HeadLibs.Registerer.HLinkedMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ public class HConfigurations implements Serializable {
      * Saved configuration elements.
      * @see HConfigElement
      */
-    public final HMapRegisterer<String, HConfigElement> data = new HMapRegisterer<>(true);
+    public final HLinkedMapRegisterer<String, HConfigElement> data = new HLinkedMapRegisterer<>(true);
 
     /**
      * Construct a empty configuration.

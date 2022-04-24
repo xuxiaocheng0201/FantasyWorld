@@ -1,4 +1,5 @@
 Core.configuration.language.name=The main game language.
 Core.configuration.overwrite_when_extracting.name=Need overwrite files when extracting assets and other files from mod jars.
 Core.configuration.garbage_collector_time_interval.name=The time interval of calling JVM garbage collector. (ms)
+Core.configuration.port.host=Local server address. (Default: 127.0.0.1)
 Core.configuration.port.name=Server port on 127.0.0.1

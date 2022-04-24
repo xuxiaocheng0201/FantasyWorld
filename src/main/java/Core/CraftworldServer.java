@@ -10,14 +10,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class CraftworldServer implements Runnable {
-    public static volatile boolean isRunning; //false
-
     @Override
     public void run() {
         Thread.currentThread().setName("CraftworldServer");
         HLog logger = new HLog(Thread.currentThread().getName());
         logger.log(HLogLevel.FINEST, "Server Thread has started.");
-        isRunning = true;
         EventBusManager.getDefaultEventBus().post(new ServerStartEvent());
         try {
             ServerSocket server = new ServerSocket(GlobalConfigurations.PORT);
@@ -27,10 +24,9 @@ public class CraftworldServer implements Runnable {
             server.close();
             EventBusManager.getDefaultEventBus().post(new ServerStopEvent(true));
         } catch (IOException | InterruptedException exception) {
-            logger.log(exception);
+            logger.log(HLogLevel.ERROR, exception);
             EventBusManager.getDefaultEventBus().post(new ServerStopEvent(false));
         }
-        isRunning = false;
         logger.log(HLogLevel.FINEST, "Server Thread exits.");
     }
 }

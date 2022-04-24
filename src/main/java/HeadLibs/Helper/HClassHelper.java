@@ -72,7 +72,7 @@ public class HClassHelper {
                 } catch (HElementRegisteredException ignore) {
                 }
             return instance;
-        } catch (NoSuchMethodException ignore) {
+        } catch (NoSuchMethodException | NullPointerException | ExceptionInInitializerError ignore) {
         } catch (Exception exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             return null;
@@ -88,7 +88,7 @@ public class HClassHelper {
                 } catch (HElementRegisteredException ignore) {
                 }
             return instance;
-        } catch (NoSuchMethodException ignore) {
+        } catch (NoSuchMethodException | NullPointerException | ExceptionInInitializerError ignore) {
         } catch (Exception exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             return null;
@@ -104,7 +104,7 @@ public class HClassHelper {
                 } catch (HElementRegisteredException ignore) {
                 }
             return instance;
-        } catch (NullPointerException | NoSuchFieldException ignore) {
+        } catch (NoSuchFieldException | NullPointerException | ExceptionInInitializerError ignore) {
         } catch (Exception exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             return null;
@@ -117,7 +117,7 @@ public class HClassHelper {
                 } catch (HElementRegisteredException ignore) {
                 }
             return instance;
-        } catch (NoSuchMethodException ignore) {
+        } catch (NoSuchMethodException | ExceptionInInitializerError ignore) {
         } catch (Exception exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             return null;
@@ -160,7 +160,7 @@ public class HClassHelper {
                     } catch (HElementRegisteredException ignore) {
                     }
                 return instance;
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException ignore) {
+            } catch (Exception ignore) {
             }
         }
         return null;

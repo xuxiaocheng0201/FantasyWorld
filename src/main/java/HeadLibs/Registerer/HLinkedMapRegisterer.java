@@ -6,25 +6,25 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
 /**
- * Elements registerer map.
+ * Elements registerer linked map.
  * @param <K> The type of elements key
  * @param <V> The type of elements value
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HMapRegisterer<K, V> implements Serializable {
+public class HLinkedMapRegisterer<K, V> implements Serializable {
     @Serial
-    private static final long serialVersionUID = -5018927767212486603L;
+    private static final long serialVersionUID = 4210339898718983379L;
 
     /**
      * The registered elements map.
      */
-    protected final Map<K, V> map = new HashMap<>();
+    protected final Map<K, V> map = new LinkedHashMap<>();
 
     /**
      * Can be registered with different keys and same value?
@@ -34,15 +34,15 @@ public class HMapRegisterer<K, V> implements Serializable {
     /**
      * Construct a new map registerer.
      */
-    public HMapRegisterer() {
+    public HLinkedMapRegisterer() {
         this(true);
     }
 
     /**
      * Construct a new map registerer.
-     * @param sameValueAllowed {@link HMapRegisterer#sameValueAllowed}
+     * @param sameValueAllowed {@link HLinkedMapRegisterer#sameValueAllowed}
      */
-    public HMapRegisterer(boolean sameValueAllowed) {
+    public HLinkedMapRegisterer(boolean sameValueAllowed) {
         super();
         this.sameValueAllowed = sameValueAllowed;
     }
@@ -75,7 +75,7 @@ public class HMapRegisterer<K, V> implements Serializable {
             throw new HElementRegisteredException("Null key.", null, value);
         if (this.map.containsKey(key))
             throw new HElementRegisteredException("Registered key.", key, value);
-        if (!this.sameValueAllowed && this.map.containsValue(value))
+        if (this.map.containsValue(value) && !this.sameValueAllowed)
             throw new HElementRegisteredException("Registered value.", key, value);
         this.map.put(key, value);
     }
@@ -183,7 +183,7 @@ public class HMapRegisterer<K, V> implements Serializable {
     }
 
     /**
-     * Get registerer map. {@link HMapRegisterer#map} (for iterator)
+     * Get registerer map. {@link HLinkedMapRegisterer#map} (for iterator)
      * @return registerer map
      */
     public @NotNull Map<K, V> getMap() {
@@ -199,7 +199,7 @@ public class HMapRegisterer<K, V> implements Serializable {
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-        HMapRegisterer<?, ?> that = (HMapRegisterer<?, ?>) o;
+        HLinkedMapRegisterer<?, ?> that = (HLinkedMapRegisterer<?, ?>) o;
         return this.sameValueAllowed == that.sameValueAllowed && this.map.equals(that.map);
     }
 

@@ -47,7 +47,7 @@ public class Craftworld implements ModImplement {
             if ("runServer".equals(arg))
                 isClient = false;
         }
-        logger.log(HLogLevel.DEBUG, "Craftworld will run on " + (isClient ? "client!" : "server!"));
+        logger.log(HLogLevel.INFO, "Craftworld will run on " + (isClient ? "client!" : "server!"));
         FileTreeStorage.extractFiles(null, "assets\\Core", "assets\\Core");
         HLog.saveLogs(FileTreeStorage.LOG_FILE);
         Thread gc = new Thread(new GCThread());

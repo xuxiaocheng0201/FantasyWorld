@@ -1,8 +1,8 @@
 package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
@@ -48,14 +48,13 @@ public final class DSTMetaCompound implements IDSTBase {
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
-            IDSTBase dst = null;
+            IDSTBase dst;
             try {
                 dst = DSTUtils.getInstance().getElementInstance(IDSTBase.dePrefix(input.readUTF()));
             } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
-                HLog.logger(HLogLevel.ERROR, exception);
+                throw new DSTFormatException(exception);
             }
-            if (dst != null)
-                dst.read(input);
+            dst.read(input);
             this.dstMap.put(name, dst);
             name = input.readUTF();
         }
@@ -86,18 +85,18 @@ public final class DSTMetaCompound implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.concat("DSTMetaCompound{",
-                "name='", this.name, '\'',
-                ", dstMap=", this.dstMap,
-                '}');
+        return "DSTMetaCompound{" +
+                "name='" + this.name + '\'' +
+                ", dstMap=" + this.dstMap +
+                '}';
     }
 
     @Override
-    public boolean equals(Object a) {
-        if (!(a instanceof DSTMetaCompound))
-            return false;
-        return Objects.equals(this.name, ((DSTMetaCompound) a).name) &&
-                Objects.equals(this.dstMap, ((DSTMetaCompound) a).dstMap);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        DSTMetaCompound that = (DSTMetaCompound) o;
+        return Objects.equals(this.name, that.name) && this.dstMap.equals(that.dstMap);
     }
 
     @Override

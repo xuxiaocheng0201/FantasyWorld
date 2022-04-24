@@ -1,8 +1,8 @@
 package CraftWorld.Block;
 
+import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Exception.DSTFormatException;
 import CraftWorld.Instance.Blocks.BlockAir;
 import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Helper.HStringHelper;
@@ -20,6 +20,15 @@ import java.util.Objects;
 public class Block implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 6768714227234114009L;
+    public static final String id = "Block";
+    public static final String prefix = id;
+    static {
+        try {
+            DSTUtils.getInstance().register(id, Block.class);
+        } catch (HElementRegisteredException exception) {
+            HLog.logger(HLogLevel.ERROR, exception);
+        }
+    }
 
     private IBlockBase instance;
 
@@ -29,16 +38,6 @@ public class Block implements IDSTBase {
 
     public void setInstance(IBlockBase instance) {
         this.instance = instance;
-    }
-
-    public static final String id = "Block";
-    public static final String prefix = id;
-    static {
-        try {
-            DSTUtils.getInstance().register(id, Block.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
     }
 
     private String name = id;

@@ -6,15 +6,19 @@ import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
 import Core.FileTreeStorage;
+import CraftWorld.Block.Block;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
+import CraftWorld.World.World;
+import HeadLibs.Helper.HClassHelper;
+import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 
 @EventSubscribe
@@ -44,17 +48,27 @@ public class CraftWorld implements ModImplement {
     @Subscribe
     @SuppressWarnings({"unused", "MethodMayBeStatic"})
     public void preInitialize(PreInitializationModsEvent event) throws IOException {
-        logger.setName("CraftWorld", logger);
+        logger.setName("CraftWorld", Thread.currentThread().getName());
         FileTreeStorage.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
 
-    public void start(ServerSocket server) throws InterruptedException {
+    private World world = new World();
+
+    public void start(ServerSocket server) throws InterruptedException, IOException {
         logger.log(HLogLevel.FINEST, "Loading world..." );
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         //TODO: Load world
+        try {
+            this.world.read(new DataInputStream(new BufferedInputStream(new FileInputStream(ConstantStorage.WORLD_FILE))));
+        } catch (IOException exception) {
+            HFileHelper.createNewFile(ConstantStorage.WORLD_FILE);
+            this.world.write(new DataOutputStream(new BufferedOutputStream(new FileOutputStream(ConstantStorage.WORLD_FILE))));
+        }
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
         synchronized (this) {
             this.wait(3000);
         }
+
+        logger.log (HClassHelper.getInstance(Block.class));
     }
 }
