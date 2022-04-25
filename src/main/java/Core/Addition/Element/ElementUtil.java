@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Implement at new mods  element util classes.
+ * Implement at new mods element util classes.
  * @author xuxiaocheng
  * @see NewElementUtilCore
  */
@@ -61,10 +61,14 @@ public abstract class ElementUtil<T extends ElementImplement> {
     }
 
     public @NotNull T getElementInstance(String name) throws HElementNotRegisteredException, NoSuchMethodException {
+        return this.getElementInstance(name, false);
+    }
+
+    public @NotNull T getElementInstance(String name, boolean useCache) throws HElementNotRegisteredException, NoSuchMethodException {
         Class<? extends T> aClass = this.elements.getElement(name);
         if (aClass == null)
             throw new HElementNotRegisteredException(null, name);
-        T instance = HClassHelper.getInstance(aClass);
+        T instance = HClassHelper.getInstance(aClass, useCache);
         if (instance == null)
             throw new NoSuchMethodException("No common constructor to get instance. [name='" + name + "']");
         return instance;

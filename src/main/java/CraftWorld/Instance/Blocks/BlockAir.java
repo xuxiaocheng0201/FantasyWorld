@@ -62,11 +62,6 @@ public class BlockAir implements IBlockBase {
     }
 
     @Override
-    public void setDst(DSTMetaCompound dst) {
-        this.dst = dst;
-    }
-
-    @Override
     public String toString() {
         return "BlockAir{" +
                 "name='" + this.name + '\'' +

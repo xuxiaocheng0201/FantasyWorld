@@ -10,5 +10,4 @@ public interface IBlockBase extends ElementImplement {
     String getBlockName();
     void setBlockName(String name);
     DSTMetaCompound getDst();
-    void setDst(DSTMetaCompound dst);
 }

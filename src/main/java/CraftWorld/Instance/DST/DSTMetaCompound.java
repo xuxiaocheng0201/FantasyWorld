@@ -50,7 +50,7 @@ public final class DSTMetaCompound implements IDSTBase {
         while (!suffix.equals(name)) {
             IDSTBase dst;
             try {
-                dst = DSTUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()));
+                dst = DSTUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false);
             } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
                 throw new DSTFormatException(exception);
             }

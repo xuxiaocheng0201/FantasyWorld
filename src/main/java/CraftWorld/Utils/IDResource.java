@@ -2,7 +2,6 @@ package CraftWorld.Utils;
 
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -96,7 +95,7 @@ public class IDResource implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.concat(this.mod_id, ":", this.assets);
+        return this.mod_id + ":" + this.assets;
     }
 
     @Override

@@ -30,10 +30,30 @@ public class Dimension implements IDSTBase {
         }
     }
 
+    private IDimensionBase instance;
 
+    private boolean unloaded;
     private File chunksSavedDirectory;
     private final Map<ChunkPos, Chunk> loadedChunks = new HashMap<>();
     private final Queue<Chunk> needSaveChunks = new ArrayDeque<>();
+
+    public Dimension() {
+        this(ConstantStorage.WORLD_PATH, null);
+    }
+
+    public Dimension(String dimensionDirectoryPath, IDimensionBase instance) {
+        super();
+        this.setInstance(dimensionDirectoryPath, instance);
+    }
+
+    public IDimensionBase getInstance() {
+        return this.instance;
+    }
+
+    public void setInstance(String dimensionDirectoryPath, IDimensionBase instance) {
+        this.instance = Objects.requireNonNullElseGet(instance, DimensionEarthSurface::new);
+        this.chunksSavedDirectory = new File(dimensionDirectoryPath + "\\" + this.instance.getDimensionId());
+    }
 
     public File getChunksSavedDirectory() {
         return this.chunksSavedDirectory;
@@ -41,15 +61,11 @@ public class Dimension implements IDSTBase {
 
     public void setChunksSavedDirectory(String chunksSavedDirectory) throws IOException {
         HFileHelper.createNewDirectory(chunksSavedDirectory);
-        this.chunksSavedDirectory = new File(chunksSavedDirectory);
+        this.chunksSavedDirectory = (new File(chunksSavedDirectory)).getAbsoluteFile();
     }
 
     public Map<ChunkPos, Chunk> getLoadedChunks() {
         return this.loadedChunks;
-    }
-
-    public Queue<Chunk> getNeedSaveChunks() {
-        return this.needSaveChunks;
     }
 
     public void saveChunks() throws IOException {
@@ -61,7 +77,7 @@ public class Dimension implements IDSTBase {
             if (chunk == null)
                 break;
             ChunkPos pos = chunk.getPos();
-            String saveFilePath = this.chunksSavedDirectory.getAbsolutePath() + "\\region(" +
+            String saveFilePath = this.chunksSavedDirectory.getPath() + "\\chunk(" +
                     pos.getBigX().toString(ChunkPos.SAVE_RADIX) + "," +
                     pos.getBigY().toString(ChunkPos.SAVE_RADIX) + "," +
                     pos.getBigZ().toString(ChunkPos.SAVE_RADIX) + ").dat";
@@ -73,7 +89,9 @@ public class Dimension implements IDSTBase {
     }
 
     private Chunk loadChunk(ChunkPos pos) throws IOException {
-        String saveFilePath = this.chunksSavedDirectory.getAbsolutePath() + "\\region(" +
+        if (this.loadedChunks.containsKey(pos))
+            return this.loadedChunks.get(pos);
+        String saveFilePath = this.chunksSavedDirectory.getPath() + "\\chunk(" +
                 pos.getBigX().toString(ChunkPos.SAVE_RADIX) + "," +
                 pos.getBigY().toString(ChunkPos.SAVE_RADIX) + "," +
                 pos.getBigZ().toString(ChunkPos.SAVE_RADIX) + ").dat";
@@ -94,10 +112,8 @@ public class Dimension implements IDSTBase {
         }
     }
 
-    public Chunk getChunk(ChunkPos pos) throws IOException {
-        if (this.loadedChunks.containsKey(pos))
-            return this.loadedChunks.get(pos);
-        return this.loadChunk(pos);
+    public void unloadAllChunks() {
+
     }
 
     public void prepareChunks() throws IOException {
@@ -106,25 +122,7 @@ public class Dimension implements IDSTBase {
     }
 
 
-    private IDimensionBase instance = new DimensionEarthSurface();
 
-    public Dimension() {
-        this(null);
-    }
-
-    public Dimension(IDimensionBase instance) {
-        super();
-        this.instance = Objects.requireNonNullElseGet(instance, DimensionEarthSurface::new);
-        this.chunksSavedDirectory = new File(ConstantStorage.WORLD_PATH + "\\dimensions\\" + this.instance.getDimensionId());
-    }
-
-    public IDimensionBase getInstance() {
-        return this.instance;
-    }
-
-    public void setInstance(IDimensionBase instance) {
-        this.instance = Objects.requireNonNullElseGet(instance, DimensionEarthSurface::new);
-    }
 
     public Chunk generateChunk(ChunkPos pos) {
         //TODO: Chunk generator
@@ -134,7 +132,7 @@ public class Dimension implements IDSTBase {
     @Override
     public void read(DataInput input) throws IOException {
         try {
-            this.instance = DimensionUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()));
+            this.instance = DimensionUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false);
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             this.instance = new DimensionEarthSurface();

@@ -72,7 +72,7 @@ public class Block implements IDSTBase {
     @Override
     public void read(DataInput input) throws IOException {
         try {
-            this.instance = BlockUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()));
+            this.instance = BlockUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false);
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             this.instance = new BlockAir();

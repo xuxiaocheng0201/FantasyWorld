@@ -1,12 +1,10 @@
 package CraftWorld.World;
 
-import CraftWorld.Chunk.Chunk;
-import CraftWorld.Chunk.ChunkPos;
-import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Dimension.Dimension;
 import CraftWorld.Dimension.DimensionUtils;
+import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -16,9 +14,10 @@ import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.Range;
 
 import java.io.*;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
+@SuppressWarnings("unused")
 public class World implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -383984335814983830L;
@@ -33,7 +32,10 @@ public class World implements IDSTBase {
         }
     }
 
+    private boolean unloaded;
+    private File worldSavedDirectory;
     private String worldName = "New world";
+    private final DSTMetaCompound dst = new DSTMetaCompound();
     private @Range(from = 0, to = Long.MAX_VALUE) long tick;
     private final HMapRegisterer<String, Dimension> dimensions = new HMapRegisterer<>(false);
 
@@ -41,9 +43,18 @@ public class World implements IDSTBase {
         super();
     }
 
-    public World(DataInput input) throws IOException {
+    public World(String worldDirectoryPath) throws IOException {
         super();
-        this.read(input);
+        this.setWorldSavedDirectory(worldDirectoryPath);
+    }
+
+    public File getWorldSavedDirectory() {
+        return this.worldSavedDirectory;
+    }
+
+    public void setWorldSavedDirectory(String worldSavedDirectoryPath) throws IOException {
+        HFileHelper.createNewDirectory(worldSavedDirectoryPath);
+        this.worldSavedDirectory = new File(worldSavedDirectoryPath);
     }
 
     public String getWorldName() {
@@ -54,82 +65,108 @@ public class World implements IDSTBase {
         this.worldName = worldName;
     }
 
+    public DSTMetaCompound getDst() {
+        return this.dst;
+    }
+
     public long getTick() {
         return this.tick;
     }
 
-    public void addDimension(Dimension dimension) {
+    public void addDimension(String dimensionId) throws HElementNotRegisteredException, NoSuchMethodException {
         try {
-            this.dimensions.register(dimension.getInstance().getDimensionId(), dimension);
+            this.dimensions.register(dimensionId, new Dimension(this.worldSavedDirectory + "\\dimensions\\" + dimensionId,
+                    DimensionUtils.getInstance().getElementInstance(dimensionId, false)));
         } catch (HElementRegisteredException ignore) {
         }
     }
 
-    public Dimension getDimension(String id) throws IOException {
+    public void addDimension(Dimension dimension) throws HElementRegisteredException {
+        this.dimensions.register(dimension.getInstance().getDimensionId(), dimension);
+    }
+
+    public void addDimensionForce(Dimension dimension) {
+        this.dimensions.reset(dimension.getInstance().getDimensionId(), dimension);
+    }
+
+    public Dimension loadDimension(String dimensionId) throws HElementNotRegisteredException, NoSuchMethodException {
         try {
-            return this.dimensions.getElement(id);
+            return this.dimensions.getElement(dimensionId);
         } catch (HElementNotRegisteredException ignore) {
         }
+        Dimension dimension = new Dimension(this.worldSavedDirectory + "\\dimensions\\" + dimensionId,
+                DimensionUtils.getInstance().getElementInstance(dimensionId, false));
         try {
-            Dimension dimension = new Dimension(DimensionUtils.getInstance().getElementInstance(id));
-            dimension.prepareChunks();
             this.addDimension(dimension);
-            return dimension;
-        } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
-            throw new IOException(exception);
+        } catch (HElementRegisteredException ignore) {
         }
+        return dimension;
     }
 
-    @Override
-    @Deprecated
-    public void read(DataInput input) throws IOException {
-        if (!suffix.equals(input.readUTF()))
-            throw new DSTFormatException();
+    public void unloadDimension(String dimensionId) {
+        Dimension dimension;
+        try {
+            dimension = this.dimensions.getElement(dimensionId);
+        } catch (HElementNotRegisteredException exception) {
+            return;
+        }
+        this.dimensions.deregisterKey(dimensionId);
+        dimension.unloadAllChunks();
     }
 
-    @Override
-    @Deprecated
-    public void write(DataOutput output) throws IOException {
-        output.writeUTF(prefix);
-        output.writeUTF(suffix);
+    public void unloadAllDimensions() {
+        this.unloaded = true;
+        Set<String> dimensions = this.dimensions.getMap().keySet();
+        for (String dimension: dimensions)
+            this.unloadDimension(dimension);
     }
 
-    public void read(File worldDirectory) throws IOException {
-        if (!worldDirectory.isDirectory())
-            throw new IOException("Reading world need a directory file. [path='" + worldDirectory.getAbsolutePath() + "']");
+    public void read(String worldDirectoryPath) throws IOException {
+        File worldDirectory = new File(worldDirectoryPath);
+        if (!HFileHelper.checkDirectoryAvailable(worldDirectoryPath))
+            throw new IOException("Reading world need a directory file. [worldDirectory='" + worldDirectory.getAbsolutePath() + "']");
         String root = worldDirectory.getAbsolutePath();
-        File dimensionsDirectory = new File(root + "\\dimensions");
-        if (!dimensionsDirectory.isDirectory())
-            throw new IOException("Reading dimensions need a directory file. [path='" + dimensionsDirectory.getAbsolutePath() + "']");
-        File[] dimensionsDirectoryFiles = dimensionsDirectory.listFiles();
+        String dimensionsDirectory = root + "\\dimensions";
+        if (!HFileHelper.checkDirectoryAvailable(dimensionsDirectory))
+            throw new IOException("Reading dimensions need a directory file. [dimensionsDirectory='" + dimensionsDirectory + "']");
+        File[] dimensionsDirectoryFiles = (new File(dimensionsDirectory)).listFiles();
         if (dimensionsDirectoryFiles == null)
-            throw new IOException("Null list dimension files. [path='" + dimensionsDirectory.getAbsolutePath() + "']");
+            throw new IOException("Null list dimension files. [dimensionsDirectory='" + dimensionsDirectory + "']");
         IOException ioException = null;
         for (File dimensionDirectory: dimensionsDirectoryFiles)
             if (dimensionDirectory.isDirectory())
                 try {
-                    Dimension dimension = new Dimension(DimensionUtils.getInstance().getElementInstance(dimensionDirectory.getName()));
+                    Dimension dimension = new Dimension(dimensionDirectory.getAbsolutePath(), DimensionUtils.getInstance().getElementInstance(dimensionDirectory.getName(), false));
                     dimension.prepareChunks();
-                    this.dimensions.register(dimensionDirectory.getName(), dimension);
+                    try {
+                        this.dimensions.register(dimensionDirectory.getName(), dimension);
+                    } catch (HElementRegisteredException ignore) {
+                    }
                 } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
                     if (ioException == null)
                         ioException = new IOException("Fail to get dimension. [name='" + dimensionDirectory.getName() + "']");
-                } catch (HElementRegisteredException ignore) {
                 }
         if (ioException != null)
             throw ioException;
     }
 
-    public void write(File worldDirectory) throws IOException {
+    public void write(String worldDirectoryPath) throws IOException {
+        File worldDirectory = new File(worldDirectoryPath);
         String root = worldDirectory.getAbsolutePath();
+        HFileHelper.createNewDirectory(root);
         String dimensionsDirectory = root + "\\dimensions";
         HFileHelper.createNewDirectory(dimensionsDirectory);
-        for (Dimension dimension: this.dimensions.getMap().values()) {
-            for (Map.Entry<ChunkPos, Chunk> entry: dimension.getLoadedChunks().entrySet())
-                dimension.getNeedSaveChunks().add(entry.getValue());
-            dimension.getLoadedChunks().clear();
-            dimension.saveChunks();
-        }
+        this.unloadAllDimensions();
+    }
+
+    @Override
+    public void read(DataInput input) throws IOException {
+
+    }
+
+    @Override
+    public void write(DataOutput output) throws IOException {
+
     }
 
     @Override
