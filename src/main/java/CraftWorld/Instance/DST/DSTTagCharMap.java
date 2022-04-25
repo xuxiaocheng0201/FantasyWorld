@@ -19,8 +19,8 @@ public class DSTTagCharMap implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 5148532667241211177L;
     public static final String id = "CharMap";
-    public static final String prefix = IDSTBase.prefix(id);
-    public static final String suffix = IDSTBase.suffix(id);
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, DSTTagCharMap.class);

@@ -19,8 +19,8 @@ public class BlockPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -1091178102319329091L;
     public static final String id = "BlockPos";
-    public static final String prefix = IDSTBase.prefix(id);
-    public static final String suffix = IDSTBase.suffix(id);
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, BlockPos.class);

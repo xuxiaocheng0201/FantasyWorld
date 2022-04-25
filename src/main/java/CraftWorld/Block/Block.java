@@ -20,8 +20,8 @@ public class Block implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 6768714227234114009L;
     public static final String id = "Block";
-    public static final String prefix = IDSTBase.prefix(id);
-    public static final String suffix = IDSTBase.suffix(id);
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, Block.class);
@@ -72,7 +72,7 @@ public class Block implements IDSTBase {
     @Override
     public void read(DataInput input) throws IOException {
         try {
-            this.instance = BlockUtils.getInstance().getElementInstance(IDSTBase.dePrefix(input.readUTF()));
+            this.instance = BlockUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()));
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             this.instance = new BlockAir();

@@ -19,8 +19,8 @@ public class DSTTagIntMap implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -1688961670765410436L;
     public static final String id = "IntMap";
-    public static final String prefix = IDSTBase.prefix(id);
-    public static final String suffix = IDSTBase.suffix(id);
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, DSTTagIntMap.class);
