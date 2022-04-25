@@ -130,6 +130,18 @@ public class HFileHelper {
     }
 
     /**
+     * Check a file I/O access.
+     * @param path file path
+     * @return true - available. false- unavailable.
+     */
+    public static boolean checkFileAvailable(@Nullable String path) {
+        if (path == null)
+            return false;
+        File file = new File(path).getAbsoluteFile();
+        return file.isFile() && file.canRead() && file.canWrite();
+    }
+
+    /**
      * Create a new directory and check I/O access.
      * @param path directory path
      * @throws IOException create failed
@@ -153,5 +165,17 @@ public class HFileHelper {
                 throw new IOException("File in path can't be written. [path='" + path + "']");
             HLog.logger(HLogLevel.CONFIGURATION, "File in path has been set to writable. [path='" + path + "']");
         }
+    }
+
+    /**
+     * Check a directory I/O access.
+     * @param path directory path
+     * @return true - available. false- unavailable.
+     */
+    public static boolean checkDirectoryAvailable(@Nullable String path) {
+        if (path == null)
+            return false;
+        File file = new File(path).getAbsoluteFile();
+        return file.isDirectory() && file.canRead() && file.canWrite();
     }
 }

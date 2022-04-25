@@ -6,9 +6,13 @@ import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
 import Core.FileTreeStorage;
-import CraftWorld.Chunk.Chunk;
+import CraftWorld.Block.Block;
+import CraftWorld.Chunk.ChunkPos;
+import CraftWorld.Dimension.Dimension;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
+import CraftWorld.Instance.Blocks.BlockStone;
+import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
 import CraftWorld.World.World;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Logger.HLog;
@@ -17,10 +21,9 @@ import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.ServerSocket;
-import java.security.SecureRandom;
-import java.util.random.RandomGenerator;
 
 @EventSubscribe
 @NewMod(name = "CraftWorld", version = "0.0.0", requirements = "before:*")
@@ -55,7 +58,7 @@ public class CraftWorld implements ModImplement {
 
     private final World world = new World();
 
-    public void start(ServerSocket server) throws InterruptedException, IOException {
+    public void start(ServerSocket server) throws IOException {
         logger.log(HLogLevel.FINEST, "Loading world..." );
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         //TODO: Load world
@@ -63,32 +66,22 @@ public class CraftWorld implements ModImplement {
             this.world.read(new File(ConstantStorage.WORLD_PATH));
         } catch (IOException exception) {
             HFileHelper.createNewDirectory(ConstantStorage.WORLD_PATH);
+            Dimension dimension = new Dimension(new DimensionEarthSurface());
+            dimension.prepareChunks();
+            this.world.addDimension(dimension);
             this.world.write(new File(ConstantStorage.WORLD_PATH));
         }
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
-        synchronized (this) {
-            this.wait(3000);
-        }
 
-        RandomGenerator random = new SecureRandom();
-        for (int i = 0; i < 10000; ++i) {
-            int a = random.nextInt()*i;
-            int b = random.nextInt()*i;
-            int c = random.nextInt()*i;
+        this.world.getDimension(DimensionEarthSurface.id).getChunk(new ChunkPos(0, 0, 0))
+                .setBlock(0, 0, 0, new Block(new BlockStone()));
+        this.world.write(new File(ConstantStorage.WORLD_PATH));
+        logger.log(this.world);
+        logger.log(this.world.getDimension(DimensionEarthSurface.id).getChunk(new ChunkPos(0, 0, 0)).getBlock(0, 0, 0));
 
-            DataOutputStream dataOutput = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("test.txt")));
-            Chunk chunk = new Chunk(a, b, c);
-            chunk.write(dataOutput);
-            dataOutput.close();
-
-            DataInputStream dataInput = new DataInputStream(new BufferedInputStream(new FileInputStream("test.txt")));
-            dataInput.readUTF();
-            Chunk chunk1 = new Chunk();
-            chunk1.read(dataInput);
-            dataInput.close();
-
-            if (!chunk.equals(chunk1))
-                logger.log("False: " + a + " " + b + " " + c);
-        }
+        World world1 = new World();
+        world1.read(new File(ConstantStorage.WORLD_PATH));
+        logger.log(this.world.equals(world1));
+        logger.log(world1.getDimension(DimensionEarthSurface.id).getChunk(new ChunkPos(0, 0, 0)).getBlock(0, 0, 0));
     }
 }

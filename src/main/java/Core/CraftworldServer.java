@@ -6,7 +6,6 @@ import Core.EventBus.Events.ServerStopEvent;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 
 public class CraftworldServer implements Runnable {
@@ -23,7 +22,7 @@ public class CraftworldServer implements Runnable {
             /* ********** \Special Modifier ********** */
             server.close();
             EventBusManager.getDefaultEventBus().post(new ServerStopEvent(true));
-        } catch (IOException | InterruptedException exception) {
+        } catch (Exception exception) {
             logger.log(HLogLevel.ERROR, exception);
             EventBusManager.getDefaultEventBus().post(new ServerStopEvent(false));
         }

@@ -32,13 +32,11 @@ public class IDResource implements IDSTBase {
 
     private String name = id;
 
-    @Override
-    public String getDSTName() {
+    public String getName() {
         return this.name;
     }
 
-    @Override
-    public void setDSTName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

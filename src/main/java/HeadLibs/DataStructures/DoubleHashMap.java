@@ -51,10 +51,10 @@ public class DoubleHashMap<K, V> implements Map<K, V>, Serializable {
         return this.kv.isEmpty();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public V get(Object key) {
         try {
-            //noinspection unchecked
             return this.getValue((K) key);
         } catch (ClassCastException ignore) {
         }
@@ -93,10 +93,10 @@ public class DoubleHashMap<K, V> implements Map<K, V>, Serializable {
             this.vk.put(entry.getValue(), entry.getKey());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public V remove(Object key) {
         try {
-            //noinspection unchecked
             return this.removeKey((K) key);
         } catch (ClassCastException ignore) {
         }
@@ -143,10 +143,10 @@ public class DoubleHashMap<K, V> implements Map<K, V>, Serializable {
         return this.kv.entrySet();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public V getOrDefault(Object key, V defaultValue) {
         try {
-            //noinspection unchecked
             return this.getValueOrDefault((K) key, defaultValue);
         } catch (ClassCastException ignore) {
         }

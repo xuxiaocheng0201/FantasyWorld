@@ -54,6 +54,12 @@ public class Chunk implements IDSTBase {
         this.clearBlocks();
     }
 
+    public Chunk(ChunkPos pos) {
+        super();
+        this.pos = pos;
+        this.clearBlocks();
+    }
+
     @Override
     public void read(DataInput input) throws IOException {
         if (!ChunkPos.prefix.equals(input.readUTF()))
