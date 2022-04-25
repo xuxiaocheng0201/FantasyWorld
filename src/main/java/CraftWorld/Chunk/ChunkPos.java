@@ -1,6 +1,7 @@
 package CraftWorld.Chunk;
 
 import CraftWorld.Block.BlockPos;
+import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import HeadLibs.Logger.HLog;
@@ -14,9 +15,21 @@ import java.io.Serial;
 import java.math.BigInteger;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class ChunkPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 1974205833401624407L;
+    public static final String id = "ChunkPos";
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
+    static {
+        try {
+            DSTUtils.getInstance().register(id, ChunkPos.class);
+        } catch (HElementRegisteredException exception) {
+            HLog.logger(HLogLevel.ERROR, exception);
+        }
+    }
+    public static final int SAVE_RADIX = 16;
 
     private BigInteger x, y, z;
 
@@ -33,47 +46,33 @@ public class ChunkPos implements IDSTBase {
 
     public ChunkPos(BigInteger x, BigInteger y, BigInteger z) {
         super();
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    public static final String id = "ChunkPos";
-    public static final String prefix = id;
-
-    static {
-        try {
-            DSTUtils.getInstance().register(id, ChunkPos.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
-
-    private String name = id;
-
-    @Override
-    public String getDSTName() {
-        return this.name;
-    }
-
-    @Override
-    public void setDSTName(String name) {
-        this.name = name;
+        this.x = Objects.requireNonNullElse(x, BigInteger.ZERO);
+        this.y = Objects.requireNonNullElse(y, BigInteger.ZERO);
+        this.z = Objects.requireNonNullElse(z, BigInteger.ZERO);
     }
 
     @Override
     public void read(DataInput input) throws IOException {
-        this.x = new BigInteger(input.readUTF());
-        this.y = new BigInteger(input.readUTF());
-        this.z = new BigInteger(input.readUTF());
+        this.x = new BigInteger(input.readUTF(), SAVE_RADIX);
+        this.y = new BigInteger(input.readUTF(), SAVE_RADIX);
+        this.z = new BigInteger(input.readUTF(), SAVE_RADIX);
+        if (!suffix.equals(input.readUTF()))
+            throw new DSTFormatException();
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(this.x.toString());
-        output.writeUTF(this.y.toString());
-        output.writeUTF(this.z.toString());
+        output.writeUTF(this.x.toString(SAVE_RADIX));
+        output.writeUTF(this.y.toString(SAVE_RADIX));
+        output.writeUTF(this.z.toString(SAVE_RADIX));
+        output.writeUTF(suffix);
+    }
+
+    public void clear() {
+        this.x = BigInteger.ZERO;
+        this.y = BigInteger.ZERO;
+        this.z = BigInteger.ZERO;
     }
 
     public void setX(int x) {
@@ -81,7 +80,7 @@ public class ChunkPos implements IDSTBase {
     }
 
     public void setX(BigInteger x) {
-        this.x = x;
+        this.x = Objects.requireNonNullElse(x, BigInteger.ZERO);
     }
 
     public void setY(int y) {
@@ -89,7 +88,7 @@ public class ChunkPos implements IDSTBase {
     }
 
     public void setY(BigInteger y) {
-        this.y = y;
+        this.y = Objects.requireNonNullElse(y, BigInteger.ZERO);
     }
 
     public void setZ(int z) {
@@ -97,7 +96,7 @@ public class ChunkPos implements IDSTBase {
     }
 
     public void setZ(BigInteger z) {
-        this.z = z;
+        this.z = Objects.requireNonNullElse(z, BigInteger.ZERO);
     }
 
     public void set(int x, int y, int z) {
@@ -107,12 +106,16 @@ public class ChunkPos implements IDSTBase {
     }
 
     public void set(BigInteger x, BigInteger y, BigInteger z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.x = Objects.requireNonNullElse(x, BigInteger.ZERO);
+        this.y = Objects.requireNonNullElse(y, BigInteger.ZERO);
+        this.z = Objects.requireNonNullElse(z, BigInteger.ZERO);
     }
 
     public void set(ChunkPos pos) {
+        if (pos == null) {
+            this.clear();
+            return;
+        }
         this.x = pos.x;
         this.y = pos.y;
         this.z = pos.z;

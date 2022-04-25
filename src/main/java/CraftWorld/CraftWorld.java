@@ -19,6 +19,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.*;
 import java.net.ServerSocket;
+import java.security.SecureRandom;
+import java.util.random.RandomGenerator;
 
 @EventSubscribe
 @NewMod(name = "CraftWorld", version = "0.0.0", requirements = "before:*")
@@ -51,39 +53,42 @@ public class CraftWorld implements ModImplement {
         FileTreeStorage.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
 
-    private World world = new World();
+    private final World world = new World();
 
     public void start(ServerSocket server) throws InterruptedException, IOException {
         logger.log(HLogLevel.FINEST, "Loading world..." );
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         //TODO: Load world
         try {
-            this.world.read(new DataInputStream(new BufferedInputStream(new FileInputStream(ConstantStorage.WORLD_FILE))));
+            this.world.read(new File(ConstantStorage.WORLD_PATH));
         } catch (IOException exception) {
-            HFileHelper.createNewFile(ConstantStorage.WORLD_FILE);
-            this.world.write(new DataOutputStream(new BufferedOutputStream(new FileOutputStream(ConstantStorage.WORLD_FILE))));
+            HFileHelper.createNewDirectory(ConstantStorage.WORLD_PATH);
+            this.world.write(new File(ConstantStorage.WORLD_PATH));
         }
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
         synchronized (this) {
             this.wait(3000);
         }
 
-        for (int i = 0; i < 10; ++i) {
-            logger.log("Output: " + i);
+        RandomGenerator random = new SecureRandom();
+        for (int i = 0; i < 10000; ++i) {
+            int a = random.nextInt()*i;
+            int b = random.nextInt()*i;
+            int c = random.nextInt()*i;
 
             DataOutputStream dataOutput = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("test.txt")));
-            Chunk chunk = new Chunk(3*i, 2*i, 6*i);
+            Chunk chunk = new Chunk(a, b, c);
             chunk.write(dataOutput);
             dataOutput.close();
 
-            logger.log("Input: " + i);
             DataInputStream dataInput = new DataInputStream(new BufferedInputStream(new FileInputStream("test.txt")));
             dataInput.readUTF();
             Chunk chunk1 = new Chunk();
             chunk1.read(dataInput);
             dataInput.close();
 
-            logger.log("Result: " + chunk.equals(chunk1));
+            if (!chunk.equals(chunk1))
+                logger.log("False: " + a + " " + b + " " + c);
         }
     }
 }

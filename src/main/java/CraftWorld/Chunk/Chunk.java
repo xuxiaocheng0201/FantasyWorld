@@ -87,17 +87,15 @@ public class Chunk implements IDSTBase {
         BigInteger z = this.pos.getBigZ().multiply(SIZE_B);
         this.blocks.clear();
         for (int a = 0; a < SIZE; ++a) {
-            List<List<Block>> block_1 = new ArrayList<>(SIZE);
+            List<List<Block>> block_1 = Collections.synchronizedList(new ArrayList<>(SIZE));
             for (int b = 0; b < SIZE; ++b) {
-                List<Block> block_2 = new ArrayList<>(SIZE);
-                for (int c = 0; c < SIZE; ++c) {
-                    Block block_3 = new Block(new BlockAir());
-                    block_3.setPos(new BlockPos(
+                List<Block> block_2 = Collections.synchronizedList(new ArrayList<>(SIZE));
+                for (int c = 0; c < SIZE; ++c)
+                    block_2.add(new Block(new BlockPos(
                             x.add(BigInteger.valueOf(a)),
                             y.add(BigInteger.valueOf(b)),
-                            z.add(BigInteger.valueOf(c))));
-                    block_2.add(block_3);
-                }
+                            z.add(BigInteger.valueOf(c))),
+                            new BlockAir()));
                 block_1.add(block_2);
             }
             this.blocks.add(block_1);

@@ -6,15 +6,12 @@ import HeadLibs.DataStructures.DoubleHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@NewElementUtilCore(elementName = "DST")
+@NewElementUtilCore(modName = "CraftWorld", elementName = "DST")
 public class DSTUtils extends ElementUtil<IDSTBase> {
     private static final DSTUtils instance = new DSTUtils();
-
     public static DSTUtils getInstance() {
         return instance;
     }
-
-
 
 
     private static final DoubleHashMap<String, String> prefixMap = new DoubleHashMap<>();

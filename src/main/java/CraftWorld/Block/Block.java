@@ -99,9 +99,8 @@ public class Block implements IDSTBase {
     @Override
     public String toString() {
         return "Block{" +
-                "name=" + this.instance.getBlockName() +
-                ", pos=" + this.pos +
-                ", dst=" + this.instance.getDst() +
+                "pos=" + this.pos +
+                ", instance=" + this.instance +
                 '}';
     }
 

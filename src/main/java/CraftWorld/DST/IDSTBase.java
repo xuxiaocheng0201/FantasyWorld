@@ -8,10 +8,8 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
-@NewElementImplementCore(elementName = "DST")
+@NewElementImplementCore(modName = "CraftWorld", elementName = "DST")
 public interface IDSTBase extends ElementImplement, Serializable {
-    default String getDSTName(){return null;};
-    default void setDSTName(String name){};
     void read(DataInput input) throws IOException;
     void write(DataOutput output) throws IOException;
 }

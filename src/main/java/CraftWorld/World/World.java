@@ -3,15 +3,16 @@ package CraftWorld.World;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
+import CraftWorld.Dimension.Dimension;
+import CraftWorld.Dimension.DimensionUtils;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HSetRegisterer;
 import org.jetbrains.annotations.Range;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.Serial;
+import java.io.*;
 
 public class World implements IDSTBase {
     @Serial
@@ -29,6 +30,7 @@ public class World implements IDSTBase {
 
     private String worldName = "New world";
     private @Range(from = 0, to = Long.MAX_VALUE) long tick;
+    private final HSetRegisterer<Dimension> dimensions = new HSetRegisterer<>();
 
     public World() {
         super();
@@ -39,31 +41,61 @@ public class World implements IDSTBase {
         this.read(input);
     }
 
-    @Override
-    public String getDSTName() {
+    public String getWorldName() {
         return this.worldName;
     }
 
-    @Override
-    public void setDSTName(String name) {
-        this.worldName = name;
+    public void setWorldName(String worldName) {
+        this.worldName = worldName;
     }
 
     @Override
+    @Deprecated
     public void read(DataInput input) throws IOException {
-        this.worldName = input.readUTF();
-        this.tick = input.readLong();
-
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
 
+    public void read(File worldDirectory) throws IOException {
+        if (!worldDirectory.isDirectory())
+            throw new IOException("Reading world need a directory file. [path='" + worldDirectory.getAbsolutePath() + "']");
+        String root = worldDirectory.getAbsolutePath();
+        File dimensionsDirectory = new File(root + "\\dimensions");
+        if (!dimensionsDirectory.isDirectory())
+            throw new IOException("Reading dimensions need a directory file. [path='" + dimensionsDirectory.getAbsolutePath() + "']");
+        File[] dimensionsDirectoryFiles = dimensionsDirectory.listFiles();
+        if (dimensionsDirectoryFiles == null)
+            throw new IOException("Null list dimension files. [path='" + dimensionsDirectory.getAbsolutePath() + "']");
+        IOException ioException = null;
+        for (File dimensionDirectory: dimensionsDirectoryFiles)
+            if (dimensionDirectory.isDirectory())
+                try {
+                    Dimension dimension = new Dimension(DimensionUtils.getInstance().getElementInstance(dimensionDirectory.getName()));
+                    dimension.setSaveFilePath(dimensionDirectory);
+                    this.dimensions.register(dimension);
+                } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
+                    if (ioException == null)
+                        ioException = new IOException("Fail to get dimension. [name='" + dimensionDirectory.getName() + "']");
+                } catch (HElementRegisteredException ignore) {
+                }
+        if (ioException != null)
+            throw ioException;
+    }
+
     @Override
+    @Deprecated
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(this.worldName);
-        output.writeLong(this.tick);
-
         output.writeUTF(suffix);
+    }
+
+    public void write(File worldDirectory) throws IOException {
+        if (!worldDirectory.isDirectory())
+            throw new IOException("Reading world need a directory file. [path=\"" + worldDirectory.getAbsolutePath() + "\"].");
+        String root = worldDirectory.getAbsolutePath();
+        File dimensionsDirectory = new File(root + "\\dimensions");
+        for (Dimension dimension: this.dimensions.getSet())
+            dimension.setSaveFilePath(new File(dimensionsDirectory + "\\" + dimension.getInstance().getDimensionId()));
+        //TODO
     }
 }

@@ -84,6 +84,6 @@ public class BlockAir implements IBlockBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.dst);
+        return Objects.hash(this.name, this.dst);
     }
 }
