@@ -1,6 +1,6 @@
 package HeadLibs.Registerer;
 
-import HeadLibs.Pair;
+import HeadLibs.DataStructures.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

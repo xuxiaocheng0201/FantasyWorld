@@ -1,6 +1,6 @@
 package HeadLibs.Logger;
 
-import HeadLibs.Pair;
+import HeadLibs.DataStructures.Pair;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;

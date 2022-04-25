@@ -5,7 +5,7 @@ import Core.Addition.Element.ElementImplement;
 import Core.Addition.Element.ElementUtil;
 import Core.Addition.Mod.BasicInformation.ModName;
 import Core.Addition.Mod.ModImplement;
-import HeadLibs.Pair;
+import HeadLibs.DataStructures.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

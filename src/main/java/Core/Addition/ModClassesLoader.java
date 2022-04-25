@@ -16,7 +16,7 @@ import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Pair;
+import HeadLibs.DataStructures.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -322,8 +322,6 @@ public class ModClassesLoader {
                 logger.log(HLogLevel.FAULT, exception);
             return false;
         }
-        logger.log(HLogLevel.DEBUG, "Checked mods: ", ModManager.getModList());
-        logger.log(HLogLevel.DEBUG, "Checked element pairs: ", ModManager.getElementPairList());
         List<ModInformationException> sorterExceptions = ModClassesSorter.sortMods();
         if (sorterExceptions != null) {
             logger.log(HLogLevel.BUG, "Mod Loading Error in sorting classes!");

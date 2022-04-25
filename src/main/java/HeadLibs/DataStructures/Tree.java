@@ -1,4 +1,4 @@
-package HeadLibs;
+package HeadLibs.DataStructures;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -68,17 +68,22 @@ public class CraftWorld implements ModImplement {
             this.wait(3000);
         }
 
-        DataOutput dataOutput = new DataOutputStream(new FileOutputStream("test.txt"));
-        Chunk chunk = new Chunk(0,0,0);
-        chunk.write(dataOutput);
+        for (int i = 0; i < 10; ++i) {
+            logger.log("Output: " + i);
 
-        DataInput dataInput = new DataInputStream(new FileInputStream("test.txt"));
-        dataInput.readUTF();
-        Chunk chunk1 = new Chunk();
-        chunk1.read(dataInput);
+            DataOutputStream dataOutput = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("test.txt")));
+            Chunk chunk = new Chunk(3*i, 2*i, 6*i);
+            chunk.write(dataOutput);
+            dataOutput.close();
 
-        logger.log(chunk);
-        logger.log(chunk1);
-        logger.log(chunk.equals(chunk1));
+            logger.log("Input: " + i);
+            DataInputStream dataInput = new DataInputStream(new BufferedInputStream(new FileInputStream("test.txt")));
+            dataInput.readUTF();
+            Chunk chunk1 = new Chunk();
+            chunk1.read(dataInput);
+            dataInput.close();
+
+            logger.log("Result: " + chunk.equals(chunk1));
+        }
     }
 }

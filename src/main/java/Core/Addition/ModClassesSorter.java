@@ -10,7 +10,7 @@ import Core.Exceptions.ModDependencyMissingException;
 import Core.Exceptions.ModDependencyVersionUnmatchedException;
 import Core.Exceptions.ModInformationException;
 import Core.Exceptions.ModUnsupportedCraftworldVersionException;
-import HeadLibs.Pair;
+import HeadLibs.DataStructures.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;

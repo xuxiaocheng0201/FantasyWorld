@@ -1,6 +1,5 @@
 package CraftWorld.Instance.Blocks;
 
-import CraftWorld.Block.BlockPos;
 import CraftWorld.Block.BlockUtils;
 import CraftWorld.Block.IBlockBase;
 import CraftWorld.Instance.DST.DSTMetaCompound;
@@ -25,12 +24,26 @@ public class BlockAir implements IBlockBase {
     }
 
     private String name = "Air";
-    private BlockPos pos = new BlockPos();
     private DSTMetaCompound dst = new DSTMetaCompound();
 
     public BlockAir() {
         super();
+    }
 
+    public BlockAir(String name) {
+        super();
+        this.name = name;
+    }
+
+    public BlockAir(DSTMetaCompound dst) {
+        super();
+        this.dst = dst;
+    }
+
+    public BlockAir(String name, DSTMetaCompound dst) {
+        super();
+        this.name = name;
+        this.dst = dst;
     }
 
     @Override
@@ -41,16 +54,6 @@ public class BlockAir implements IBlockBase {
     @Override
     public void setBlockName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public BlockPos getPos() {
-        return this.pos;
-    }
-
-    @Override
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
     }
 
     @Override
@@ -67,7 +70,6 @@ public class BlockAir implements IBlockBase {
     public String toString() {
         return "BlockAir{" +
                 "name='" + this.name + '\'' +
-                ", pos=" + this.pos +
                 ", dst=" + this.dst +
                 '}';
     }
@@ -77,11 +79,11 @@ public class BlockAir implements IBlockBase {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         BlockAir blockAir = (BlockAir) o;
-        return this.name.equals(blockAir.name) && this.pos.equals(blockAir.pos) && this.dst.equals(blockAir.dst);
+        return this.name.equals(blockAir.name) && this.dst.equals(blockAir.dst);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.pos, this.dst);
+        return Objects.hash(this.dst);
     }
 }

@@ -34,7 +34,7 @@ public class Chunk implements IDSTBase {
         }
     }
 
-    public static final int SIZE = 2;
+    public static final int SIZE = 16;
     public static final BigInteger SIZE_B = BigInteger.valueOf(SIZE);
 
     private ChunkPos pos;
@@ -92,7 +92,7 @@ public class Chunk implements IDSTBase {
                 List<Block> block_2 = new ArrayList<>(SIZE);
                 for (int c = 0; c < SIZE; ++c) {
                     Block block_3 = new Block(new BlockAir());
-                    block_3.getInstance().setPos(new BlockPos(
+                    block_3.setPos(new BlockPos(
                             x.add(BigInteger.valueOf(a)),
                             y.add(BigInteger.valueOf(b)),
                             z.add(BigInteger.valueOf(c))));

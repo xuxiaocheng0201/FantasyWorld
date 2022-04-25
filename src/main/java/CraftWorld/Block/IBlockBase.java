@@ -9,8 +9,6 @@ public interface IBlockBase extends ElementImplement {
     String getBlockId();
     String getBlockName();
     void setBlockName(String name);
-    BlockPos getPos();
-    void setPos(BlockPos pos);
     DSTMetaCompound getDst();
     void setDst(DSTMetaCompound dst);
 }

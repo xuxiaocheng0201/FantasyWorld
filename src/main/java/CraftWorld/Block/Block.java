@@ -31,14 +31,26 @@ public class Block implements IDSTBase {
     }
 
     private IBlockBase instance = new BlockAir();
+    private BlockPos pos = new BlockPos();
 
     public Block() {
         super();
     }
 
+    public Block(BlockPos pos) {
+        super();
+        this.pos = Objects.requireNonNullElseGet(pos, BlockPos::new);
+    }
+
     public Block(IBlockBase instance) {
         super();
-        this.setInstance(instance);
+        this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
+    }
+
+    public Block(BlockPos pos, IBlockBase instance) {
+        super();
+        this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
+        this.pos = Objects.requireNonNullElseGet(pos, BlockPos::new);
     }
 
     public IBlockBase getInstance() {
@@ -47,6 +59,14 @@ public class Block implements IDSTBase {
 
     public void setInstance(IBlockBase instance) {
         this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
+    }
+
+    public BlockPos getPos() {
+        return this.pos;
+    }
+
+    public void setPos(BlockPos pos) {
+        this.pos = Objects.requireNonNullElseGet(pos, BlockPos::new);
     }
 
     @Override
@@ -59,7 +79,7 @@ public class Block implements IDSTBase {
         }
         if (!BlockPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
-        this.instance.getPos().read(input);
+        this.pos.read(input);
         if (!DSTMetaCompound.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.instance.getDst().read(input);
@@ -71,7 +91,7 @@ public class Block implements IDSTBase {
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.instance.getBlockId());
-        this.instance.getPos().write(output);
+        this.pos.write(output);
         this.instance.getDst().write(output);
         output.writeUTF(suffix);
     }
@@ -80,7 +100,7 @@ public class Block implements IDSTBase {
     public String toString() {
         return "Block{" +
                 "name=" + this.instance.getBlockName() +
-                ", pos=" + this.instance.getPos() +
+                ", pos=" + this.pos +
                 ", dst=" + this.instance.getDst() +
                 '}';
     }
@@ -90,11 +110,11 @@ public class Block implements IDSTBase {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         Block block = (Block) o;
-        return this.instance.equals(block.instance);
+        return this.pos.equals(block.pos) && this.instance.equals(block.instance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.instance);
+        return Objects.hash(this.pos, this.instance);
     }
 }
