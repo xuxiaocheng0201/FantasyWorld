@@ -34,7 +34,7 @@ public class Chunk implements IDSTBase {
         }
     }
 
-    public static final int SIZE = 16;
+    public static final int SIZE = 2;
     public static final BigInteger SIZE_B = BigInteger.valueOf(SIZE);
 
     private ChunkPos pos;
@@ -54,9 +54,9 @@ public class Chunk implements IDSTBase {
         this.clearBlocks();
     }
 
-    public Chunk(ChunkPos pos) {
-        super();
-        this.pos = pos;
+
+    public void regenerate() {
+        //TODO: Chunk generator
         this.clearBlocks();
     }
 
@@ -70,7 +70,14 @@ public class Chunk implements IDSTBase {
                 for (Block block_3: block_2) {
                     if (!Block.prefix.equals(input.readUTF()))
                         throw new DSTFormatException();
-                    block_3.read(input);
+                    try {
+                        //TODO del
+                        block_3.read(input);
+                    } catch (IOException e) {
+                        HLog.logger(HLogLevel.DEBUG, e);
+                        HLog.logger(this);
+                        HLog.logger(block_3.getPos());
+                    }
                 }
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();

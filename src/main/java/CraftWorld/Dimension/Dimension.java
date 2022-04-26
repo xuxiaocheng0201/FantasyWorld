@@ -2,19 +2,21 @@ package CraftWorld.Dimension;
 
 import CraftWorld.Chunk.Chunk;
 import CraftWorld.Chunk.ChunkPos;
-import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
+import CraftWorld.World.World;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HMapRegisterer;
 
 import java.io.*;
-import java.util.*;
+import java.util.Objects;
+import java.util.Set;
 
 public class Dimension implements IDSTBase {
     @Serial
@@ -30,113 +32,145 @@ public class Dimension implements IDSTBase {
         }
     }
 
-    private IDimensionBase instance;
-
     private boolean unloaded;
-    private File chunksSavedDirectory;
-    private final Map<ChunkPos, Chunk> loadedChunks = new HashMap<>();
-    private final Queue<Chunk> needSaveChunks = new ArrayDeque<>();
+    private final World world;
+    private File dimensionSavedDirectory;
+    private IDimensionBase instance;
+    private final HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false);
 
-    public Dimension() {
-        this(ConstantStorage.WORLD_PATH, null);
+    public Dimension(World world) throws IOException {
+        this(world, new DimensionEarthSurface());
     }
 
-    public Dimension(String dimensionDirectoryPath, IDimensionBase instance) {
+    public Dimension(World world, IDimensionBase instance) throws IOException {
         super();
-        this.setInstance(dimensionDirectoryPath, instance);
+        this.world = world;
+        this.setInstance(instance);
+    }
+
+    public boolean isUnloaded() {
+        return this.unloaded;
+    }
+
+    public World getWorld() {
+        return this.world;
+    }
+
+    public File getDimensionSavedDirectory() {
+        return this.dimensionSavedDirectory;
     }
 
     public IDimensionBase getInstance() {
         return this.instance;
     }
 
-    public void setInstance(String dimensionDirectoryPath, IDimensionBase instance) {
+    public void setInstance(IDimensionBase instance) throws IOException {
         this.instance = Objects.requireNonNullElseGet(instance, DimensionEarthSurface::new);
-        this.chunksSavedDirectory = new File(dimensionDirectoryPath + "\\" + this.instance.getDimensionId());
+        String dimensionSavedDirectoryPath = this.world.getDimensionDirectory(this.instance.getDimensionId());
+        HFileHelper.createNewDirectory(dimensionSavedDirectoryPath);
+        this.dimensionSavedDirectory = new File(dimensionSavedDirectoryPath);
     }
 
-    public File getChunksSavedDirectory() {
-        return this.chunksSavedDirectory;
+    public String getInformationFile() {
+        return this.dimensionSavedDirectory.getPath() + "\\information.dat";
     }
 
-    public void setChunksSavedDirectory(String chunksSavedDirectory) throws IOException {
-        HFileHelper.createNewDirectory(chunksSavedDirectory);
-        this.chunksSavedDirectory = (new File(chunksSavedDirectory)).getAbsoluteFile();
-    }
-
-    public Map<ChunkPos, Chunk> getLoadedChunks() {
-        return this.loadedChunks;
-    }
-
-    public void saveChunks() throws IOException {
-        while (!this.needSaveChunks.isEmpty()) {
-            Chunk chunk;
-            synchronized (this.needSaveChunks) {
-                chunk = this.needSaveChunks.poll();
-            }
-            if (chunk == null)
-                break;
-            ChunkPos pos = chunk.getPos();
-            String saveFilePath = this.chunksSavedDirectory.getPath() + "\\chunk(" +
-                    pos.getBigX().toString(ChunkPos.SAVE_RADIX) + "," +
-                    pos.getBigY().toString(ChunkPos.SAVE_RADIX) + "," +
-                    pos.getBigZ().toString(ChunkPos.SAVE_RADIX) + ").dat";
-            HFileHelper.createNewFile(saveFilePath);
-            DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(saveFilePath)));
-            chunk.write(dataOutputStream);
-            dataOutputStream.close();
-        }
-    }
-
-    private Chunk loadChunk(ChunkPos pos) throws IOException {
-        if (this.loadedChunks.containsKey(pos))
-            return this.loadedChunks.get(pos);
-        String saveFilePath = this.chunksSavedDirectory.getPath() + "\\chunk(" +
+    public String getChunkSaveFile(ChunkPos pos) {
+        return this.dimensionSavedDirectory.getPath() + "\\chunk(" +
                 pos.getBigX().toString(ChunkPos.SAVE_RADIX) + "," +
                 pos.getBigY().toString(ChunkPos.SAVE_RADIX) + "," +
                 pos.getBigZ().toString(ChunkPos.SAVE_RADIX) + ").dat";
-        if (HFileHelper.checkFileAvailable(saveFilePath)) {
-            Chunk chunk = new Chunk();
-            DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(saveFilePath)));
+    }
+
+    public Chunk loadChunk(ChunkPos pos) throws IOException {
+        try {
+            return this.loadedChunks.getElement(pos);
+        } catch (HElementNotRegisteredException ignore) {
+        }
+        if (this.unloaded)
+            return null;
+        String chunkSaveFilePath = this.getChunkSaveFile(pos);
+        Chunk chunk = new Chunk();
+        if (HFileHelper.checkFileAvailable(chunkSaveFilePath)) {
+            DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(chunkSaveFilePath)));
             if (!Chunk.prefix.equals(dataInputStream.readUTF()))
                 throw new DSTFormatException();
             chunk.read(dataInputStream);
             dataInputStream.close();
-            this.loadedChunks.put(pos, chunk);
-            return chunk;
-        } else {
-            Chunk chunk = this.generateChunk(pos);
-            this.loadedChunks.put(pos, this.generateChunk(pos));
-            this.needSaveChunks.add(chunk);
-            return chunk;
         }
+        else {
+            chunk.regenerate();
+            DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(chunkSaveFilePath)));
+            chunk.write(dataOutputStream);
+            dataOutputStream.close();
+        }
+        try {
+            this.loadedChunks.register(pos, chunk);
+        } catch (HElementRegisteredException ignore) {
+        }
+        return chunk;
     }
 
-    public void unloadAllChunks() {
-
+    public void unloadChunk(ChunkPos pos) throws IOException {
+        Chunk chunk;
+        try {
+            chunk = this.loadedChunks.getElement(pos);
+        } catch (HElementNotRegisteredException exception) {
+            return;
+        }
+        this.loadedChunks.deregisterKey(pos);
+        if (chunk == null)
+            return;
+        String saveFilePath = this.getChunkSaveFile(pos);
+        HFileHelper.createNewFile(saveFilePath);
+        DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(saveFilePath)));
+        chunk.write(dataOutputStream);
+        dataOutputStream.close();
     }
 
-    public void prepareChunks() throws IOException {
+    public void loadPrepareChunks() throws IOException {
+        if (this.unloaded)
+            return;
         for (ChunkPos pos: this.instance.getPrepareChunkPos())
             this.loadChunk(pos);
     }
 
+    public void unloadAllChunks() throws IOException {
+        this.unloaded = true;
+        Set<ChunkPos> chunkPos = this.loadedChunks.getMap().keySet();
+        for (ChunkPos pos: chunkPos)
+            this.unloadChunk(pos);
+    }
 
+    public void readAll() throws IOException {
+        String informationFile = this.getInformationFile();
+        if (!HFileHelper.checkFileAvailable(informationFile))
+            throw new IOException("Unavailable information file: " + informationFile);
+        DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(informationFile)));
+        if (!prefix.equals(dataInputStream.readUTF()))
+            throw new DSTFormatException();
+        this.read(dataInputStream);
+        dataInputStream.close();
+        this.loadPrepareChunks();
+    }
 
-
-    public Chunk generateChunk(ChunkPos pos) {
-        //TODO: Chunk generator
-        return new Chunk(pos);
+    public void writeAll() throws IOException {
+        String informationFile = this.getInformationFile();
+        HFileHelper.createNewFile(informationFile);
+        DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(informationFile)));
+        this.write(dataOutputStream);
+        dataOutputStream.close();
     }
 
     @Override
     public void read(DataInput input) throws IOException {
         try {
-            this.instance = DimensionUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false);
+            this.setInstance(DimensionUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false));
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             this.instance = new DimensionEarthSurface();
         }
+        this.instance.read(input);
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
@@ -144,15 +178,13 @@ public class Dimension implements IDSTBase {
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(this.instance.getDimensionName());
+        this.instance.write(output);
         output.writeUTF(suffix);
     }
 
     @Override
     public String toString() {
-        return "Dimension{" +
-                "instance=" + this.instance +
-                '}';
+        return "Dimension:" + this.instance;
     }
 
     @Override

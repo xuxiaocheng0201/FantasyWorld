@@ -6,13 +6,13 @@ import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
 import Core.FileTreeStorage;
-import CraftWorld.Dimension.Dimension;
-import CraftWorld.Events.LoadedWorldEvent;
+import CraftWorld.Chunk.ChunkPos;
 import CraftWorld.Events.LoadingWorldEvent;
+import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
 import CraftWorld.World.World;
-import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,25 +51,45 @@ public class CraftWorld implements ModImplement {
         FileTreeStorage.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
 
-    private final World world = new World();
+    private World world;
+
+    public World getWorld() {
+        return this.world;
+    }
 
     public void start(ServerSocket server) throws IOException {
         logger.log(HLogLevel.FINEST, "Loading world..." );
+        this.world = new World();
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
-        try {
-            this.world.read(ConstantStorage.WORLD_PATH);
-        } catch (IOException exception) {
-            HFileHelper.createNewDirectory(ConstantStorage.WORLD_PATH);
-            Dimension dimension = new Dimension();
-            dimension.prepareChunks();
-            try {
-                this.world.addDimension(dimension);
-            } catch (HElementRegisteredException ignore) {
-            }
-            this.world.write(ConstantStorage.WORLD_PATH);
-        }
-        CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
+//        try {
+//            this.world.readAll();
+//        } catch (IOException | HElementNotRegisteredException | NoSuchMethodException exception) {
+//            this.world.getPrepareDimensions().add(DimensionEarthSurface.id);
+//            this.world.writeAll();
+//        }
+//        try {
+//            this.world.loadPrepareDimensions();
+//        } catch (HElementNotRegisteredException | NoSuchMethodException ignore) {
+//        }
+//        CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
+//
+//        //TODO: server
+//
+//        try {
+//            this.world.loadDimension(DimensionEarthSurface.id).loadChunk(new ChunkPos(0, 0, 0)).setBlock(0, 0, 0, new Block(new BlockStone()));
+//        } catch (HElementNotRegisteredException | NoSuchMethodException ignore) {
+//        }
+//        this.world.writeAll();
 
-        //TODO: server
+        World nw = new World();
+        try {
+            nw.readAll();
+        } catch (IOException | HElementNotRegisteredException | NoSuchMethodException exception) {
+            logger.log(exception);
+        }
+        try {
+            logger.log(nw.loadDimension(DimensionEarthSurface.id).loadChunk(new ChunkPos(0, 0, 0)).getBlock(0, 0, 0));
+        } catch (HElementNotRegisteredException | NoSuchMethodException ignore) {
+        }
     }
 }

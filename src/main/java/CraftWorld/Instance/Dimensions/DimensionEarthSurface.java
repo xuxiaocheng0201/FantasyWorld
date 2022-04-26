@@ -1,6 +1,7 @@
 package CraftWorld.Instance.Dimensions;
 
 import CraftWorld.Chunk.ChunkPos;
+import CraftWorld.DST.DSTUtils;
 import CraftWorld.Dimension.DimensionUtils;
 import CraftWorld.Dimension.IDimensionBase;
 import CraftWorld.Instance.DST.DSTMetaCompound;
@@ -8,15 +9,25 @@ import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.Serial;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class DimensionEarthSurface implements IDimensionBase {
+    @Serial
+    private static final long serialVersionUID = -1129089963710423740L;
+
     public static String id = "DimensionEarthSurface";
+    public static String prefix = DSTUtils.prefix(id);
+    public static String suffix = DSTUtils.suffix(id);
     static {
         try {
             DimensionUtils.getInstance().register(id, DimensionEarthSurface.class);
+            DSTUtils.getInstance().register(id, DimensionEarthSurface.class);
         } catch (HElementRegisteredException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
         }
@@ -27,13 +38,13 @@ public class DimensionEarthSurface implements IDimensionBase {
     }
 
     private String name = "EarthSurface";
-    private final Set<ChunkPos> prepareChunkPos = new HashSet<>();
+    private static final Set<ChunkPos> prepareChunkPos = new HashSet<>();
     private DSTMetaCompound dst = new DSTMetaCompound();
-    {
+    static {
         for (int x = -1; x < 2; ++x)
             for (int y = -1; y < 2; ++y)
                 for (int z = -1; z < 2; ++z)
-                    this.prepareChunkPos.add(new ChunkPos(x, y, z));
+                    prepareChunkPos.add(new ChunkPos(x, y, z));
     }
 
     public DimensionEarthSurface() {
@@ -100,5 +111,15 @@ public class DimensionEarthSurface implements IDimensionBase {
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.dst);
+    }
+
+    @Override
+    public void read(DataInput input) throws IOException {
+        
+    }
+
+    @Override
+    public void write(DataOutput output) throws IOException {
+        output.writeUTF(prefix);
     }
 }
