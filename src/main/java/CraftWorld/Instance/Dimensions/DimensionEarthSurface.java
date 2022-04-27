@@ -38,13 +38,13 @@ public class DimensionEarthSurface implements IDimensionBase {
     }
 
     private String name = "EarthSurface";
-    private static final Set<ChunkPos> prepareChunkPos = new HashSet<>();
     private DSTMetaCompound dst = new DSTMetaCompound();
-    static {
+    private final Set<ChunkPos> prepareChunkPos = new HashSet<>();
+    {
         for (int x = -1; x < 2; ++x)
             for (int y = -1; y < 2; ++y)
                 for (int z = -1; z < 2; ++z)
-                    prepareChunkPos.add(new ChunkPos(x, y, z));
+                    this.prepareChunkPos.add(new ChunkPos(x, y, z));
     }
 
     public DimensionEarthSurface() {

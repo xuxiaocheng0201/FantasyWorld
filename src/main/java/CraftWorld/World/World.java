@@ -65,8 +65,8 @@ public class World implements IDSTBase {
         this.worldSavedDirectory = (new File(worldSavedDirectoryPath)).getAbsoluteFile();
     }
 
-    public Collection<String> getPrepareDimensions() {
-        return this.prepareDimensions;
+    public void addPrepareDimension(String dimensionId) {
+        this.prepareDimensions.add(dimensionId);
     }
 
     public String getWorldName() {
@@ -106,16 +106,10 @@ public class World implements IDSTBase {
             return null;
         Dimension dimension = new Dimension(this, DimensionUtils.getInstance().getElementInstance(dimensionId, false));
         if (HFileHelper.checkDirectoryAvailable(this.getDimensionDirectory(dimensionId)))
-            try {
-                dimension.readAll();
-            } catch (IOException exception) {
-                dimension.loadPrepareChunks();
-                dimension.writeAll();
-            }
-        else {
-            dimension.loadPrepareChunks();
+            dimension.readAll();
+        else
             dimension.writeAll();
-        }
+        dimension.loadPrepareChunks();
         try {
             this.dimensions.register(dimensionId, dimension);
         } catch (HElementRegisteredException ignore) {
@@ -140,7 +134,7 @@ public class World implements IDSTBase {
         if (this.unloaded)
             return;
         for (String dimensionId: this.prepareDimensions)
-            this.loadDimension(dimensionId).loadPrepareChunks();
+            this.loadDimension(dimensionId);
     }
 
     public void unloadAllDimensions() throws IOException {
@@ -148,6 +142,7 @@ public class World implements IDSTBase {
         Set<String> dimensions = this.dimensions.getMap().keySet();
         for (String dimension: dimensions)
             this.unloadDimension(dimension);
+        this.writeAll();
     }
 
     public void readAll() throws IOException, HElementNotRegisteredException, NoSuchMethodException {
@@ -184,8 +179,12 @@ public class World implements IDSTBase {
             throw new DSTFormatException();
         this.dst.read(input);
         this.tick = input.readLong();
-        if (!suffix.equals(input.readUTF()))
-            throw new DSTFormatException();
+        this.prepareDimensions.clear();
+        String dimensionId = input.readUTF();
+        while (!suffix.equals(dimensionId)) {
+            this.prepareDimensions.add(dimensionId);
+            dimensionId = input.readUTF();
+        }
     }
 
     @Override
@@ -194,6 +193,8 @@ public class World implements IDSTBase {
         output.writeUTF(this.worldName);
         this.dst.write(output);
         output.writeLong(this.tick);
+        for (String dimensionId: this.prepareDimensions)
+            output.writeUTF(dimensionId);
         output.writeUTF(suffix);
     }
 

@@ -70,14 +70,7 @@ public class Chunk implements IDSTBase {
                 for (Block block_3: block_2) {
                     if (!Block.prefix.equals(input.readUTF()))
                         throw new DSTFormatException();
-                    try {
-                        //TODO del
-                        block_3.read(input);
-                    } catch (IOException e) {
-                        HLog.logger(HLogLevel.DEBUG, e);
-                        HLog.logger(this);
-                        HLog.logger(block_3.getPos());
-                    }
+                    block_3.read(input);
                 }
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
