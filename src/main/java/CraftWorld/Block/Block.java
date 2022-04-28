@@ -1,5 +1,6 @@
 package CraftWorld.Block;
 
+import CraftWorld.Chunk.Chunk;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -30,27 +31,40 @@ public class Block implements IDSTBase {
         }
     }
 
+    private final Chunk chunk;
+    private BlockPos pos;
     private IBlockBase instance = new BlockAir();
-    private BlockPos pos = new BlockPos();
 
-    public Block() {
+    public Block(Chunk chunk) {
         super();
+        this.chunk = chunk;
     }
 
-    public Block(BlockPos pos) {
+    public Block(Chunk chunk, BlockPos pos) {
         super();
-        this.pos = Objects.requireNonNullElseGet(pos, BlockPos::new);
+        this.chunk = chunk;
+        this.pos = new BlockPos(chunk.getPos());
     }
 
-    public Block(IBlockBase instance) {
+    public Block(Chunk chunk, IBlockBase instance) {
         super();
+        this.chunk = chunk;
         this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
     }
 
-    public Block(BlockPos pos, IBlockBase instance) {
+    public Block(Chunk chunk, BlockPos pos, IBlockBase instance) {
         super();
+        this.chunk = chunk;
         this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
-        this.pos = Objects.requireNonNullElseGet(pos, BlockPos::new);
+        this.pos = new BlockPos(chunk.getPos());
+    }
+
+    public BlockPos getPos() {
+        return this.pos;
+    }
+
+    public void setPos(BlockPos pos) {
+        this.pos = new BlockPos(chunk.getPos());
     }
 
     public IBlockBase getInstance() {
@@ -59,14 +73,6 @@ public class Block implements IDSTBase {
 
     public void setInstance(IBlockBase instance) {
         this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
-    }
-
-    public BlockPos getPos() {
-        return this.pos;
-    }
-
-    public void setPos(BlockPos pos) {
-        this.pos = Objects.requireNonNullElseGet(pos, BlockPos::new);
     }
 
     @Override

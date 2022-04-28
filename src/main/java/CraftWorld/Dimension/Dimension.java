@@ -88,7 +88,7 @@ public class Dimension implements IDSTBase {
         if (this.unloaded)
             return null;
         String chunkSaveFilePath = this.getChunkSaveFile(pos);
-        Chunk chunk = new Chunk();
+        Chunk chunk = new Chunk(this);
         if (HFileHelper.checkFileAvailable(chunkSaveFilePath)) {
             DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(chunkSaveFilePath)));
             if (!Chunk.prefix.equals(dataInputStream.readUTF()))

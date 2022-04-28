@@ -1,14 +1,16 @@
 package CraftWorld.Chunk;
 
 import CraftWorld.Block.Block;
-import CraftWorld.Block.BlockPos;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Instance.Blocks.BlockAir;
+import CraftWorld.Dimension.Dimension;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -33,27 +35,72 @@ public class Chunk implements IDSTBase {
             HLog.logger(HLogLevel.ERROR, exception);
         }
     }
-
-    public static final int SIZE = 2;
+    public static final int SIZE = 16;
     public static final BigInteger SIZE_B = BigInteger.valueOf(SIZE);
 
-    private ChunkPos pos;
-    private final List<List<List<Block>>> blocks = Collections.synchronizedList(new ArrayList<>(SIZE));
+    private final @NotNull Dimension dimension;
+    private @NotNull ChunkPos pos;
+    private final @NotNull List<List<List<Block>>> blocks = Collections.synchronizedList(new ArrayList<>(SIZE));
 
-    public Chunk() {
-        this(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO);
+    public Chunk(@NotNull Dimension dimension) {
+        this(dimension, new ChunkPos());
     }
 
-    public Chunk(int x, int y, int z) {
-        this(BigInteger.valueOf(x), BigInteger.valueOf(y), BigInteger.valueOf(z));
+    public Chunk(@NotNull Dimension dimension, int x, int y, int z) {
+        this(dimension, new ChunkPos(x, y, z));
     }
 
-    public Chunk(BigInteger x, BigInteger y, BigInteger z) {
+    public Chunk(@NotNull Dimension dimension, @Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+        this(dimension, new ChunkPos(x, y, z));
+    }
+
+    public Chunk(@NotNull Dimension dimension, @Nullable ChunkPos pos) {
         super();
-        this.pos = new ChunkPos(x, y, z);
-        this.clearBlocks();
+        this.dimension = dimension;
+        this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
     }
 
+    public @NotNull Dimension getDimension() {
+        return this.dimension;
+    }
+
+    public @NotNull ChunkPos getPos() {
+        return this.pos;
+    }
+
+    public void setPos(@Nullable ChunkPos pos) {
+        this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
+    }
+
+    public @NotNull Block getBlock(@Range(from = 0, to = SIZE - 1) int x, @Range(from = 0, to = SIZE - 1) int y, @Range(from = 0, to = SIZE - 1) int z) {
+        return this.blocks.get(x).get(y).get(z);
+    }
+
+    public void setBlock(@Range(from = 0, to = SIZE - 1) int x, @Range(from = 0, to = SIZE - 1) int y, @Range(from = 0, to = SIZE - 1) int z, @Nullable Block block) {
+       // this.blocks.get(x).get(y).set(z, new Block(new BlockPos(this.pos)));TODO
+    }
+
+    public void clearBlocks() {
+        BigInteger x = this.pos.getBigX().multiply(SIZE_B);
+        BigInteger y = this.pos.getBigY().multiply(SIZE_B);
+        BigInteger z = this.pos.getBigZ().multiply(SIZE_B);
+        this.blocks.clear();
+        for (int a = 0; a < SIZE; ++a) {
+            List<List<Block>> block_1 = Collections.synchronizedList(new ArrayList<>(SIZE));
+            for (int b = 0; b < SIZE; ++b) {
+                List<Block> block_2 = Collections.synchronizedList(new ArrayList<>(SIZE));
+                for (int c = 0; c < SIZE; ++c)
+                    ;//TODO
+//                    block_2.add(new Block(new BlockPos(
+//                            x.add(BigInteger.valueOf(a)),
+//                            y.add(BigInteger.valueOf(b)),
+//                            z.add(BigInteger.valueOf(c))),
+//                            new BlockAir()));
+                block_1.add(block_2);
+            }
+            this.blocks.add(block_1);
+        }
+    }
 
     public void regenerate() {
         //TODO: Chunk generator
@@ -85,43 +132,6 @@ public class Chunk implements IDSTBase {
                 for (Block block_3: block_2)
                     block_3.write(output);
         output.writeUTF(suffix);
-    }
-
-    public void clearBlocks() {
-        BigInteger x = this.pos.getBigX().multiply(SIZE_B);
-        BigInteger y = this.pos.getBigY().multiply(SIZE_B);
-        BigInteger z = this.pos.getBigZ().multiply(SIZE_B);
-        this.blocks.clear();
-        for (int a = 0; a < SIZE; ++a) {
-            List<List<Block>> block_1 = Collections.synchronizedList(new ArrayList<>(SIZE));
-            for (int b = 0; b < SIZE; ++b) {
-                List<Block> block_2 = Collections.synchronizedList(new ArrayList<>(SIZE));
-                for (int c = 0; c < SIZE; ++c)
-                    block_2.add(new Block(new BlockPos(
-                            x.add(BigInteger.valueOf(a)),
-                            y.add(BigInteger.valueOf(b)),
-                            z.add(BigInteger.valueOf(c))),
-                            new BlockAir()));
-                block_1.add(block_2);
-            }
-            this.blocks.add(block_1);
-        }
-    }
-
-    public ChunkPos getPos() {
-        return this.pos;
-    }
-
-    public void setPos(ChunkPos pos) {
-        this.pos = pos;
-    }
-
-    public Block getBlock(int x, int y, int z) {
-        return this.blocks.get(x).get(y).get(z);
-    }
-
-    public void setBlock(int x, int y, int z, Block block) {
-        this.blocks.get(x).get(y).set(z, block);
     }
 
     @Override

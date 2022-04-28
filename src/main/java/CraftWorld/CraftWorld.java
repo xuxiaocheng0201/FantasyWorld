@@ -6,7 +6,7 @@ import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
 import Core.FileTreeStorage;
-import CraftWorld.Chunk.ChunkPos;
+import CraftWorld.Block.BlockPos;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
@@ -76,14 +76,11 @@ public class CraftWorld implements ModImplement {
 
         //TODO: server
 
-        try {
-            logger.log(this.world.loadDimension(DimensionEarthSurface.id).loadChunk(new ChunkPos(0, 0, 0)).getBlock(0, 0, 0));
-//            this.world.loadDimension(DimensionEarthSurface.id).loadChunk(new ChunkPos(0, 0, 0)).setBlock(0, 0, 0, new Block(new BlockStone()));
-//            logger.log(this.world.loadDimension(DimensionEarthSurface.id).loadChunk(new ChunkPos(0, 0, 0)).getBlock(0, 0, 0));
-        } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
-            logger.log(exception);
-        }
-
-        this.world.unloadAllDimensions();
+        BlockPos pos = new BlockPos(null, 0, 0, 0);
+        logger.log(pos);
+        pos.setX(33);
+        logger.log(pos);
+        pos.setX(-1);
+        logger.log(pos);
     }
 }
