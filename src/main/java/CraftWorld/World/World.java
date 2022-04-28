@@ -16,10 +16,10 @@ import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.Range;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 public class World implements IDSTBase {
     @Serial
@@ -139,7 +139,7 @@ public class World implements IDSTBase {
 
     public void unloadAllDimensions() throws IOException {
         this.unloaded = true;
-        Set<String> dimensions = this.dimensions.getMap().keySet();
+        Iterable<String> dimensions = new ArrayList<>(this.dimensions.getMap().keySet());
         for (String dimension: dimensions)
             this.unloadDimension(dimension);
         this.writeAll();

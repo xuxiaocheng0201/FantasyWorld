@@ -15,9 +15,8 @@ import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
 
 import java.io.*;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Set;
 
 public class Dimension implements IDSTBase {
     @Serial
@@ -39,11 +38,11 @@ public class Dimension implements IDSTBase {
     private IDimensionBase instance;
     private final HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false);
 
-    public Dimension(World world) throws IOException {
+    public Dimension(World world) {
         this(world, new DimensionEarthSurface());
     }
 
-    public Dimension(World world, IDimensionBase instance) throws IOException {
+    public Dimension(World world, IDimensionBase instance) {
         super();
         this.world = world;
         this.setInstance(instance);
@@ -99,6 +98,7 @@ public class Dimension implements IDSTBase {
         }
         else {
             HFileHelper.createNewFile(chunkSaveFilePath);
+            chunk.setPos(pos);
             chunk.regenerate();
             DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(chunkSaveFilePath)));
             chunk.write(dataOutputStream);
@@ -141,13 +141,13 @@ public class Dimension implements IDSTBase {
 
     public void unloadAllChunks() throws IOException {
         this.unloaded = true;
-        Set<ChunkPos> chunkPos = this.loadedChunks.getMap().keySet();
+        Iterable<ChunkPos> chunkPos = new ArrayList<>(this.loadedChunks.getMap().keySet());
         for (ChunkPos pos: chunkPos)
             this.unloadChunk(pos);
     }
 
     public void saveAllChunks() throws IOException {
-        Collection<Chunk> chunks = this.loadedChunks.getMap().values();
+        Iterable<Chunk> chunks = new ArrayList<>(this.loadedChunks.getMap().values());
         for (Chunk chunk: chunks)
             this.saveChunk(chunk);
     }
