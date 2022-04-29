@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class BlockPos implements IDSTBase {
+public class BlockPos implements IDSTBase, Cloneable {
     @Serial
     private static final long serialVersionUID = -1091178102319329091L;
     public static final String id = "BlockPos";
@@ -49,8 +49,8 @@ public class BlockPos implements IDSTBase {
         super();
         this.chunkPos = Objects.requireNonNullElseGet(chunkPos, ChunkPos::new);
         this.setX(x);
-//        this.setY(y);
-//        this.setZ(z);
+        this.setY(y);
+        this.setZ(z);
     }
 
     public @NotNull ChunkPos getChunkPos() {
@@ -74,32 +74,94 @@ public class BlockPos implements IDSTBase {
         this.chunkPos.addX(chunk);
         this.x = (x - chunk * Chunk.SIZE) % Chunk.SIZE;
     }
-/*
+
     public void setFullX(int x) {
-        this.chunkPos.setX(x / Chunk.SIZE);
-        this.x = x % Chunk.SIZE;
+        int chunk = HMathHelper.floorDivide(x, Chunk.SIZE);
+        this.chunkPos.setX(chunk);
+        this.x = (x - chunk * Chunk.SIZE) % Chunk.SIZE;
+    }
+
+    public void setFullX(@Nullable BigInteger x) {
+        if (x == null) {
+            this.chunkPos.setX(BigInteger.ZERO);
+            this.x = 0;
+            return;
+        }
+        BigInteger chunk = HMathHelper.floorDivide(x, Chunk.SIZE_B);
+        this.chunkPos.setX(chunk);
+        this.x = x.subtract(chunk.multiply(Chunk.SIZE_B)).mod(Chunk.SIZE_B).intValue();
     }
 
     public @Range(from = 0, to = Chunk.SIZE - 1) int getY() {
         return this.y;
     }
 
+    public @NotNull BigInteger getFullY() {
+        return this.chunkPos.getBigY().multiply(Chunk.SIZE_B).add(BigInteger.valueOf(this.y));
+    }
+
     public void setY(int y) {
-        this.chunkPos.setY(y / Chunk.SIZE);
-        this.y = y % Chunk.SIZE;
+        int chunk = HMathHelper.floorDivide(y, Chunk.SIZE);
+        this.chunkPos.addY(chunk);
+        this.y = (y - chunk * Chunk.SIZE) % Chunk.SIZE;
+    }
+
+    public void setFullY(int y) {
+        int chunk = HMathHelper.floorDivide(y, Chunk.SIZE);
+        this.chunkPos.setY(chunk);
+        this.y = (y - chunk * Chunk.SIZE) % Chunk.SIZE;
+    }
+
+    public void setFullY(@Nullable BigInteger y) {
+        if (y == null) {
+            this.chunkPos.setY(BigInteger.ZERO);
+            this.y = 0;
+            return;
+        }
+        BigInteger chunk = HMathHelper.floorDivide(y, Chunk.SIZE_B);
+        this.chunkPos.setY(chunk);
+        this.y = y.subtract(chunk.multiply(Chunk.SIZE_B)).mod(Chunk.SIZE_B).intValue();
     }
 
     public @Range(from = 0, to = Chunk.SIZE - 1) int getZ() {
         return this.z;
     }
 
+    public @NotNull BigInteger getFullZ() {
+        return this.chunkPos.getBigZ().multiply(Chunk.SIZE_B).add(BigInteger.valueOf(this.z));
+    }
+
     public void setZ(int z) {
-        this.chunkPos.setZ(z / Chunk.SIZE);
-        this.z = z % Chunk.SIZE;
+        int chunk = HMathHelper.floorDivide(z, Chunk.SIZE);
+        this.chunkPos.addZ(chunk);
+        this.z = (z - chunk * Chunk.SIZE) % Chunk.SIZE;
+    }
+
+    public void setFullZ(int z) {
+        int chunk = HMathHelper.floorDivide(z, Chunk.SIZE);
+        this.chunkPos.setZ(chunk);
+        this.z = (z - chunk * Chunk.SIZE) % Chunk.SIZE;
+    }
+
+    public void setFullZ(@Nullable BigInteger z) {
+        if (z == null) {
+            this.chunkPos.setZ(BigInteger.ZERO);
+            this.z = 0;
+            return;
+        }
+        BigInteger chunk = HMathHelper.floorDivide(z, Chunk.SIZE_B);
+        this.chunkPos.setZ(chunk);
+        this.z = z.subtract(chunk.multiply(Chunk.SIZE_B)).mod(Chunk.SIZE_B).intValue();
     }
 
     public void clear() {
         this.chunkPos.clear();
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+    }
+
+    public void clearOffsets() {
         this.x = 0;
         this.y = 0;
         this.z = 0;
@@ -122,110 +184,114 @@ public class BlockPos implements IDSTBase {
         this.setZ(z);
     }
 
-    public void set(@Nullable BlockPos pos, int x, int y, int z) {
-        this.set(pos);
-        this.set(x, y, z);
+    public void set(@Nullable ChunkPos pos, int x, int y, int z) {
+        this.setChunkPos(pos);
+        this.setX(x);
+        this.setY(y);
+        this.setZ(z);
     }
 
     public void addX(int x) {
-        int t = this.x + x;
-        this.chunkPos.addX(t / Chunk.SIZE);
-        this.x = t % Chunk.SIZE;
+        this.setX(this.x + x);
     }
 
     public void addY(int y) {
-        this.y = this.y.add(BigInteger.valueOf(y));
+        this.setY(this.y + y);
     }
 
     public void addZ(int z) {
-        this.z = this.z.add(BigInteger.valueOf(z));
+        this.setZ(this.z + z);
     }
 
     public void add(int x, int y, int z) {
-        this.x = this.x.add(BigInteger.valueOf(x));
-        this.y = this.y.add(BigInteger.valueOf(y));
-        this.z = this.z.add(BigInteger.valueOf(z));
+        this.setX(this.x + x);
+        this.setY(this.y + y);
+        this.setZ(this.z + z);
     }
 
-    public void add(BlockPos pos) {
-        this.x = this.x.add(pos.x);
-        this.y = this.y.add(pos.y);
-        this.z = this.z.add(pos.z);
+    public void add(@Nullable BlockPos pos) {
+        if (pos == null)
+            return;
+        this.setX(this.x + pos.x);
+        this.setY(this.y + pos.y);
+        this.setZ(this.z + pos.z);
     }
 
     public void subtractX(int x) {
-        this.x = this.x.subtract(BigInteger.valueOf(x));
+        this.setX(this.x - x);
     }
 
     public void subtractY(int y) {
-        this.y = this.y.subtract(BigInteger.valueOf(y));
+        this.setY(this.y - y);
     }
 
     public void subtractZ(int z) {
-        this.z = this.z.subtract(BigInteger.valueOf(z));
+        this.setZ(this.z - z);
     }
 
     public void subtract(int x, int y, int z) {
-        this.x = this.x.subtract(BigInteger.valueOf(x));
-        this.y = this.y.subtract(BigInteger.valueOf(y));
-        this.z = this.z.subtract(BigInteger.valueOf(z));
+        this.setX(this.x - x);
+        this.setY(this.y - y);
+        this.setZ(this.z - z);
     }
 
-    public void subtract(BlockPos pos) {
-        this.x = this.x.subtract(pos.x);
-        this.y = this.y.subtract(pos.y);
-        this.z = this.z.subtract(pos.z);
+    public void subtract(@Nullable BlockPos pos) {
+        if (pos == null)
+            return;
+        this.setX(this.x - pos.x);
+        this.setY(this.y - pos.y);
+        this.setZ(this.z - pos.z);
     }
 
     public void up() {
-        this.y = this.y.add(BigInteger.ONE);
+        this.addZ(1);
     }
 
     public void up(int n) {
-        this.y = this.y.add(BigInteger.valueOf(n));
+        this.addZ(n);
     }
 
     public void down() {
-        this.y = this.y.subtract(BigInteger.ONE);
+        this.subtractZ(1);
     }
 
     public void down(int n) {
-        this.y = this.y.subtract(BigInteger.valueOf(n));
+        this.subtractZ(n);
     }
 
     public void north() {
-        this.x = this.x.add(BigInteger.ONE);
+        this.addY(1);
     }
 
     public void north(int n) {
-        this.x = this.x.add(BigInteger.valueOf(n));
+        this.addY(n);
     }
 
     public void south() {
-        this.x = this.x.subtract(BigInteger.ONE);
+        this.subtractY(1);
     }
 
     public void south(int n) {
-        this.x = this.x.subtract(BigInteger.valueOf(n));
+        this.subtractY(n);
     }
 
     public void east() {
-        this.z = this.z.add(BigInteger.ONE);
+        this.addX(1);
     }
 
     public void east(int n) {
-        this.z = this.z.add(BigInteger.valueOf(n));
+        this.addX(n);
     }
 
     public void west() {
-        this.z = this.z.subtract(BigInteger.ONE);
+        this.subtractX(1);
     }
 
     public void west(int n) {
-        this.z = this.z.subtract(BigInteger.valueOf(n));
+        this.subtractX(n);
     }
 
-    public void offset(ChunkPos.EFacing facing) {
+    public void offset(EFacing facing) {
         switch (facing) {
             case UP -> this.up();
             case DOWN -> this.down();
@@ -236,7 +302,7 @@ public class BlockPos implements IDSTBase {
         }
     }
 
-    public void offset(ChunkPos.EFacing facing, int n) {
+    public void offset(EFacing facing, int n) {
         switch (facing) {
             case UP -> this.up(n);
             case DOWN -> this.down(n);
@@ -246,9 +312,12 @@ public class BlockPos implements IDSTBase {
             case SOUTH -> this.south(n);
         }
     }
-*/
+
     @Override
     public void read(DataInput input) throws IOException {
+        if (!ChunkPos.prefix.equals(input.readUTF()))
+            throw new DSTFormatException();
+        this.chunkPos.read(input);
         this.x = Integer.parseInt(input.readUTF(), SAVE_RADIX);
         this.y = Integer.parseInt(input.readUTF(), SAVE_RADIX);
         this.z = Integer.parseInt(input.readUTF(), SAVE_RADIX);
@@ -259,6 +328,7 @@ public class BlockPos implements IDSTBase {
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
+        this.chunkPos.write(output);
         output.writeUTF(Integer.toString(this.x, SAVE_RADIX));
         output.writeUTF(Integer.toString(this.y, SAVE_RADIX));
         output.writeUTF(Integer.toString(this.z, SAVE_RADIX));
@@ -275,5 +345,32 @@ public class BlockPos implements IDSTBase {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        BlockPos blockPos = (BlockPos) o;
+        return this.x == blockPos.x && this.y == blockPos.y && this.z == blockPos.z && this.chunkPos.equals(blockPos.chunkPos);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.chunkPos, this.x, this.y, this.z);
+    }
+
+    @Override
+    public BlockPos clone() {
+        BlockPos blockPos;
+        try {
+            blockPos = (BlockPos) super.clone();
+        } catch (CloneNotSupportedException exception) {
+            throw new AssertionError(exception);
+        }
+        blockPos.chunkPos = this.chunkPos.clone();
+        return blockPos;
+    }
+
+    public enum EFacing {
+        NORTH, SOUTH, WEST, EAST, UP, DOWN
+    }
 }

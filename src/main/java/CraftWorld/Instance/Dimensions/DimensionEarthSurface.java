@@ -38,7 +38,7 @@ public class DimensionEarthSurface implements IDimensionBase {
     }
 
     private String name = "EarthSurface";
-    private DSTMetaCompound dst = new DSTMetaCompound();
+    private final DSTMetaCompound dst;
     private final Set<ChunkPos> prepareChunkPos = new HashSet<>();
     {
         for (int x = -1; x < 2; ++x)
@@ -49,11 +49,13 @@ public class DimensionEarthSurface implements IDimensionBase {
 
     public DimensionEarthSurface() {
         super();
+        this.dst = new DSTMetaCompound();
     }
 
     public DimensionEarthSurface(String name) {
         super();
         this.name = name;
+        this.dst = new DSTMetaCompound();
     }
 
     public DimensionEarthSurface(DSTMetaCompound dst) {
@@ -85,11 +87,6 @@ public class DimensionEarthSurface implements IDimensionBase {
     @Override
     public DSTMetaCompound getDst() {
         return this.dst;
-    }
-
-    @Override
-    public void setDst(DSTMetaCompound dst) {
-        this.dst = dst;
     }
 
     @Override

@@ -1,15 +1,19 @@
 package CraftWorld.Block;
 
 import CraftWorld.Chunk.Chunk;
+import CraftWorld.Chunk.ChunkPos;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
+import CraftWorld.Dimension.Dimension;
 import CraftWorld.Instance.Blocks.BlockAir;
 import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -31,54 +35,85 @@ public class Block implements IDSTBase {
         }
     }
 
-    private final Chunk chunk;
-    private BlockPos pos;
-    private IBlockBase instance = new BlockAir();
+    private final @NotNull Chunk chunk;
+    private final @NotNull BlockPos pos;
+    private @NotNull IBlockBase instance = new BlockAir();
 
-    public Block(Chunk chunk) {
-        super();
-        this.chunk = chunk;
-    }
-
-    public Block(Chunk chunk, BlockPos pos) {
+    public Block(@NotNull Chunk chunk) {
         super();
         this.chunk = chunk;
         this.pos = new BlockPos(chunk.getPos());
     }
 
-    public Block(Chunk chunk, IBlockBase instance) {
+    public Block(@NotNull Chunk chunk, @Nullable BlockPos pos) {
         super();
         this.chunk = chunk;
-        this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
+        this.pos = Objects.requireNonNullElse(pos, new BlockPos(chunk.getPos()));
+        this.pos.setChunkPos(chunk.getPos());
     }
 
-    public Block(Chunk chunk, BlockPos pos, IBlockBase instance) {
+    public Block(@NotNull Chunk chunk, @Nullable IBlockBase instance) {
         super();
         this.chunk = chunk;
-        this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
         this.pos = new BlockPos(chunk.getPos());
+        this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
     }
 
-    public BlockPos getPos() {
+    public Block(@NotNull Chunk chunk, @Nullable BlockPos pos, @Nullable IBlockBase instance) {
+        super();
+        this.chunk = chunk;
+        this.pos = Objects.requireNonNullElse(pos, new BlockPos(chunk.getPos()));
+        this.pos.setChunkPos(chunk.getPos());
+        this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
+    }
+
+    public @NotNull Dimension getDimension() {
+        return this.chunk.getDimension();
+    }
+
+    public @NotNull Chunk getChunk() {
+        return this.chunk;
+    }
+
+    public @NotNull BlockPos getPos() {
         return this.pos;
     }
 
-    public void setPos(BlockPos pos) {
-        this.pos = new BlockPos(chunk.getPos());
+    public void setChunkPos(@Nullable ChunkPos chunkPos) {
+        this.chunk.setPos(chunkPos);
+        this.pos.setChunkPos(chunkPos);
     }
 
-    public IBlockBase getInstance() {
+    public void setPos(@Nullable BlockPos pos) {
+        if (pos == null) {
+            this.pos.clearOffsets();
+            return;
+        }
+        this.pos.set(pos);
+        this.chunk.setPos(this.pos.getChunkPos());
+    }
+
+    public void setPosOffset(@Nullable BlockPos pos) {
+        if (pos == null) {
+            this.pos.clearOffsets();
+            return;
+        }
+        this.pos.set(pos);
+        this.pos.setChunkPos(this.chunk.getPos());
+    }
+
+    public @NotNull IBlockBase getInstance() {
         return this.instance;
     }
 
-    public void setInstance(IBlockBase instance) {
+    public void setInstance(@Nullable IBlockBase instance) {
         this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
     }
 
     @Override
     public void read(DataInput input) throws IOException {
         try {
-            this.instance = BlockUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false);
+            this.instance = BlockUtils.getInstance().getElementInstance(input.readUTF(), false);
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             this.instance = new BlockAir();
@@ -86,6 +121,7 @@ public class Block implements IDSTBase {
         if (!BlockPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.pos.read(input);
+        this.instance.setBlockName(input.readUTF());
         if (!DSTMetaCompound.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.instance.getDst().read(input);
@@ -98,6 +134,7 @@ public class Block implements IDSTBase {
         output.writeUTF(prefix);
         output.writeUTF(this.instance.getBlockId());
         this.pos.write(output);
+        output.writeUTF(this.instance.getBlockName());
         this.instance.getDst().write(output);
         output.writeUTF(suffix);
     }

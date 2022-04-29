@@ -6,7 +6,6 @@ import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
 import Core.FileTreeStorage;
-import CraftWorld.Block.BlockPos;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
@@ -59,7 +58,7 @@ public class CraftWorld implements ModImplement {
     }
 
     public void start(ServerSocket server) throws IOException {
-        logger.log(HLogLevel.FINEST, "Loading world..." );
+        logger.log(HLogLevel.FINEST, "Loading world...");
         this.world = new World();
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         try {
@@ -75,12 +74,6 @@ public class CraftWorld implements ModImplement {
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
 
         //TODO: server
-
-        BlockPos pos = new BlockPos(null, 0, 0, 0);
-        logger.log(pos);
-        pos.setX(33);
-        logger.log(pos);
-        pos.setX(-1);
-        logger.log(pos);
+        throw new IOException();
     }
 }

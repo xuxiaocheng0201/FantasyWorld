@@ -8,15 +8,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Find a big BUG!">
-      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Redoing block pos.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Events/ChunkRegenerateEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/Block.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Block/BlockPos.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Chunk/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Chunk/Chunk.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Chunk/ChunkPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Chunk/ChunkPos.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/Dimension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/Dimension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/IDimensionBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Dimension/IDimensionBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/DimensionEarthSurface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/DimensionEarthSurface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HMathHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HMathHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,11 +212,11 @@
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets.CraftWorld.lang" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="CraftWorld.Block.BlockPos" />
       <recent name="CraftWorld.Chunk.ChunkPos" />
       <recent name="CraftWorld.DST.DSTUtils" />
       <recent name="Core.GlobalConfigurations" />
       <recent name="Core.FileTreeStorage" />
-      <recent name="HeadLibs.Helper.HRandomHelper" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="HeadLibs.Version" />
@@ -260,13 +262,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00062" summary="Add some docs.">
-      <created>1648870618470</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1648870618491</updated>
     </task>
     <task id="LOCAL-00063" summary="Safer and more efficient code.">
       <created>1648907972536</created>
@@ -604,7 +599,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651110950443</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="Redoing block pos.">
+      <created>1651155231982</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1651155231985</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -646,7 +648,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="More RuntimeExceptions about BasicModInformation." />
     <MESSAGE value="Improve same mods and elements checker." />
     <MESSAGE value="Improve elements pair checker." />
     <MESSAGE value="More common instance getter." />
@@ -671,7 +672,8 @@
     <MESSAGE value="Doing: Save Dimensions!" />
     <MESSAGE value="Doing: Save Worlds!" />
     <MESSAGE value="Find a big BUG!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Find a big BUG!" />
+    <MESSAGE value="Redoing block pos." />
+    <option name="LAST_COMMIT_MESSAGE" value="Redoing block pos." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

@@ -1,10 +1,16 @@
 package CraftWorld.Chunk;
 
 import CraftWorld.Block.Block;
+import CraftWorld.Block.BlockPos;
+import CraftWorld.Block.IBlockBase;
+import CraftWorld.CraftWorld;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Dimension.Dimension;
+import CraftWorld.Events.ChunkGenerateEvent;
+import CraftWorld.Instance.Blocks.BlockAir;
+import CraftWorld.Instance.DST.DSTMetaCompound;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -22,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class Chunk implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -1248493755702372576L;
@@ -40,24 +47,33 @@ public class Chunk implements IDSTBase {
 
     private final @NotNull Dimension dimension;
     private @NotNull ChunkPos pos;
+    private final @NotNull DSTMetaCompound dst;
     private final @NotNull List<List<List<Block>>> blocks = Collections.synchronizedList(new ArrayList<>(SIZE));
 
     public Chunk(@NotNull Dimension dimension) {
         this(dimension, new ChunkPos());
     }
 
-    public Chunk(@NotNull Dimension dimension, int x, int y, int z) {
+    public Chunk(@NotNull Dimension dimension, @Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
         this(dimension, new ChunkPos(x, y, z));
     }
 
-    public Chunk(@NotNull Dimension dimension, @Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
-        this(dimension, new ChunkPos(x, y, z));
+    public Chunk(@NotNull Dimension dimension, @Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z, @Nullable DSTMetaCompound dst) {
+        this(dimension, new ChunkPos(x, y, z), dst);
     }
 
     public Chunk(@NotNull Dimension dimension, @Nullable ChunkPos pos) {
         super();
         this.dimension = dimension;
         this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
+        this.dst = new DSTMetaCompound();
+    }
+
+    public Chunk(@NotNull Dimension dimension, @Nullable ChunkPos pos, @Nullable DSTMetaCompound dst) {
+        super();
+        this.dimension = dimension;
+        this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
+        this.dst = Objects.requireNonNullElseGet(dst, DSTMetaCompound::new);
     }
 
     public @NotNull Dimension getDimension() {
@@ -72,30 +88,26 @@ public class Chunk implements IDSTBase {
         this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
     }
 
+    public @NotNull DSTMetaCompound getDst() {
+        return this.dst;
+    }
+
     public @NotNull Block getBlock(@Range(from = 0, to = SIZE - 1) int x, @Range(from = 0, to = SIZE - 1) int y, @Range(from = 0, to = SIZE - 1) int z) {
         return this.blocks.get(x).get(y).get(z);
     }
 
-    public void setBlock(@Range(from = 0, to = SIZE - 1) int x, @Range(from = 0, to = SIZE - 1) int y, @Range(from = 0, to = SIZE - 1) int z, @Nullable Block block) {
-       // this.blocks.get(x).get(y).set(z, new Block(new BlockPos(this.pos)));TODO
+    public void setBlock(@Range(from = 0, to = SIZE - 1) int x, @Range(from = 0, to = SIZE - 1) int y, @Range(from = 0, to = SIZE - 1) int z, @Nullable IBlockBase block) {
+        this.blocks.get(x).get(y).set(z, new Block(this, new BlockPos(this.pos, x, y, z), block));
     }
 
     public void clearBlocks() {
-        BigInteger x = this.pos.getBigX().multiply(SIZE_B);
-        BigInteger y = this.pos.getBigY().multiply(SIZE_B);
-        BigInteger z = this.pos.getBigZ().multiply(SIZE_B);
         this.blocks.clear();
         for (int a = 0; a < SIZE; ++a) {
             List<List<Block>> block_1 = Collections.synchronizedList(new ArrayList<>(SIZE));
             for (int b = 0; b < SIZE; ++b) {
                 List<Block> block_2 = Collections.synchronizedList(new ArrayList<>(SIZE));
                 for (int c = 0; c < SIZE; ++c)
-                    ;//TODO
-//                    block_2.add(new Block(new BlockPos(
-//                            x.add(BigInteger.valueOf(a)),
-//                            y.add(BigInteger.valueOf(b)),
-//                            z.add(BigInteger.valueOf(c))),
-//                            new BlockAir()));
+                    block_2.add(new Block(this, new BlockPos(this.pos, a, b, c), new BlockAir()));
                 block_1.add(block_2);
             }
             this.blocks.add(block_1);
@@ -103,8 +115,7 @@ public class Chunk implements IDSTBase {
     }
 
     public void regenerate() {
-        //TODO: Chunk generator
-        this.clearBlocks();
+        CraftWorld.getCraftWorldEventBus().post(new ChunkGenerateEvent(this));
     }
 
     @Override

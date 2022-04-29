@@ -15,5 +15,4 @@ public interface IDimensionBase extends IDSTBase {
     String getDimensionName();
     void setDimensionName(String name);
     DSTMetaCompound getDst();
-    void setDst(DSTMetaCompound dst);
 }

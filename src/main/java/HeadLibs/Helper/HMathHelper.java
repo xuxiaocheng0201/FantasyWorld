@@ -1,5 +1,7 @@
 package HeadLibs.Helper;
 
+import java.math.BigInteger;
+
 /**
  * Quicker math calculations.
  */
@@ -273,6 +275,13 @@ public class HMathHelper {
      */
     public static int floorDivide(int value1, int value2) {
         return value1 < 0 ? -((-value1 - 1) / value2) - 1 : value1 / value2;
+    }
+
+    /**
+     * BigInteger version of floorDivide()
+     */
+    public static BigInteger floorDivide(BigInteger value1, BigInteger value2) {
+        return value1.signum() < 0 ? value1.negate().subtract(BigInteger.ONE).divide(value2).negate().subtract(BigInteger.ONE) : value1.divide(value2);
     }
 
     /**

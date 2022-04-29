@@ -1,5 +1,6 @@
 package CraftWorld.Chunk;
 
+import CraftWorld.Block.BlockPos;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -60,28 +61,18 @@ public class ChunkPos implements IDSTBase, Cloneable {
                 pos == null ? BigInteger.ZERO : new BigInteger(pos.z.toString()));
     }
 
-    @Override
-    public void read(@NotNull DataInput input) throws IOException {
-        this.x = new BigInteger(input.readUTF(), SAVE_RADIX);
-        this.y = new BigInteger(input.readUTF(), SAVE_RADIX);
-        this.z = new BigInteger(input.readUTF(), SAVE_RADIX);
-        if (!suffix.equals(input.readUTF()))
-            throw new DSTFormatException();
-    }
-
-    @Override
-    public void write(@NotNull DataOutput output) throws IOException {
-        output.writeUTF(prefix);
-        output.writeUTF(this.x.toString(SAVE_RADIX));
-        output.writeUTF(this.y.toString(SAVE_RADIX));
-        output.writeUTF(this.z.toString(SAVE_RADIX));
-        output.writeUTF(suffix);
-    }
-
     public void clear() {
         this.x = BigInteger.ZERO;
         this.y = BigInteger.ZERO;
         this.z = BigInteger.ZERO;
+    }
+
+    public int getX() {
+        return this.x.intValue();
+    }
+
+    public @NotNull BigInteger getBigX() {
+        return this.x;
     }
 
     public void setX(int x) {
@@ -92,12 +83,28 @@ public class ChunkPos implements IDSTBase, Cloneable {
         this.x = Objects.requireNonNullElse(x, BigInteger.ZERO);
     }
 
+    public int getY() {
+        return this.y.intValue();
+    }
+
+    public @NotNull BigInteger getBigY() {
+        return this.y;
+    }
+
     public void setY(int y) {
         this.y = BigInteger.valueOf(y);
     }
 
     public void setY(@Nullable BigInteger y) {
         this.y = Objects.requireNonNullElse(y, BigInteger.ZERO);
+    }
+
+    public int getZ() {
+        return this.z.intValue();
+    }
+
+    public @NotNull BigInteger getBigZ() {
+        return this.z;
     }
 
     public void setZ(int z) {
@@ -125,33 +132,9 @@ public class ChunkPos implements IDSTBase, Cloneable {
             this.clear();
             return;
         }
-        this.x = pos.x;
-        this.y = pos.y;
-        this.z = pos.z;
-    }
-
-    public int getX() {
-        return this.x.intValue();
-    }
-
-    public @NotNull BigInteger getBigX() {
-        return this.x;
-    }
-
-    public int getY() {
-        return this.y.intValue();
-    }
-
-    public @NotNull BigInteger getBigY() {
-        return this.y;
-    }
-
-    public int getZ() {
-        return this.z.intValue();
-    }
-
-    public @NotNull BigInteger getBigZ() {
-        return this.z;
+        this.x = new BigInteger(pos.x.toString());
+        this.y = new BigInteger(pos.y.toString());
+        this.z = new BigInteger(pos.z.toString());
     }
 
     public void addX(int x) {
@@ -344,7 +327,7 @@ public class ChunkPos implements IDSTBase, Cloneable {
         this.z = this.z.subtract(n);
     }
 
-    public void offset(@NotNull EFacing facing) {
+    public void offset(@NotNull BlockPos.EFacing facing) {
         switch (facing) {
             case UP -> this.up();
             case DOWN -> this.down();
@@ -355,7 +338,7 @@ public class ChunkPos implements IDSTBase, Cloneable {
         }
     }
 
-    public void offset(@NotNull EFacing facing, int n) {
+    public void offset(@NotNull BlockPos.EFacing facing, int n) {
         switch (facing) {
             case UP -> this.up(n);
             case DOWN -> this.down(n);
@@ -366,7 +349,7 @@ public class ChunkPos implements IDSTBase, Cloneable {
         }
     }
 
-    public void offset(@NotNull EFacing facing, @Nullable BigInteger n) {
+    public void offset(@NotNull BlockPos.EFacing facing, @Nullable BigInteger n) {
         if (n == null)
             return;
         switch (facing) {
@@ -377,6 +360,24 @@ public class ChunkPos implements IDSTBase, Cloneable {
             case NORTH -> this.north(n);
             case SOUTH -> this.south(n);
         }
+    }
+
+    @Override
+    public void read(@NotNull DataInput input) throws IOException {
+        this.x = new BigInteger(input.readUTF(), SAVE_RADIX);
+        this.y = new BigInteger(input.readUTF(), SAVE_RADIX);
+        this.z = new BigInteger(input.readUTF(), SAVE_RADIX);
+        if (!suffix.equals(input.readUTF()))
+            throw new DSTFormatException();
+    }
+
+    @Override
+    public void write(@NotNull DataOutput output) throws IOException {
+        output.writeUTF(prefix);
+        output.writeUTF(this.x.toString(SAVE_RADIX));
+        output.writeUTF(this.y.toString(SAVE_RADIX));
+        output.writeUTF(this.z.toString(SAVE_RADIX));
+        output.writeUTF(suffix);
     }
 
     @Override
@@ -414,9 +415,5 @@ public class ChunkPos implements IDSTBase, Cloneable {
         chunkPos.setY(new BigInteger(this.y.toString()));
         chunkPos.setZ(new BigInteger(this.z.toString()));
         return chunkPos;
-    }
-
-    public enum EFacing {
-        NORTH, SOUTH, WEST, EAST, UP, DOWN
     }
 }
