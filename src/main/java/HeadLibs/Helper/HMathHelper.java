@@ -1,6 +1,8 @@
 package HeadLibs.Helper;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 
 /**
  * Quicker math calculations.
@@ -278,10 +280,33 @@ public class HMathHelper {
     }
 
     /**
+     * Float version of floorDivide().
+     */
+    public static int floorDivide(float value1, float value2) {
+        return value1 < 0 ? -(floor((-value1 - 1) / value2)) - 1 : floor(value1 / value2);
+    }
+
+    /**
+     * Double version of floorDivide().
+     */
+    public static int floorDivide(double value1, double value2) {
+        return value1 < 0 ? -(floor((-value1 - 1) / value2)) - 1 : floor(value1 / value2);
+    }
+
+    /**
      * BigInteger version of floorDivide()
      */
     public static BigInteger floorDivide(BigInteger value1, BigInteger value2) {
         return value1.signum() < 0 ? value1.negate().subtract(BigInteger.ONE).divide(value2).negate().subtract(BigInteger.ONE) : value1.divide(value2);
+    }
+
+    /**
+     * BigDecimal version of floorDivide()
+     */
+    public static BigInteger floorDivide(BigDecimal value1, BigDecimal value2) {
+        return value1.signum() < 0 ?
+                value1.negate().subtract(BigDecimal.ONE).divide(value2, RoundingMode.FLOOR).negate().toBigInteger().subtract(BigInteger.ONE)
+                : value1.divide(value2, RoundingMode.FLOOR).toBigInteger();
     }
 
     /**

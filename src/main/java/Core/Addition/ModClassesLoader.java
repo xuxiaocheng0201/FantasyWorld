@@ -17,6 +17,8 @@ import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.DataStructures.Pair;
+import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +61,7 @@ public class ModClassesLoader {
     private static final List<Class<? extends ModImplement>> modList = new ArrayList<>();
     private static final Collection<Class<? extends ElementImplement>> implementList = new ArrayList<>();
     private static final Collection<Class<? extends ElementUtil<?>>> utilList = new ArrayList<>();
-    private static final Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementPairList = new HashMap<>();
+    private static final HMapRegisterer<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementPairList = new HMapRegisterer<>();
 
     private static final List<List<Class<? extends ModImplement>>> sameMods = new ArrayList<>();
     private static final List<List<Class<? extends ElementImplement>>> sameImplements = new ArrayList<>();
@@ -74,7 +76,7 @@ public class ModClassesLoader {
         return modList;
     }
 
-    public static @NotNull Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+    public static @NotNull HMapRegisterer<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
         return elementPairList;
     }
 
@@ -237,7 +239,10 @@ public class ModClassesLoader {
                 singleImplements.add(implement);
                 continue;
             }
-            elementPairList.put(implementName, new Pair<>(implement, elementUtil));
+            try {
+                elementPairList.register(implementName, new Pair<>(implement, elementUtil));
+            } catch (HElementRegisteredException ignore) {
+            }
         }
         for (Class<? extends ElementUtil<?>> util: elementUtils) {
             ElementName utilName = ElementUtil.getElementNameFromClass(util);

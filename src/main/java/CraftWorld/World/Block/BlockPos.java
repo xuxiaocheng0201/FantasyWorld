@@ -1,10 +1,11 @@
-package CraftWorld.Block;
+package CraftWorld.World.Block;
 
-import CraftWorld.Chunk.Chunk;
-import CraftWorld.Chunk.ChunkPos;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
+import CraftWorld.Entity.EntityPos;
+import CraftWorld.World.Chunk.Chunk;
+import CraftWorld.World.Chunk.ChunkPos;
 import HeadLibs.Helper.HMathHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -66,7 +67,7 @@ public class BlockPos implements IDSTBase, Cloneable {
     }
 
     public @NotNull BigInteger getFullX() {
-        return this.chunkPos.getBigX().multiply(Chunk.SIZE_B).add(BigInteger.valueOf(this.x));
+        return this.chunkPos.getBigX().multiply(Chunk.SIZE_BigInteger).add(BigInteger.valueOf(this.x));
     }
 
     public void setX(int x) {
@@ -87,9 +88,9 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.x = 0;
             return;
         }
-        BigInteger chunk = HMathHelper.floorDivide(x, Chunk.SIZE_B);
+        BigInteger chunk = HMathHelper.floorDivide(x, Chunk.SIZE_BigInteger);
         this.chunkPos.setX(chunk);
-        this.x = x.subtract(chunk.multiply(Chunk.SIZE_B)).mod(Chunk.SIZE_B).intValue();
+        this.x = x.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
 
     public @Range(from = 0, to = Chunk.SIZE - 1) int getY() {
@@ -97,7 +98,7 @@ public class BlockPos implements IDSTBase, Cloneable {
     }
 
     public @NotNull BigInteger getFullY() {
-        return this.chunkPos.getBigY().multiply(Chunk.SIZE_B).add(BigInteger.valueOf(this.y));
+        return this.chunkPos.getBigY().multiply(Chunk.SIZE_BigInteger).add(BigInteger.valueOf(this.y));
     }
 
     public void setY(int y) {
@@ -118,9 +119,9 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.y = 0;
             return;
         }
-        BigInteger chunk = HMathHelper.floorDivide(y, Chunk.SIZE_B);
+        BigInteger chunk = HMathHelper.floorDivide(y, Chunk.SIZE_BigInteger);
         this.chunkPos.setY(chunk);
-        this.y = y.subtract(chunk.multiply(Chunk.SIZE_B)).mod(Chunk.SIZE_B).intValue();
+        this.y = y.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
 
     public @Range(from = 0, to = Chunk.SIZE - 1) int getZ() {
@@ -128,7 +129,7 @@ public class BlockPos implements IDSTBase, Cloneable {
     }
 
     public @NotNull BigInteger getFullZ() {
-        return this.chunkPos.getBigZ().multiply(Chunk.SIZE_B).add(BigInteger.valueOf(this.z));
+        return this.chunkPos.getBigZ().multiply(Chunk.SIZE_BigInteger).add(BigInteger.valueOf(this.z));
     }
 
     public void setZ(int z) {
@@ -149,9 +150,9 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.z = 0;
             return;
         }
-        BigInteger chunk = HMathHelper.floorDivide(z, Chunk.SIZE_B);
+        BigInteger chunk = HMathHelper.floorDivide(z, Chunk.SIZE_BigInteger);
         this.chunkPos.setZ(chunk);
-        this.z = z.subtract(chunk.multiply(Chunk.SIZE_B)).mod(Chunk.SIZE_B).intValue();
+        this.z = z.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
 
     public void clear() {
@@ -161,7 +162,7 @@ public class BlockPos implements IDSTBase, Cloneable {
         this.z = 0;
     }
 
-    public void clearOffsets() {
+    public void clearOffset() {
         this.x = 0;
         this.y = 0;
         this.z = 0;
@@ -176,6 +177,17 @@ public class BlockPos implements IDSTBase, Cloneable {
         this.x = pos.x;
         this.y = pos.y;
         this.z = pos.z;
+    }
+
+    public void set(@Nullable EntityPos pos) {
+        if (pos == null) {
+            this.clear();
+            return;
+        }
+        this.chunkPos = pos.getChunkPos().clone();
+        this.x = HMathHelper.floor(pos.getX());
+        this.y = HMathHelper.floor(pos.getY());
+        this.z = HMathHelper.floor(pos.getZ());
     }
 
     public void set(int x, int y, int z) {
@@ -212,9 +224,35 @@ public class BlockPos implements IDSTBase, Cloneable {
     public void add(@Nullable BlockPos pos) {
         if (pos == null)
             return;
+        this.chunkPos.add(pos.chunkPos);
         this.setX(this.x + pos.x);
         this.setY(this.y + pos.y);
         this.setZ(this.z + pos.z);
+    }
+
+    public void addOffset(@Nullable BlockPos pos) {
+        if (pos == null)
+            return;
+        this.setX(this.x + pos.x);
+        this.setY(this.y + pos.y);
+        this.setZ(this.z + pos.z);
+    }
+
+    public void add(@Nullable EntityPos pos) {
+        if (pos == null)
+            return;
+        this.chunkPos.add(pos.getChunkPos());
+        this.setX(this.x + HMathHelper.floor(pos.getX()));
+        this.setY(this.y + HMathHelper.floor(pos.getY()));
+        this.setZ(this.z + HMathHelper.floor(pos.getZ()));
+    }
+
+    public void addOffset(@Nullable EntityPos pos) {
+        if (pos == null)
+            return;
+        this.setX(this.x + HMathHelper.floor(pos.getX()));
+        this.setY(this.y + HMathHelper.floor(pos.getY()));
+        this.setZ(this.z + HMathHelper.floor(pos.getZ()));
     }
 
     public void subtractX(int x) {
@@ -238,9 +276,35 @@ public class BlockPos implements IDSTBase, Cloneable {
     public void subtract(@Nullable BlockPos pos) {
         if (pos == null)
             return;
+        this.chunkPos.subtract(pos.chunkPos);
         this.setX(this.x - pos.x);
         this.setY(this.y - pos.y);
         this.setZ(this.z - pos.z);
+    }
+
+    public void subtractOffset(@Nullable BlockPos pos) {
+        if (pos == null)
+            return;
+        this.setX(this.x - pos.x);
+        this.setY(this.y - pos.y);
+        this.setZ(this.z - pos.z);
+    }
+
+    public void subtract(@Nullable EntityPos pos) {
+        if (pos == null)
+            return;
+        this.chunkPos.subtract(pos.getChunkPos());
+        this.setX(this.x - HMathHelper.floor(pos.getX()));
+        this.setY(this.y - HMathHelper.floor(pos.getY()));
+        this.setZ(this.z - HMathHelper.floor(pos.getZ()));
+    }
+
+    public void subtractOffset(@Nullable EntityPos pos) {
+        if (pos == null)
+            return;
+        this.setX(this.x - HMathHelper.floor(pos.getX()));
+        this.setY(this.y - HMathHelper.floor(pos.getY()));
+        this.setZ(this.z - HMathHelper.floor(pos.getZ()));
     }
 
     public void up() {

@@ -1,11 +1,11 @@
-package CraftWorld.Dimension;
+package CraftWorld.World.Dimension;
 
-import CraftWorld.Chunk.Chunk;
-import CraftWorld.Chunk.ChunkPos;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
+import CraftWorld.World.Chunk.Chunk;
+import CraftWorld.World.Chunk.ChunkPos;
 import CraftWorld.World.World;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Logger.HLog;

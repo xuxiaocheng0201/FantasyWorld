@@ -1,6 +1,6 @@
 package CraftWorld.Events;
 
-import CraftWorld.Chunk.Chunk;
+import CraftWorld.World.Chunk.Chunk;
 
 public record ChunkGenerateEvent(Chunk chunk) {
 }

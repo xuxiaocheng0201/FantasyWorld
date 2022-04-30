@@ -6,6 +6,7 @@ import Core.Addition.Element.ElementUtil;
 import Core.Addition.Mod.BasicInformation.ModName;
 import Core.Addition.Mod.ModImplement;
 import HeadLibs.DataStructures.Pair;
+import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,7 +70,7 @@ public class ModManager {
      * Get all mod element pairs classes.
      * @return all mod element pairs classes
      */
-    public static @NotNull Map<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+    public static @NotNull HMapRegisterer<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
         return ModClassesLoader.getElementPairList();
     }
 

@@ -1,16 +1,16 @@
-package CraftWorld.Chunk;
+package CraftWorld.World.Chunk;
 
-import CraftWorld.Block.Block;
-import CraftWorld.Block.BlockPos;
-import CraftWorld.Block.IBlockBase;
 import CraftWorld.CraftWorld;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Dimension.Dimension;
 import CraftWorld.Events.ChunkGenerateEvent;
 import CraftWorld.Instance.Blocks.BlockAir;
 import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.World.Block.Block;
+import CraftWorld.World.Block.BlockPos;
+import CraftWorld.World.Block.IBlockBase;
+import CraftWorld.World.Dimension.Dimension;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -22,6 +22,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +44,8 @@ public class Chunk implements IDSTBase {
         }
     }
     public static final int SIZE = 16;
-    public static final BigInteger SIZE_B = BigInteger.valueOf(SIZE);
+    public static final BigInteger SIZE_BigInteger = BigInteger.valueOf(SIZE);
+    public static final BigDecimal SIZE_BigDecimal = BigDecimal.valueOf(SIZE);
 
     private final @NotNull Dimension dimension;
     private @NotNull ChunkPos pos;

@@ -1,8 +1,8 @@
 package CraftWorld.Instance.Blocks;
 
-import CraftWorld.Block.BlockUtils;
-import CraftWorld.Block.IBlockBase;
 import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.World.Block.BlockUtils;
+import CraftWorld.World.Block.IBlockBase;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -57,7 +57,7 @@ public class BlockAir implements IBlockBase {
     }
 
     @Override
-    public DSTMetaCompound getDst() {
+    public DSTMetaCompound getBlockDST() {
         return this.dst;
     }
 

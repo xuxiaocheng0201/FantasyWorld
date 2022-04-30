@@ -1,9 +1,9 @@
-package CraftWorld.Chunk;
+package CraftWorld.World.Chunk;
 
-import CraftWorld.Block.BlockPos;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
+import CraftWorld.World.Block.BlockPos;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;

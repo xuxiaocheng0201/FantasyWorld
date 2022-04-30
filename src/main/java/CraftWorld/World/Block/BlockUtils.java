@@ -1,4 +1,4 @@
-package CraftWorld.Block;
+package CraftWorld.World.Block;
 
 import Core.Addition.Element.ElementUtil;
 import Core.Addition.Element.NewElementUtilCore;

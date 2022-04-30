@@ -1,10 +1,10 @@
 package CraftWorld.Instance.Dimensions;
 
-import CraftWorld.Chunk.ChunkPos;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.Dimension.DimensionUtils;
-import CraftWorld.Dimension.IDimensionBase;
 import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.World.Chunk.ChunkPos;
+import CraftWorld.World.Dimension.DimensionUtils;
+import CraftWorld.World.Dimension.IDimensionBase;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -85,7 +85,7 @@ public class DimensionEarthSurface implements IDimensionBase {
     }
 
     @Override
-    public DSTMetaCompound getDst() {
+    public DSTMetaCompound getDimensionDST() {
         return this.dst;
     }
 

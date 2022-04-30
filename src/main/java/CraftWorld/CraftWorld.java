@@ -74,6 +74,7 @@ public class CraftWorld implements ModImplement {
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
 
         //TODO: server
-        throw new IOException();
+
+
     }
 }

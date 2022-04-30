@@ -1,4 +1,4 @@
-package CraftWorld.Dimension;
+package CraftWorld.World.Dimension;
 
 import Core.Addition.Element.ElementUtil;
 import Core.Addition.Element.NewElementUtilCore;

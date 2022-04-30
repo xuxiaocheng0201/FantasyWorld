@@ -1,13 +1,13 @@
-package CraftWorld.Block;
+package CraftWorld.World.Block;
 
-import CraftWorld.Chunk.Chunk;
-import CraftWorld.Chunk.ChunkPos;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Dimension.Dimension;
 import CraftWorld.Instance.Blocks.BlockAir;
 import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.World.Chunk.Chunk;
+import CraftWorld.World.Chunk.ChunkPos;
+import CraftWorld.World.Dimension.Dimension;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
@@ -86,7 +86,7 @@ public class Block implements IDSTBase {
 
     public void setPos(@Nullable BlockPos pos) {
         if (pos == null) {
-            this.pos.clearOffsets();
+            this.pos.clear();
             return;
         }
         this.pos.set(pos);
@@ -95,7 +95,7 @@ public class Block implements IDSTBase {
 
     public void setPosOffset(@Nullable BlockPos pos) {
         if (pos == null) {
-            this.pos.clearOffsets();
+            this.pos.clearOffset();
             return;
         }
         this.pos.set(pos);
@@ -124,7 +124,7 @@ public class Block implements IDSTBase {
         this.instance.setBlockName(input.readUTF());
         if (!DSTMetaCompound.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
-        this.instance.getDst().read(input);
+        this.instance.getBlockDST().read(input);
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
@@ -135,7 +135,7 @@ public class Block implements IDSTBase {
         output.writeUTF(this.instance.getBlockId());
         this.pos.write(output);
         output.writeUTF(this.instance.getBlockName());
-        this.instance.getDst().write(output);
+        this.instance.getBlockDST().write(output);
         output.writeUTF(suffix);
     }
 

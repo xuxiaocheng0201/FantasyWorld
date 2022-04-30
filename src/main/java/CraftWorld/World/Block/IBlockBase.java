@@ -1,4 +1,4 @@
-package CraftWorld.Block;
+package CraftWorld.World.Block;
 
 import Core.Addition.Element.ElementImplement;
 import Core.Addition.Element.NewElementImplementCore;
@@ -9,5 +9,5 @@ public interface IBlockBase extends ElementImplement {
     String getBlockId();
     String getBlockName();
     void setBlockName(String name);
-    DSTMetaCompound getDst();
+    DSTMetaCompound getBlockDST();
 }

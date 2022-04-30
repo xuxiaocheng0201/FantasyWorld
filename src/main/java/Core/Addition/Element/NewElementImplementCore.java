@@ -19,5 +19,4 @@ public @interface NewElementImplementCore {
     @NotNull String modName() default "Craftworld";
     @NotNull String elementName();
     @NotNull String parentElements() default "";
-    //TODO: parents
 }
