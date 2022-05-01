@@ -20,6 +20,7 @@ public class GlobalConfigurations {
     public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
     public static String HOST = "127.0.0.1";
     public static int PORT = 61147; // PortManager.getNextAvailablePortRandom(HOST, false);
+    public static int MAX_PLAYER = 10;
     public static boolean JOIN_THE_USER_EXPERIENCE_IMPROVEMENT_PROGRAM = false;
 
     public static void GetConfigurations() throws IOException {
@@ -109,6 +110,25 @@ public class GlobalConfigurations {
         }
         port.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.port.name"));
 
+        HConfigElement max_player = GLOBAL_CONFIGURATIONS.getByName("max_player");
+        if (max_player == null)
+            try {
+                max_player = new HConfigElement("max_player", HConfigType.INT, String.valueOf(MAX_PLAYER));
+            } catch (HWrongConfigValueException exception) {
+                logger.log(HLogLevel.ERROR, exception);
+                max_player = new HConfigElement("max_player");
+            }
+        else {
+            int players = Integer.parseInt(max_player.getValue());
+            if (players < 1) {
+                logger.log(HLogLevel.CONFIGURATION, "No player can log in this server! players: ", players, ". Now use:", MAX_PLAYER);
+                max_player.setValue(String.valueOf(MAX_PLAYER));
+            }
+            else
+                MAX_PLAYER = players;
+        }
+        max_player.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.max_player.name"));
+
         HConfigElement join_the_user_experience_improvement_program = GLOBAL_CONFIGURATIONS.getByName("join_the_user_experience_improvement_program");
         if (join_the_user_experience_improvement_program == null)
             try {
@@ -128,6 +148,7 @@ public class GlobalConfigurations {
             GLOBAL_CONFIGURATIONS.add(garbage_collector_time_interval);
             GLOBAL_CONFIGURATIONS.add(host);
             GLOBAL_CONFIGURATIONS.add(port);
+            GLOBAL_CONFIGURATIONS.add(max_player);
             GLOBAL_CONFIGURATIONS.add(join_the_user_experience_improvement_program);
         } catch (HElementRegisteredException ignore) {
         }

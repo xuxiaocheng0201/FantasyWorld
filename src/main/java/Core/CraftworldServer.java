@@ -20,7 +20,7 @@ public class CraftworldServer implements Runnable {
         try {
             SocketAddress socketAddress = new InetSocketAddress(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
             ServerSocket server = new ServerSocket();
-            server.bind(socketAddress);
+            server.bind(socketAddress, GlobalConfigurations.MAX_PLAYER);
             /* ********** Special Modifier ********** */
             CraftWorld.CraftWorld.getInstance().start(server);
             /* ********** \Special Modifier ********** */

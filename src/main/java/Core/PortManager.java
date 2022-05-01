@@ -33,6 +33,8 @@ public class PortManager {
     /**
      * Get next available port in the host with random.
      * @param hostIn the host
+     * @param isClient true - check with {@link PortManager#portIsAvailableForClient(String, int)}.
+     *                 false - check with {@link PortManager#portIsAvailableForServer(String, int)}.
      * @return 0 - failed. others - found port.
      */
     @Range(from = 0, to = 65535)
@@ -64,6 +66,8 @@ public class PortManager {
     /**
      * Get next available port in the host with order.
      * @param hostIn the host
+     * @param isClient true - check with {@link PortManager#portIsAvailableForClient(String, int)}.
+     *                 false - check with {@link PortManager#portIsAvailableForServer(String, int)}.
      * @return 0 - failed. others - found port.
      */
     @Range(from = 0, to = 65535)
@@ -85,7 +89,7 @@ public class PortManager {
     }
 
     /**
-     * Check port is available with the host.
+     * Check port is available with the host for client.
      * @param host the host
      * @param port the port
      * @return true - available. false - unavailable.
@@ -107,7 +111,7 @@ public class PortManager {
     }
 
     /**
-     * Check port is available with the host.
+     * Check port is available with the host for server.
      * @param host the host
      * @param port the port
      * @return true - available. false - unavailable.
