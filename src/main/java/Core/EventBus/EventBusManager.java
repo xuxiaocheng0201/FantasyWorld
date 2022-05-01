@@ -113,8 +113,15 @@ public class EventBusManager {
                 eventBus.register(instance);
             return;
         }
-        EventBus eventBus = getEventBusByName(subscribe.eventBus());
-        eventBus.register(instance);
+        String[] buses = HStringHelper.notEmptyStrip(subscribe.eventBus().split(";"));
+        Collection<EventBus> registered = new HashSet<>();
+        for (String name: buses) {
+            EventBus eventBus = getEventBusByName(name);
+            if (registered.contains(eventBus))
+                continue;
+            registered.add(eventBus);
+            eventBus.register(instance);
+        }
     }
 
     /**

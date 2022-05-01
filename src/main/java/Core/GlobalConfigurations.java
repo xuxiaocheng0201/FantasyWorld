@@ -19,7 +19,7 @@ public class GlobalConfigurations {
     public static boolean OVERWRITE_FILES_WHEN_EXTRACTING = false;
     public static int GARBAGE_COLLECTOR_TIME_INTERVAL = 10000;
     public static String HOST = "127.0.0.1";
-    public static int PORT = PortManager.getNextAvailablePortRandom(HOST);
+    public static int PORT = 61147; // PortManager.getNextAvailablePortRandom(HOST, false);
     public static boolean JOIN_THE_USER_EXPERIENCE_IMPROVEMENT_PROGRAM = false;
 
     public static void GetConfigurations() throws IOException {
@@ -97,8 +97,8 @@ public class GlobalConfigurations {
             }
         else {
             PORT = Integer.parseInt(port.getValue());
-            if (PortManager.portIsAvailable(HOST, PORT)) {
-                int availablePort = PortManager.getNextAvailablePortRandom(HOST);
+            if (!PortManager.portIsAvailableForServer(HOST, PORT)) {
+                int availablePort = PortManager.getNextAvailablePortRandom(HOST, false);
                 if (availablePort == 0)
                     logger.log(HLogLevel.ERROR, "No port is available.");
                 else

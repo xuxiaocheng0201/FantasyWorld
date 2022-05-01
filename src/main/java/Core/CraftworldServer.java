@@ -6,7 +6,9 @@ import Core.EventBus.Events.ServerStopEvent;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.SocketAddress;
 
 public class CraftworldServer implements Runnable {
     @Override
@@ -16,7 +18,9 @@ public class CraftworldServer implements Runnable {
         logger.log(HLogLevel.FINEST, "Server Thread has started.");
         EventBusManager.getDefaultEventBus().post(new ServerStartEvent());
         try {
-            ServerSocket server = new ServerSocket(GlobalConfigurations.PORT);
+            SocketAddress socketAddress = new InetSocketAddress(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
+            ServerSocket server = new ServerSocket();
+            server.bind(socketAddress);
             /* ********** Special Modifier ********** */
             CraftWorld.CraftWorld.getInstance().start(server);
             /* ********** \Special Modifier ********** */

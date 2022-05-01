@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.security.SecureRandom;
@@ -22,11 +23,11 @@ public class PortManager {
     private static final int timeout = 2000;
 
     private static final Collection<Integer> checkedPortsFlag = new HashSet<>();
-    private static boolean checkPortAvailableInFlag(@NotNull String host, @Range(from = 1, to = 65535) int port) {
+    private static boolean checkPortAvailableInFlag(@NotNull String host, @Range(from = 1, to = 65535) int port, boolean isClient) {
         if (checkedPortsFlag.contains(port))
             return false;
         checkedPortsFlag.add(port);
-        return portIsAvailable(host, port);
+        return isClient ? portIsAvailableForClient(host, port) : portIsAvailableForServer(host, port);
     }
 
     /**
@@ -35,7 +36,7 @@ public class PortManager {
      * @return 0 - failed. others - found port.
      */
     @Range(from = 0, to = 65535)
-    public static int getNextAvailablePortRandom(@Nullable String hostIn) {
+    public static synchronized int getNextAvailablePortRandom(@Nullable String hostIn, boolean isClient) {
         if (hostIn == null)
             return 0;
         String host = hostIn;
@@ -43,20 +44,21 @@ public class PortManager {
             host = host.substring(8);
         if (host.startsWith("http://"))
             host = host.substring(7);
-        checkedPortsFlag.clear();
-        long t1 = System.currentTimeMillis();
         RandomGenerator random = new SecureRandom("Craftworld".getBytes());
-        int r = HRandomHelper.nextInt(1, 65535);
-        while (!checkPortAvailableInFlag(host, r)) {
-            if (System.currentTimeMillis() - t1 > 3000) {
-                for (int i = 1; i < 65536; ++i)
-                    if (checkPortAvailableInFlag(host, i))
-                        return i;
-                return 0;
+        synchronized (checkedPortsFlag) {
+            checkedPortsFlag.clear();
+            int r = HRandomHelper.nextInt(random, 1, 65535);
+            while (!checkPortAvailableInFlag(host, r, isClient)) {
+                if (checkedPortsFlag.size() > 500) {
+                    for (int i = 1; i < 65536; ++i)
+                        if (checkPortAvailableInFlag(host, i, isClient))
+                            return i;
+                    return 0;
+                }
+                r = HRandomHelper.nextInt(random, 1, 65535);
             }
-            r = HRandomHelper.nextInt(1, 65535);
+            return r;
         }
-        return r;
     }
 
     /**
@@ -65,7 +67,7 @@ public class PortManager {
      * @return 0 - failed. others - found port.
      */
     @Range(from = 0, to = 65535)
-    public static int getNextAvailablePortQuickly(@Nullable String hostIn) {
+    public static synchronized int getNextAvailablePortOrderly(@Nullable String hostIn, boolean isClient) {
         if (hostIn == null)
             return 0;
         String host = hostIn;
@@ -73,11 +75,13 @@ public class PortManager {
             host = host.substring(8);
         if (host.startsWith("http://"))
             host = host.substring(7);
-        checkedPortsFlag.clear();
-        for (int i = 1; i < 65536; ++i)
-            if (checkPortAvailableInFlag(host, i))
-                return i;
-        return 0;
+        synchronized (checkedPortsFlag) {
+            checkedPortsFlag.clear();
+            for (int i = 1; i < 65536; ++i)
+                if (checkPortAvailableInFlag(host, i, isClient))
+                    return i;
+            return 0;
+        }
     }
 
     /**
@@ -86,7 +90,7 @@ public class PortManager {
      * @param port the port
      * @return true - available. false - unavailable.
      */
-    public static boolean portIsAvailable(@Nullable String host, int port) {
+    public static boolean portIsAvailableForClient(@Nullable String host, int port) {
         if (host == null)
             return false;
         if (port < 1 || port > 65535)
@@ -95,6 +99,28 @@ public class PortManager {
         Socket socket = new Socket();
         try {
             socket.connect(socketAddress, timeout);
+            socket.close();
+            return true;
+        } catch (Exception ignore) {
+        }
+        return false;
+    }
+
+    /**
+     * Check port is available with the host.
+     * @param host the host
+     * @param port the port
+     * @return true - available. false - unavailable.
+     */
+    public static boolean portIsAvailableForServer(@Nullable String host, int port) {
+        if (host == null)
+            return false;
+        if (port < 1 || port > 65535)
+            return false;
+        SocketAddress socketAddress = new InetSocketAddress(host, port);
+        try {
+            ServerSocket socket = new ServerSocket();
+            socket.bind(socketAddress);
             socket.close();
             return true;
         } catch (Exception ignore) {
