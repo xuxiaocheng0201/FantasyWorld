@@ -51,12 +51,23 @@ public class EventBusManager {
     private static final EventBus DEFAULT_EVENT_BUS = loggerEventBusBuilder(new HLog("DefaultEventBus", Thread.currentThread().getName()))
             .throwSubscriberException(false).logSubscriberExceptions(true).sendSubscriberExceptionEvent(true)
             .logNoSubscriberMessages(false).sendNoSubscriberEvent(true).build();
+    private static final EventBus GL_EVENT_BUS = loggerEventBusBuilder(new HLog("GLEventBus", Thread.currentThread().getName()))
+            .throwSubscriberException(false).logSubscriberExceptions(true).sendSubscriberExceptionEvent(true)
+            .logNoSubscriberMessages(false).sendNoSubscriberEvent(false).build();
     public static EventBus getDefaultEventBus() {
         return DEFAULT_EVENT_BUS;
+    }
+    public static EventBus getGLEventBus() {
+        return GL_EVENT_BUS;
     }
     static {
         try {
             addEventBus("default", DEFAULT_EVENT_BUS);
+        } catch (HElementRegisteredException exception) {
+            HLog.logger(HLogLevel.ERROR, exception);
+        }
+        try {
+            addEventBus("gl", GL_EVENT_BUS);
         } catch (HElementRegisteredException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
         }

@@ -2,6 +2,7 @@ package CraftWorld;
 
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
+import Core.CraftworldServer;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
@@ -57,7 +58,7 @@ public class CraftWorld implements ModImplement {
         return this.world;
     }
 
-    public void start(ServerSocket server) throws IOException {
+    public void start(ServerSocket server) throws Exception {
         logger.log(HLogLevel.FINEST, "Loading world...");
         this.world = new World();
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
@@ -73,8 +74,11 @@ public class CraftWorld implements ModImplement {
         this.world.writeAll();
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
 
-        //TODO: server
-
-
+        while (!CraftworldServer.needStop) {
+            //TODO: Server
+            synchronized (this) {
+                this.wait(100);
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * Auto register the instance of a class announced {@code EventSubscribe}.
+ * @see EventBusManager#getEventBusByName(String) 
  * @see HeadLibs.Helper.HClassHelper#getInstance(Class)
  * @author xuxiaocheng
  */
