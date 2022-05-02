@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.SocketAddress;
 
 public class CraftworldServer implements Runnable {
+    public static boolean needStop = false;
     @Override
     public void run() {
         Thread.currentThread().setName("CraftworldServer");

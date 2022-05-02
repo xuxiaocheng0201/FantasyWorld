@@ -8,10 +8,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix a bug of Port.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Changeable player counts.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/KeyCallbackEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/GLException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/Entity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/EntityView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/gson-2.8.9-javadoc.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/gson-2.8.9-sources.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/gson-2.8.9.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/GlobalConfigurations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/GlobalConfigurations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/PortManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/PortManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/IEntityBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/IEntityBase.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +43,9 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand />
@@ -42,11 +59,11 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaFXApplication" />
-        <option value="Record" />
         <option value="Enum" />
         <option value="AnnotationType" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Record" />
       </list>
     </option>
   </component>
@@ -180,7 +197,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindow运行.ShowToolbar" value="false" />
     <property name="com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件" value="JAVA" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/commons-math3-3.6.1-src.zip" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/lwjgl-3.3.1/lwjgl-zstd" />
     <property name="project.structure.last.edited" value="库" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.21609196" />
@@ -200,9 +217,11 @@
       <recent name="C:\Users\admin\Desktop\CraftWorld\CraftWorldClient\CraftWorld\0.0.0\mods" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\admin\Desktop\CraftWorld\lib" />
+      <recent name="C:\Users\admin\Desktop\CraftWorld\dll" />
+      <recent name="C:\Users\admin\Desktop\CraftWorld\unused_libs" />
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets.Core\lang" />
       <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets\CraftWorld\lang" />
-      <recent name="C:\Users\admin\Desktop\CraftWorld\src\main\resources\assets.CraftWorld.lang" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="CraftWorld.Block.BlockPos" />
@@ -223,11 +242,12 @@
       <recent name="CraftWorld.Instance.DST" />
     </key>
   </component>
-  <component name="RunManager" selected="应用程序.CraftWorld Server">
+  <component name="RunManager" selected="应用程序.CraftWorld Client">
     <configuration name="CraftWorld Client" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Core.Craftworld" />
       <module name="CraftWorld.main" />
       <option name="PROGRAM_PARAMETERS" value="runClient" />
+      <option name="VM_PARAMETERS" value="-Djava.library.path=C:\Users\admin\Desktop\CraftWorld\dll" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CraftWorldClient" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -255,13 +275,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00066" summary="Add map and set element registerers.">
-      <created>1648971236205</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1648971236205</updated>
     </task>
     <task id="LOCAL-00067" summary="Use map element registerer.">
       <created>1648975759775</created>
@@ -599,7 +612,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651378670525</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="Changeable player counts.">
+      <created>1651379285536</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1651379285536</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -641,7 +661,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Improve mod sorter." />
     <MESSAGE value="Improve eventbus creator." />
     <MESSAGE value="Improve eventbus manager." />
     <MESSAGE value="Cached HClassHelper#getInstance(Class, boolean)." />
@@ -666,7 +685,8 @@
     <MESSAGE value="World Saver Completed!" />
     <MESSAGE value="EntityPos!" />
     <MESSAGE value="Fix a bug of Port." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix a bug of Port." />
+    <MESSAGE value="Changeable player counts." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changeable player counts." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

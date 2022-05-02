@@ -9,5 +9,5 @@ public interface IEntityBase extends ElementImplement {
     String getEntityId();
     String getEntityName();
     void setEntityName(String name);
-    DSTMetaCompound getEntityDst();
+    DSTMetaCompound getEntityDST();
 }

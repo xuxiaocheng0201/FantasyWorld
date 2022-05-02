@@ -15,6 +15,7 @@ import java.io.IOException;
 public class FileTreeStorage {
     public static final String RUNTIME_PATH = (new File("Craftworld\\" + Craftworld.CURRENT_VERSION_STRING)).getAbsolutePath() + "\\";
     public static final String LIBRARIES_PATH = (new File("Craftworld\\libraries")).getAbsolutePath() + "\\";
+    public static final String DLLS_PATH = (new File("Craftworld\\dll")).getAbsolutePath() + "\\";
     public static final String ASSETS_PATH = RUNTIME_PATH + "assets\\";
     public static final String LOG_PATH = RUNTIME_PATH + "logs\\";
     public static final String MOD_PATH = RUNTIME_PATH + "mods\\";
