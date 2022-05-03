@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 
-public class GLException extends RuntimeException {
+public class GLException extends Exception {
     @Serial
     private static final long serialVersionUID = 342007170816199688L;
 

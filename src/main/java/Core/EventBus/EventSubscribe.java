@@ -21,4 +21,10 @@ public @interface EventSubscribe {
      * The EventBus name to register.
      */
     @NotNull String eventBus() default "default";
+
+    /**
+     * Register to eventbus before mod initialization.
+     * @see EventBusManager#register(Class)
+     */
+    boolean autoRegister() default true;
 }

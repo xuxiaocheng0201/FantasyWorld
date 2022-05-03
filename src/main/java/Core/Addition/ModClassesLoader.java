@@ -284,7 +284,8 @@ public class ModClassesLoader {
                 errors.add(new IllegalArgumentException(exception));
             }
         for (Class<?> aClass: allClasses) {
-            if (aClass.getAnnotation(EventSubscribe.class) != null && HClassHelper.isClass(aClass))
+            EventSubscribe annotation = aClass.getAnnotation(EventSubscribe.class);
+            if (annotation != null && annotation.autoRegister())
                 try {
                     EventBusManager.register(aClass);
                 } catch (NoSuchMethodException exception) {

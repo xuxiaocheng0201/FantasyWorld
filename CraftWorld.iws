@@ -8,12 +8,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Create a Client window.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Render a rotating triangle.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Gui/MainMenu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventSubscribe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventSubscribe.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/KeyCallbackEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/KeyCallbackEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ClientStoppingEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ClientStopEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Exceptions/GLException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Exceptions/GLException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,8 +55,8 @@
         <option value="Enum" />
         <option value="AnnotationType" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="Record" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -74,11 +79,9 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ClientStartEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/KeyCallbackEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/ConstantStorage.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/CraftworldServer.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/Tree.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/LanguageI18N.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/Pair.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/CraftworldClient.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Craftworld.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HClassHelper.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ElementUtilNameClashException.java" root0="SKIP_INSPECTION" />
@@ -103,7 +106,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ElementsCheckedEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ModInitializingEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ClientStoppingEvent.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ClientStopEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ServerStopEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/PostInitializationModsEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/PreInitializationModsEvent.java" root0="SKIP_INSPECTION" />
@@ -113,6 +116,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/BasicInformation/ElementName.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/EventBusManager.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/Gui/MainMenu.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModUnsupportedCraftworldVersionException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModRequirementFormatException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModInformationException.java" root0="SKIP_INSPECTION" />
@@ -264,13 +268,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00068" summary="Fix some deadly bugs.">
-      <created>1648982947757</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1648982947757</updated>
     </task>
     <task id="LOCAL-00069" summary="Add some javadocs.">
       <created>1648985543777</created>
@@ -608,7 +605,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651481474537</updated>
     </task>
-    <option name="localTasksCounter" value="117" />
+    <task id="LOCAL-00117" summary="Construct client codes.">
+      <created>1651483560983</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1651483560984</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -650,9 +654,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Improve eventbus manager." />
-    <MESSAGE value="Cached HClassHelper#getInstance(Class, boolean)." />
-    <MESSAGE value="Allow mods add MODS FILE PATH." />
     <MESSAGE value="Allow mods to add MODS FILE PATH." />
     <MESSAGE value="Add more javadocs." />
     <MESSAGE value="Math helper." />
@@ -675,7 +676,10 @@
     <MESSAGE value="Fix a bug of Port." />
     <MESSAGE value="Changeable player counts." />
     <MESSAGE value="Create a Client window." />
-    <option name="LAST_COMMIT_MESSAGE" value="Create a Client window." />
+    <MESSAGE value="Construct client codes." />
+    <MESSAGE value="Construct Craftworld codes. Unfinished CraftWorld.java" />
+    <MESSAGE value="Render a rotating triangle." />
+    <option name="LAST_COMMIT_MESSAGE" value="Render a rotating triangle." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
