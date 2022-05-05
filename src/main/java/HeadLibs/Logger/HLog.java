@@ -3,6 +3,7 @@ package HeadLibs.Logger;
 import HeadLibs.DataStructures.Pair;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Helper.HTimeHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -175,7 +176,7 @@ public class HLog {
         if (level1 == null)
             level1 = HLogLevel.DEBUG;
         Date date = new Date();
-        String log = "[" + HStringHelper.getDate(DATE_FORMAT, date) + "]" +
+        String log = "[" + HTimeHelper.getDate(DATE_FORMAT, date) + "]" +
                 "[" + this.name + "]" +
                 "[" + level1.getName() + "]" +
                 (message == null ? "Null message." : message);
@@ -218,7 +219,7 @@ public class HLog {
             level1 = HLogLevel.ERROR;
         Date date = new Date();
         StringBuilder builder = new StringBuilder("[");
-        builder.append(HStringHelper.getDate(DATE_FORMAT, date));
+        builder.append(HTimeHelper.getDate(DATE_FORMAT, date));
         builder.append("][");
         builder.append(this.name);
         builder.append("][");

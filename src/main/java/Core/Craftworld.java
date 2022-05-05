@@ -4,10 +4,8 @@ import Core.Addition.Mod.ModImplement;
 import Core.Addition.ModManager;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
-import Core.EventBus.Events.ClientStartEvent;
-import Core.EventBus.Events.ClientStopEvent;
-import Core.EventBus.Events.ServerStartEvent;
-import Core.EventBus.Events.ServerStopEvent;
+import Core.EventBus.Events.*;
+import Core.Exceptions.GLException;
 import Core.Gui.Window;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -36,11 +34,15 @@ public class Craftworld implements ModImplement {
         }
         CURRENT_VERSION = current_version;
     }
-    private static final int window_weight = 1680;
+    private static final int window_wight = 1680;
     private static final int window_height = 680;
 
-    public static boolean isClient = true;
+    private static boolean isClient = true;
     private static final HLog logger = new HLog("CraftworldMain");
+
+    public static boolean isClient() {
+        return isClient;
+    }
 
     public static void main(String[] args) throws IOException {
         Thread.currentThread().setName("CraftworldMain");
@@ -64,15 +66,45 @@ public class Craftworld implements ModImplement {
         HLog.saveLogs(FileTreeStorage.LOG_FILE);
         Thread gc = new Thread(new GCThread());
         gc.start();
+        Thread menu = null;
+        if (isClient) {
+            menu = new Thread(new Runnable() {
+                private int loadedModCount = -1;
+
+                @Override
+                public void run() {
+                    EventBusManager.getDefaultEventBus().register(this);
+                    Window window = new Window("Craftworld " + CURRENT_VERSION_STRING, window_wight, window_height);
+                    try {
+                        window.init();
+                    } catch (GLException exception) {
+                        logger.log(HLogLevel.FAULT, exception);
+                    }
+                }
+
+                @Subscribe
+                public void elementsChecking(ElementsCheckingEvent event) {
+                    this.loadedModCount = -1;
+                }
+                //TODO
+            });
+            menu.start();
+        }
         if (ModManager.addModFilePath((new File(FileTreeStorage.MOD_PATH)).getAbsoluteFile())) {
             Thread main;
-            if (isClient)
+            if (isClient) {
                 main = new Thread(new CraftworldClient());
-            else
+                try {
+                    assert menu != null;
+                    menu.join();
+                } catch (InterruptedException exception) {
+                    logger.log(HLogLevel.ERROR, exception);
+                }
+            } else
                 main = new Thread(new CraftworldServer());
             main.start();
             try {
-            main.join();
+                main.join();
             } catch (InterruptedException exception) {
                 logger.log(HLogLevel.ERROR, exception);
             }
@@ -141,8 +173,7 @@ public class Craftworld implements ModImplement {
             logger.log(HLogLevel.FINEST, "Client Thread has started.");
             EventBusManager.getDefaultEventBus().post(new ClientStartEvent());
             try {
-                Window window = new Window("Craftworld " + CURRENT_VERSION_STRING, window_weight, window_height);
-                window.init();
+                Window window = Window.getInstance();
                 while (!window.windowShouldClose()) {
                     /* ********** Special Modifier ********** */
                     CraftWorld.CraftWorld.getInstance().menu();

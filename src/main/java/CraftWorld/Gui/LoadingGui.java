@@ -2,7 +2,7 @@ package CraftWorld.Gui;
 
 import Core.EventBus.EventBusManager;
 import Core.GlobalConfigurations;
-import Core.Gui.Callback.KeyEvent;
+import Core.Gui.Callback.KeyCallbackEvent;
 import Core.Gui.IBasicGui;
 import Core.Gui.Window;
 import org.greenrobot.eventbus.Subscribe;
@@ -15,16 +15,16 @@ public class LoadingGui implements IBasicGui {
     }
 
     @Override
-    public void init() throws Exception {
+    public void init() {
         EventBusManager.getGLEventBus().register(this);
     }
 
     @Override
-    public void update(double interval) throws Exception {
+    public void update(double interval) {
     }
 
     @Override
-    public void render() throws Exception {
+    public void render() {
         Window window = Window.getInstance();
         float ratio = (float) window.getWidth() / window.getHeight();
         /* Set orthographic projection */
@@ -53,7 +53,7 @@ public class LoadingGui implements IBasicGui {
     }
 
     @Subscribe
-    public void ENTER(KeyEvent keyEvent) {
+    public void ENTER(KeyCallbackEvent keyEvent) {
         if (keyEvent.key() == GLFW.GLFW_KEY_ENTER && keyEvent.action() == GLFW.GLFW_PRESS)
             this.finished = true;
     }

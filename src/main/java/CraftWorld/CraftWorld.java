@@ -11,6 +11,7 @@ import Core.Gui.Window;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import CraftWorld.Gui.LoadingGui;
+import CraftWorld.Gui.MainMenu;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
 import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
@@ -57,6 +58,57 @@ public class CraftWorld implements ModImplement {
         FileTreeStorage.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
 
+    public void menu() {
+        Window window = Window.getInstance();
+        double intervalPerUpdate = 1.0d / GlobalConfigurations.MAX_UPS;
+        LoadingGui loadingGui = new LoadingGui();
+        loadingGui.init();
+        MainMenu mainMenu = null;
+        double accumulator = 0.0D;
+        double lastLoopTime = GLFW.glfwGetTime();
+        while (this.clientRunning) {
+            double loopStartTime = GLFW.glfwGetTime();
+            double elapsedTime = loopStartTime - lastLoopTime;
+            lastLoopTime = loopStartTime;
+            accumulator += elapsedTime;
+            boolean breakLoop = false;
+            while (accumulator >= intervalPerUpdate) {
+                if (mainMenu == null) {
+                    loadingGui.update(intervalPerUpdate);
+                    if (loadingGui.finished()) {
+                        mainMenu = new MainMenu();
+                        mainMenu.init();
+                    }
+                } else {
+                    mainMenu.update(intervalPerUpdate);
+                    if (mainMenu.finished())
+                        breakLoop = true;
+                }
+                accumulator -= intervalPerUpdate;
+            }
+            window.flushResized();
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            if (breakLoop)
+                break;
+            if (mainMenu == null)
+                loadingGui.render();
+            else
+                mainMenu.render();
+            window.update();
+            if (!window.isVSync()) {
+                double loopEndTime = loopStartTime + intervalPerUpdate;
+                while (GLFW.glfwGetTime() < loopEndTime)
+                    try {
+                        //noinspection BusyWait
+                        Thread.sleep(1);
+                    } catch (InterruptedException ignore) {
+                    }
+            }
+        }
+        if (!this.clientRunning)
+            window.setWindowShouldClose(true);
+    }
+
     private World world;
 
     public World getWorld() {
@@ -82,50 +134,12 @@ public class CraftWorld implements ModImplement {
         this.world.writeAll();
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
 
-        while (this.serverRunning) {
+        //while (this.serverRunning) {
             //TODO: Server
             synchronized (this) {
                 this.wait(100);
             }
-        }
-    }
-
-    public void menu() throws Exception {
-        Window window = Window.getInstance();
-        double intervalPerUpdate = 1.0d / GlobalConfigurations.MAX_UPS;
-        LoadingGui loadingGui = new LoadingGui();
-        loadingGui.init();
-        boolean flag = true;
-        double accumulator = 0.0D;
-        double lastLoopTime = GLFW.glfwGetTime();
-        while (this.clientRunning && flag) {
-            double loopStartTime = GLFW.glfwGetTime();
-            double elapsedTime = loopStartTime - lastLoopTime;
-            lastLoopTime = loopStartTime;
-            accumulator += elapsedTime;
-            while (accumulator >= intervalPerUpdate) {
-                loadingGui.update(intervalPerUpdate);
-                if (loadingGui.finished()) {
-                    flag = false;
-                }
-                accumulator -= intervalPerUpdate;
-            }
-            window.flushResized();
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-            loadingGui.render();
-            window.update();
-            if (!window.isVSync()) {
-                double loopEndTime = loopStartTime + intervalPerUpdate;
-                while (GLFW.glfwGetTime() < loopEndTime)
-                    try {
-                        //noinspection BusyWait
-                        Thread.sleep(1);
-                    } catch (InterruptedException ignore) {
-                    }
-            }
-        }
-        if (!this.clientRunning)
-            window.setWindowShouldClose(true);
+        //}
     }
 
     public void startClient(Socket client) {

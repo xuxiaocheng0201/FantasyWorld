@@ -4,11 +4,11 @@ import Core.EventBus.EventBusManager;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 
 /**
- * Post at CursorPos.
+ * Post at CursorPosCallback.
  * @see EventBusManager#getGLEventBus()
  * @see org.lwjgl.glfw.GLFW#glfwSetCursorPosCallback(long, GLFWCursorPosCallbackI) 
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public record CursorPosEvent(long window, double xPos, double yPos) {
+public record CursorPosCallbackEvent(long window, double xPos, double yPos) {
 }

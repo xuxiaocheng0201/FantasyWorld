@@ -4,7 +4,7 @@ import Core.Addition.Mod.ModImplement;
 import Core.Addition.ModManager;
 import HeadLibs.ClassFinder.HClassFinder;
 import HeadLibs.Helper.HFileHelper;
-import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Helper.HTimeHelper;
 import HeadLibs.Helper.HZipHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -21,7 +21,7 @@ public class FileTreeStorage {
     public static final String MOD_PATH = RUNTIME_PATH + "mods\\";
     public static final String GLOBAL_CONFIGURATION_FILE = RUNTIME_PATH + "global.cfg";
     public static final String LOG_FILE; static {
-        String temp = LOG_PATH + HStringHelper.getDate("yyyy-MM-dd");
+        String temp = LOG_PATH + HTimeHelper.getDate("yyyy-MM-dd");
         String log_path = temp + ".log";
         int i = 1;
         while (true) {

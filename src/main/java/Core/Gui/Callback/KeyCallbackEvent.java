@@ -4,11 +4,11 @@ import Core.EventBus.EventBusManager;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 /**
- * Post at Key.
+ * Post at KeyCallback.
  * @see EventBusManager#getGLEventBus()
  * @see org.lwjgl.glfw.GLFW#glfwSetKeyCallback(long, GLFWKeyCallbackI) 
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public record KeyEvent(long window, int key, int scancode, int action, int mods) {
+public record KeyCallbackEvent(long window, int key, int scancode, int action, int mods) {
 }

@@ -4,11 +4,11 @@ import Core.EventBus.EventBusManager;
 import org.lwjgl.glfw.GLFWCharModsCallbackI;
 
 /**
- * Post at CharMods.
+ * Post at CharModsCallback.
  * @see EventBusManager#getGLEventBus()
  * @see org.lwjgl.glfw.GLFW#glfwSetCharModsCallback(long, GLFWCharModsCallbackI)
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public record CharModsEvent(long window, int codePoint, int mods) {
+public record CharModsCallbackEvent(long window, int codePoint, int mods) {
 }
