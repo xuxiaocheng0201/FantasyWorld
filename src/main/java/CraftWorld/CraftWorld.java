@@ -7,9 +7,10 @@ import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
 import Core.FileTreeStorage;
 import Core.GlobalConfigurations;
+import Core.Gui.Window;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
-import CraftWorld.Gui.MainMenu;
+import CraftWorld.Gui.LoadingGui;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
 import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
@@ -24,7 +25,6 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.IntBuffer;
 
 @EventSubscribe
 @NewMod(name = "CraftWorld", version = "0.0.0", requirements = "before:*")
@@ -90,58 +90,50 @@ public class CraftWorld implements ModImplement {
         }
     }
 
-    public void menu(long window, IntBuffer width, IntBuffer height) {
-        double secsPerUpdate = 1.0d / GlobalConfigurations.MAX_FPS;
-        double previous = GLFW.glfwGetTime();
-        double steps = 0.0;
-        MainMenu mainMenu = new MainMenu();
-        EventBusManager.getGLEventBus().register(mainMenu);
-        while (this.clientRunning) {
+    public void menu() throws Exception {
+        Window window = Window.getInstance();
+        double intervalPerUpdate = 1.0d / GlobalConfigurations.MAX_UPS;
+        LoadingGui loadingGui = new LoadingGui();
+        loadingGui.init();
+        boolean flag = true;
+        double accumulator = 0.0D;
+        double lastLoopTime = GLFW.glfwGetTime();
+        while (this.clientRunning && flag) {
             double loopStartTime = GLFW.glfwGetTime();
-            double loopEndTime = loopStartTime + secsPerUpdate;
-            double elapsed = loopStartTime - previous;
-            previous = loopStartTime;
-            steps += elapsed;
-            boolean flag = false;
-            while (steps >= secsPerUpdate) {
-                if (mainMenu.update()) {
-                    flag = true;
-                    break;
+            double elapsedTime = loopStartTime - lastLoopTime;
+            lastLoopTime = loopStartTime;
+            accumulator += elapsedTime;
+            while (accumulator >= intervalPerUpdate) {
+                loadingGui.update(intervalPerUpdate);
+                if (loadingGui.finished()) {
+                    flag = false;
                 }
-                steps -= secsPerUpdate;
+                accumulator -= intervalPerUpdate;
             }
-            if (flag)
-                break;
-            GLFW.glfwGetFramebufferSize(window, width, height);
-            GL11.glViewport(0, 0, width.get(), height.get());
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-            width.rewind();
-            height.rewind();
-            mainMenu.render(width.get(), height.get());
-            GLFW.glfwSwapBuffers(window);
-            GLFW.glfwPollEvents();
-            width.flip();
-            height.flip();
-            while(GLFW.glfwGetTime() < loopEndTime) {
-                try {
-                    //noinspection BusyWait
-                    Thread.sleep(1);
-                } catch (InterruptedException ignore) {
-                }
+            window.flushResized();
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            loadingGui.render();
+            window.update();
+            if (!window.isVSync()) {
+                double loopEndTime = loopStartTime + intervalPerUpdate;
+                while (GLFW.glfwGetTime() < loopEndTime)
+                    try {
+                        //noinspection BusyWait
+                        Thread.sleep(1);
+                    } catch (InterruptedException ignore) {
+                    }
             }
         }
         if (!this.clientRunning)
-            GLFW.glfwSetWindowShouldClose(window, true);
+            window.setWindowShouldClose(true);
     }
 
-    public void startClient(Socket client, long window, IntBuffer width, IntBuffer height) {
-
-        //while (this.clientRunning) {
-            //if (GLFW.glfwWindowShouldClose(window))
-        //        break;
-            //TODO: Client
-        //}
-
+    public void startClient(Socket client) {
+//        while (this.clientRunning) {
+//            if (GLFW.glfwWindowShouldClose(window))
+//                break;
+//            TODO: Client
+//        }
         this.serverRunning = false;
     }
 }

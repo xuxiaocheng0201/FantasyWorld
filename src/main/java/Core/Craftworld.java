@@ -4,8 +4,11 @@ import Core.Addition.Mod.ModImplement;
 import Core.Addition.ModManager;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
-import Core.EventBus.Events.*;
-import Core.Exceptions.GLException;
+import Core.EventBus.Events.ClientStartEvent;
+import Core.EventBus.Events.ClientStopEvent;
+import Core.EventBus.Events.ServerStartEvent;
+import Core.EventBus.Events.ServerStopEvent;
+import Core.Gui.Window;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Version.HStringVersion;
@@ -14,21 +17,13 @@ import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.nio.IntBuffer;
 import java.util.concurrent.TimeUnit;
 
 public class Craftworld implements ModImplement {
@@ -146,33 +141,11 @@ public class Craftworld implements ModImplement {
             logger.log(HLogLevel.FINEST, "Client Thread has started.");
             EventBusManager.getDefaultEventBus().post(new ClientStartEvent());
             try {
-                GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint(new PrintStream(FileTreeStorage.LOG_FILE));
-                GLFWKeyCallback keyCallback = new GLFWKeyCallback() {
-                    @Override
-                    public void invoke(long window, int key, int scancode, int action, int mods) {
-                        EventBusManager.getGLEventBus().post(new KeyCallbackEvent(window, key, scancode, action, mods));
-                    }
-                };
-                GLFW.glfwSetErrorCallback(errorCallback);
-                if (!GLFW.glfwInit())
-                    throw new GLException("Unable to initialize GLFW.");
-                long window = GLFW.glfwCreateWindow(window_weight, window_height, "Simple example", MemoryUtil.NULL, MemoryUtil.NULL);
-                if (window == MemoryUtil.NULL) {
-                    GLFW.glfwTerminate();
-                    throw new GLException("Failed to create the GLFW window");
-                }
-                GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-                assert vidMode != null;
-                GLFW.glfwSetWindowPos(window, (vidMode.width() - window_weight) >> 1, (vidMode.height() - window_height) >> 1);
-                GLFW.glfwMakeContextCurrent(window);
-                GL.createCapabilities();
-                GLFW.glfwSwapInterval(1);
-                GLFW.glfwSetKeyCallback(window, keyCallback);
-                IntBuffer width = MemoryUtil.memAllocInt(1);
-                IntBuffer height = MemoryUtil.memAllocInt(1);
-                while (!GLFW.glfwWindowShouldClose(window)) {
+                Window window = new Window("Craftworld " + CURRENT_VERSION_STRING, window_weight, window_height);
+                window.init();
+                while (!window.windowShouldClose()) {
                     /* ********** Special Modifier ********** */
-                    CraftWorld.CraftWorld.getInstance().menu(window, width, height);
+                    CraftWorld.CraftWorld.getInstance().menu();
                     /* ********** \Special Modifier ********** */
                     Thread server = new Thread(new Craftworld.CraftworldServer());
                     server_binding_flag = true;
@@ -181,17 +154,12 @@ public class Craftworld implements ModImplement {
                         TimeUnit.MILLISECONDS.sleep(1);
                     Socket client = new Socket(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
                     /* ********** Special Modifier ********** */
-                    CraftWorld.CraftWorld.getInstance().startClient(client, window, width, height);
+                    CraftWorld.CraftWorld.getInstance().startClient(client);
                     /* ********** \Special Modifier ********** */
                     client.close();
                     server.join();
                 }
-                MemoryUtil.memFree(width);
-                MemoryUtil.memFree(height);
-                GLFW.glfwDestroyWindow(window);
-                keyCallback.free();
-                GLFW.glfwTerminate();
-                errorCallback.free();
+                window.destroyWindow();
                 EventBusManager.getDefaultEventBus().post(new ClientStopEvent(true));
             } catch(Exception exception){
                 logger.log(HLogLevel.ERROR, exception);

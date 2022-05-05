@@ -21,7 +21,9 @@ public class GlobalConfigurations {
     public static String HOST = "127.0.0.1";
     public static int PORT = 61147; // PortManager.getNextAvailablePortRandom(HOST, false);
     public static int MAX_PLAYER = 10;
-    public static int MAX_FPS = 60;
+    public static int MAX_FPS = 75;
+    public static int MAX_UPS = 30;
+    public static boolean V_SYNC_MODE = true;
     public static boolean JOIN_THE_USER_EXPERIENCE_IMPROVEMENT_PROGRAM = false;
 
     public static void GetConfigurations() throws IOException {
@@ -154,6 +156,39 @@ public class GlobalConfigurations {
         }
         max_fps.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.max_fps.name"));
 
+        HConfigElement max_ups = GLOBAL_CONFIGURATIONS.getByName("max_ups");
+        if (max_ups == null)
+            try {
+                max_ups = new HConfigElement("max_ups", HConfigType.INT, String.valueOf(MAX_UPS));
+            } catch (HWrongConfigValueException exception) {
+                logger.log(HLogLevel.ERROR, exception);
+                max_ups = new HConfigElement("max_ups");
+                max_ups.setType(HConfigType.INT);
+            }
+        else {
+            int ups = Integer.parseInt(max_ups.getValue());
+            if (ups < 1) {
+                logger.log(HLogLevel.CONFIGURATION, "Too small ups! ups: ", ups, ". Now use:", MAX_UPS);
+                max_ups.setValue(String.valueOf(MAX_UPS));
+            }
+            else
+                MAX_UPS = ups;
+        }
+        max_ups.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.max_ups.name"));
+
+        HConfigElement v_sync_mode = GLOBAL_CONFIGURATIONS.getByName("v_sync_mode");
+        if (v_sync_mode == null)
+            try {
+                v_sync_mode = new HConfigElement("v_sync_mode", HConfigType.BOOLEAN, V_SYNC_MODE ? "true" : "false");
+            } catch (HWrongConfigValueException exception) {
+                logger.log(HLogLevel.ERROR, exception);
+                v_sync_mode = new HConfigElement("v_sync_mode");
+                v_sync_mode.setType(HConfigType.BOOLEAN);
+            }
+        else
+            V_SYNC_MODE = Boolean.parseBoolean(v_sync_mode.getValue());
+        v_sync_mode.setNote(LanguageI18N.get(Craftworld.class, "Core.configuration.v_sync_mode.name"));
+
         HConfigElement join_the_user_experience_improvement_program = GLOBAL_CONFIGURATIONS.getByName("join_the_user_experience_improvement_program");
         if (join_the_user_experience_improvement_program == null)
             try {
@@ -176,6 +211,8 @@ public class GlobalConfigurations {
             GLOBAL_CONFIGURATIONS.add(port);
             GLOBAL_CONFIGURATIONS.add(max_player);
             GLOBAL_CONFIGURATIONS.add(max_fps);
+            GLOBAL_CONFIGURATIONS.add(max_ups);
+            GLOBAL_CONFIGURATIONS.add(v_sync_mode);
             GLOBAL_CONFIGURATIONS.add(join_the_user_experience_improvement_program);
         } catch (HElementRegisteredException ignore) {
         }
