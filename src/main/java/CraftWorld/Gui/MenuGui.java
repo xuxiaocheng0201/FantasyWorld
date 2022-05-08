@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 @SuppressWarnings("MethodMayBeStatic")
-public class MainMenu implements IBasicGui {
+public class MenuGui implements IBasicGui {
     @Subscribe
     public void exit(KeyCallbackEvent event) {
         if (event.key() == GLFW.GLFW_KEY_ESCAPE && event.action() == GLFW.GLFW_PRESS)
@@ -73,5 +73,14 @@ public class MainMenu implements IBasicGui {
         GL11.glEnd();
         GL11.glPopMatrix();
         ++this.theta;
+    }
+
+    @Override
+    public boolean finished() {
+        return IBasicGui.super.finished();
+    }
+
+    @Override
+    public void destroy() {
     }
 }

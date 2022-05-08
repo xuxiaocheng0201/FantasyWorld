@@ -11,7 +11,7 @@ import Core.Gui.Window;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import CraftWorld.Gui.LoadingGui;
-import CraftWorld.Gui.MainMenu;
+import CraftWorld.Gui.MenuGui;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
 import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
@@ -58,12 +58,50 @@ public class CraftWorld implements ModImplement {
         FileTreeStorage.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
 
-    public void menu() {
+    public void loading() {
         Window window = Window.getInstance();
         double intervalPerUpdate = 1.0d / GlobalConfigurations.MAX_UPS;
         LoadingGui loadingGui = new LoadingGui();
         loadingGui.init();
-        MainMenu mainMenu = null;
+        double accumulator = 0.0D;
+        double lastLoopTime = GLFW.glfwGetTime();
+        while (!window.windowShouldClose()) {
+            double loopStartTime = GLFW.glfwGetTime();
+            double elapsedTime = loopStartTime - lastLoopTime;
+            lastLoopTime = loopStartTime;
+            accumulator += elapsedTime;
+            boolean breakLoop = false;
+            while (accumulator >= intervalPerUpdate) {
+                loadingGui.update(intervalPerUpdate);
+                if (loadingGui.finished()) {
+                    breakLoop = true;
+                    break;
+                }
+                accumulator -= intervalPerUpdate;
+            }
+            if (breakLoop)
+                break;
+            window.flushResized();
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            loadingGui.render();
+            window.update();
+            if (!window.isVSync()) {
+                double loopEndTime = loopStartTime + intervalPerUpdate;
+                while (GLFW.glfwGetTime() < loopEndTime)
+                    try {
+                        //noinspection BusyWait
+                        Thread.sleep(1);
+                    } catch (InterruptedException ignore) {
+                    }
+            }
+        }
+    }
+
+    public void menu() {
+        Window window = Window.getInstance();
+        double intervalPerUpdate = 1.0d / GlobalConfigurations.MAX_UPS;
+        MenuGui menuGui = new MenuGui();
+        menuGui.init();
         double accumulator = 0.0D;
         double lastLoopTime = GLFW.glfwGetTime();
         while (this.clientRunning) {
@@ -73,27 +111,18 @@ public class CraftWorld implements ModImplement {
             accumulator += elapsedTime;
             boolean breakLoop = false;
             while (accumulator >= intervalPerUpdate) {
-                if (mainMenu == null) {
-                    loadingGui.update(intervalPerUpdate);
-                    if (loadingGui.finished()) {
-                        mainMenu = new MainMenu();
-                        mainMenu.init();
-                    }
-                } else {
-                    mainMenu.update(intervalPerUpdate);
-                    if (mainMenu.finished())
-                        breakLoop = true;
+                menuGui.update(intervalPerUpdate);
+                if (menuGui.finished()) {
+                    breakLoop = true;
+                    break;
                 }
                 accumulator -= intervalPerUpdate;
             }
-            window.flushResized();
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             if (breakLoop)
                 break;
-            if (mainMenu == null)
-                loadingGui.render();
-            else
-                mainMenu.render();
+            window.flushResized();
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            menuGui.render();
             window.update();
             if (!window.isVSync()) {
                 double loopEndTime = loopStartTime + intervalPerUpdate;

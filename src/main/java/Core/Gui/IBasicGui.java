@@ -7,4 +7,5 @@ public interface IBasicGui {
     default boolean finished() {
         return Window.getInstance().windowShouldClose();
     }
+    void destroy() throws Exception;
 }
