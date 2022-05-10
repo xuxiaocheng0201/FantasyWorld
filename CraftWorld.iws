@@ -8,26 +8,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Restruct codes.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Gui/MainMenu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HTimeHelper.java" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Link loading gui to menu gui.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/CharEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/CharCallbackEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/CharModsEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/CharModsCallbackEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/CursorEnterEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/CursorEnterCallbackEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/CursorPosEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/CursorPosCallbackEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/DropEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/DropCallbackEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/KeyEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/KeyCallbackEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/MouseButtonEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/MouseButtonCallbackEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/ScrollEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/Callback/ScrollCallbackEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/IBasicGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/IBasicGui.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Gui/Window.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Gui/Window.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Gui/LoadingGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Gui/LoadingGui.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HStringHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HStringHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Gui/LoadingGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Gui/LoadingGui.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Gui/MenuGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Gui/MenuGui.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,9 +71,8 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/DoubleHashMap.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ClientStartEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Gui/Callback/KeyCallbackEvent.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/Gui/MainMenu.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Gui/MenuGui.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/ConstantStorage.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Gui/Callback/DropCallbackEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/Tree.java" root0="SKIP_INSPECTION" />
@@ -123,7 +108,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ModInitializingEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ClientStopEvent.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/Gui/LoadingGui.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Gui/LoadingGui.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/ServerStopEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/PostInitializationModsEvent.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/EventBus/Events/PreInitializationModsEvent.java" root0="SKIP_INSPECTION" />
@@ -254,7 +239,7 @@
       <recent name="HeadLibs.Registerer" />
     </key>
   </component>
-  <component name="RunManager" selected="应用程序.CraftWorld Server">
+  <component name="RunManager" selected="应用程序.CraftWorld Client">
     <configuration name="CraftWorld Client" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Core.Craftworld" />
       <module name="CraftWorld.main" />
@@ -287,20 +272,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00071" summary="Add some javadocs and Tree.java">
-      <created>1649078990572</created>
-      <option name="number" value="00071" />
-      <option name="presentableId" value="LOCAL-00071" />
-      <option name="project" value="LOCAL" />
-      <updated>1649078990574</updated>
-    </task>
-    <task id="LOCAL-00072" summary="Add some javadocs.">
-      <created>1649081181892</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1649081181892</updated>
     </task>
     <task id="LOCAL-00073" summary="Log Level can be registered.">
       <created>1649088556851</created>
@@ -631,7 +602,21 @@
       <option name="project" value="LOCAL" />
       <updated>1651733537069</updated>
     </task>
-    <option name="localTasksCounter" value="120" />
+    <task id="LOCAL-00120" summary="Restruct codes.">
+      <created>1651740668900</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1651740668900</updated>
+    </task>
+    <task id="LOCAL-00121" summary="Preparing loading gui.">
+      <created>1651979304864</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1651979304866</updated>
+    </task>
+    <option name="localTasksCounter" value="122" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -673,8 +658,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Math helper." />
-    <MESSAGE value="Fix extracting bugs." />
     <MESSAGE value="Allow running in jar file mode." />
     <MESSAGE value="Improve the order of codes." />
     <MESSAGE value="Linked configurations." />
@@ -698,22 +681,42 @@
     <MESSAGE value="Render a rotating triangle." />
     <MESSAGE value="More callback events." />
     <MESSAGE value="Restruct codes." />
-    <option name="LAST_COMMIT_MESSAGE" value="Restruct codes." />
+    <MESSAGE value="Preparing loading gui." />
+    <MESSAGE value="Link loading gui to menu gui." />
+    <option name="LAST_COMMIT_MESSAGE" value="Link loading gui to menu gui." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <breakpoint type="java-exception">
+        <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.NoClassDefFoundError" package="java.lang" />
           <option name="timeStamp" value="1" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Core/Craftworld.java</url>
+          <line>88</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Core/Craftworld.java</url>
+          <line>96</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties>
+            <option name="NOTIFY_CAUGHT" value="false" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="HeadLibs.Pair" memberName="Value" />
         <PinnedItemInfo parentTag="HeadLibs.Logger.HLog" memberName="DATE_FORMAT" />
+        <PinnedItemInfo parentTag="CraftWorld.Gui.LoadingGui$ModLoadingStages" memberName="loadedSuccess" />
       </pinned-members>
     </pin-to-top-manager>
     <watches-manager>

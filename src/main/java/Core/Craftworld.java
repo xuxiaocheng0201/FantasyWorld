@@ -46,6 +46,10 @@ public class Craftworld implements ModImplement {
         return isClient;
     }
 
+    /* ********** Special Modifier ********** */
+    public static boolean loadingGuiInited;
+    /* ********** \Special Modifier ********** */
+
     public static void main(String[] args) throws IOException {
         Thread.currentThread().setName("CraftworldMain");
         logger.log(HLogLevel.INFO, "Hello Craftworld!");
@@ -71,7 +75,14 @@ public class Craftworld implements ModImplement {
         Thread main;
         if (isClient) {
             main = new Thread(new CraftworldClient());
+            loadingGuiInited = false;
             main.start();
+            while(!loadingGuiInited)
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1);
+                } catch (InterruptedException exception) {
+                    break;
+                }
         } else
             main = new Thread(new CraftworldServer());
         if (ModManager.addModFilePath((new File(FileTreeStorage.MOD_PATH)).getAbsoluteFile())) {

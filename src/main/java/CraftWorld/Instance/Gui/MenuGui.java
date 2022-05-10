@@ -1,4 +1,4 @@
-package CraftWorld.Gui;
+package CraftWorld.Instance.Gui;
 
 import Core.EventBus.EventBusManager;
 import Core.Gui.Callback.KeyCallbackEvent;

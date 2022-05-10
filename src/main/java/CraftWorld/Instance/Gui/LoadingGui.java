@@ -1,4 +1,4 @@
-package CraftWorld.Gui;
+package CraftWorld.Instance.Gui;
 
 import Core.Addition.Mod.ModImplement;
 import Core.EventBus.EventBusManager;
@@ -52,26 +52,32 @@ public class LoadingGui implements IBasicGui {
 
     @Override
     public boolean finished() {
-        return Window.getInstance().windowShouldClose() || !this.modLoadingStages.loadedSuccess;
+        return Window.getInstance().windowShouldClose() || !this.modLoadingStages.loadedSuccess || this.modLoadingStages.loadingStage == 0;
     }
 
     private long pressTime = -1;
     @Subscribe
     public void forceExit(KeyCallbackEvent keyEvent) {
-        if (keyEvent.key() == GLFW.GLFW_KEY_ESCAPE && keyEvent.action() == GLFW.GLFW_PRESS)
+        if (keyEvent.key() == GLFW.GLFW_KEY_ESCAPE && keyEvent.action() == GLFW.GLFW_PRESS && this.pressTime == -1)
             this.pressTime = System.currentTimeMillis();
         if (keyEvent.key() == GLFW.GLFW_KEY_ESCAPE && keyEvent.action() == GLFW.GLFW_RELEASE && this.pressTime != -1) {
+            long intervalTime = System.currentTimeMillis() - this.pressTime;
+            if (intervalTime > 5000) //TODO: changeable interval time.
+                Window.getInstance().setWindowShouldClose(true);
+            this.pressTime = -1;
+        }
+    }
+
+    @Override
+    public void update(double interval) {
+        if (this.pressTime != -1 && Window.getInstance().isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
             long intervalTime = System.currentTimeMillis() - this.pressTime;
             if (intervalTime > 5000) //TODO: changeable interval time.
                 Window.getInstance().setWindowShouldClose(true);
         }
     }
 
-    @Override
-    public void update(double interval) {
-    }
-
-    private static class ModLoadingStages {
+    public static class ModLoadingStages {
         /**
          * -4: Preparing.
          * -3: {@link Core.EventBus.Events.ElementsCheckingEvent}
@@ -97,7 +103,8 @@ public class LoadingGui implements IBasicGui {
 
         @Subscribe
         public void preInitializationEvent(PreInitializationModsEvent event) {
-            this.loadingStage = -1;
+            if (event.firstPost())
+                this.loadingStage = -1;
         }
 
         @Subscribe
@@ -117,7 +124,8 @@ public class LoadingGui implements IBasicGui {
 
         @Subscribe
         public void postInitializationEvent(PostInitializationModsEvent event) {
-            this.loadingStage = 0;
+            if (event.firstPost())
+                this.loadingStage = 0;
         }
     }
 }

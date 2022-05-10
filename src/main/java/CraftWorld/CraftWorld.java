@@ -2,6 +2,7 @@ package CraftWorld;
 
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
+import Core.Craftworld;
 import Core.EventBus.EventBusManager;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.PreInitializationModsEvent;
@@ -10,9 +11,9 @@ import Core.GlobalConfigurations;
 import Core.Gui.Window;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
-import CraftWorld.Gui.LoadingGui;
-import CraftWorld.Gui.MenuGui;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
+import CraftWorld.Instance.Gui.LoadingGui;
+import CraftWorld.Instance.Gui.MenuGui;
 import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -26,6 +27,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 @EventSubscribe
 @NewMod(name = "CraftWorld", version = "0.0.0", requirements = "before:*")
@@ -63,6 +65,7 @@ public class CraftWorld implements ModImplement {
         double intervalPerUpdate = 1.0d / GlobalConfigurations.MAX_UPS;
         LoadingGui loadingGui = new LoadingGui();
         loadingGui.init();
+        Craftworld.loadingGuiInited = true;
         double accumulator = 0.0D;
         double lastLoopTime = GLFW.glfwGetTime();
         while (!window.windowShouldClose()) {
@@ -89,9 +92,9 @@ public class CraftWorld implements ModImplement {
                 double loopEndTime = loopStartTime + intervalPerUpdate;
                 while (GLFW.glfwGetTime() < loopEndTime)
                     try {
-                        //noinspection BusyWait
-                        Thread.sleep(1);
-                    } catch (InterruptedException ignore) {
+                        TimeUnit.MILLISECONDS.sleep(1);
+                    } catch (InterruptedException exception) {
+                        break;
                     }
             }
         }
@@ -128,9 +131,9 @@ public class CraftWorld implements ModImplement {
                 double loopEndTime = loopStartTime + intervalPerUpdate;
                 while (GLFW.glfwGetTime() < loopEndTime)
                     try {
-                        //noinspection BusyWait
-                        Thread.sleep(1);
-                    } catch (InterruptedException ignore) {
+                        TimeUnit.MILLISECONDS.sleep(1);
+                    } catch (InterruptedException exception) {
+                        break;
                     }
             }
         }
