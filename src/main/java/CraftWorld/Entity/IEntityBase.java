@@ -10,4 +10,5 @@ public interface IEntityBase extends ElementImplement {
     String getEntityName();
     void setEntityName(String name);
     DSTMetaCompound getEntityDST();
+    boolean needDelete();
 }

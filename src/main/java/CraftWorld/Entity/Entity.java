@@ -5,6 +5,7 @@ import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.DST.DSTMetaCompound;
 import CraftWorld.World.Dimension.Dimension;
+import HeadLibs.Helper.HRandomHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
@@ -14,7 +15,9 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
+import java.math.BigInteger;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Entity implements IDSTBase {
     @Serial
@@ -30,15 +33,28 @@ public class Entity implements IDSTBase {
         }
     }
 
-    private Dimension dimension;
-    private EntityPos pos;
+    protected UUID uuid = HRandomHelper.getRandomUUID();
+    protected Dimension dimension;
+    protected EntityPos pos;
+    protected EntityPos lastTickPos;
+    protected BigInteger tickHasExist;
+    protected BigInteger tickHasUpdated;
     private IEntityBase instance;
+    protected double speedX;
+    protected double speedY;
+    protected double speedZ;
+    protected double accelerateX;
+    protected double accelerateY;
+    protected double accelerateZ;
 
 
-
+    public UUID getUUID() {
+        return this.uuid;
+    }
 
     @Override
     public void read(DataInput input) throws IOException {
+        this.uuid = new UUID(input.readLong(), input.readLong());
         try {
             this.instance = EntityUtils.getInstance().getElementInstance(input.readUTF(), false);
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
@@ -59,6 +75,8 @@ public class Entity implements IDSTBase {
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
+        output.writeLong(this.uuid.getMostSignificantBits());
+        output.writeLong(this.uuid.getLeastSignificantBits());
         output.writeUTF(this.instance.getEntityId());
         this.pos.write(output);
         output.writeUTF(this.instance.getEntityName());
@@ -69,21 +87,30 @@ public class Entity implements IDSTBase {
     @Override
     public String toString() {
         return "Entity{" +
-                "pos=" + this.pos +
+                "uuid=" + this.uuid +
+                ", dimension=" + this.dimension +
+                ", pos=" + this.pos +
+                ", tickHasExist=" + this.tickHasExist +
+                ", tickHasUpdated=" + this.tickHasUpdated +
                 ", instance=" + this.instance +
+                ", speedX=" + this.speedX +
+                ", speedY=" + this.speedY +
+                ", speedZ=" + this.speedZ +
+                ", accelerateX=" + this.accelerateX +
+                ", accelerateY=" + this.accelerateY +
+                ", accelerateZ=" + this.accelerateZ +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        Entity entity = (Entity) o;
-        return this.pos.equals(entity.pos) && this.instance.equals(entity.instance);
+        if (!(o instanceof Entity entity)) return false;
+        return this.uuid.equals(entity.uuid) && this.dimension.equals(entity.dimension) && this.pos.equals(entity.pos) && this.tickHasExist.equals(entity.tickHasExist) && this.instance.equals(entity.instance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.pos, this.instance);
+        return Objects.hash(this.uuid);
     }
 }

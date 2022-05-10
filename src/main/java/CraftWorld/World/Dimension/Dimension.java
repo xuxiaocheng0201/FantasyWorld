@@ -8,6 +8,7 @@ import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
 import CraftWorld.World.World;
 import HeadLibs.Helper.HFileHelper;
+import HeadLibs.Helper.HRandomHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
@@ -15,8 +16,10 @@ import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Dimension implements IDSTBase {
     @Serial
@@ -32,10 +35,13 @@ public class Dimension implements IDSTBase {
         }
     }
 
+    private UUID uuid;
     private boolean unloaded;
     private final World world;
     private File dimensionSavedDirectory;
     private IDimensionBase instance;
+    private BigInteger tickHasExist;
+    private BigInteger tickHasUpdated;
     private final HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false);
 
     public Dimension(World world) {
@@ -46,6 +52,9 @@ public class Dimension implements IDSTBase {
         super();
         this.world = world;
         this.setInstance(instance);
+        this.tickHasExist = BigInteger.ZERO;
+        this.tickHasUpdated = BigInteger.ZERO;
+        this.uuid = HRandomHelper.getRandomUUID();
     }
 
     public boolean isUnloaded() {
@@ -175,6 +184,7 @@ public class Dimension implements IDSTBase {
 
     @Override
     public void read(DataInput input) throws IOException {
+        this.uuid = new UUID(input.readLong(), input.readLong());
         try {
             this.setInstance(DimensionUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false));
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
@@ -189,6 +199,8 @@ public class Dimension implements IDSTBase {
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
+        output.writeLong(this.uuid.getMostSignificantBits());
+        output.writeLong(this.uuid.getLeastSignificantBits());
         this.instance.write(output);
         output.writeUTF(suffix);
     }
