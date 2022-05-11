@@ -1,5 +1,6 @@
 package CraftWorld.World.Chunk;
 
+import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -31,7 +32,6 @@ public class ChunkPos implements IDSTBase, Cloneable {
             HLog.logger(HLogLevel.ERROR, exception);
         }
     }
-    public static final int SAVE_RADIX = 16;
 
     private @NotNull BigInteger x;
     private @NotNull BigInteger y;
@@ -364,9 +364,9 @@ public class ChunkPos implements IDSTBase, Cloneable {
 
     @Override
     public void read(@NotNull DataInput input) throws IOException {
-        this.x = new BigInteger(input.readUTF(), SAVE_RADIX);
-        this.y = new BigInteger(input.readUTF(), SAVE_RADIX);
-        this.z = new BigInteger(input.readUTF(), SAVE_RADIX);
+        this.x = new BigInteger(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
+        this.y = new BigInteger(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
+        this.z = new BigInteger(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
@@ -374,9 +374,9 @@ public class ChunkPos implements IDSTBase, Cloneable {
     @Override
     public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(this.x.toString(SAVE_RADIX));
-        output.writeUTF(this.y.toString(SAVE_RADIX));
-        output.writeUTF(this.z.toString(SAVE_RADIX));
+        output.writeUTF(this.x.toString(ConstantStorage.SAVE_NUMBER_RADIX));
+        output.writeUTF(this.y.toString(ConstantStorage.SAVE_NUMBER_RADIX));
+        output.writeUTF(this.z.toString(ConstantStorage.SAVE_NUMBER_RADIX));
         output.writeUTF(suffix);
     }
 

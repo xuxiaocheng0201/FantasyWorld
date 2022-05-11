@@ -5,6 +5,7 @@ import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.Utils.QuickTick;
 import CraftWorld.World.Dimension.Dimension;
 import CraftWorld.World.Dimension.DimensionUtils;
 import HeadLibs.Helper.HFileHelper;
@@ -13,13 +14,9 @@ import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
-import org.jetbrains.annotations.Range;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 public class World implements IDSTBase {
     @Serial
@@ -35,13 +32,14 @@ public class World implements IDSTBase {
         }
     }
 
-    private boolean unloaded;
     private File worldSavedDirectory;
-    private final Collection<String> prepareDimensions = new HashSet<>();
+    private boolean unloaded;
     private String worldName = "New world";
     private final DSTMetaCompound dst = new DSTMetaCompound();
-    private @Range(from = 0, to = Long.MAX_VALUE) long tick;
-    private final HMapRegisterer<String, Dimension> dimensions = new HMapRegisterer<>(false);
+    private QuickTick tick;
+    private final Collection<String> prepareDimensions = new HashSet<>();
+    private final HMapRegisterer<UUID, String> generatedDimensions = new HMapRegisterer<>(true);
+    private final HMapRegisterer<String, Dimension> loadedDimensions = new HMapRegisterer<>(false);
 
     public World() throws IOException {
         this(ConstantStorage.WORLD_PATH);
@@ -52,8 +50,10 @@ public class World implements IDSTBase {
         this.setWorldSavedDirectory(worldDirectoryPath);
     }
 
-    public boolean isUnloaded() {
-        return this.unloaded;
+    public void update() {
+        this.tick.a1();
+        for (Dimension dimension: this.loadedDimensions.getMap().values())
+            dimension.update();
     }
 
     public File getWorldSavedDirectory() {
@@ -63,26 +63,6 @@ public class World implements IDSTBase {
     public void setWorldSavedDirectory(String worldSavedDirectoryPath) throws IOException {
         HFileHelper.createNewDirectory(worldSavedDirectoryPath);
         this.worldSavedDirectory = (new File(worldSavedDirectoryPath)).getAbsoluteFile();
-    }
-
-    public void addPrepareDimension(String dimensionId) {
-        this.prepareDimensions.add(dimensionId);
-    }
-
-    public String getWorldName() {
-        return this.worldName;
-    }
-
-    public void setWorldName(String worldName) {
-        this.worldName = worldName;
-    }
-
-    public DSTMetaCompound getDst() {
-        return this.dst;
-    }
-
-    public long getTick() {
-        return this.tick;
     }
 
     public String getInformationFile() {
@@ -97,13 +77,42 @@ public class World implements IDSTBase {
         return this.getDimensionsDirectory() + "\\" + dimensionId;
     }
 
-    public Dimension loadDimension(String dimensionId) throws IOException, HElementNotRegisteredException, NoSuchMethodException {
+    public boolean isUnloaded() {
+        return this.unloaded;
+    }
+
+    public String getWorldName() {
+        return this.worldName;
+    }
+
+    public void setWorldName(String worldName) {
+        this.worldName = worldName;
+    }
+
+    public DSTMetaCompound getDst() {
+        return this.dst;
+    }
+
+    public QuickTick getTick() {
+        return this.tick;
+    }
+
+    public void addPrepareDimension(String dimensionId) {
+        this.prepareDimensions.add(dimensionId);
+    }
+
+    public Dimension getDimension(String dimensionId) throws IOException, HElementNotRegisteredException, NoSuchMethodException {
         try {
-            return this.dimensions.getElement(dimensionId);
+            return this.loadedDimensions.getElement(dimensionId);
         } catch (HElementNotRegisteredException ignore) {
         }
+        this.loadDimension(dimensionId);
+        return this.loadedDimensions.getElement(dimensionId);
+    }
+
+    public void loadDimension(String dimensionId) throws IOException, HElementNotRegisteredException, NoSuchMethodException {
         if (this.unloaded)
-            return null;
+            return;
         Dimension dimension = new Dimension(this, DimensionUtils.getInstance().getElementInstance(dimensionId, false));
         if (HFileHelper.checkDirectoryAvailable(this.getDimensionDirectory(dimensionId)))
             dimension.readAll();
@@ -111,41 +120,50 @@ public class World implements IDSTBase {
             dimension.writeAll();
         dimension.loadPrepareChunks();
         try {
-            this.dimensions.register(dimensionId, dimension);
+            this.loadedDimensions.register(dimensionId, dimension);
+            this.generatedDimensions.register(dimension.getUUID(), dimensionId);
         } catch (HElementRegisteredException ignore) {
         }
-        return dimension;
     }
 
     public void unloadDimension(String dimensionId) throws IOException {
         Dimension dimension;
         try {
-            dimension = this.dimensions.getElement(dimensionId);
+            dimension = this.loadedDimensions.getElement(dimensionId);
         } catch (HElementNotRegisteredException exception) {
             return;
         }
-        this.dimensions.deregisterKey(dimensionId);
+        this.loadedDimensions.deregisterKey(dimensionId);
         if (dimension == null)
             return;
-        dimension.unloadAllChunks();
+        dimension.unload();
     }
 
     public void loadPrepareDimensions() throws IOException, HElementNotRegisteredException, NoSuchMethodException {
-        if (this.unloaded)
-            return;
         for (String dimensionId: this.prepareDimensions)
             this.loadDimension(dimensionId);
     }
 
-    public void unloadAllDimensions() throws IOException {
-        this.unloaded = true;
-        Iterable<String> dimensions = new ArrayList<>(this.dimensions.getMap().keySet());
-        for (String dimension: dimensions)
-            this.unloadDimension(dimension);
-        this.writeAll();
+    public void load() throws IOException, HElementNotRegisteredException, NoSuchMethodException {
+        this.unloaded = false;
+        this.readInformation();
+        this.loadPrepareDimensions();
     }
 
-    public void readAll() throws IOException, HElementNotRegisteredException, NoSuchMethodException {
+    public void unloadAllDimensions() throws IOException {
+        Iterable<String> dimensions = new ArrayList<>(this.loadedDimensions.getMap().keySet());
+        for (String dimension: dimensions)
+            this.unloadDimension(dimension);
+    }
+
+    public void unload() throws IOException {
+        this.unloaded = true;
+        this.unloadAllDimensions();
+        this.writeInformation();
+    }
+
+    public void readInformation() throws IOException {
+        //TODO: Automatically fix missing file.
         if (!HFileHelper.checkDirectoryAvailable(this.worldSavedDirectory.getPath()))
             throw new IOException("Unavailable world directory: " + this.worldSavedDirectory.getPath());
         String informationFile = this.getInformationFile();
@@ -156,10 +174,9 @@ public class World implements IDSTBase {
             throw new DSTFormatException();
         this.read(dataInputStream);
         dataInputStream.close();
-        this.loadPrepareDimensions();
     }
 
-    public void writeAll() throws IOException {
+    public void writeInformation() throws IOException {
         HFileHelper.createNewDirectory(this.worldSavedDirectory.getPath());
         String informationFile = this.getInformationFile();
         HFileHelper.createNewFile(informationFile);
@@ -168,33 +185,51 @@ public class World implements IDSTBase {
         dataOutputStream.close();
         String dimensionsDirectory = this.getDimensionsDirectory();
         HFileHelper.createNewDirectory(dimensionsDirectory);
-        for (Dimension dimension: this.dimensions.getMap().values())
+        for (Dimension dimension: this.loadedDimensions.getMap().values())
             dimension.writeAll();
     }
 
     @Override
     public void read(DataInput input) throws IOException {
+        this.unloaded = input.readBoolean();
         this.worldName = input.readUTF();
         if (!DSTMetaCompound.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.dst.read(input);
-        this.tick = input.readLong();
+        this.tick = new QuickTick(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
         this.prepareDimensions.clear();
-        String dimensionId = input.readUTF();
-        while (!suffix.equals(dimensionId)) {
-            this.prepareDimensions.add(dimensionId);
-            dimensionId = input.readUTF();
+        int size = input.readInt();
+        for (int i = 0; i < size; ++i)
+            this.prepareDimensions.add(input.readUTF());
+        size = input.readInt();
+        for (int i = 0; i < size; ++i) {
+            UUID uuid = new UUID(input.readLong(), input.readLong());
+            try {
+                this.generatedDimensions.register(uuid, input.readUTF());
+            } catch (HElementRegisteredException exception) {
+                throw new DSTFormatException("Reiterated UUID!", exception);
+            }
         }
+        if (!suffix.equals(input.readUTF()))
+            throw new DSTFormatException();
     }
 
     @Override
     public void write(DataOutput output) throws IOException {
         output.writeUTF(prefix);
+        output.writeBoolean(this.unloaded);
         output.writeUTF(this.worldName);
         this.dst.write(output);
-        output.writeLong(this.tick);
+        output.writeUTF(this.tick.getFullTick().toString(ConstantStorage.SAVE_NUMBER_RADIX));
+        output.writeInt(this.prepareDimensions.size());
         for (String dimensionId: this.prepareDimensions)
             output.writeUTF(dimensionId);
+        output.writeInt(this.generatedDimensions.getMap().size());
+        for (Map.Entry<UUID, String> entries: this.generatedDimensions.getMap().entrySet()) {
+            output.writeLong(entries.getKey().getMostSignificantBits());
+            output.writeLong(entries.getKey().getLeastSignificantBits());
+            output.writeUTF(entries.getValue());
+        }
         output.writeUTF(suffix);
     }
 
@@ -210,13 +245,12 @@ public class World implements IDSTBase {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        World world = (World) o;
-        return this.tick == world.tick && this.worldName.equals(world.worldName) && this.dimensions.equals(world.dimensions);
+        if (!(o instanceof World world)) return false;
+        return this.unloaded == world.unloaded && this.worldName.equals(world.worldName) && this.dst.equals(world.dst) && this.tick.equals(world.tick) && this.prepareDimensions.equals(world.prepareDimensions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.worldName, this.tick);
+        return Objects.hash(this.unloaded, this.worldName, this.dst, this.prepareDimensions);
     }
 }

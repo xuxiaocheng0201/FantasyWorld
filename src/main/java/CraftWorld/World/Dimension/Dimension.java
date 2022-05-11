@@ -1,9 +1,11 @@
 package CraftWorld.World.Dimension;
 
+import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
+import CraftWorld.Utils.QuickTick;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
 import CraftWorld.World.World;
@@ -16,7 +18,6 @@ import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
@@ -40,8 +41,8 @@ public class Dimension implements IDSTBase {
     private final World world;
     private File dimensionSavedDirectory;
     private IDimensionBase instance;
-    private BigInteger tickHasExist;
-    private BigInteger tickHasUpdated;
+    private QuickTick tickHasExist;
+    private QuickTick tickHasUpdated;
     private final HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false);
 
     public Dimension(World world) {
@@ -52,8 +53,8 @@ public class Dimension implements IDSTBase {
         super();
         this.world = world;
         this.setInstance(instance);
-        this.tickHasExist = BigInteger.ZERO;
-        this.tickHasUpdated = BigInteger.ZERO;
+        this.tickHasExist = new QuickTick();
+        this.tickHasUpdated = new QuickTick();
         this.uuid = HRandomHelper.getRandomUUID();
     }
 
@@ -67,6 +68,10 @@ public class Dimension implements IDSTBase {
 
     public File getDimensionSavedDirectory() {
         return this.dimensionSavedDirectory;
+    }
+
+    public UUID getUUID() {
+        return this.uuid;
     }
 
     public IDimensionBase getInstance() {
@@ -84,9 +89,9 @@ public class Dimension implements IDSTBase {
 
     public String getChunkSaveFile(ChunkPos pos) {
         return this.dimensionSavedDirectory.getPath() + "\\chunks\\" +
-                pos.getBigX().toString(ChunkPos.SAVE_RADIX) + "\\" +
-                pos.getBigY().toString(ChunkPos.SAVE_RADIX) + "\\" +
-                pos.getBigZ().toString(ChunkPos.SAVE_RADIX) + ".dat";
+                pos.getBigX().toString(ConstantStorage.SAVE_NUMBER_RADIX) + "\\" +
+                pos.getBigY().toString(ConstantStorage.SAVE_NUMBER_RADIX) + "\\" +
+                pos.getBigZ().toString(ConstantStorage.SAVE_NUMBER_RADIX) + ".dat";
     }
 
     public Chunk loadChunk(ChunkPos pos) throws IOException {
@@ -148,11 +153,12 @@ public class Dimension implements IDSTBase {
             this.loadChunk(pos);
     }
 
-    public void unloadAllChunks() throws IOException {
+    public void unload() throws IOException {
         this.unloaded = true;
         Iterable<ChunkPos> chunkPos = new ArrayList<>(this.loadedChunks.getMap().keySet());
         for (ChunkPos pos: chunkPos)
             this.unloadChunk(pos);
+        this.writeAll();
     }
 
     public void saveAllChunks() throws IOException {
@@ -207,19 +213,27 @@ public class Dimension implements IDSTBase {
 
     @Override
     public String toString() {
-        return "Dimension:" + this.instance;
+        return "Dimension{" +
+                "uuid=" + this.uuid +
+                ", instance=" + this.instance +
+                ", tickHasExist=" + this.tickHasExist +
+                ", tickHasUpdated=" + this.tickHasUpdated +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        Dimension dimension = (Dimension) o;
-        return this.instance.equals(dimension.instance);
+        if (!(o instanceof Dimension dimension)) return false;
+        return this.uuid.equals(dimension.uuid) && this.instance.equals(dimension.instance) && this.tickHasExist.equals(dimension.tickHasExist);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.instance);
+        return Objects.hash(this.uuid);
+    }
+
+    public void update() {
+        //TODO
     }
 }

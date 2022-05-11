@@ -8,13 +8,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Link loading gui to menu gui.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/Living/EntityLiving.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/Living/IEntityLivingBase.java" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Doing UUID.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/QuickTick.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/Entity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/IEntityBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/IEntityBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/ConstantStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/ConstantStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/BlockPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/BlockPos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/ChunkPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/ChunkPos.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Dimension/Dimension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Dimension/Dimension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/World.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,8 +53,8 @@
         <option value="Enum" />
         <option value="AnnotationType" />
         <option value="Record" />
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -273,13 +275,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00074" summary="Fix some bugs.">
-      <created>1649151734721</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
-      <option name="project" value="LOCAL" />
-      <updated>1649151734724</updated>
     </task>
     <task id="LOCAL-00075" summary="Fix some bugs.">
       <created>1649152610090</created>
@@ -617,7 +612,14 @@
       <option name="project" value="LOCAL" />
       <updated>1652168249753</updated>
     </task>
-    <option name="localTasksCounter" value="123" />
+    <task id="LOCAL-00123" summary="Doing UUID.">
+      <created>1652172979790</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1652172979790</updated>
+    </task>
+    <option name="localTasksCounter" value="124" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -659,7 +661,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Allow running in jar file mode." />
     <MESSAGE value="Improve the order of codes." />
     <MESSAGE value="Linked configurations." />
     <MESSAGE value="Doing Block Part." />
@@ -684,7 +685,8 @@
     <MESSAGE value="Restruct codes." />
     <MESSAGE value="Preparing loading gui." />
     <MESSAGE value="Link loading gui to menu gui." />
-    <option name="LAST_COMMIT_MESSAGE" value="Link loading gui to menu gui." />
+    <MESSAGE value="Doing UUID." />
+    <option name="LAST_COMMIT_MESSAGE" value="Doing UUID." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

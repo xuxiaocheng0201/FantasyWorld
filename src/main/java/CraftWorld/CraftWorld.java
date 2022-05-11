@@ -155,15 +155,15 @@ public class CraftWorld implements ModImplement {
         this.world = new World();
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         try {
-            this.world.readAll();
-        } catch (IOException | HElementNotRegisteredException | NoSuchMethodException exception) {
+            this.world.readInformation();
+        } catch (IOException exception) {
             this.world.addPrepareDimension(DimensionEarthSurface.id);
         }
         try {
             this.world.loadPrepareDimensions();
         } catch (HElementNotRegisteredException | NoSuchMethodException ignore) {
         }
-        this.world.writeAll();
+        this.world.writeInformation();
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
 
         //while (this.serverRunning) {
