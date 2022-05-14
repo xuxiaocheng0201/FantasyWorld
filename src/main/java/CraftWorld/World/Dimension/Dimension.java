@@ -21,6 +21,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class Dimension implements IDSTBase {
     @Serial
@@ -58,6 +60,14 @@ public class Dimension implements IDSTBase {
         this.uuid = HRandomHelper.getRandomUUID();
     }
 
+    public static Dimension getFromUUID(World world, UUID dimensionUUID) {
+        Dimension dimension = new Dimension(world);
+        dimension.setDimensionSavedDirectory(world.getDimensionDirectory(dimensionUUID));
+        dimension.load();
+        //world.loadedDimensions.register(dimensionUUID, dimension);
+        return dimension;
+    }
+
     public boolean isUnloaded() {
         return this.unloaded;
     }
@@ -80,7 +90,7 @@ public class Dimension implements IDSTBase {
 
     public void setInstance(IDimensionBase instance) {
         this.instance = Objects.requireNonNullElseGet(instance, DimensionEarthSurface::new);
-        this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this.instance.getDimensionId()));
+        this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this));
     }
 
     public String getInformationFile() {
@@ -104,7 +114,7 @@ public class Dimension implements IDSTBase {
         String chunkSaveFilePath = this.getChunkSaveFile(pos);
         Chunk chunk = new Chunk(this);
         if (HFileHelper.checkFileAvailable(chunkSaveFilePath)) {
-            DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(chunkSaveFilePath)));
+            DataInputStream dataInputStream = new DataInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(chunkSaveFilePath))));
             if (!Chunk.prefix.equals(dataInputStream.readUTF()))
                 throw new DSTFormatException();
             chunk.read(dataInputStream);
@@ -114,7 +124,7 @@ public class Dimension implements IDSTBase {
             HFileHelper.createNewFile(chunkSaveFilePath);
             chunk.setPos(pos);
             chunk.regenerate();
-            DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(chunkSaveFilePath)));
+            DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(chunkSaveFilePath))));
             chunk.write(dataOutputStream);
             dataOutputStream.close();
         }
@@ -235,5 +245,11 @@ public class Dimension implements IDSTBase {
 
     public void update() {
         //TODO
+    }
+
+    public void load() {
+    }
+
+    public void setDimensionSavedDirectory(String dimensionSavedDirectory) {
     }
 }

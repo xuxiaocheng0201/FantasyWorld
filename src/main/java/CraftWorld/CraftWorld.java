@@ -24,15 +24,21 @@ import org.greenrobot.eventbus.Subscribe;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("MethodMayBeStatic")
 @EventSubscribe
-@NewMod(name = "CraftWorld", version = "0.0.0", requirements = "before:*")
+@NewMod(name = "CraftWorld", version = "0.0.1", requirements = "before:*")
 public class CraftWorld implements ModImplement {
     private static final CraftWorld instance = new CraftWorld();
+
     public static CraftWorld getInstance() {
         return instance;
     }
@@ -54,10 +60,15 @@ public class CraftWorld implements ModImplement {
     }
 
     @Subscribe
-    @SuppressWarnings({"unused", "MethodMayBeStatic"})
+    @SuppressWarnings("unused")
     public void preInitialize(PreInitializationModsEvent event) throws IOException {
         logger.setName("CraftWorld", Thread.currentThread().getName());
         FileTreeStorage.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
+    }
+
+    @Override
+    public void mainInitialize() {
+        this.world.addPrepareDimension(DimensionEarthSurface.id);
     }
 
     public void loading() {
@@ -141,7 +152,13 @@ public class CraftWorld implements ModImplement {
             window.setWindowShouldClose(true);
     }
 
-    private World world;
+    private final World world; {
+        try {
+            this.world = new World();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     public World getWorld() {
         return this.world;
@@ -150,36 +167,41 @@ public class CraftWorld implements ModImplement {
     public boolean serverRunning = true;
     public boolean clientRunning = true;
 
-    public void startServer(ServerSocket server) throws IOException, InterruptedException {
+    public void startServer(Selector selector) throws IOException {
         logger.log(HLogLevel.FINEST, "Loading world...");
-        this.world = new World();
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         try {
-            this.world.readInformation();
-        } catch (IOException exception) {
-            this.world.addPrepareDimension(DimensionEarthSurface.id);
-        }
-        try {
-            this.world.loadPrepareDimensions();
+            this.world.load();
         } catch (HElementNotRegisteredException | NoSuchMethodException ignore) {
         }
-        this.world.writeInformation();
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
-
-        //while (this.serverRunning) {
+        while (this.serverRunning) {
+            this.world.update();
             //TODO: Server
-            synchronized (this) {
-                this.wait(100);
+            selector.select();
+            Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+            while (iterator.hasNext()) {
+                SelectionKey key = iterator.next();
+                iterator.remove();
+                //TODO
             }
-        //}
+        }
     }
 
-    public void startClient(Socket client) {
-//        while (this.clientRunning) {
-//            if (GLFW.glfwWindowShouldClose(window))
-//                break;
-//            TODO: Client
-//        }
+    public void startClient(Socket client) throws IOException {
+        DataOutputStream dataOutputStream = new DataOutputStream(client.getOutputStream());
+        DataInputStream dataInputStream = new DataInputStream(client.getInputStream());
+        while (this.clientRunning) {
+            if (Window.getInstance().windowShouldClose())
+                break;
+            //TODO: Client
+        }
         this.serverRunning = false;
+        dataOutputStream.close();
+        dataInputStream.close();
+    }
+
+    public boolean CreateNewServer() {
+        return true;
     }
 }
