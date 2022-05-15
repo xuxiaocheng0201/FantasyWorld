@@ -16,6 +16,7 @@ import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -54,15 +55,18 @@ public class Dimension implements IDSTBase {
     public Dimension(World world, IDimensionBase instance) {
         super();
         this.world = world;
-        this.setInstance(instance);
         this.tickHasExist = new QuickTick();
         this.tickHasUpdated = new QuickTick();
         this.uuid = HRandomHelper.getRandomUUID();
+        this.setInstance(instance);
     }
 
-    public static Dimension getFromUUID(World world, UUID dimensionUUID) {
+    public static @Nullable Dimension getFromUUID(World world, UUID dimensionUUID) throws IOException {
         Dimension dimension = new Dimension(world);
-        dimension.setDimensionSavedDirectory(world.getDimensionDirectory(dimensionUUID));
+        String directory = world.getDimensionDirectory(dimensionUUID);
+        if (!HFileHelper.checkDirectoryAvailable(directory))
+            return null;
+        dimension.setDimensionSavedDirectory(directory);
         dimension.load();
         //world.loadedDimensions.register(dimensionUUID, dimension);
         return dimension;
@@ -151,7 +155,7 @@ public class Dimension implements IDSTBase {
     public void saveChunk(Chunk chunk) throws IOException {
         String saveFilePath = this.getChunkSaveFile(chunk.getPos());
         HFileHelper.createNewFile(saveFilePath);
-        DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(saveFilePath)));
+        DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(saveFilePath))));
         chunk.write(dataOutputStream);
         dataOutputStream.close();
     }
@@ -161,6 +165,16 @@ public class Dimension implements IDSTBase {
             return;
         for (ChunkPos pos: this.instance.getPrepareChunkPos())
             this.loadChunk(pos);
+    }
+
+    public void load() throws IOException {
+        this.unloaded = false;
+        try {
+            this.readAll();
+        } catch (IOException exception) {
+            this.writeAll();
+        }
+        this.loadPrepareChunks();
     }
 
     public void unload() throws IOException {
@@ -181,7 +195,7 @@ public class Dimension implements IDSTBase {
         String informationFile = this.getInformationFile();
         if (!HFileHelper.checkFileAvailable(informationFile))
             throw new IOException("Unavailable information file: " + informationFile);
-        DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(informationFile)));
+        DataInputStream dataInputStream = new DataInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(informationFile))));
         if (!prefix.equals(dataInputStream.readUTF()))
             throw new DSTFormatException();
         this.read(dataInputStream);
@@ -192,7 +206,7 @@ public class Dimension implements IDSTBase {
     public void writeAll() throws IOException {
         String informationFile = this.getInformationFile();
         HFileHelper.createNewFile(informationFile);
-        DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(informationFile)));
+        DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(informationFile))));
         this.write(dataOutputStream);
         dataOutputStream.close();
         this.saveAllChunks();
@@ -245,9 +259,6 @@ public class Dimension implements IDSTBase {
 
     public void update() {
         //TODO
-    }
-
-    public void load() {
     }
 
     public void setDimensionSavedDirectory(String dimensionSavedDirectory) {

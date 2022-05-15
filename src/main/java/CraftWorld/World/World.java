@@ -41,14 +41,14 @@ public class World implements IDSTBase {
         }
     }
 
-    private File worldSavedDirectory;
+    private @NotNull File worldSavedDirectory;
     private boolean unloaded;
     private String worldName = "New world";
     private final DSTMetaCompound dst = new DSTMetaCompound();
-    private QuickTick tick;
+    private @NotNull QuickTick tick;
 
     private final Collection<String> prepareDimensions = new ArrayList<>();
-    private final Collection<UUID> prepareDimensionsUUID = new ArrayList<>();
+    private final Collection<UUID> prepareDimensionsUUID = new HashSet<>();
     private final HMapRegisterer<UUID, Dimension> loadedDimensions = new HMapRegisterer<>(false);
     private final HMapRegisterer<String, Set<UUID>> generatedDimensions = new HMapRegisterer<>(true);
 
@@ -59,6 +59,7 @@ public class World implements IDSTBase {
     public World(String worldDirectoryPath) throws IOException {
         super();
         this.setWorldSavedDirectory(worldDirectoryPath);
+        this.tick = new QuickTick();
     }
 
     public void update() {
@@ -67,7 +68,7 @@ public class World implements IDSTBase {
             dimension.update();
     }
 
-    public File getWorldSavedDirectory() {
+    public @NotNull File getWorldSavedDirectory() {
         return this.worldSavedDirectory;
     }
 
@@ -108,7 +109,7 @@ public class World implements IDSTBase {
         return this.dst;
     }
 
-    public QuickTick getTick() {
+    public @NotNull QuickTick getTick() {
         return this.tick;
     }
 
@@ -131,12 +132,15 @@ public class World implements IDSTBase {
         }
     }
 
-    public @Nullable Dimension getDimension(UUID dimensionUUID) {
+    public @Nullable Dimension getAndLoadDimension(UUID dimensionUUID) throws IOException {
         try {
             return this.loadedDimensions.getElement(dimensionUUID);
         } catch (HElementNotRegisteredException ignore) {
         }
         Dimension dimension = Dimension.getFromUUID(this, dimensionUUID);
+        if (dimension == null)
+            return null;
+        dimension.load();
         try {
             this.loadedDimensions.register(dimensionUUID, dimension);
         } catch (HElementRegisteredException ignore) {
@@ -144,11 +148,11 @@ public class World implements IDSTBase {
         return dimension;
     }
 
-    public @NotNull Set<Dimension> getDimensions(String dimensionId) {
+    public @NotNull Set<Dimension> getDimensions(String dimensionId) throws IOException {
         Set<UUID> uuids = this.getDimensionsUUID(dimensionId);
         Set<Dimension> dimensions = new HashSet<>(uuids.size());
         for (UUID uuid: uuids) {
-            Dimension dimension = this.getDimension(uuid);
+            Dimension dimension = this.getAndLoadDimension(uuid);
             if (dimension != null)
                 dimensions.add(dimension);
         }
@@ -193,24 +197,44 @@ public class World implements IDSTBase {
         dimension.unload();
     }
 
-    public void loadPrepareDimensions() {
+    private final Collection<UUID> preparedDimensionsUUIDs = new HashSet<>();
+    public void loadPrepareDimensions() throws IOException {
         for (UUID dimensionUUID: this.prepareDimensionsUUID) {
-            Dimension dimension = this.getDimension(dimensionUUID);
-            if (dimension != null)
-                dimension.load();
+            if (this.loadedDimensions.isRegisteredKey(dimensionUUID))
+                continue;
+            Dimension dimension = this.getAndLoadDimension(dimensionUUID);
+            if (dimension == null)
+                continue;
+            this.preparedDimensionsUUIDs.add(dimensionUUID);
         }
         for (String dimensionId: this.prepareDimensions) {
-            for (UUID dimensionUUID: this.getDimensionsUUID(dimensionId)) {
-                Dimension dimension = this.getDimension(dimensionUUID);
-                if (dimension != null)
-                    dimension.load();
+            Set<UUID> uuids = this.getDimensionsUUID(dimensionId);
+            boolean needNew = true;
+            for (UUID dimensionUUID: uuids) {
+                if (this.preparedDimensionsUUIDs.contains(dimensionUUID))
+                    continue;
+                Dimension dimension = this.getAndLoadDimension(dimensionUUID);
+                if (dimension == null)
+                    continue;
+                needNew = false;
+                this.preparedDimensionsUUIDs.add(dimensionUUID);
+            }
+            if (needNew) {
+                try {
+                    this.getNewDimension(dimensionId);
+                } catch (HElementNotRegisteredException | NoSuchMethodException ignore) {
+                }
             }
         }
     }
 
     public void load() throws IOException, HElementNotRegisteredException, NoSuchMethodException {
         this.unloaded = false;
-        this.readInformation();
+        try {
+            this.readInformation();
+        } catch (IOException exception) {
+            this.writeInformation();
+        }
         this.loadPrepareDimensions();
     }
 

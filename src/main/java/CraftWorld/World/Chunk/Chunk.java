@@ -69,6 +69,7 @@ public class Chunk implements IDSTBase {
         this.dimension = dimension;
         this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
         this.dst = new DSTMetaCompound();
+        this.clearBlocks();
     }
 
     public Chunk(@NotNull Dimension dimension, @Nullable ChunkPos pos, @Nullable DSTMetaCompound dst) {
@@ -76,6 +77,7 @@ public class Chunk implements IDSTBase {
         this.dimension = dimension;
         this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
         this.dst = Objects.requireNonNullElseGet(dst, DSTMetaCompound::new);
+        this.clearBlocks();
     }
 
     public @NotNull Dimension getDimension() {
@@ -151,7 +153,7 @@ public class Chunk implements IDSTBase {
     public String toString() {
         return "Chunk{" +
                 "pos=" + this.pos +
-                ", blocks=" + this.blocks +
+//                ", blocks=" + this.blocks +
                 '}';
     }
 

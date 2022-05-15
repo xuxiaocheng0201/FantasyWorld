@@ -21,9 +21,10 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketAddress;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
 import java.util.concurrent.TimeUnit;
 
 public class Craftworld implements ModImplement {
@@ -131,15 +132,17 @@ public class Craftworld implements ModImplement {
             HLog logger = new HLog(Thread.currentThread().getName());
             logger.log(HLogLevel.FINEST, "Server Thread has started.");
             EventBusManager.getDefaultEventBus().post(new ServerStartEvent());
-            try {
-                SocketAddress socketAddress = new InetSocketAddress(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
-                ServerSocket server = new ServerSocket();
-                server.bind(socketAddress, GlobalConfigurations.MAX_PLAYER);
+            try  {
+                ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+                InetSocketAddress inetSocketAddress = new InetSocketAddress(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
+                serverSocketChannel.bind(inetSocketAddress);
+                serverSocketChannel.configureBlocking(false);
+                Selector selector = Selector.open();
+                serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
                 CraftworldClient.server_binding_flag = false;
                 /* ********** Special Modifier ********** */
-                CraftWorld.CraftWorld.getInstance().startServer(server);
+                CraftWorld.CraftWorld.getInstance().startServer(selector);
                 /* ********** \Special Modifier ********** */
-                server.close();
                 EventBusManager.getDefaultEventBus().post(new ServerStopEvent(true));
             } catch (Exception exception) {
                 logger.log(HLogLevel.ERROR, exception);
@@ -169,18 +172,22 @@ public class Craftworld implements ModImplement {
                 while (!window.windowShouldClose()) {
                     /* ********** Special Modifier ********** */
                     CraftWorld.CraftWorld.getInstance().menu();
+                    boolean newServer = CraftWorld.CraftWorld.getInstance().CreateNewServer();
                     /* ********** \Special Modifier ********** */
-                    Thread server = new Thread(new Craftworld.CraftworldServer());
-                    server_binding_flag = true;
-                    server.start();
-                    while (server_binding_flag)
-                        TimeUnit.MILLISECONDS.sleep(1);
+                    Thread server = new Thread(new CraftworldServer());
+                    if (newServer) {
+                        server_binding_flag = true;
+                        server.start();
+                        while (server_binding_flag)
+                            TimeUnit.MILLISECONDS.sleep(1);
+                    }
                     Socket client = new Socket(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
                     /* ********** Special Modifier ********** */
                     CraftWorld.CraftWorld.getInstance().startClient(client);
                     /* ********** \Special Modifier ********** */
                     client.close();
-                    server.join();
+                    if (newServer)
+                        server.join();
                 }
                 window.destroyWindow();
                 EventBusManager.getDefaultEventBus().post(new ClientStopEvent(true));

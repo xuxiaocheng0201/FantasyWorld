@@ -28,9 +28,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("MethodMayBeStatic")
@@ -38,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 @NewMod(name = "CraftWorld", version = "0.0.1", requirements = "before:*")
 public class CraftWorld implements ModImplement {
     private static final CraftWorld instance = new CraftWorld();
-
     public static CraftWorld getInstance() {
         return instance;
     }
@@ -178,14 +175,16 @@ public class CraftWorld implements ModImplement {
         while (this.serverRunning) {
             this.world.update();
             //TODO: Server
-            selector.select();
-            Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-            while (iterator.hasNext()) {
-                SelectionKey key = iterator.next();
-                iterator.remove();
-                //TODO
-            }
+//            selector.select();
+//            Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+//            while (iterator.hasNext()) {
+//                SelectionKey key = iterator.next();
+//                iterator.remove();
+//                //TODO
+//            }
+            break;
         }
+        this.world.unload();
     }
 
     public void startClient(Socket client) throws IOException {
