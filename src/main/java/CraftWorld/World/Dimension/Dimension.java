@@ -194,7 +194,7 @@ public class Dimension implements IDSTBase {
     public void readAll() throws IOException {
         String informationFile = this.getInformationFile();
         if (!HFileHelper.checkFileAvailable(informationFile))
-            throw new IOException("Unavailable information file: " + informationFile);
+            this.writeAll();
         DataInputStream dataInputStream = new DataInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(informationFile))));
         if (!prefix.equals(dataInputStream.readUTF()))
             throw new DSTFormatException();

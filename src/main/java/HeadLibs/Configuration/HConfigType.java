@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Configuration type.
@@ -73,15 +74,18 @@ public class HConfigType implements Serializable {
     private final @NotNull String name;
     /**
      * The method to check {@link HConfigElement#setValue(String)} is suitable for this type.
+     * Fix configuration value is right for type.
+     * T: value Configuration value.
+     * R: Null - unfixable. NotNull - fixed.
      */
-    private final @NotNull FixConfigurationValueMethod check;
+    private final @NotNull Function<? super String, String> check;
 
     /**
      * Register a new ConfigType.
      * @param name type name
      * @param check type's checkMethod
      */
-    public HConfigType(@NotNull String name, @NotNull FixConfigurationValueMethod check) {
+    public HConfigType(@NotNull String name, @NotNull Function<? super String, String> check) {
         super();
         this.name = name.toUpperCase();
         this.check = check;
@@ -113,7 +117,7 @@ public class HConfigType implements Serializable {
      * @return null - unfixable. notNull - fixed
      */
     public @Nullable String fix(@Nullable String value) {
-        return this.check.fix(value);
+        return this.check.apply(value);
     }
 
     @Override
@@ -132,15 +136,6 @@ public class HConfigType implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(this.name);
-    }
-
-    public interface FixConfigurationValueMethod {
-        /**
-         * Fix configuration value is right for type.
-         * @param value Configuration value.
-         * @return Null - unfixable. NotNull - fixed.
-         */
-        @Nullable String fix(@Nullable String value);
     }
 
     public static @Nullable String fixValueBoolean(@Nullable String value) {
@@ -217,7 +212,7 @@ public class HConfigType implements Serializable {
         return value == null || value.isBlank() ? "null" :value;
     }
 
-    public static @Nullable String fixValueInList(@Nullable String value, @NotNull FixConfigurationValueMethod method) {
+    public static @Nullable String fixValueInList(@Nullable String value, @NotNull Function<? super String, String> method) {
         String valueWithoutBrackets = HStringHelper.notNullStrip(value);
         if (valueWithoutBrackets.isEmpty())
             return "[]";
@@ -228,7 +223,7 @@ public class HConfigType implements Serializable {
         String[] elements = HStringHelper.strip(valueWithoutBrackets.split(","));
         StringBuilder fixed = new StringBuilder("[");
         for (String element: elements) {
-            String single = method.fix(element);
+            String single = method.apply(element);
             if (single == null)
                 return null;
             fixed.append(single);

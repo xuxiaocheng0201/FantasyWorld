@@ -12,7 +12,7 @@ public class QuickTick implements Serializable {
     private static final long serialVersionUID = -7856577519248919328L;
 
     private @NotNull BigInteger tick = BigInteger.ZERO;
-    private long cacheTick;
+    private transient long cacheTick;
     private long quickTick;
 
     public QuickTick() {
@@ -41,6 +41,30 @@ public class QuickTick implements Serializable {
         super();
         this.tick = new BigInteger(tick, radix);
         this.cacheTick = this.tick.longValue();
+    }
+
+    public void set(long tick) {
+        this.tick = BigInteger.valueOf(tick);
+        this.cacheTick = tick;
+        this.quickTick = 0;
+    }
+
+    public void set(BigInteger tick) {
+        this.tick = Objects.requireNonNullElse(tick, BigInteger.ZERO);
+        this.cacheTick = this.tick.longValue();
+        this.quickTick = 0;
+    }
+
+    public void set(String tick) {
+        this.tick = new BigInteger(tick);
+        this.cacheTick = this.tick.longValue();
+        this.quickTick = 0;
+    }
+
+    public void set(String tick, int radix) {
+        this.tick = new BigInteger(tick, radix);
+        this.cacheTick = this.tick.longValue();
+        this.quickTick = 0;
     }
 
     public void standardized() {
@@ -80,6 +104,14 @@ public class QuickTick implements Serializable {
         return this.cacheTick + (this.quickTick--);
     }
 
+    public void aT() {
+        ++this.quickTick;
+    }
+
+    public void sT() {
+        --this.quickTick;
+    }
+
     public long add(long n) {  //tick+=n
         return this.cacheTick + (this.quickTick += n);
     }
@@ -96,18 +128,15 @@ public class QuickTick implements Serializable {
         return this.cacheTick + this.quickTick - n;
     }
 
-    public void a1() {
-        ++this.quickTick;
-    }
-
-    public void s1() {
-        --this.quickTick;
-    }
-
     @Override
     public String toString() {
         this.standardized();
         return this.tick.toString();
+    }
+
+    public String toString(int radix) {
+        this.standardized();
+        return this.tick.toString(radix);
     }
 
     @Override
