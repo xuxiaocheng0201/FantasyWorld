@@ -5,6 +5,7 @@ import CraftWorld.DST.IDSTBase;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -65,13 +66,13 @@ public class IDResource implements IDSTBase {
     }
 
     @Override
-    public void read(DataInput input) throws IOException {
+    public void read(@NotNull DataInput input) throws IOException {
         this.mod_id = input.readUTF();
         this.assets = input.readUTF();
     }
 
     @Override
-    public void write(DataOutput output) throws IOException {
+    public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.mod_id);
         output.writeUTF(this.assets);

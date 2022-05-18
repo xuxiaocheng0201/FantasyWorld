@@ -6,6 +6,7 @@ import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -50,13 +51,13 @@ public class DSTTagChar implements IDSTBase {
     }
 
     @Override
-    public void read(DataInput input) throws IOException {
+    public void read(@NotNull DataInput input) throws IOException {
         this.name = input.readUTF();
         this.data = input.readChar();
     }
 
     @Override
-    public void write(DataOutput output) throws IOException {
+    public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
         output.writeChar(this.data);

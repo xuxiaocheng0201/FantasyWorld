@@ -2,6 +2,7 @@ package CraftWorld.DST;
 
 import Core.Addition.Element.ElementImplement;
 import Core.Addition.Element.NewElementImplementCore;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -10,6 +11,6 @@ import java.io.Serializable;
 
 @NewElementImplementCore(modName = "CraftWorld", elementName = "DST")
 public interface IDSTBase extends ElementImplement, Serializable {
-    void read(DataInput input) throws IOException;
-    void write(DataOutput output) throws IOException;
+    void read(@NotNull DataInput input) throws IOException;
+    void write(@NotNull DataOutput output) throws IOException;
 }

@@ -111,7 +111,7 @@ public class Block implements IDSTBase {
     }
 
     @Override
-    public void read(DataInput input) throws IOException {
+    public void read(@NotNull DataInput input) throws IOException {
         try {
             this.instance = BlockUtils.getInstance().getElementInstance(input.readUTF(), false);
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
@@ -130,7 +130,7 @@ public class Block implements IDSTBase {
     }
 
     @Override
-    public void write(DataOutput output) throws IOException {
+    public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.instance.getBlockId());
         this.pos.write(output);

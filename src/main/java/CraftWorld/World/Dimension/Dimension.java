@@ -16,6 +16,7 @@ import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -44,8 +45,8 @@ public class Dimension implements IDSTBase {
     private final World world;
     private File dimensionSavedDirectory;
     private IDimensionBase instance;
-    private QuickTick tickHasExist;
-    private QuickTick tickHasUpdated;
+    private final QuickTick tickHasExist;
+    private final QuickTick tickHasUpdated;
     private final HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false);
 
     public Dimension(World world) {
@@ -61,7 +62,7 @@ public class Dimension implements IDSTBase {
         this.setInstance(instance);
     }
 
-    public static @Nullable Dimension getFromUUID(World world, UUID dimensionUUID) throws IOException {
+    public static @Nullable Dimension getLoadedFromUUID(World world, UUID dimensionUUID) throws IOException {
         Dimension dimension = new Dimension(world);
         String directory = world.getDimensionDirectory(dimensionUUID);
         if (!HFileHelper.checkDirectoryAvailable(directory))
@@ -169,11 +170,7 @@ public class Dimension implements IDSTBase {
 
     public void load() throws IOException {
         this.unloaded = false;
-        try {
-            this.readAll();
-        } catch (IOException exception) {
-            this.writeAll();
-        }
+        this.readAll();
         this.loadPrepareChunks();
     }
 
@@ -213,7 +210,7 @@ public class Dimension implements IDSTBase {
     }
 
     @Override
-    public void read(DataInput input) throws IOException {
+    public void read(@NotNull DataInput input) throws IOException {
         this.uuid = new UUID(input.readLong(), input.readLong());
         try {
             this.setInstance(DimensionUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false));
@@ -227,7 +224,7 @@ public class Dimension implements IDSTBase {
     }
 
     @Override
-    public void write(DataOutput output) throws IOException {
+    public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeLong(this.uuid.getMostSignificantBits());
         output.writeLong(this.uuid.getLeastSignificantBits());

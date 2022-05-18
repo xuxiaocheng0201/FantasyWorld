@@ -10,6 +10,7 @@ import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -53,7 +54,7 @@ public class Entity implements IDSTBase {
     }
 
     @Override
-    public void read(DataInput input) throws IOException {
+    public void read(@NotNull DataInput input) throws IOException {
         this.uuid = new UUID(input.readLong(), input.readLong());
         try {
             this.instance = EntityUtils.getInstance().getElementInstance(input.readUTF(), false);
@@ -73,7 +74,7 @@ public class Entity implements IDSTBase {
     }
 
     @Override
-    public void write(DataOutput output) throws IOException {
+    public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeLong(this.uuid.getMostSignificantBits());
         output.writeLong(this.uuid.getLeastSignificantBits());

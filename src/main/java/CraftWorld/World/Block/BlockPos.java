@@ -378,7 +378,7 @@ public class BlockPos implements IDSTBase, Cloneable {
     }
 
     @Override
-    public void read(DataInput input) throws IOException {
+    public void read(@NotNull DataInput input) throws IOException {
         if (!ChunkPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.chunkPos.read(input);
@@ -390,7 +390,7 @@ public class BlockPos implements IDSTBase, Cloneable {
     }
 
     @Override
-    public void write(DataOutput output) throws IOException {
+    public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         this.chunkPos.write(output);
         output.writeUTF(Integer.toString(this.x, ConstantStorage.SAVE_NUMBER_RADIX));

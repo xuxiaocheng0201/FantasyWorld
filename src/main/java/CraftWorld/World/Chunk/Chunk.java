@@ -123,7 +123,7 @@ public class Chunk implements IDSTBase {
     }
 
     @Override
-    public void read(DataInput input) throws IOException {
+    public void read(@NotNull DataInput input) throws IOException {
         if (!ChunkPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.pos.read(input);
@@ -139,7 +139,7 @@ public class Chunk implements IDSTBase {
     }
 
     @Override
-    public void write(DataOutput output) throws IOException {
+    public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         this.pos.write(output);
         for (List<List<Block>> block_1: this.blocks)
