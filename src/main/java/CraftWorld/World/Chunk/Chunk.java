@@ -6,7 +6,7 @@ import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Events.ChunkGenerateEvent;
 import CraftWorld.Instance.Blocks.BlockAir;
-import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Block.Block;
 import CraftWorld.World.Block.BlockPos;
 import CraftWorld.World.Block.IBlockBase;
@@ -49,7 +49,7 @@ public class Chunk implements IDSTBase {
 
     private final @NotNull Dimension dimension;
     private @NotNull ChunkPos pos;
-    private final @NotNull DSTMetaCompound dst;
+    private final @NotNull DSTComplexMeta dst;
     private final @NotNull List<List<List<Block>>> blocks = Collections.synchronizedList(new ArrayList<>(SIZE));
 
     public Chunk(@NotNull Dimension dimension) {
@@ -60,7 +60,7 @@ public class Chunk implements IDSTBase {
         this(dimension, new ChunkPos(x, y, z));
     }
 
-    public Chunk(@NotNull Dimension dimension, @Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z, @Nullable DSTMetaCompound dst) {
+    public Chunk(@NotNull Dimension dimension, @Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z, @Nullable DSTComplexMeta dst) {
         this(dimension, new ChunkPos(x, y, z), dst);
     }
 
@@ -68,15 +68,15 @@ public class Chunk implements IDSTBase {
         super();
         this.dimension = dimension;
         this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
-        this.dst = new DSTMetaCompound();
+        this.dst = new DSTComplexMeta();
         this.clearBlocks();
     }
 
-    public Chunk(@NotNull Dimension dimension, @Nullable ChunkPos pos, @Nullable DSTMetaCompound dst) {
+    public Chunk(@NotNull Dimension dimension, @Nullable ChunkPos pos, @Nullable DSTComplexMeta dst) {
         super();
         this.dimension = dimension;
         this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
-        this.dst = Objects.requireNonNullElseGet(dst, DSTMetaCompound::new);
+        this.dst = Objects.requireNonNullElseGet(dst, DSTComplexMeta::new);
         this.clearBlocks();
     }
 
@@ -92,7 +92,7 @@ public class Chunk implements IDSTBase {
         this.pos = Objects.requireNonNullElseGet(pos, ChunkPos::new);
     }
 
-    public @NotNull DSTMetaCompound getDst() {
+    public @NotNull DSTComplexMeta getDst() {
         return this.dst;
     }
 

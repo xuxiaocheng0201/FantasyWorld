@@ -3,7 +3,7 @@ package CraftWorld.Instance.Dimensions;
 import Core.EventBus.EventSubscribe;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.Events.ChunkGenerateEvent;
-import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Chunk.ChunkPos;
 import CraftWorld.World.Dimension.DimensionUtils;
 import CraftWorld.World.Dimension.IDimensionBase;
@@ -65,10 +65,10 @@ public class NullDimension implements IDimensionBase {
         output.writeUTF(prefix);
     }
 
-    private final DSTMetaCompound dst = new DSTMetaCompound();
+    private final DSTComplexMeta dst = new DSTComplexMeta();
 
     @Override
-    public DSTMetaCompound getDimensionDST() {
+    public DSTComplexMeta getDimensionDST() {
         return this.dst;
     }
 

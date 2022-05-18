@@ -1,7 +1,7 @@
 package CraftWorld.Instance.Dimensions;
 
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Chunk.ChunkPos;
 import CraftWorld.World.Dimension.DimensionUtils;
 import CraftWorld.World.Dimension.IDimensionBase;
@@ -39,7 +39,7 @@ public class DimensionEarthSurface implements IDimensionBase {
     }
 
     private String name = "EarthSurface";
-    private final DSTMetaCompound dst;
+    private final DSTComplexMeta dst;
     private final Set<ChunkPos> prepareChunkPos = new HashSet<>();
     {
         for (int x = -1; x < 2; ++x)
@@ -50,21 +50,21 @@ public class DimensionEarthSurface implements IDimensionBase {
 
     public DimensionEarthSurface() {
         super();
-        this.dst = new DSTMetaCompound();
+        this.dst = new DSTComplexMeta();
     }
 
     public DimensionEarthSurface(String name) {
         super();
         this.name = name;
-        this.dst = new DSTMetaCompound();
+        this.dst = new DSTComplexMeta();
     }
 
-    public DimensionEarthSurface(DSTMetaCompound dst) {
+    public DimensionEarthSurface(DSTComplexMeta dst) {
         super();
         this.dst = dst;
     }
 
-    public DimensionEarthSurface(String name, DSTMetaCompound dst) {
+    public DimensionEarthSurface(String name, DSTComplexMeta dst) {
         super();
         this.name = name;
         this.dst = dst;
@@ -86,7 +86,7 @@ public class DimensionEarthSurface implements IDimensionBase {
     }
 
     @Override
-    public DSTMetaCompound getDimensionDST() {
+    public DSTComplexMeta getDimensionDST() {
         return this.dst;
     }
 

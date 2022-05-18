@@ -4,7 +4,7 @@ import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.Utils.QuickTick;
 import CraftWorld.World.Dimension.Dimension;
 import CraftWorld.World.Dimension.DimensionUtils;
@@ -46,7 +46,7 @@ public class World implements IDSTBase {
     private boolean unloaded = true;
 
     private String worldName = "New world";
-    private final DSTMetaCompound dst = new DSTMetaCompound();
+    private final DSTComplexMeta dst = new DSTComplexMeta();
     private final @NotNull QuickTick tick = new QuickTick();
 
     // Load all dimensions which id is in keys of {@code prepareDimensionsID}.
@@ -109,7 +109,7 @@ public class World implements IDSTBase {
         this.worldName = worldName;
     }
 
-    public DSTMetaCompound getDst() {
+    public DSTComplexMeta getDst() {
         return this.dst;
     }
 
@@ -322,7 +322,7 @@ public class World implements IDSTBase {
     public void read(@NotNull DataInput input) throws IOException {
         this.unloaded = input.readBoolean();
         this.worldName = input.readUTF();
-        if (!DSTMetaCompound.prefix.equals(input.readUTF()))
+        if (!DSTComplexMeta.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.dst.read(input);
         this.tick.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);

@@ -1,6 +1,6 @@
 package CraftWorld.Instance.Blocks;
 
-import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Block.BlockUtils;
 import CraftWorld.World.Block.IBlockBase;
 import HeadLibs.Logger.HLog;
@@ -24,7 +24,7 @@ public class BlockStone implements IBlockBase {
     }
 
     private String name = "Stone";
-    private DSTMetaCompound dst = new DSTMetaCompound();
+    private DSTComplexMeta dst = new DSTComplexMeta();
 
     public BlockStone() {
         super();
@@ -35,12 +35,12 @@ public class BlockStone implements IBlockBase {
         this.name = name;
     }
 
-    public BlockStone(DSTMetaCompound dst) {
+    public BlockStone(DSTComplexMeta dst) {
         super();
         this.dst = dst;
     }
 
-    public BlockStone(String name, DSTMetaCompound dst) {
+    public BlockStone(String name, DSTComplexMeta dst) {
         super();
         this.name = name;
         this.dst = dst;
@@ -57,7 +57,7 @@ public class BlockStone implements IBlockBase {
     }
 
     @Override
-    public DSTMetaCompound getBlockDST() {
+    public DSTComplexMeta getBlockDST() {
         return this.dst;
     }
 

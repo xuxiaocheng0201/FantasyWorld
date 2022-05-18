@@ -7,45 +7,45 @@ import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public final class DSTMetaCompound implements IDSTBase {
+public final class DSTComplexMeta implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 5912925151440251840L;
-    public static final String id = "DSTMetaCompound";
+    public static final String id = "DSTComplexMeta";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
-            DSTUtils.getInstance().register(id, DSTMetaCompound.class);
+            DSTUtils.getInstance().register(id, DSTComplexMeta.class);
         } catch (HElementRegisteredException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 
     private String name = id;
-    private final Map<String, IDSTBase> dstMap = new HashMap<>();
+    private final @NotNull HMapRegisterer<String, IDSTBase> dstMap = new HMapRegisterer<>(true);
 
-    public DSTMetaCompound() {
+    public DSTComplexMeta() {
         super();
     }
 
-    public DSTMetaCompound(String name) {
+    public DSTComplexMeta(String name) {
         super();
         this.name = name;
     }
 
     @Override
     public void read(@NotNull DataInput input) throws IOException {
-        this.dstMap.clear();
+        this.dstMap.deregisterAll();
         this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
@@ -56,7 +56,10 @@ public final class DSTMetaCompound implements IDSTBase {
                 throw new DSTFormatException(exception);
             }
             dst.read(input);
-            this.dstMap.put(name, dst);
+            try {
+                this.dstMap.register(name, dst);
+            } catch (HElementRegisteredException ignore) {
+            }
             name = input.readUTF();
         }
     }
@@ -65,7 +68,7 @@ public final class DSTMetaCompound implements IDSTBase {
     public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        for (Map.Entry<String, IDSTBase> entry : this.dstMap.entrySet()) {
+        for (Map.Entry<String, IDSTBase> entry : this.dstMap.getMap().entrySet()) {
             output.writeUTF(entry.getKey());
             entry.getValue().write(output);
         }
@@ -80,13 +83,13 @@ public final class DSTMetaCompound implements IDSTBase {
         this.name = name;
     }
 
-    public Map<String, IDSTBase> getDstMap() {
+    public @NotNull HMapRegisterer<String, IDSTBase> getDstMap() {
         return this.dstMap;
     }
 
     @Override
     public String toString() {
-        return "DSTMetaCompound{" +
+        return "DSTComplexMeta{" +
                 "name='" + this.name + '\'' +
                 ", dstMap=" + this.dstMap +
                 '}';
@@ -95,8 +98,7 @@ public final class DSTMetaCompound implements IDSTBase {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        DSTMetaCompound that = (DSTMetaCompound) o;
+        if (!(o instanceof DSTComplexMeta that)) return false;
         return Objects.equals(this.name, that.name) && this.dstMap.equals(that.dstMap);
     }
 

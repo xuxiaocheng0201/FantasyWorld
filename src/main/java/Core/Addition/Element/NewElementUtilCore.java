@@ -2,10 +2,7 @@ package Core.Addition.Element;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Announce at new mods element util classes.
@@ -13,6 +10,7 @@ import java.lang.annotation.Target;
  * @see ElementUtil
  */
 @SuppressWarnings("unused")
+@Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NewElementUtilCore {

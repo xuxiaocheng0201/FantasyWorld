@@ -2,10 +2,7 @@ package Core.EventBus;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Auto register the instance of a class announced {@code EventSubscribe}.
@@ -14,6 +11,7 @@ import java.lang.annotation.Target;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
+@Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventSubscribe {

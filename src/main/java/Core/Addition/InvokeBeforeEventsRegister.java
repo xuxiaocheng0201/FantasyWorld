@@ -1,9 +1,6 @@
 package Core.Addition;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Only be announced on static methods. It will be invoked before eventbus registered.
@@ -21,6 +18,7 @@ import java.lang.annotation.Target;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
+@Documented
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InvokeBeforeEventsRegister {

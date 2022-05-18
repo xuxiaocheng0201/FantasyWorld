@@ -8,17 +8,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Pure DST basic types.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Documented annotations.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanCollection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteCollection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharCollection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleCollection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatCollection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntCollection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongCollection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortCollection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringCollection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementImplementCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementImplementCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementUtilCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/NewElementUtilCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/InvokeBeforeEventsRegister.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/InvokeBeforeEventsRegister.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/NewMod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/NewMod.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventSubscribe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/EventBus/EventSubscribe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/IEntityBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/IEntityBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Blocks/BlockAir.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Blocks/BlockAir.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Blocks/BlockStone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Blocks/BlockStone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTMetaCompound.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTComplexMeta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/DimensionEarthSurface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/DimensionEarthSurface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/NullDimension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/NullDimension.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/Block.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/IBlockBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/IBlockBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/Chunk.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Dimension/IDimensionBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Dimension/IDimensionBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/World.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,6 +135,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModRequirementFormatException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModInformationException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Gui/Window.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTComplexMeta.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModDependencyMissingException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModDependencyVersionUnmatchedException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" root0="SKIP_INSPECTION" />
@@ -283,13 +292,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00081" summary="Improve Version part.">
-      <created>1649396521283</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1649396521285</updated>
     </task>
     <task id="LOCAL-00082" summary="Redo mod container.">
       <created>1649407489612</created>
@@ -627,7 +629,14 @@
       <option name="project" value="LOCAL" />
       <updated>1652855932370</updated>
     </task>
-    <option name="localTasksCounter" value="130" />
+    <task id="LOCAL-00130" summary="Tag DST collections.">
+      <created>1652859065103</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1652859065103</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -669,8 +678,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Save Chunks!" />
-    <MESSAGE value="Doing: Save Dimensions!" />
     <MESSAGE value="Doing: Save Worlds!" />
     <MESSAGE value="Find a big BUG!" />
     <MESSAGE value="Redoing block pos." />
@@ -694,7 +701,9 @@
     <MESSAGE value="Prepare dimensions system." />
     <MESSAGE value="Null Dimension." />
     <MESSAGE value="Pure DST basic types." />
-    <option name="LAST_COMMIT_MESSAGE" value="Pure DST basic types." />
+    <MESSAGE value="Tag DST collections." />
+    <MESSAGE value="Documented annotations." />
+    <option name="LAST_COMMIT_MESSAGE" value="Documented annotations." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

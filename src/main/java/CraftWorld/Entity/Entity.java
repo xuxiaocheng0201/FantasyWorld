@@ -3,7 +3,7 @@ package CraftWorld.Entity;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Instance.DST.DSTMetaCompound;
+import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Dimension.Dimension;
 import HeadLibs.Helper.HRandomHelper;
 import HeadLibs.Logger.HLog;
@@ -66,7 +66,7 @@ public class Entity implements IDSTBase {
             throw new DSTFormatException();
         this.pos.read(input);
         this.instance.setEntityName(input.readUTF());
-        if (!DSTMetaCompound.prefix.equals(input.readUTF()))
+        if (!DSTComplexMeta.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.instance.getEntityDST().read(input);
         if (!suffix.equals(input.readUTF()))
