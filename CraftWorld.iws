@@ -9,46 +9,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Null Dimension.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/NullDimension.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTPureFloat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTPureInt.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/Entity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/EntityPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/EntityPos.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTMetaCompound.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTMetaCompound.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBoolean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBoolean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagBooleanMap.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByte.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByte.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagByteMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTPureByte.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagChar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagChar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTPureChar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDouble.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDouble.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagDoubleMap.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagFloatMap.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagInt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagInt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagIntMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTPureDouble.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLong.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLong.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagLongMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTPureBoolean.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShort.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShort.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagShortMap.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagString.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagString.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringMap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/DimensionEarthSurface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Dimensions/DimensionEarthSurface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/IDResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/IDResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/Block.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/BlockPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/BlockPos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/Chunk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Dimension/Dimension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Dimension/Dimension.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/World.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagStringMap.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +175,6 @@
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-17.0.2/lib/src.zip!/java.base/java/lang/reflect/TypeVariable.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionFormatException.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-17.0.2/lib/src.zip!/java.base/java/lang/Class.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTTagCharMap.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModVersion.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModName.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTFormatException.java" root0="SKIP_INSPECTION" />
@@ -267,11 +248,11 @@
       <recent name="" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="CraftWorld.Instance.DST" />
       <recent name="Core.Gui.Callback" />
       <recent name="Core.EventBus.Events" />
       <recent name="Core.Exceptions" />
       <recent name="CraftWorld.Instance.Blocks" />
-      <recent name="HeadLibs.Registerer" />
     </key>
   </component>
   <component name="RunManager" selected="应用程序.CraftWorld Server">
@@ -314,13 +295,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00079" summary="Deprecating HStringHelper.concat method.">
-      <created>1649248850010</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1649248850010</updated>
     </task>
     <task id="LOCAL-00080" summary="Fix many bugs.">
       <created>1649338098575</created>
@@ -658,7 +632,14 @@
       <option name="project" value="LOCAL" />
       <updated>1652844898813</updated>
     </task>
-    <option name="localTasksCounter" value="128" />
+    <task id="LOCAL-00128" summary="Null Dimension.">
+      <created>1652853141982</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1652853141982</updated>
+    </task>
+    <option name="localTasksCounter" value="129" />
     <servers />
   </component>
   <component name="UnknownFeatures">

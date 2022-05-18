@@ -20,7 +20,7 @@ import java.util.Objects;
 public final class DSTMetaCompound implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 5912925151440251840L;
-    public static final String id = "Compound";
+    public static final String id = "DSTMetaCompound";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {

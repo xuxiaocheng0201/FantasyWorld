@@ -14,42 +14,34 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTTagString implements IDSTBase {
+public class DSTPureInt implements IDSTBase {
     @Serial
-    private static final long serialVersionUID = -4888822638770534140L;
-    public static final String id = "DSTTagString";
+    private static final long serialVersionUID = 6818666709777429561L;
+    public static final String id = "DSTPureInt";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
-            DSTUtils.getInstance().register(id, DSTTagString.class);
+            DSTUtils.getInstance().register(id, DSTPureInt.class);
         } catch (HElementRegisteredException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
         }
     }
 
-    private String name = id;
-    private String data = "";
+    private int data;
 
-    public DSTTagString() {
+    public DSTPureInt() {
         super();
     }
 
-    public DSTTagString(String data) {
+    public DSTPureInt(int data) {
         super();
-        this.data = data;
-    }
-
-    public DSTTagString(String name, String data) {
-        super();
-        this.name = name;
         this.data = data;
     }
 
     @Override
     public void read(@NotNull DataInput input) throws IOException {
-        this.name = input.readUTF();
-        this.data = input.readUTF();
+        this.data = input.readInt();
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
@@ -57,44 +49,32 @@ public class DSTTagString implements IDSTBase {
     @Override
     public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(this.name);
-        output.writeUTF(this.data);
+        output.writeInt(this.data);
         output.writeUTF(suffix);
     }
 
-    public String getDSTName() {
-        return this.name;
-    }
-
-    public void setDSTName(String name) {
-        this.name = name;
-    }
-
-    public String getData() {
+    public int getData() {
         return this.data;
     }
 
-    public void setData(String data) {
+    public void setData(int data) {
         this.data = data;
     }
 
     @Override
     public String toString() {
-        return "DSTTagString{" +
-                "name='" + this.name + '\'' +
-                ", data='" + this.data + '\'' +
-                '}';
+        return "DSTPureInt{" + this.data + '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DSTTagString that)) return false;
-        return Objects.equals(this.name, that.name) && Objects.equals(this.data, that.data);
+        if (!(o instanceof DSTPureInt that)) return false;
+        return this.data == that.data;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.data);
+        return Objects.hash(this.data);
     }
 }

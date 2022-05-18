@@ -1,8 +1,8 @@
 package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -17,8 +17,9 @@ import java.util.Objects;
 public class DSTTagInt implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 139816189677099350L;
-    public static final String id = "Int";
-    public static final String prefix = id;
+    public static final String id = "DSTTagInt";
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, DSTTagInt.class);
@@ -54,6 +55,8 @@ public class DSTTagInt implements IDSTBase {
     public void read(@NotNull DataInput input) throws IOException {
         this.name = input.readUTF();
         this.data = input.readInt();
+        if (!suffix.equals(input.readUTF()))
+            throw new DSTFormatException();
     }
 
     @Override
@@ -61,6 +64,7 @@ public class DSTTagInt implements IDSTBase {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
         output.writeInt(this.data);
+        output.writeUTF(suffix);
     }
 
     public String getDSTName() {
@@ -81,18 +85,17 @@ public class DSTTagInt implements IDSTBase {
 
     @Override
     public String toString() {
-        return HStringHelper.concat("DSTTagInt{",
-                "name='", this.name, '\'',
-                ", data=", this.data,
-                '}');
+        return "DSTTagInt{" +
+                "name='" + this.name + '\'' +
+                ", data=" + this.data +
+                '}';
     }
 
     @Override
-    public boolean equals(Object a) {
-        if (!(a instanceof DSTTagInt))
-            return false;
-        return Objects.equals(this.name, ((DSTTagInt) a).name) &&
-                this.data == ((DSTTagInt) a).data;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DSTTagInt that)) return false;
+        return this.data == that.data && Objects.equals(this.name, that.name);
     }
 
     @Override
