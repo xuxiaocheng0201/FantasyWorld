@@ -4,7 +4,7 @@ import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
+import CraftWorld.Instance.Dimensions.NullDimension;
 import CraftWorld.Utils.QuickTick;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
@@ -17,11 +17,12 @@ import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -40,62 +41,46 @@ public class Dimension implements IDSTBase {
         }
     }
 
-    private UUID uuid;
+    private @NotNull File dimensionSavedDirectory;
     private boolean unloaded;
-    private final World world;
-    private File dimensionSavedDirectory;
-    private IDimensionBase instance;
-    private final QuickTick tickHasExist;
-    private final QuickTick tickHasUpdated;
-    private final HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false);
+
+    private final @NotNull World world;
+    private @NotNull UUID uuid;
+    private @NotNull IDimensionBase instance;
+    private final @NotNull QuickTick tickHasUpdated;
+    private @NotNull String randomSeed;
+    private final @NotNull Random random;
+
+    private final @NotNull HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false);
 
     public Dimension(World world) {
-        this(world, new DimensionEarthSurface());
+        this(world, new NullDimension());
     }
 
-    public Dimension(World world, IDimensionBase instance) {
+    public Dimension(@NotNull World world, IDimensionBase instance) {
         super();
         this.world = world;
-        this.tickHasExist = new QuickTick();
+        this.instance = Objects.requireNonNullElseGet(instance, NullDimension::new);
+        this.randomSeed = HRandomHelper.nextString(this.world.getRandom(), 1, HRandomHelper.nextInt(5, 10));
+        this.random = new SecureRandom(this.randomSeed.getBytes());
+        this.uuid = HRandomHelper.getRandomUUID(this.random);
+        this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this.uuid));
         this.tickHasUpdated = new QuickTick();
-        this.uuid = HRandomHelper.getRandomUUID();
-        this.setInstance(instance);
     }
 
-    public static @Nullable Dimension getLoadedFromUUID(World world, UUID dimensionUUID) throws IOException {
-        Dimension dimension = new Dimension(world);
-        String directory = world.getDimensionDirectory(dimensionUUID);
-        if (!HFileHelper.checkDirectoryAvailable(directory))
-            return null;
-        dimension.setDimensionSavedDirectory(directory);
-        dimension.load();
-        //world.loadedDimensions.register(dimensionUUID, dimension);
-        return dimension;
+    public void update() {
+        this.tickHasUpdated.set(this.world.getTick().getFullTick());
+        for (Chunk chunk: this.loadedChunks.getMap().values())
+            chunk.update();
     }
 
-    public boolean isUnloaded() {
-        return this.unloaded;
-    }
-
-    public World getWorld() {
-        return this.world;
-    }
-
-    public File getDimensionSavedDirectory() {
+    public @NotNull File getDimensionSavedDirectory() {
         return this.dimensionSavedDirectory;
     }
 
-    public UUID getUUID() {
-        return this.uuid;
-    }
-
-    public IDimensionBase getInstance() {
-        return this.instance;
-    }
-
-    public void setInstance(IDimensionBase instance) {
-        this.instance = Objects.requireNonNullElseGet(instance, DimensionEarthSurface::new);
-        this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this));
+    public void setDimensionSavedDirectory(String dimensionSavedDirectory) throws IOException {
+        HFileHelper.createNewDirectory(dimensionSavedDirectory);
+        this.dimensionSavedDirectory = (new File(dimensionSavedDirectory)).getAbsoluteFile();
     }
 
     public String getInformationFile() {
@@ -107,6 +92,39 @@ public class Dimension implements IDSTBase {
                 pos.getBigX().toString(ConstantStorage.SAVE_NUMBER_RADIX) + "\\" +
                 pos.getBigY().toString(ConstantStorage.SAVE_NUMBER_RADIX) + "\\" +
                 pos.getBigZ().toString(ConstantStorage.SAVE_NUMBER_RADIX) + ".dat";
+    }
+
+    public boolean isUnloaded() {
+        return this.unloaded;
+    }
+
+    public @NotNull World getWorld() {
+        return this.world;
+    }
+
+    public UUID getUUID() {
+        return this.uuid;
+    }
+
+    public @NotNull IDimensionBase getInstance() {
+        return this.instance;
+    }
+
+    public void setInstance(IDimensionBase instance) {
+        this.instance = Objects.requireNonNullElseGet(instance, NullDimension::new);
+        this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this));
+    }
+
+    public @NotNull QuickTick getTickHasUpdated() {
+        return this.tickHasUpdated;
+    }
+
+    public @NotNull String getRandomSeed() {
+        return this.randomSeed;
+    }
+
+    public @NotNull Random getRandom() {
+        return this.random;
     }
 
     public Chunk loadChunk(ChunkPos pos) throws IOException {
@@ -164,7 +182,7 @@ public class Dimension implements IDSTBase {
     public void loadPrepareChunks() throws IOException {
         if (this.unloaded)
             return;
-        for (ChunkPos pos: this.instance.getPrepareChunkPos())
+        for (ChunkPos pos: this.instance.getPrepareChunkPos().getSet())
             this.loadChunk(pos);
     }
 
@@ -216,7 +234,7 @@ public class Dimension implements IDSTBase {
             this.setInstance(DimensionUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false));
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
-            this.instance = new DimensionEarthSurface();
+            this.instance = new NullDimension();
         }
         this.instance.read(input);
         if (!suffix.equals(input.readUTF()))
@@ -237,7 +255,6 @@ public class Dimension implements IDSTBase {
         return "Dimension{" +
                 "uuid=" + this.uuid +
                 ", instance=" + this.instance +
-                ", tickHasExist=" + this.tickHasExist +
                 ", tickHasUpdated=" + this.tickHasUpdated +
                 '}';
     }
@@ -246,18 +263,11 @@ public class Dimension implements IDSTBase {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Dimension dimension)) return false;
-        return this.uuid.equals(dimension.uuid) && this.instance.equals(dimension.instance) && this.tickHasExist.equals(dimension.tickHasExist);
+        return this.uuid.equals(dimension.uuid) && this.instance.equals(dimension.instance) && this.tickHasUpdated.equals(dimension.tickHasUpdated);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.uuid);
-    }
-
-    public void update() {
-        //TODO
-    }
-
-    public void setDimensionSavedDirectory(String dimensionSavedDirectory) {
     }
 }

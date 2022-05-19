@@ -8,15 +8,14 @@ import CraftWorld.World.Dimension.IDimensionBase;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HLinkedSetRegisterer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 public class DimensionEarthSurface implements IDimensionBase {
     @Serial
@@ -40,12 +39,16 @@ public class DimensionEarthSurface implements IDimensionBase {
 
     private String name = "EarthSurface";
     private final DSTComplexMeta dst;
-    private final Set<ChunkPos> prepareChunkPos = new HashSet<>();
+    private final HLinkedSetRegisterer<ChunkPos> prepareChunkPos = new HLinkedSetRegisterer<>();
     {
         for (int x = -1; x < 2; ++x)
             for (int y = -1; y < 2; ++y)
-                for (int z = -1; z < 2; ++z)
-                    this.prepareChunkPos.add(new ChunkPos(x, y, z));
+                for (int z = -1; z < 2; ++z) {
+                    try {
+                        this.prepareChunkPos.register(new ChunkPos(x, y, z));
+                    } catch (HElementRegisteredException ignore) {
+                    }
+                }
     }
 
     public DimensionEarthSurface() {
@@ -81,7 +84,7 @@ public class DimensionEarthSurface implements IDimensionBase {
     }
 
     @Override
-    public Set<ChunkPos> getPrepareChunkPos() {
+    public HLinkedSetRegisterer<ChunkPos> getPrepareChunkPos() {
         return this.prepareChunkPos;
     }
 

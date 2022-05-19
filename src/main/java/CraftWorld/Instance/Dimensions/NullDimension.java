@@ -10,6 +10,7 @@ import CraftWorld.World.Dimension.IDimensionBase;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
+import HeadLibs.Registerer.HLinkedSetRegisterer;
 import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,9 +18,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @EventSubscribe
 public class NullDimension implements IDimensionBase {
@@ -52,8 +51,8 @@ public class NullDimension implements IDimensionBase {
     }
 
     @Override
-    public Set<ChunkPos> getPrepareChunkPos() {
-        return new HashSet<>();
+    public HLinkedSetRegisterer<ChunkPos> getPrepareChunkPos() {
+        return new HLinkedSetRegisterer<>();
     }
 
     @Override

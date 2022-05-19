@@ -36,6 +36,44 @@ public class HRandomHelper {
         return nextDouble(RANDOM, minimum, maximum);
     }
 
+    public static String nextString(RandomGenerator random, int size, int minimum, int maximum) {
+        if (size < 1)
+            return "";
+        char[] chars = new char[size];
+        for (int i = 0; i < size; ++i)
+            //noinspection NumericCastThatLosesPrecision
+            chars[i] = (char) nextInt(random, minimum, maximum);
+        return new String(chars);
+    }
+
+    public static String nextString(int size, int minimum, int maximum) {
+        return nextString(RANDOM, size, minimum, maximum);
+    }
+
+    public static String nextString(RandomGenerator random, int size) {
+        return nextString(random, size, Character.MIN_VALUE, Character.MAX_VALUE);
+    }
+
+    public static String nextString(int size) {
+        return nextString(RANDOM, size, Character.MIN_VALUE, Character.MAX_VALUE);
+    }
+
+    public static String nextString(RandomGenerator random, int minSize, int maxSize, int minimum, int maximum) {
+        return nextString(random, nextInt(random, minSize, maxSize), minimum, maximum);
+    }
+
+    public static String nextString(int minSize, int maxSize, int minimum, int maximum) {
+        return nextString(RANDOM, nextInt(RANDOM, minSize, maxSize), minimum, maximum);
+    }
+
+    public static String nextString(RandomGenerator random, int minSize, int maxSize) {
+        return nextString(random, nextInt(random, minSize, maxSize), Character.MIN_VALUE, Character.MAX_VALUE);
+    }
+
+    public static String nextString(int minSize, int maxSize) {
+        return nextString(RANDOM, nextInt(RANDOM, minSize, maxSize), Character.MIN_VALUE, Character.MAX_VALUE);
+    }
+
     /**
      * @see UUID#randomUUID()
      */
@@ -43,10 +81,10 @@ public class HRandomHelper {
     public static UUID getRandomUUID(RandomGenerator random) {
         byte[] randomBytes = new byte[16];
         random.nextBytes(randomBytes);
-        randomBytes[6]  &= 0x0f;  /* clear version        */
-        randomBytes[6]  |= 0x40;  /* set to version 4     */
-        randomBytes[8]  &= 0x3f;  /* clear variant        */
-        randomBytes[8]  |= 0x80;  /* set to IETF variant  */
+        randomBytes[6]  &= 0x0f;
+        randomBytes[6]  |= 0x40;
+        randomBytes[8]  &= 0x3f;
+        randomBytes[8]  |= 0x80;
         long msb = 0;
         long lsb = 0;
         for (int i = 0; i < 8; ++i)

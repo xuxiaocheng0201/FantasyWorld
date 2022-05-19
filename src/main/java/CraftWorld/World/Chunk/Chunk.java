@@ -169,4 +169,7 @@ public class Chunk implements IDSTBase {
     public int hashCode() {
         return Objects.hash(this.pos);
     }
+
+    public void update() {
+    }
 }

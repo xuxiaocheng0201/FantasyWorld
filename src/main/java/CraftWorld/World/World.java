@@ -20,10 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.security.SecureRandom;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -48,6 +46,8 @@ public class World implements IDSTBase {
     private String worldName = "New world";
     private final DSTComplexMeta dst = new DSTComplexMeta();
     private final @NotNull QuickTick tick = new QuickTick();
+    private @NotNull String randomSeed;
+    private final @NotNull Random random;
 
     // Load all dimensions which id is in keys of {@code prepareDimensionsID}.
     // At least load value dimensions include {@code prepareDimensionsUUID}.
@@ -56,14 +56,18 @@ public class World implements IDSTBase {
     private final HMapRegisterer<UUID, Dimension> loadedDimensions = new HMapRegisterer<>(false);
     private final HMapRegisterer<String, HSetRegisterer<UUID>> generatedDimensions = new HMapRegisterer<>(true);
 
-    public World() throws IOException {
+    public World(@NotNull String randomSeed) throws IOException {
         super();
         HFileHelper.createNewDirectory(ConstantStorage.WORLD_PATH);
+        this.randomSeed = randomSeed;
+        this.random = new SecureRandom(this.randomSeed.getBytes());
     }
 
-    public World(String worldDirectoryPath) throws IOException {
+    public World(String worldDirectoryPath, @NotNull String randomSeed) throws IOException {
         super();
         this.setWorldSavedDirectory(worldDirectoryPath);
+        this.randomSeed = randomSeed;
+        this.random = new SecureRandom(this.randomSeed.getBytes());
     }
 
     public void update() {
@@ -115,6 +119,14 @@ public class World implements IDSTBase {
 
     public @NotNull QuickTick getTick() {
         return this.tick;
+    }
+
+    public @NotNull String getRandomSeed() {
+        return this.randomSeed;
+    }
+
+    public @NotNull Random getRandom() {
+        return this.random;
     }
 
     public void addPrepareDimension(String dimensionId) {
@@ -182,9 +194,11 @@ public class World implements IDSTBase {
             return this.loadedDimensions.getElement(dimensionUUID);
         } catch (HElementNotRegisteredException ignore) {
         }
-        Dimension dimension = Dimension.getLoadedFromUUID(this, dimensionUUID);
-        if (dimension == null)
+        Dimension dimension = new Dimension(this);
+        String directory = this.getDimensionDirectory(dimensionUUID);
+        if (!HFileHelper.checkDirectoryAvailable(directory))
             return null;
+        dimension.setDimensionSavedDirectory(directory);
         dimension.load();
         try {
             this.loadedDimensions.register(dimensionUUID, dimension);
@@ -326,6 +340,7 @@ public class World implements IDSTBase {
             throw new DSTFormatException();
         this.dst.read(input);
         this.tick.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
+        this.randomSeed = input.readUTF();
         this.prepareDimensionsUUID.deregisterAll();
         int size = input.readInt();
         for (int i = 0; i < size; ++i) {
@@ -370,6 +385,7 @@ public class World implements IDSTBase {
         output.writeUTF(this.worldName);
         this.dst.write(output);
         output.writeUTF(this.tick.getFullTick().toString(ConstantStorage.SAVE_NUMBER_RADIX));
+        output.writeUTF(this.randomSeed);
         output.writeInt(this.prepareDimensionsUUID.getRegisteredCount());
         for (UUID uuid: this.prepareDimensionsUUID.getSet()) {
             output.writeLong(uuid.getMostSignificantBits());

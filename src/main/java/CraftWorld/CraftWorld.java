@@ -151,7 +151,8 @@ public class CraftWorld implements ModImplement {
 
     private final World world; {
         try {
-            this.world = new World();
+            //TODO: random seed.
+            this.world = new World("0");
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
