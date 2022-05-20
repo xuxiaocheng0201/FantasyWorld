@@ -49,7 +49,7 @@ public class Dimension implements IDSTBase {
     private @NotNull IDimensionBase instance;
     private final @NotNull QuickTick tickHasUpdated;
     private @NotNull String randomSeed;
-    private final @NotNull Random random;
+    private @NotNull Random random;
 
     private final @NotNull HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false);
 
@@ -168,10 +168,6 @@ public class Dimension implements IDSTBase {
         this.loadedChunks.deregisterKey(pos);
         if (chunk == null)
             return;
-        this.saveChunk(chunk);
-    }
-
-    public void saveChunk(Chunk chunk) throws IOException {
         String saveFilePath = this.getChunkSaveFile(chunk.getPos());
         HFileHelper.createNewFile(saveFilePath);
         DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(saveFilePath))));
@@ -180,36 +176,32 @@ public class Dimension implements IDSTBase {
     }
 
     public void loadPrepareChunks() throws IOException {
-        if (this.unloaded)
-            return;
         for (ChunkPos pos: this.instance.getPrepareChunkPos().getSet())
             this.loadChunk(pos);
     }
 
     public void load() throws IOException {
         this.unloaded = false;
-        this.readAll();
+        this.readInformation();
         this.loadPrepareChunks();
+    }
+
+    public void unloadAllChunks() throws IOException {
+        Iterable<ChunkPos> chunkPos = new ArrayList<>(this.loadedChunks.getMap().keySet());
+        for (ChunkPos pos: chunkPos)
+            this.unloadChunk(pos);
     }
 
     public void unload() throws IOException {
         this.unloaded = true;
-        Iterable<ChunkPos> chunkPos = new ArrayList<>(this.loadedChunks.getMap().keySet());
-        for (ChunkPos pos: chunkPos)
-            this.unloadChunk(pos);
-        this.writeAll();
+        this.unloadAllChunks();
+        this.writeInformation();
     }
 
-    public void saveAllChunks() throws IOException {
-        Iterable<Chunk> chunks = new ArrayList<>(this.loadedChunks.getMap().values());
-        for (Chunk chunk: chunks)
-            this.saveChunk(chunk);
-    }
-
-    public void readAll() throws IOException {
+    public void readInformation() throws IOException {
         String informationFile = this.getInformationFile();
         if (!HFileHelper.checkFileAvailable(informationFile))
-            this.writeAll();
+            this.writeInformation();
         DataInputStream dataInputStream = new DataInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(informationFile))));
         if (!prefix.equals(dataInputStream.readUTF()))
             throw new DSTFormatException();
@@ -218,25 +210,29 @@ public class Dimension implements IDSTBase {
         this.loadPrepareChunks();
     }
 
-    public void writeAll() throws IOException {
+    public void writeInformation() throws IOException {
         String informationFile = this.getInformationFile();
         HFileHelper.createNewFile(informationFile);
         DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(informationFile))));
         this.write(dataOutputStream);
         dataOutputStream.close();
-        this.saveAllChunks();
+        this.unloadAllChunks();
     }
 
     @Override
     public void read(@NotNull DataInput input) throws IOException {
+        this.unloaded = input.readBoolean();
         this.uuid = new UUID(input.readLong(), input.readLong());
         try {
             this.setInstance(DimensionUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false));
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
-            this.instance = new NullDimension();
+            this.setInstance(new NullDimension());
         }
         this.instance.read(input);
+        this.tickHasUpdated.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
+        this.randomSeed = input.readUTF();
+        this.random = new SecureRandom(this.randomSeed.getBytes());
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
@@ -244,9 +240,12 @@ public class Dimension implements IDSTBase {
     @Override
     public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
+        output.writeBoolean(this.unloaded);
         output.writeLong(this.uuid.getMostSignificantBits());
         output.writeLong(this.uuid.getLeastSignificantBits());
         this.instance.write(output);
+        output.writeUTF(this.tickHasUpdated.toString(ConstantStorage.SAVE_NUMBER_RADIX));
+        output.writeUTF(this.randomSeed);
         output.writeUTF(suffix);
     }
 

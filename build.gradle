@@ -22,7 +22,9 @@ jar {
     //noinspection GroovyAssignabilityCheck
     manifest() {
         attributes "Main-Class": 'Core.Craftworld'
-        attributes "Class-Path": 'Craftworld/libraries/eventbus-java-3.3.1.jar'
+        attributes "Class-Path": 'Craftworld/libraries/eventbus-java-3.3.1.jar;' +
+                'Crafworld/libraries/commons-compress-1.21.jar;' +
+                'Craftworld/libraries/xz-1.9.jar'
     }
 }
 

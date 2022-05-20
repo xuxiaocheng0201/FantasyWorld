@@ -47,7 +47,7 @@ public class World implements IDSTBase {
     private final DSTComplexMeta dst = new DSTComplexMeta();
     private final @NotNull QuickTick tick = new QuickTick();
     private @NotNull String randomSeed;
-    private final @NotNull Random random;
+    private @NotNull Random random;
 
     // Load all dimensions which id is in keys of {@code prepareDimensionsID}.
     // At least load value dimensions include {@code prepareDimensionsUUID}.
@@ -329,7 +329,7 @@ public class World implements IDSTBase {
         String dimensionsDirectory = this.getDimensionsDirectory();
         HFileHelper.createNewDirectory(dimensionsDirectory);
         for (Dimension dimension: this.loadedDimensions.getMap().values())
-            dimension.writeAll();
+            dimension.writeInformation();
     }
 
     @Override
@@ -341,6 +341,7 @@ public class World implements IDSTBase {
         this.dst.read(input);
         this.tick.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
         this.randomSeed = input.readUTF();
+        this.random = new SecureRandom(this.randomSeed.getBytes());
         this.prepareDimensionsUUID.deregisterAll();
         int size = input.readInt();
         for (int i = 0; i < size; ++i) {
