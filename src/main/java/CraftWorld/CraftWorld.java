@@ -14,6 +14,7 @@ import CraftWorld.Events.LoadingWorldEvent;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
 import CraftWorld.Instance.Gui.LoadingGui;
 import CraftWorld.Instance.Gui.MenuGui;
+import CraftWorld.Utils.SevenZipUtils;
 import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -186,6 +187,7 @@ public class CraftWorld implements ModImplement {
             break;
         }
         this.world.unload();
+        SevenZipUtils.compressFile(this.world.getWorldSavedDirectory().getPath(), ConstantStorage.SAVED_WORLD_PATH + this.world.getWorldName() + ".cww");
     }
 
     public void startClient(Socket client) throws IOException {
