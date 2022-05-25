@@ -63,7 +63,6 @@ public class CraftWorld implements ModImplement {
         logger.setName("CraftWorld", Thread.currentThread().getName());
         FileTreeStorage.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
-
     @Override
     public void mainInitialize() {
         this.world.addPrepareDimension(DimensionEarthSurface.id);
@@ -203,7 +202,7 @@ public class CraftWorld implements ModImplement {
         dataInputStream.close();
     }
 
-    public boolean CreateNewServer() {
+    public boolean needCreateNewServer() {
         return true;
     }
 }

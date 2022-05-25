@@ -7,6 +7,7 @@ import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -20,27 +21,27 @@ public class HLogLevel {
     /**
      * All Registered log types.
      */
-    private static final LogRegistererMap REGISTERED_MAP = new LogRegistererMap();
+    private static final @NotNull LogRegistererMap REGISTERED_MAP = new LogRegistererMap();
     /**
      * Get registered map.
      * @return registered map.
      */
-    public static LogRegistererMap getRegisteredMap() {
+    public static @NotNull LogRegistererMap getRegisteredMap() {
         return REGISTERED_MAP;
     }
 
-    public static final HLogLevel FINEST = new HLogLevel("FINEST", 0, Level.FINEST);
-    public static final HLogLevel FINER = new HLogLevel("FINER", 10, Level.FINER);
-    public static final HLogLevel FINE = new HLogLevel("FINE", 20, Level.FINE);
-    public static final HLogLevel INFO = new HLogLevel("INFO", 100, Level.INFO);
-    public static final HLogLevel WARN = new HLogLevel("WARN", 200, "1;33", Level.WARNING);
-    public static final HLogLevel CONFIGURATION = new HLogLevel("CONFIGURATION", 230, "3;35", Level.CONFIG);
-    public static final HLogLevel MISTAKE = new HLogLevel("MISTAKE", 250, "1;3;34", null, Level.WARNING);
-    public static final HLogLevel ERROR = new HLogLevel("ERROR", 300, "1;4;30;41", null, Level.WARNING);
-    public static final HLogLevel BUG = new HLogLevel("BUG", 400, "1;4;41", null, Level.WARNING);
-    public static final HLogLevel FAULT = new HLogLevel("FAULT", 500, "1;3;30;41", Level.OFF);
-    public static final HLogLevel NORMAL = new HLogLevel("NORMAL", 0, "0", Level.ALL);
-    public static final HLogLevel DEBUG = new HLogLevel("DEBUG", 600, "1;4;30;44");
+    public static final @NotNull HLogLevel FINEST = new HLogLevel("FINEST", 0, Level.FINEST);
+    public static final @NotNull HLogLevel FINER = new HLogLevel("FINER", 10, Level.FINER);
+    public static final @NotNull HLogLevel FINE = new HLogLevel("FINE", 20, Level.FINE);
+    public static final @NotNull HLogLevel INFO = new HLogLevel("INFO", 100, Level.INFO);
+    public static final @NotNull HLogLevel WARN = new HLogLevel("WARN", 200, "1;33", Level.WARNING);
+    public static final @NotNull HLogLevel CONFIGURATION = new HLogLevel("CONFIGURATION", 230, "3;35", Level.CONFIG);
+    public static final @NotNull HLogLevel MISTAKE = new HLogLevel("MISTAKE", 250, "1;3;34", null, Level.WARNING);
+    public static final @NotNull HLogLevel ERROR = new HLogLevel("ERROR", 300, "1;4;30;41", null, Level.WARNING);
+    public static final @NotNull HLogLevel BUG = new HLogLevel("BUG", 400, "1;4;41", null, Level.WARNING);
+    public static final @NotNull HLogLevel FAULT = new HLogLevel("FAULT", 500, "1;3;30;41", Level.OFF);
+    public static final @NotNull HLogLevel NORMAL = new HLogLevel("NORMAL", 0, "0", Level.ALL);
+    public static final @NotNull HLogLevel DEBUG = new HLogLevel("DEBUG", 600, "1;4;30;44");
     static {
         try {FINEST.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
         try {FINER.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
@@ -56,8 +57,8 @@ public class HLogLevel {
         try {DEBUG.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
     }
 
-    private static final HLogLevel defaultHLogLevel = INFO;
-    private static final Level defaultLevel = Level.INFO;
+    private static final @NotNull HLogLevel defaultHLogLevel = INFO;
+    private static final @NotNull Level defaultLevel = Level.INFO;
 
     /**
      * Log level name.
@@ -222,11 +223,10 @@ public class HLogLevel {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        HLogLevel hLogLevel = (HLogLevel) o;
-        return this.priority == hLogLevel.priority && this.name.equals(hLogLevel.name) && Objects.equals(this.fromLevel, hLogLevel.fromLevel) && Objects.equals(this.toLevel, hLogLevel.toLevel);
+        if (!(o instanceof HLogLevel that)) return false;
+        return this.priority == that.priority && this.name.equals(that.name) && Objects.equals(this.fromLevel, that.fromLevel) && Objects.equals(this.toLevel, that.toLevel);
     }
 
     @Override
@@ -266,14 +266,17 @@ public class HLogLevel {
      * Log level registerer.
      */
     public static class LogRegistererMap extends HMapRegisterer<String, HLogLevel> {
+        @Serial
+        private static final long serialVersionUID = 4656771989896754933L;
+
         /**
          * Map {@link Level} to {@link HLogLevel} registerer.
          */
-        private final HMapRegisterer<Level, String> fromLevelMap = new HMapRegisterer<>(true);
+        private final @NotNull HMapRegisterer<Level, String> fromLevelMap = new HMapRegisterer<>(true);
         /**
          * Map {@link HLogLevel} to {@link Level} registerer.
          */
-        private final HMapRegisterer<String, Level> toLevelMap = new HMapRegisterer<>(true);
+        private final @NotNull HMapRegisterer<String, Level> toLevelMap = new HMapRegisterer<>(true);
 
         /**
          * Register a new log level.
@@ -347,6 +350,19 @@ public class HLogLevel {
          */
         public @NotNull HMapRegisterer<String, Level> getToLevelMap() {
             return this.toLevelMap;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof LogRegistererMap that)) return false;
+            if (!super.equals(o)) return false;
+            return super.equals(o) && this.fromLevelMap.equals(that.fromLevelMap) && this.toLevelMap.equals(that.toLevelMap);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), this.fromLevelMap, this.toLevelMap);
         }
     }
 }

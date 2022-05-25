@@ -25,9 +25,9 @@ public class NullDimension implements IDimensionBase {
     @Serial
     private static final long serialVersionUID = -5202694397165174510L;
 
-    public static String id = "NullDimension";
-    public static String prefix = DSTUtils.prefix(id);
-    public static String suffix = DSTUtils.suffix(id);
+    public static final String id = "NullDimension";
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
             DimensionUtils.getInstance().register(id, NullDimension.class);

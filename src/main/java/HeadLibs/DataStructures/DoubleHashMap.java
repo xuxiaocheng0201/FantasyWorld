@@ -12,8 +12,8 @@ public class DoubleHashMap<K, V> implements Map<K, V>, Serializable {
     @Serial
     private static final long serialVersionUID = -7426549795044952622L;
 
-    private final HashMap<K, V> kv;
-    private final HashMap<V, K> vk;
+    private final @NotNull HashMap<K, V> kv;
+    private final @NotNull HashMap<V, K> vk;
 
     public DoubleHashMap(@Range(from = 0, to = Integer.MAX_VALUE) int initialCapacity, float loadFactor) {
         super();
@@ -33,7 +33,7 @@ public class DoubleHashMap<K, V> implements Map<K, V>, Serializable {
         this.vk = new HashMap<>();
     }
 
-    public DoubleHashMap(Map<? extends K, ? extends V> m) {
+    public DoubleHashMap(@NotNull Map<? extends K, ? extends V> m) {
         super();
         this.kv = new HashMap<>(m);
         this.vk = new HashMap<>(m.size());

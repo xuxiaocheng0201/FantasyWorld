@@ -27,7 +27,7 @@ public class HConfigurations implements Serializable {
      * Saved configuration elements.
      * @see HConfigElement
      */
-    public final HLinkedMapRegisterer<String, HConfigElement> data = new HLinkedMapRegisterer<>(true);
+    public final @NotNull HLinkedMapRegisterer<String, HConfigElement> data = new HLinkedMapRegisterer<>(true);
 
     /**
      * Construct a empty configuration.
@@ -60,6 +60,8 @@ public class HConfigurations implements Serializable {
      * @throws IOException File path invalid.
      */
     public void setPath(@Nullable String path) throws IOException {
+        if (path == null)
+            throw new IOException("Null path");
         HFileHelper.createNewFile(path);
         this.file = (new File(path)).getAbsoluteFile();
     }
@@ -146,48 +148,51 @@ public class HConfigurations implements Serializable {
      */
     public void read() throws IOException, HElementRegisteredException, HElementNotRegisteredException {
         this.data.deregisterAll();
-        BufferedReader reader = new BufferedReader(new FileReader(this.file));
-        String temp = reader.readLine();
-        HConfigElement config = new HConfigElement(null, null);
-        HElementRegisteredException hElementRegisteredException = null;
-        HElementNotRegisteredException hElementNotRegisteredException = null;
-        HWrongConfigValueException hWrongConfigValueException = null;
-        while (temp != null) {
-            if (temp.startsWith("name:"))
-                config.setName(temp.substring(6));
-            if (temp.startsWith("note:"))
-                config.setNote(temp.substring(6));
-            try {
-                if (temp.startsWith("type:")) {
-                    HConfigType type;
-                    try {
-                        type = HConfigType.getRegisteredMap().getElement(temp.substring(6));
-                    } catch (HElementNotRegisteredException elementNotRegisteredException) {
-                        type = null;
-                        if (hElementNotRegisteredException == null)
-                            hElementNotRegisteredException = elementNotRegisteredException;
+        HElementRegisteredException hElementRegisteredException;
+        HElementNotRegisteredException hElementNotRegisteredException;
+        HWrongConfigValueException hWrongConfigValueException;
+        try (BufferedReader reader = new BufferedReader(new FileReader(this.file))) {
+            String temp = reader.readLine();
+            HConfigElement config = new HConfigElement(null, null);
+            hElementRegisteredException = null;
+            hElementNotRegisteredException = null;
+            hWrongConfigValueException = null;
+            while (temp != null) {
+                if (temp.startsWith("name:"))
+                    config.setName(temp.substring(6));
+                if (temp.startsWith("note:"))
+                    config.setNote(temp.substring(6));
+                try {
+                    if (temp.startsWith("type:")) {
+                        HConfigType type;
+                        try {
+                            type = HConfigType.getRegisteredMap().getElement(temp.substring(6));
+                        } catch (HElementNotRegisteredException elementNotRegisteredException) {
+                            type = null;
+                            if (hElementNotRegisteredException == null)
+                                hElementNotRegisteredException = elementNotRegisteredException;
+                        }
+                        if (type == null)
+                            type = HConfigType.STRING;
+                        config.setType(type);
                     }
-                    if (type == null)
-                        type = HConfigType.STRING;
-                    config.setType(type);
-                }
-                if (temp.startsWith("value:")) {
-                    config.setValue(temp.substring(7));
-                    try {
-                        this.add(config);
-                    } catch (HElementRegisteredException registeredException) {
-                        if (hElementRegisteredException == null)
-                            hElementRegisteredException = registeredException;
+                    if (temp.startsWith("value:")) {
+                        config.setValue(temp.substring(7));
+                        try {
+                            this.add(config);
+                        } catch (HElementRegisteredException registeredException) {
+                            if (hElementRegisteredException == null)
+                                hElementRegisteredException = registeredException;
+                        }
+                        config = new HConfigElement(null, null);
                     }
-                    config = new HConfigElement(null, null);
+                } catch (HWrongConfigValueException wrongConfigValueException) {
+                    if (hWrongConfigValueException == null)
+                        hWrongConfigValueException = wrongConfigValueException;
                 }
-            } catch (HWrongConfigValueException wrongConfigValueException) {
-                if (hWrongConfigValueException == null)
-                    hWrongConfigValueException = wrongConfigValueException;
+                temp = reader.readLine();
             }
-            temp = reader.readLine();
         }
-        reader.close();
         if (hElementRegisteredException != null)
             throw hElementRegisteredException;
         if (hElementNotRegisteredException != null)
@@ -200,23 +205,23 @@ public class HConfigurations implements Serializable {
      * Write configurations to file.
      */
     public void write() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
-        for (HConfigElement i: this.data.getMap().values()) {
-            writer.write("name: ");
-            writer.write(i.getName());
-            writer.newLine();
-            writer.write("note: ");
-            writer.write(i.getNote());
-            writer.newLine();
-            writer.write("type: ");
-            writer.write(i.getType().getName());
-            writer.newLine();
-            writer.write("value: ");
-            writer.write(i.getValue());
-            writer.newLine();
-            writer.newLine();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.file))) {
+            for (HConfigElement i : this.data.getMap().values()) {
+                writer.write("name: ");
+                writer.write(i.getName());
+                writer.newLine();
+                writer.write("note: ");
+                writer.write(i.getNote());
+                writer.newLine();
+                writer.write("type: ");
+                writer.write(i.getType().getName());
+                writer.newLine();
+                writer.write("value: ");
+                writer.write(i.getValue());
+                writer.newLine();
+                writer.newLine();
+            }
         }
-        writer.close();
     }
 
     @Override

@@ -22,7 +22,7 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
     /**
      * Null version.
      */
-    public static HStringVersion EMPTY = new HStringVersion();
+    public static final HStringVersion EMPTY = new HStringVersion();
 
     /**
      * Version.

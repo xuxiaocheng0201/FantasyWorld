@@ -26,7 +26,7 @@ public class HConfigurationsSimple {
      * Saved configuration elements.
      * @see HConfigElementSimple
      */
-    public final HLinkedMapRegisterer<String, HConfigElementSimple> data = new HLinkedMapRegisterer<>();
+    public final @NotNull HLinkedMapRegisterer<String, HConfigElementSimple> data = new HLinkedMapRegisterer<>();
 
     /**
      * Construct a empty configuration.
@@ -59,6 +59,8 @@ public class HConfigurationsSimple {
      * @throws IOException File path invalid.
      */
     public void setPath(@Nullable String path) throws IOException {
+        if (path == null)
+            throw new IOException("Null path");
         HFileHelper.createNewFile(path);
         this.file = (new File(path)).getAbsoluteFile();
     }
@@ -145,29 +147,30 @@ public class HConfigurationsSimple {
      */
     public void read() throws IOException, HElementRegisteredException {
         this.data.deregisterAll();
-        BufferedReader reader = new BufferedReader(new FileReader(this.file));
-        String temp = reader.readLine();
-        HConfigElementSimple config = new HConfigElementSimple(null, null);
-        HWrongConfigValueException hWrongConfigValueException = null;
-        HElementRegisteredException hElementRegisteredException = null;
-        while (temp != null) {
-            if (temp.contains("=")) {
-                int index = temp.indexOf('=');
-                config.setName(temp.substring(0, index));
-                config.setValue(temp.substring(index + 1));
-                try {
-                    this.add(config);
-                } catch (HElementRegisteredException elementRegisteredException) {
-                    if (hElementRegisteredException == null)
-                        hElementRegisteredException = elementRegisteredException;
-                }
-                config = new HConfigElementSimple(null, null);
-            } else
-                if (hWrongConfigValueException == null)
-                    hWrongConfigValueException = new HWrongConfigValueException("Illegal configuration format! [line='" + temp + "']");
-            temp = reader.readLine();
+        HWrongConfigValueException hWrongConfigValueException;
+        HElementRegisteredException hElementRegisteredException;
+        try (BufferedReader reader = new BufferedReader(new FileReader(this.file))) {
+            String temp = reader.readLine();
+            HConfigElementSimple config = new HConfigElementSimple(null, null);
+            hWrongConfigValueException = null;
+            hElementRegisteredException = null;
+            while (temp != null) {
+                if (temp.contains("=")) {
+                    int index = temp.indexOf('=');
+                    config.setName(temp.substring(0, index));
+                    config.setValue(temp.substring(index + 1));
+                    try {
+                        this.add(config);
+                    } catch (HElementRegisteredException elementRegisteredException) {
+                        if (hElementRegisteredException == null)
+                            hElementRegisteredException = elementRegisteredException;
+                    }
+                    config = new HConfigElementSimple(null, null);
+                } else if (hWrongConfigValueException == null)
+                        hWrongConfigValueException = new HWrongConfigValueException("Illegal configuration format! [line='" + temp + "']");
+                temp = reader.readLine();
+            }
         }
-        reader.close();
         if (hWrongConfigValueException != null)
             throw hWrongConfigValueException;
         if (hElementRegisteredException != null)
@@ -178,14 +181,14 @@ public class HConfigurationsSimple {
      * Write configurations to file.
      */
     public void write() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(this.file));
-        for (HConfigElementSimple i: this.data.getMap().values()) {
-            writer.write(i.getName());
-            writer.write("=");
-            writer.write(i.getValue());
-            writer.newLine();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.file))) {
+            for (HConfigElementSimple i : this.data.getMap().values()) {
+                writer.write(i.getName());
+                writer.write("=");
+                writer.write(i.getValue());
+                writer.newLine();
+            }
         }
-        writer.close();
     }
 
     @Override

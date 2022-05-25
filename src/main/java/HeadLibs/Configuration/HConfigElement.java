@@ -157,10 +157,10 @@ public class HConfigElement implements Serializable {
     }
 
     @Override
-    public boolean equals(@Nullable Object a) {
-        if (!(a instanceof HConfigElement))
-            return false;
-        return Objects.equals(this.name, ((HConfigElement) a).name) && this.type == ((HConfigElement) a).type && Objects.equals(this.value, ((HConfigElement) a).value);
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HConfigElement that)) return false;
+        return this.name.equals(that.name) && this.type.equals(that.type) && this.value.equals(that.value);
     }
 
     @Override

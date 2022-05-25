@@ -26,7 +26,7 @@ public class GlobalConfigurations {
     public static boolean V_SYNC_MODE = true;
     public static boolean JOIN_THE_USER_EXPERIENCE_IMPROVEMENT_PROGRAM = false;
 
-    public static void GetConfigurations() throws IOException {
+    public static void getConfigurations() throws IOException {
         HLog logger = new HLog("GetGlobalConfigurations", Thread.currentThread().getName());
         logger.log(HLogLevel.INFO, "Read global configurations in '", FileTreeStorage.GLOBAL_CONFIGURATION_FILE + "'.");
         GLOBAL_CONFIGURATIONS = new HConfigurations(FileTreeStorage.GLOBAL_CONFIGURATION_FILE);

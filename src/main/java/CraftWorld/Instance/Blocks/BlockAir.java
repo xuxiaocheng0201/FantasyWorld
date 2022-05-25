@@ -10,7 +10,7 @@ import HeadLibs.Registerer.HElementRegisteredException;
 import java.util.Objects;
 
 public class BlockAir implements IBlockBase {
-    public static String id = "BlockAir";
+    public static final String id = "BlockAir";
     static {
         try {
             BlockUtils.getInstance().register(id, BlockAir.class);

@@ -462,6 +462,21 @@
     </profiles>
     <list size="0" />
   </component>
+  <component name="CheckStyle-IDEA">
+    <option name="configuration">
+      <map>
+        <entry key="active-configuration-0" value="BUNDLED:(bundled):Google Checks;All" />
+        <entry key="active-configuration-1" value="BUNDLED:(bundled):Sun Checks;All" />
+        <entry key="checkstyle-version" value="10.2" />
+        <entry key="copy-libs" value="true" />
+        <entry key="location-0" value="BUNDLED:(bundled):Sun Checks;All" />
+        <entry key="location-1" value="BUNDLED:(bundled):Google Checks;All" />
+        <entry key="scan-before-checkin" value="false" />
+        <entry key="scanscope" value="JavaOnly" />
+        <entry key="suppress-errors" value="false" />
+      </map>
+    </option>
+  </component>
   <component name="CompilerConfiguration">
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
@@ -483,6 +498,25 @@
     <list size="1">
       <item index="0" class="java.lang.String" itemvalue="org.greenrobot.eventbus.Subscribe" />
     </list>
+  </component>
+  <component name="FindBugs-IDEA">
+    <detectors>
+      <detector name="BadAppletConstructor" enabled="true" />
+      <detector name="CallToUnsupportedMethod" enabled="true" />
+      <detector name="CheckExpectedWarnings" enabled="true" />
+      <detector name="CovariantArrayAssignment" enabled="true" />
+      <detector name="DefaultEncodingDetector" enabled="false" />
+      <detector name="DoInsideDoPrivileged" enabled="false" />
+      <detector name="EmptyZipFileEntry" enabled="true" />
+      <detector name="FindNullDeref" enabled="false" />
+      <detector name="FindReturnRef" enabled="false" />
+      <detector name="InefficientIndexOf" enabled="true" />
+      <detector name="InefficientInitializationInsideLoop" enabled="true" />
+      <detector name="InefficientMemberAccess" enabled="true" />
+      <detector name="InefficientToArray" enabled="true" />
+      <detector name="PublicSemaphores" enabled="true" />
+      <detector name="UselessSubclassMethod" enabled="true" />
+    </detectors>
   </component>
   <component name="FindBugsConfigurable">
     <option name="make" value="true" />

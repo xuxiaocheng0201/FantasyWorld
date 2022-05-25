@@ -21,9 +21,9 @@ public class DimensionEarthSurface implements IDimensionBase {
     @Serial
     private static final long serialVersionUID = -1129089963710423740L;
 
-    public static String id = "DimensionEarthSurface";
-    public static String prefix = DSTUtils.prefix(id);
-    public static String suffix = DSTUtils.suffix(id);
+    public static final String id = "DimensionEarthSurface";
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
             DimensionUtils.getInstance().register(id, DimensionEarthSurface.class);

@@ -80,8 +80,7 @@ public class HConfigElementSimple implements Serializable {
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        HConfigElementSimple that = (HConfigElementSimple) o;
+        if (!(o instanceof HConfigElementSimple that)) return false;
         return this.name.equals(that.name) && this.value.equals(that.value);
     }
 

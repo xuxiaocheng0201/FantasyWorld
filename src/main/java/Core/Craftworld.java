@@ -61,7 +61,7 @@ public class Craftworld implements ModImplement {
                 HLog.saveLogs(FileTreeStorage.LOG_FILE);
             }
         });
-        GlobalConfigurations.GetConfigurations();
+        GlobalConfigurations.getConfigurations();
         for (String arg: args) {
             if ("runClient".equals(arg))
                 isClient = true;
@@ -133,12 +133,14 @@ public class Craftworld implements ModImplement {
             logger.log(HLogLevel.FINEST, "Server Thread has started.");
             EventBusManager.getDefaultEventBus().post(new ServerStartEvent());
             try  {
-                ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-                InetSocketAddress inetSocketAddress = new InetSocketAddress(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
-                serverSocketChannel.bind(inetSocketAddress);
-                serverSocketChannel.configureBlocking(false);
-                Selector selector = Selector.open();
-                serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+                Selector selector;
+                try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
+                    InetSocketAddress inetSocketAddress = new InetSocketAddress(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
+                    serverSocketChannel.bind(inetSocketAddress);
+                    serverSocketChannel.configureBlocking(false);
+                    selector = Selector.open();
+                    serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+                }
                 CraftworldClient.server_binding_flag = false;
                 /* ********** Special Modifier ********** */
                 CraftWorld.CraftWorld.getInstance().startServer(selector);
@@ -172,7 +174,7 @@ public class Craftworld implements ModImplement {
                 while (!window.windowShouldClose()) {
                     /* ********** Special Modifier ********** */
                     CraftWorld.CraftWorld.getInstance().menu();
-                    boolean newServer = CraftWorld.CraftWorld.getInstance().CreateNewServer();
+                    boolean newServer = CraftWorld.CraftWorld.getInstance().needCreateNewServer();
                     /* ********** \Special Modifier ********** */
                     Thread server = new Thread(new CraftworldServer());
                     if (newServer) {

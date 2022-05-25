@@ -160,7 +160,7 @@ public class HClassHelper {
                     } catch (HElementRegisteredException ignore) {
                     }
                 return instance;
-            } catch (Exception ignore) {
+            } catch (InvocationTargetException | InstantiationException | IllegalAccessException ignore) {
             }
         }
         return null;

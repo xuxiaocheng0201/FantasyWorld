@@ -30,15 +30,15 @@ public class HClassFinder {
     /**
      * Available jars for searching.
      */
-    private final Set<File> jarFiles = new HashSet<>();
+    private final @NotNull Set<File> jarFiles = new HashSet<>();
     /**
      * Found classes must extend or implement these.
      */
-    private final Set<Class<?>> superClass = new HashSet<>();
+    private final @NotNull Set<Class<?>> superClass = new HashSet<>();
     /**
      * Found classes must have these annotations.
      */
-    private final Set<Class<? extends Annotation>> annotationClass = new HashSet<>();
+    private final @NotNull Set<Class<? extends Annotation>> annotationClass = new HashSet<>();
     /**
      * Recursively search classes in package.
      */
@@ -46,16 +46,16 @@ public class HClassFinder {
     /**
      * Found classes list.
      */
-    private final Set<Class<?>> classList = new HashSet<>();
+    private final @NotNull Set<Class<?>> classList = new HashSet<>();
     /**
      * Found classes list with jars.
      */
-    private final Map<Class<?>, File> classListWithJarFile = new HashMap<>();
+    private final @NotNull Map<Class<?>, File> classListWithJarFile = new HashMap<>();
 
     /**
      * This code's jar.
      */
-    public static final File thisCodePath = new File(HClassFinder.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    public static final @NotNull File thisCodePath = new File(HClassFinder.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 
     /**
      * Construct a new finder.
@@ -302,9 +302,7 @@ public class HClassFinder {
         for (File file : this.jarFiles) {
             this.doingJar = file;
             if (file.getPath().endsWith(".jar") || file.getPath().endsWith(".zip")) {
-                JarFile jarFile = null;
-                try {
-                    jarFile = new JarFile(file);
+                try (JarFile jarFile = new JarFile(file)) {
                     Enumeration<JarEntry> entryEnumeration = jarFile.entries();
                     while (entryEnumeration.hasMoreElements()) {
                         JarEntry jarEntry = entryEnumeration.nextElement();
@@ -318,13 +316,6 @@ public class HClassFinder {
                     }
                 } catch (IOException exception) {
                     HLog.logger(HLogLevel.ERROR, exception);
-                } finally {
-                    if (jarFile != null)
-                        try {
-                            jarFile.close();
-                        } catch (IOException exception) {
-                            HLog.logger(HLogLevel.ERROR, exception);
-                        }
                 }
             } else
                 this.findInFile(file, "");
@@ -362,6 +353,29 @@ public class HClassFinder {
         if (!subClassName.endsWith(".class"))
             return;
         this.checkAndAddClass(packageName);
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "HClassFinder{" +
+                "PACKAGE_PATH='" + this.PACKAGE_PATH + '\'' +
+                ", jarFiles=" + this.jarFiles +
+                ", superClass=" + this.superClass +
+                ", annotationClass=" + this.annotationClass +
+                ", recursive=" + this.recursive +
+                '}';
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HClassFinder that)) return false;
+        return this.recursive == that.recursive && this.PACKAGE_PATH.equals(that.PACKAGE_PATH) && this.jarFiles.equals(that.jarFiles) && this.superClass.equals(that.superClass) && this.annotationClass.equals(that.annotationClass);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.PACKAGE_PATH, this.jarFiles, this.superClass, this.annotationClass, this.recursive);
     }
 
     /**

@@ -39,13 +39,14 @@ public class HDynamicJarClassLoader extends ClassLoader {
             String path = name.replace('.', '/') + ".class";
             JarEntry entry = this.jarFile.getJarEntry(path);
             if (entry != null) {
-                InputStream is = this.jarFile.getInputStream(entry);
-                int availableLen = is.available();
-                int len = 0;
-                byte[] bt1 = new byte[availableLen];
-                while (len < availableLen)
-                    len += is.read(bt1, len, availableLen - len);
-                is.close();
+                byte[] bt1;
+                try (InputStream is = this.jarFile.getInputStream(entry)) {
+                    int availableLen = is.available();
+                    int len = 0;
+                    bt1 = new byte[availableLen];
+                    while (len < availableLen)
+                        len += is.read(bt1, len, availableLen - len);
+                }
                 c = this.defineClass(name, bt1, 0, bt1.length);
                 if (resolve)
                     this.resolveClass(c);

@@ -24,7 +24,7 @@ public class HLinkedMapRegisterer<K, V> implements Serializable {
     /**
      * The registered elements map.
      */
-    protected final Map<K, V> map = new LinkedHashMap<>();
+    protected final @NotNull Map<K, V> map = new LinkedHashMap<>();
 
     /**
      * Can be registered with different keys and same value?
@@ -198,8 +198,7 @@ public class HLinkedMapRegisterer<K, V> implements Serializable {
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        HLinkedMapRegisterer<?, ?> that = (HLinkedMapRegisterer<?, ?>) o;
+        if (!(o instanceof HLinkedMapRegisterer<?, ?> that)) return false;
         return this.sameValueAllowed == that.sameValueAllowed && this.map.equals(that.map);
     }
 

@@ -24,31 +24,31 @@ public class HConfigType implements Serializable {
     /**
      * All Registered configuration types.
      */
-    private static final HMapRegisterer<String, HConfigType> REGISTERED_MAP = new HMapRegisterer<>();
+    private static final @NotNull HMapRegisterer<String, HConfigType> REGISTERED_MAP = new HMapRegisterer<>();
     /**
      * Get registered map.
      * @return registered map
      */
-    public static HMapRegisterer<String, HConfigType> getRegisteredMap() {
+    public static @NotNull HMapRegisterer<String, HConfigType> getRegisteredMap() {
         return REGISTERED_MAP;
     }
 
-    public static final HConfigType BOOLEAN = new HConfigType("BOOLEAN", HConfigType::fixValueBoolean);
-    public static final HConfigType BOOLEAN_ARRAY = new HConfigType("BOOLEAN_ARRAY", value -> fixValueInList(value, HConfigType::fixValueBoolean));
-    public static final HConfigType BYTE = new HConfigType("BYTE", HConfigType::fixValueByte);
-    public static final HConfigType BYTE_ARRAY = new HConfigType("BYTE_ARRAY", value -> fixValueInList(value, HConfigType::fixValueByte));
-    public static final HConfigType SHORT = new HConfigType("SHORT", HConfigType::fixValueShort);
-    public static final HConfigType SHORT_ARRAY = new HConfigType("SHORT_ARRAY", value -> fixValueInList(value, HConfigType::fixValueShort));
-    public static final HConfigType INT = new HConfigType("INT", HConfigType::fixValueInt);
-    public static final HConfigType INT_ARRAY = new HConfigType("INT_ARRAY", value -> fixValueInList(value, HConfigType::fixValueInt));
-    public static final HConfigType LONG = new HConfigType("LONG", HConfigType::fixValueLong);
-    public static final HConfigType LONG_ARRAY = new HConfigType("LONG_ARRAY", value -> fixValueInList(value, HConfigType::fixValueLong));
-    public static final HConfigType FLOAT = new HConfigType("FLOAT", HConfigType::fixValueFloat);
-    public static final HConfigType FLOAT_ARRAY = new HConfigType("FLOAT_ARRAY", value -> fixValueInList(value, HConfigType::fixValueFloat));
-    public static final HConfigType DOUBLE = new HConfigType("DOUBLE", HConfigType::fixValueDouble);
-    public static final HConfigType DOUBLE_ARRAY = new HConfigType("DOUBLE_ARRAY", value -> fixValueInList(value, HConfigType::fixValueDouble));
-    public static final HConfigType STRING = new HConfigType("STRING", HConfigType::fixValueString);
-    public static final HConfigType STRING_ARRAY = new HConfigType("STRING_ARRAY", value -> fixValueInList(value, HConfigType::fixValueString));
+    public static final @NotNull HConfigType BOOLEAN = new HConfigType("BOOLEAN", HConfigType::fixValueBoolean);
+    public static final @NotNull HConfigType BOOLEAN_ARRAY = new HConfigType("BOOLEAN_ARRAY", value -> fixValueInList(value, HConfigType::fixValueBoolean));
+    public static final @NotNull HConfigType BYTE = new HConfigType("BYTE", HConfigType::fixValueByte);
+    public static final @NotNull HConfigType BYTE_ARRAY = new HConfigType("BYTE_ARRAY", value -> fixValueInList(value, HConfigType::fixValueByte));
+    public static final @NotNull HConfigType SHORT = new HConfigType("SHORT", HConfigType::fixValueShort);
+    public static final @NotNull HConfigType SHORT_ARRAY = new HConfigType("SHORT_ARRAY", value -> fixValueInList(value, HConfigType::fixValueShort));
+    public static final @NotNull HConfigType INT = new HConfigType("INT", HConfigType::fixValueInt);
+    public static final @NotNull HConfigType INT_ARRAY = new HConfigType("INT_ARRAY", value -> fixValueInList(value, HConfigType::fixValueInt));
+    public static final @NotNull HConfigType LONG = new HConfigType("LONG", HConfigType::fixValueLong);
+    public static final @NotNull HConfigType LONG_ARRAY = new HConfigType("LONG_ARRAY", value -> fixValueInList(value, HConfigType::fixValueLong));
+    public static final @NotNull HConfigType FLOAT = new HConfigType("FLOAT", HConfigType::fixValueFloat);
+    public static final @NotNull HConfigType FLOAT_ARRAY = new HConfigType("FLOAT_ARRAY", value -> fixValueInList(value, HConfigType::fixValueFloat));
+    public static final @NotNull HConfigType DOUBLE = new HConfigType("DOUBLE", HConfigType::fixValueDouble);
+    public static final @NotNull HConfigType DOUBLE_ARRAY = new HConfigType("DOUBLE_ARRAY", value -> fixValueInList(value, HConfigType::fixValueDouble));
+    public static final @NotNull HConfigType STRING = new HConfigType("STRING", HConfigType::fixValueString);
+    public static final @NotNull HConfigType STRING_ARRAY = new HConfigType("STRING_ARRAY", value -> fixValueInList(value, HConfigType::fixValueString));
     static {
         try {BOOLEAN.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
         try {BOOLEAN_ARRAY.register();} catch (HElementRegisteredException exception) {HLog.logger(exception);}
@@ -78,14 +78,17 @@ public class HConfigType implements Serializable {
      * T: value Configuration value.
      * R: Null - unfixable. NotNull - fixed.
      */
-    private final @NotNull Function<? super String, String> check;
+    private final @NotNull CheckValueFunction check;
+
+    private interface CheckValueFunction extends Function<String, String>, Serializable {
+    }
 
     /**
      * Register a new ConfigType.
      * @param name type name
      * @param check type's checkMethod
      */
-    public HConfigType(@NotNull String name, @NotNull Function<? super String, String> check) {
+    public HConfigType(@NotNull String name, @NotNull CheckValueFunction check) {
         super();
         this.name = name.toUpperCase();
         this.check = check;
@@ -128,8 +131,7 @@ public class HConfigType implements Serializable {
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        HConfigType that = (HConfigType) o;
+        if (!(o instanceof HConfigType that)) return false;
         return this.name.equals(that.name) && this.check.equals(that.check);
     }
 

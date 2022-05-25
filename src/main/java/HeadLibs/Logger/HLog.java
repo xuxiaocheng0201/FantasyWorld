@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A HeadLib logger just like {@link java.util.logging.Logger}
@@ -28,7 +29,7 @@ public class HLog {
     /**
      * Cache logs.
      */
-    private static final List<Pair<Pair<Date, Integer>, String>> logs = new ArrayList<>();
+    private static final @NotNull List<Pair<Pair<Date, Integer>, String>> logs = new ArrayList<>();
 
     /**
      * Get log's date format.
@@ -162,6 +163,26 @@ public class HLog {
 
     public void setRecordable(boolean recordable) {
         this.recordable = recordable;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "HLog{" +
+                "name='" + this.name + '\'' +
+                ", recordable=" + this.recordable +
+                '}';
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HLog that)) return false;
+        return this.recordable == that.recordable && this.name.equals(that.name) && Objects.equals(this.outputStream, that.outputStream);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name, this.outputStream, this.recordable);
     }
 
     /**
@@ -524,19 +545,17 @@ public class HLog {
                     return compare_date;
                 });
             try {
-                try {
-                    HFileHelper.createNewFile(path);
-                } catch (IOException exception) {
-                    throw new IOException("Creating log file failed.", exception);
-                }
-                FileWriter writer = new FileWriter(new File(path).getAbsoluteFile(), true);
-                for (Pair<Pair<Date, Integer>, String> pair: logs) {
+                HFileHelper.createNewFile(path);
+            } catch (IOException exception) {
+                logger(HLogLevel.ERROR, new IOException("Creating log file failed.", exception));
+            }
+            try (FileWriter writer = new FileWriter(new File(path).getAbsoluteFile(), true)) {
+                for (Pair<Pair<Date, Integer>, String> pair : logs) {
                     writer.write(HStringHelper.notNullOrEmpty(pair.getValue()));
                     writer.write(System.getProperty("line.separator"));
                 }
-                writer.close();
             } catch (IOException exception) {
-                HLog.logger(HLogLevel.ERROR, exception);
+                logger(HLogLevel.ERROR, new IOException("Writing log file failed.", exception));
             }
         }
     }

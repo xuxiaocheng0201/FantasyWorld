@@ -20,8 +20,8 @@ public class DSTTagStringCollection implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -4543462114922579563L;
     public static final String id = "DSTTagStringCollection";
-    public static String prefix = DSTUtils.prefix(id);
-    public static String suffix = DSTUtils.suffix(id);
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
     static {
         try {
             DSTUtils.getInstance().register(id, DSTTagStringCollection.class);

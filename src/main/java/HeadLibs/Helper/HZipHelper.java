@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.util.Deque;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -33,23 +32,26 @@ public class HZipHelper {
         URI base = directory.toURI();
         Deque<File> queue = new LinkedList<>();
         queue.push(directory);
-        ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zipFile));
-        while (!queue.isEmpty()) {
-            File directory1 = queue.pop();
-            for (File kid: Objects.requireNonNull(directory1.listFiles())) {
-                String name = base.relativize(kid.toURI()).getPath();
-                if (kid.isDirectory()) {
-                    queue.push(kid);
-                    name = !name.isEmpty() && name.charAt(name.length() - 1) == '/' ? name : name + "/";
-                    outputStream.putNextEntry(new ZipEntry(name));
-                } else {
-                    outputStream.putNextEntry(new ZipEntry(name));
-                    Files.copy(kid.toPath(), outputStream);
-                    outputStream.closeEntry();
+        try (ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zipFile))) {
+            while (!queue.isEmpty()) {
+                File directory1 = queue.pop();
+                File[] files = directory1.listFiles();
+                if (files == null)
+                    continue;
+                for (File kid : files) {
+                    String name = base.relativize(kid.toURI()).getPath();
+                    if (kid.isDirectory()) {
+                        queue.push(kid);
+                        name = !name.isEmpty() && name.charAt(name.length() - 1) == '/' ? name : name + "/";
+                        outputStream.putNextEntry(new ZipEntry(name));
+                    } else {
+                        outputStream.putNextEntry(new ZipEntry(name));
+                        Files.copy(kid.toPath(), outputStream);
+                        outputStream.closeEntry();
+                    }
                 }
             }
         }
-        outputStream.close();
     }
 
     /**
@@ -66,25 +68,26 @@ public class HZipHelper {
             throw new IOException("Null target directory.");
         String sourceFileInJar = sourceFilePathInJar == null ? "" : sourceFilePathInJar.replace('\\', '/');
         HFileHelper.createNewDirectory(targetDirectory);
-        JarFile jar = new JarFile(jarFilePath);
-        Enumeration<JarEntry> enumeration = jar.entries();
-        while (enumeration.hasMoreElements()) {
-            JarEntry jarEntry = enumeration.nextElement();
-            String name = jarEntry.getName();
-            if (!name.startsWith(sourceFileInJar))
-                continue;
-            name = name.substring(sourceFileInJar.length());
-            File file = new File(targetDirectory + File.separator + name);
-            if (jarEntry.isDirectory()) {
-                HFileHelper.createNewDirectory(file.getPath());
-                continue;
+        try (JarFile jar = new JarFile(jarFilePath)) {
+            Enumeration<JarEntry> enumeration = jar.entries();
+            while (enumeration.hasMoreElements()) {
+                JarEntry jarEntry = enumeration.nextElement();
+                String name = jarEntry.getName();
+                if (!name.startsWith(sourceFileInJar))
+                    continue;
+                name = name.substring(sourceFileInJar.length());
+                File file = new File(targetDirectory + File.separator + name);
+                if (jarEntry.isDirectory()) {
+                    HFileHelper.createNewDirectory(file.getPath());
+                    continue;
+                }
+                try (InputStream input = jar.getInputStream(jarEntry)) {
+                    try (FileOutputStream output = new FileOutputStream(file)) {
+                        while (input.available() > 0)
+                            output.write(input.read());
+                    }
+                }
             }
-            InputStream input = jar.getInputStream(jarEntry);
-            FileOutputStream output = new FileOutputStream(file);
-            while (input.available() > 0)
-                output.write(input.read());
-            input.close();
-            output.close();
         }
     }
 }
