@@ -8,6 +8,7 @@ import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -17,8 +18,8 @@ import java.util.Map;
  * @see NewElementUtilCore
  */
 @SuppressWarnings("unused")
-public abstract class ElementUtil<T extends ElementImplement> {
-    private final HMapRegisterer<String, Class<? extends T>> elements = new HMapRegisterer<>(false, false, false);
+public abstract class ElementUtil<T extends ElementImplement> implements Iterable<Map.Entry<String, Class<? extends T>>> {
+    protected final HMapRegisterer<String, Class<? extends T>> elements = new HMapRegisterer<>(false, false, false);
 
     public void register(@NotNull String key, @NotNull Class<? extends T> value) throws HElementRegisteredException {
         this.elements.register(key, value);
@@ -77,12 +78,17 @@ public abstract class ElementUtil<T extends ElementImplement> {
         return instance;
     }
 
-    public @NotNull Iterator<Map.Entry<String, Class<? extends T>>> getEntries() {
+    @Override
+    public @NotNull Iterator<Map.Entry<String, Class<? extends T>>> iterator() {
         return this.elements.iterator();
     }
 
-    public @NotNull HMapRegisterer<String, Class<? extends T>> getElements() {
-        return this.elements;
+    public @NotNull Collection<String> keys() {
+        return this.elements.keys();
+    }
+
+    public @NotNull Collection<Class<? extends T>> values() {
+        return this.elements.values();
     }
     
 

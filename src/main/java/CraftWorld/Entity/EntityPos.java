@@ -41,11 +41,15 @@ public class EntityPos implements IDSTBase, Cloneable {
     private double y;
     private double z;
 
-    public EntityPos(ChunkPos chunkPos) {
+    public EntityPos() {
+        this(new ChunkPos(), 0, 0, 0);
+    }
+
+    public EntityPos(@Nullable ChunkPos chunkPos) {
         this(chunkPos, 0, 0, 0);
     }
 
-    public EntityPos(ChunkPos chunkPos, int x, int y, int z) {
+    public EntityPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
         super();
         this.chunkPos = Objects.requireNonNullElseGet(chunkPos, ChunkPos::new);
         this.setX(x);
@@ -172,7 +176,7 @@ public class EntityPos implements IDSTBase, Cloneable {
             this.clear();
             return;
         }
-        this.chunkPos = pos.chunkPos.clone();
+        this.chunkPos.set(pos.chunkPos);
         this.x = pos.x;
         this.y = pos.y;
         this.z = pos.z;

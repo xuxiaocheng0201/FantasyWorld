@@ -186,7 +186,6 @@ public class CraftWorld implements ModImplement {
             break;
         }
         this.world.unload();
-        SevenZipUtils.compressFile(this.world.getWorldSavedDirectory().getPath(), ConstantStorage.SAVED_WORLD_PATH + this.world.getWorldName() + ".cww");
     }
 
     public void startClient(Socket client) throws IOException {
@@ -200,6 +199,7 @@ public class CraftWorld implements ModImplement {
         this.serverRunning = false;
         dataOutputStream.close();
         dataInputStream.close();
+        SevenZipUtils.compressFile(this.world.getWorldSavedDirectory().getPath(), ConstantStorage.SAVED_WORLD_PATH + this.world.getWorldName() + ".cww");
     }
 
     public boolean needCreateNewServer() {

@@ -1,6 +1,5 @@
 package CraftWorld.World.Block;
 
-import Core.Addition.Element.ElementImplement;
 import Core.Addition.Element.NewElementImplementCore;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.IDSTBase;
@@ -12,7 +11,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 @NewElementImplementCore(modName = "CraftWorld", elementName = "Block")
-public interface IBlockBase extends ElementImplement, IDSTBase {
+public interface IBlockBase extends IDSTBase {
     @NotNull String getBlockId();
     String getBlockName();
     void setBlockName(String name);
