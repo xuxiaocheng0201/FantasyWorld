@@ -24,7 +24,7 @@ public class HConfigType implements Serializable {
     /**
      * All Registered configuration types.
      */
-    private static final @NotNull HMapRegisterer<String, HConfigType> REGISTERED_MAP = new HMapRegisterer<>();
+    private static final @NotNull HMapRegisterer<String, HConfigType> REGISTERED_MAP = new HMapRegisterer<>(false, false, true);
     /**
      * Get registered map.
      * @return registered map

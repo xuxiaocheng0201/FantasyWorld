@@ -31,7 +31,7 @@ public class HElementRegisteredException extends Exception{
         super(getElementRegisteredMessage(message) + " element=" + element);
     }
 
-    public HElementRegisteredException(@Nullable String message, @Nullable  Object key, @Nullable Object value) {
-        super(getElementRegisteredMessage(message) + " key=" + value + " element=" + value);
+    public HElementRegisteredException(@Nullable String message, @Nullable Object key, @Nullable Object value) {
+        super(getElementRegisteredMessage(message) + " key=" + value + " value=" + value);
     }
 }

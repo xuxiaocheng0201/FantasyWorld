@@ -13,7 +13,7 @@ import java.util.Objects;
  * String form: [,] or (,) or [,) or (,]
  * @author xuxiaocheng
  */
-@SuppressWarnings({"unused", "GrazieInspection"})
+@SuppressWarnings("unused")
 public class HVersionRange implements Serializable {
     @Serial
     private static final long serialVersionUID = 4882505281267885490L;
@@ -70,10 +70,7 @@ public class HVersionRange implements Serializable {
     }
 
     public void setLeftVersion(@Nullable HStringVersion versionLeft) {
-        if (versionLeft == null)
-            this.leftVersion = HStringVersion.EMPTY;
-        else
-            this.leftVersion = versionLeft;
+        this.leftVersion = Objects.requireNonNullElse(versionLeft, HStringVersion.EMPTY);
         this.empty = false;
     }
 
@@ -86,10 +83,7 @@ public class HVersionRange implements Serializable {
     }
 
     public void setRightVersion(@Nullable HStringVersion rightVersion) {
-        if (rightVersion == null)
-            this.rightVersion = HStringVersion.EMPTY;
-        else
-            this.rightVersion = rightVersion;
+        this.rightVersion = Objects.requireNonNullElse(rightVersion, HStringVersion.EMPTY);
         this.empty = false;
     }
 

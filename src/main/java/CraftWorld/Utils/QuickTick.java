@@ -12,7 +12,7 @@ public class QuickTick implements Serializable {
     private static final long serialVersionUID = -7856577519248919328L;
 
     private @NotNull BigInteger tick = BigInteger.ZERO;
-    private transient long cacheTick;
+    private long cacheTick;
     private long quickTick;
 
     public QuickTick() {
@@ -142,10 +142,10 @@ public class QuickTick implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof QuickTick quickTick)) return false;
+        if (!(o instanceof QuickTick that)) return false;
         this.standardized();
-        quickTick.standardized();
-        return this.tick.equals(quickTick.tick);
+        that.standardized();
+        return this.tick.equals(that.tick);
     }
 
     @Override

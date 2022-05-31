@@ -68,7 +68,7 @@ public final class DSTComplexMeta implements IDSTBase {
     public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        for (Map.Entry<String, IDSTBase> entry : this.dstMap.getMap().entrySet()) {
+        for (Map.Entry<String, IDSTBase> entry : this.dstMap) {
             output.writeUTF(entry.getKey());
             entry.getValue().write(output);
         }

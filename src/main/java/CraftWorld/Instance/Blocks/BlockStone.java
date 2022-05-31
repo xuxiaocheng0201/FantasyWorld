@@ -6,10 +6,14 @@ import CraftWorld.World.Block.IBlockBase;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.Objects;
 
 public class BlockStone implements IBlockBase {
+    @Serial
+    private static final long serialVersionUID = -1361010945938452870L;
     public static final String id = "BlockStone";
     static {
         try {
@@ -19,7 +23,7 @@ public class BlockStone implements IBlockBase {
         }
     }
     @Override
-    public String getBlockId() {
+    public @NotNull String getBlockId() {
         return id;
     }
 
@@ -57,7 +61,7 @@ public class BlockStone implements IBlockBase {
     }
 
     @Override
-    public DSTComplexMeta getBlockDST() {
+    public @NotNull DSTComplexMeta getBlockDST() {
         return this.dst;
     }
 

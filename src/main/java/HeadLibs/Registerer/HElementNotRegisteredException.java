@@ -27,7 +27,7 @@ public class HElementNotRegisteredException extends Exception {
         super(getElementNotRegisteredMessage(message));
     }
 
-    public HElementNotRegisteredException(@Nullable String message, @NotNull Object key) {
-        super(getElementNotRegisteredMessage(message) + " key=" + key);
+    public HElementNotRegisteredException(@Nullable String message, @Nullable Object key) {
+        super(getElementNotRegisteredMessage(message) + (key == null ? "Null key." : " key=" + key));
     }
 }

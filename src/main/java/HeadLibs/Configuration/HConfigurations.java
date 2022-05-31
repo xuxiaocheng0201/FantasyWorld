@@ -7,7 +7,14 @@ import HeadLibs.Registerer.HLinkedMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -27,7 +34,7 @@ public class HConfigurations implements Serializable {
      * Saved configuration elements.
      * @see HConfigElement
      */
-    public final @NotNull HLinkedMapRegisterer<String, HConfigElement> data = new HLinkedMapRegisterer<>(true);
+    public final @NotNull HLinkedMapRegisterer<String, HConfigElement> data = new HLinkedMapRegisterer<>(false, false, false);
 
     /**
      * Construct a empty configuration.
@@ -100,7 +107,10 @@ public class HConfigurations implements Serializable {
         } catch (HElementRegisteredException exception) {
             if (!overwrite)
                 return false;
-            this.data.reset(config.getName(), config);
+            try {
+                this.data.reset(config.getName(), config);
+            } catch (HElementRegisteredException ignore) {
+            }
         }
         return true;
     }
@@ -131,7 +141,7 @@ public class HConfigurations implements Serializable {
      * @param value configuration value
      */
     public void deleteAllByValue(@NotNull String value) {
-        for (HConfigElement element: this.data.getMap().values())
+        for (HConfigElement element: this.data.values())
             if (value.equals(element.getValue()))
                 this.data.deregisterValue(element);
     }
@@ -206,7 +216,7 @@ public class HConfigurations implements Serializable {
      */
     public void write() throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.file))) {
-            for (HConfigElement i : this.data.getMap().values()) {
+            for (HConfigElement i: this.data.values()) {
                 writer.write("name: ");
                 writer.write(i.getName());
                 writer.newLine();
@@ -230,11 +240,10 @@ public class HConfigurations implements Serializable {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        HConfigurations that = (HConfigurations) o;
-        return this.file.equals(that.file) && this.data.equals(that.data);
+        if (!(o instanceof HConfigurations that)) return false;
+        return this.data.equals(that.data);
     }
 
     @Override

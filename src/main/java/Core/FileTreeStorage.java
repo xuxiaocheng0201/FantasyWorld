@@ -43,7 +43,7 @@ public class FileTreeStorage {
     }
 
     private static final String EXTRACT_TEMP_FILE = RUNTIME_PATH + "extract_temp";
-    public synchronized static void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) throws IOException {
+    public static synchronized void extractFiles(Class<? extends ModImplement> modClass, String sourcePath, String targetPath) throws IOException {
         File jarFilePath = modClass == null ? HClassFinder.thisCodePath : ModManager.getAllClassesWithJarFiles().get(modClass);
         if (jarFilePath == null)
             throw new IOException("Null jar file path for class '" + modClass + "'.s");

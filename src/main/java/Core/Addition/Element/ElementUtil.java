@@ -8,8 +8,8 @@ import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Implement at new mods element util classes.
@@ -18,21 +18,24 @@ import java.util.Set;
  */
 @SuppressWarnings("unused")
 public abstract class ElementUtil<T extends ElementImplement> {
-    private final HMapRegisterer<String, Class<? extends T>> elements = new HMapRegisterer<>(false);
+    private final HMapRegisterer<String, Class<? extends T>> elements = new HMapRegisterer<>(false, false, false);
 
-    public void register(@Nullable String key, @Nullable Class<? extends T> value) throws HElementRegisteredException {
+    public void register(@NotNull String key, @NotNull Class<? extends T> value) throws HElementRegisteredException {
         this.elements.register(key, value);
     }
 
-    public void reset(@Nullable String key, @Nullable Class<? extends T> value) {
-        this.elements.reset(key, value);
+    public void reset(@NotNull String key, @NotNull Class<? extends T> value) {
+        try {
+            this.elements.reset(key, value);
+        } catch (HElementRegisteredException ignore) {
+        }
     }
 
-    public void deregisterKey(@Nullable String key) {
+    public void deregisterKey(@NotNull String key) {
         this.elements.deregisterKey(key);
     }
 
-    public void deregisterValue(@Nullable Class<? extends T> value) {
+    public void deregisterValue(@NotNull Class<? extends T> value) {
         this.elements.deregisterValue(value);
     }
 
@@ -40,11 +43,11 @@ public abstract class ElementUtil<T extends ElementImplement> {
         this.elements.deregisterAll();
     }
 
-    public boolean isRegisteredKey(@Nullable String key) {
+    public boolean isRegisteredKey(@NotNull String key) {
         return this.elements.isRegisteredKey(key);
     }
 
-    public boolean isRegisteredValue(@Nullable Class<? extends T> value) {
+    public boolean isRegisteredValue(@NotNull Class<? extends T> value) {
         return this.elements.isRegisteredValue(value);
     }
 
@@ -60,22 +63,22 @@ public abstract class ElementUtil<T extends ElementImplement> {
         return this.elements.getRegisteredCount();
     }
 
-    public @NotNull T getElementInstance(String name) throws HElementNotRegisteredException, NoSuchMethodException {
-        return this.getElementInstance(name, false);
+    public @NotNull T getElementInstance(@NotNull String key) throws HElementNotRegisteredException, NoSuchMethodException {
+        return this.getElementInstance(key, false);
     }
 
-    public @NotNull T getElementInstance(String name, boolean useCache) throws HElementNotRegisteredException, NoSuchMethodException {
-        Class<? extends T> aClass = this.elements.getElement(name);
+    public @NotNull T getElementInstance(@NotNull String key, boolean useCache) throws HElementNotRegisteredException, NoSuchMethodException {
+        Class<? extends T> aClass = this.elements.getElement(key);
         if (aClass == null)
-            throw new HElementNotRegisteredException(null, name);
+            throw new HElementNotRegisteredException(null, key);
         T instance = HClassHelper.getInstance(aClass, useCache);
         if (instance == null)
-            throw new NoSuchMethodException("No common constructor to get instance. [name='" + name + "']");
+            throw new NoSuchMethodException("No common constructor to get instance. [key='" + key + "']");
         return instance;
     }
 
-    public @NotNull Set<Map.Entry<String, Class<? extends T>>> getEntries() {
-        return this.elements.getMap().entrySet();
+    public @NotNull Iterator<Map.Entry<String, Class<? extends T>>> getEntries() {
+        return this.elements.iterator();
     }
 
     public @NotNull HMapRegisterer<String, Class<? extends T>> getElements() {

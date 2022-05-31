@@ -14,7 +14,7 @@ import java.util.*;
  * String form: [,)&(,]&{,,}
  * @author xuxiaocheng
  */
-@SuppressWarnings({"unused", "GrazieInspection"})
+@SuppressWarnings("unused")
 public class HVersionComplex implements Serializable {
     @Serial
     private static final long serialVersionUID = -7755725541591955245L;

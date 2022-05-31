@@ -6,23 +6,63 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- * Elements registerer set.
+ * Elements set registerer.
  * @param <T> the type of elements
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HSetRegisterer<T> implements Serializable {
+public class HSetRegisterer<T> implements Serializable, Iterable<T> {
     @Serial
     private static final long serialVersionUID = 2481392558972738677L;
 
     /**
      * The registered elements set.
      */
-    protected final Set<T> set = new HashSet<>();
+    protected final @NotNull Set<T> set;
+
+    /**
+     * Is null can be registered?
+     */
+    protected final boolean nullAllowed;
+
+    /**
+     * Create a new set registerer.
+     */
+    public HSetRegisterer() {
+        this(true);
+    }
+
+    /**
+     * Create a new set registerer.
+     * @param nullAllowed {@link #nullAllowed}
+     */
+    public HSetRegisterer(boolean nullAllowed) {
+        super();
+        this.nullAllowed = nullAllowed;
+        this.set = new HashSet<>();
+    }
+
+    /**
+     * For inheritance.
+     */
+    protected HSetRegisterer(boolean nullAllowed, @NotNull Set<T> set) {
+        super();
+        this.nullAllowed = nullAllowed;
+        this.set = set;
+    }
+
+    /**
+     * Is null can be registered?
+     * @return true - allowed. false - not allowed.
+     */
+    public boolean isNullAllowed() {
+        return this.nullAllowed;
+    }
 
     /**
      * Register a new element.
@@ -30,17 +70,20 @@ public class HSetRegisterer<T> implements Serializable {
      * @throws HElementRegisteredException Element has been registered.
      */
     public void register(@Nullable T element) throws HElementRegisteredException {
+        if (!this.nullAllowed && element == null)
+            throw new HElementRegisteredException("Null element");
         if (this.set.contains(element))
             throw new HElementRegisteredException(null, element);
         this.set.add(element);
     }
 
     /**
-     * Reset a new element.
+     * Register a new element without exception.
      * @param element the element
      */
     public void reset(@Nullable T element) {
-        this.set.add(element);
+        if (this.nullAllowed || element != null)
+            this.set.add(element);
     }
 
     /**
@@ -59,11 +102,13 @@ public class HSetRegisterer<T> implements Serializable {
     }
 
     /**
-     * If a element has been registered.
+     * If an element has been registered.
      * @param element the element
      * @return true - registered. false - unregistered.
      */
-    public boolean isRegistered(@NotNull T element) {
+    public boolean isRegistered(@Nullable T element) {
+        if (!this.nullAllowed && element == null)
+            return true;
         return this.set.contains(element);
     }
 
@@ -75,14 +120,6 @@ public class HSetRegisterer<T> implements Serializable {
         return this.set.size();
     }
 
-    /**
-     * Get registerer set. {@link HSetRegisterer#set}
-     * @return registerer set
-     */
-    public @NotNull Set<T> getSet() {
-        return this.set;
-    }
-
     @Override
     public @NotNull String toString() {
         return "HSetRegisterer:" + this.set;
@@ -91,13 +128,17 @@ public class HSetRegisterer<T> implements Serializable {
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        HSetRegisterer<?> that = (HSetRegisterer<?>) o;
-        return this.set.equals(that.set);
+        if (!(o instanceof HSetRegisterer<?> that)) return false;
+        return this.nullAllowed == that.nullAllowed && this.set.equals(that.set);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.set);
+        return Objects.hash(this.set, this.nullAllowed);
+    }
+
+    @Override
+    public @NotNull Iterator<T> iterator() {
+        return this.set.iterator();
     }
 }

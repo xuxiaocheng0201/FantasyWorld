@@ -8,7 +8,12 @@ import HeadLibs.Registerer.HLinkedMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -99,7 +104,10 @@ public class HConfigurationsSimple {
         } catch (HElementRegisteredException exception) {
             if (!overwrite)
                 return false;
-            this.data.reset(config.getName(), config);
+            try {
+                this.data.reset(config.getName(), config);
+            } catch (HElementRegisteredException ignore) {
+            }
         }
         return true;
     }
@@ -130,7 +138,7 @@ public class HConfigurationsSimple {
      * @param value configuration value
      */
     public void deleteAllByValue(@NotNull String value) {
-        for (HConfigElementSimple element: this.data.getMap().values())
+        for (HConfigElementSimple element: this.data.values())
             if (value.equals(element.getValue()))
                 this.data.deregisterValue(element);
     }
@@ -182,7 +190,7 @@ public class HConfigurationsSimple {
      */
     public void write() throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.file))) {
-            for (HConfigElementSimple i : this.data.getMap().values()) {
+            for (HConfigElementSimple i: this.data.values()) {
                 writer.write(i.getName());
                 writer.write("=");
                 writer.write(i.getValue());

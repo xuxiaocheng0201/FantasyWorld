@@ -70,7 +70,7 @@ public class Dimension implements IDSTBase {
 
     public void update() {
         this.tickHasUpdated.set(this.world.getTick().getFullTick());
-        for (Chunk chunk: this.loadedChunks.getMap().values())
+        for (Chunk chunk: this.loadedChunks.values())
             chunk.update();
     }
 
@@ -176,7 +176,7 @@ public class Dimension implements IDSTBase {
     }
 
     public void loadPrepareChunks() throws IOException {
-        for (ChunkPos pos: this.instance.getPrepareChunkPos().getSet())
+        for (ChunkPos pos: this.instance.getPrepareChunkPos())
             this.loadChunk(pos);
     }
 
@@ -187,7 +187,7 @@ public class Dimension implements IDSTBase {
     }
 
     public void unloadAllChunks() throws IOException {
-        Iterable<ChunkPos> chunkPos = new ArrayList<>(this.loadedChunks.getMap().keySet());
+        Iterable<ChunkPos> chunkPos = new ArrayList<>(this.loadedChunks.keys());
         for (ChunkPos pos: chunkPos)
             this.unloadChunk(pos);
     }

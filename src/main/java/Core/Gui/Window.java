@@ -8,9 +8,7 @@ import Core.Gui.Callback.*;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HSystemHelp;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
@@ -41,6 +39,17 @@ public class Window {
         instance = this;
     }
 
+    private GLFWErrorCallback errorCallback;
+    private GLFWCursorEnterCallback cursorEnterCallback;
+    private GLFWCursorPosCallback cursorPosCallback;
+    private GLFWMouseButtonCallback mouseButtonCallback;
+    private GLFWScrollCallback scrollCallback;
+    private GLFWKeyCallback keyCallback;
+    private GLFWCharCallback charCallback;
+    private GLFWCharModsCallback charModsCallback;
+    private GLFWDropCallback dropCallback;
+    private GLFWFramebufferSizeCallback framebufferSizeCallback;
+
     public void init() throws GLException {
         PrintStream printStream;
         try {
@@ -49,7 +58,7 @@ public class Window {
         } catch (IOException exception) {
             throw new GLException(exception);
         }
-        GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(printStream));
+        this.errorCallback = GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(printStream));
         if (!GLFW.glfwInit())
             throw new GLException("Unable to initialize GLFW.");
         GLFW.glfwDefaultWindowHints();
@@ -66,21 +75,21 @@ public class Window {
             GLFW.glfwTerminate();
             throw new GLException("Failed to create the GLFW window");
         }
-        GLFW.glfwSetCursorEnterCallback(this.windowHandle, (window, entered) -> EventBusManager.getGLEventBus().post(new CursorEnterCallbackEvent(window, entered)));
-        GLFW.glfwSetCursorPosCallback(this.windowHandle, (window, xPos, yPos) -> EventBusManager.getGLEventBus().post(new CursorPosCallbackEvent(window, xPos, yPos)));
-        GLFW.glfwSetMouseButtonCallback(this.windowHandle, (window, button, action, mods) -> EventBusManager.getGLEventBus().post(new MouseButtonCallbackEvent(window, button, action, mods)));
-        GLFW.glfwSetScrollCallback(this.windowHandle, (window, xOffset, yOffset) -> EventBusManager.getGLEventBus().post(new ScrollCallbackEvent(window, xOffset, yOffset)));
-        GLFW.glfwSetKeyCallback(this.windowHandle, (window, key, scancode, action, mods) -> EventBusManager.getGLEventBus().post(new KeyCallbackEvent(window, key, scancode, action, mods)));
-        GLFW.glfwSetCharCallback(this.windowHandle, (window, codePoint) -> EventBusManager.getGLEventBus().post(new CharCallbackEvent(window, codePoint)));
-        GLFW.glfwSetCharModsCallback(this.windowHandle, (window, codepoint, mods) -> EventBusManager.getGLEventBus().post(new CharModsCallbackEvent(window, codepoint, mods)));
-        GLFW.glfwSetDropCallback(this.windowHandle, (window, count, names) -> {
+        this.cursorEnterCallback = GLFW.glfwSetCursorEnterCallback(this.windowHandle, (window, entered) -> EventBusManager.getGLEventBus().post(new CursorEnterCallbackEvent(window, entered)));
+        this.cursorPosCallback = GLFW.glfwSetCursorPosCallback(this.windowHandle, (window, xPos, yPos) -> EventBusManager.getGLEventBus().post(new CursorPosCallbackEvent(window, xPos, yPos)));
+        this.mouseButtonCallback = GLFW.glfwSetMouseButtonCallback(this.windowHandle, (window, button, action, mods) -> EventBusManager.getGLEventBus().post(new MouseButtonCallbackEvent(window, button, action, mods)));
+        this.scrollCallback = GLFW.glfwSetScrollCallback(this.windowHandle, (window, xOffset, yOffset) -> EventBusManager.getGLEventBus().post(new ScrollCallbackEvent(window, xOffset, yOffset)));
+        this.keyCallback = GLFW.glfwSetKeyCallback(this.windowHandle, (window, key, scancode, action, mods) -> EventBusManager.getGLEventBus().post(new KeyCallbackEvent(window, key, scancode, action, mods)));
+        this.charCallback = GLFW.glfwSetCharCallback(this.windowHandle, (window, codePoint) -> EventBusManager.getGLEventBus().post(new CharCallbackEvent(window, codePoint)));
+        this.charModsCallback = GLFW.glfwSetCharModsCallback(this.windowHandle, (window, codepoint, mods) -> EventBusManager.getGLEventBus().post(new CharModsCallbackEvent(window, codepoint, mods)));
+        this.dropCallback = GLFW.glfwSetDropCallback(this.windowHandle, (window, count, names) -> {
             List<String> paths = new ArrayList<>(count);
             PointerBuffer buffer = MemoryUtil.memPointerBuffer(names, count);
             for (int i = 0; i < count; ++i)
                 paths.add(MemoryUtil.memUTF8Safe(buffer.get(i)));
             EventBusManager.getGLEventBus().post(new DropCallbackEvent(window, paths));
         });
-        GLFW.glfwSetFramebufferSizeCallback(this.windowHandle, (window, newWidth, newHeight) -> {
+        this.framebufferSizeCallback = GLFW.glfwSetFramebufferSizeCallback(this.windowHandle, (window, newWidth, newHeight) -> {
             this.width = newWidth;
             this.height = newHeight;
             this.resized = true;
@@ -111,8 +120,18 @@ public class Window {
     }
 
     public void destroyWindow() {
+        this.cursorEnterCallback.close();
+        this.cursorPosCallback.close();
+        this.mouseButtonCallback.close();
+        this.scrollCallback.close();
+        this.keyCallback.close();
+        this.charCallback.close();
+        this.charModsCallback.close();
+        this.dropCallback.close();
+        this.framebufferSizeCallback.close();
         GLFW.glfwDestroyWindow(this.windowHandle);
         GLFW.glfwTerminate();
+        this.errorCallback.close();
         instance = null;
     }
 

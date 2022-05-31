@@ -4,7 +4,6 @@ import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.Blocks.BlockAir;
-import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
 import CraftWorld.World.Dimension.Dimension;
@@ -121,10 +120,7 @@ public class Block implements IDSTBase {
         if (!BlockPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.pos.read(input);
-        this.instance.setBlockName(input.readUTF());
-        if (!DSTComplexMeta.prefix.equals(input.readUTF()))
-            throw new DSTFormatException();
-        this.instance.getBlockDST().read(input);
+        this.instance.read(input);
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
@@ -134,8 +130,7 @@ public class Block implements IDSTBase {
         output.writeUTF(prefix);
         output.writeUTF(this.instance.getBlockId());
         this.pos.write(output);
-        output.writeUTF(this.instance.getBlockName());
-        this.instance.getBlockDST().write(output);
+        this.instance.write(output);
         output.writeUTF(suffix);
     }
 

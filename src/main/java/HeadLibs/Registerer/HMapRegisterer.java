@@ -6,28 +6,36 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
- * Elements registerer map.
+ * Elements map registerer.
  * @param <K> The type of elements key
  * @param <V> The type of elements value
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HMapRegisterer<K, V> implements Serializable {
+public class HMapRegisterer<K, V> implements Serializable, Iterable<Map.Entry<K, V>> {
     @Serial
     private static final long serialVersionUID = -5018927767212486603L;
 
     /**
      * The registered elements map.
      */
-    protected final Map<K, V> map = new HashMap<>();
+    protected final Map<K, V> map;
 
     /**
-     * Can be registered with different keys and same value?
+     * Can null key be registered?
+     */
+    protected final boolean nullKeyAllowed;
+
+    /**
+     * Can null value be registered?
+     */
+    protected final boolean nullValueAllowed;
+
+    /**
+     * Can same value be registered with different keys?
      */
     protected final boolean sameValueAllowed;
 
@@ -35,29 +43,66 @@ public class HMapRegisterer<K, V> implements Serializable {
      * Construct a new map registerer.
      */
     public HMapRegisterer() {
-        this(true);
+        this(false, true, true);
     }
 
     /**
      * Construct a new map registerer.
-     * @param sameValueAllowed {@link HMapRegisterer#sameValueAllowed}
+     * @param sameValueAllowed {@link #sameValueAllowed}
      */
     public HMapRegisterer(boolean sameValueAllowed) {
-        super();
-        this.sameValueAllowed = sameValueAllowed;
+        this(false, true, sameValueAllowed);
     }
 
     /**
-     * Get same value allowed.
-     * @return true - allowed. false - not allowed.
+     * Construct a new map registerer.
+     * @param nullKeyAllowed {@link #nullKeyAllowed}
+     * @param nullValueAllowed {@link #nullValueAllowed}
      */
+    public HMapRegisterer(boolean nullKeyAllowed, boolean nullValueAllowed) {
+        this(nullKeyAllowed, nullValueAllowed, true);
+    }
+
+    /**
+     * Construct a new map registerer.
+     * @param nullKeyAllowed {@link #nullKeyAllowed}
+     * @param nullValueAllowed {@link #nullValueAllowed}
+     * @param sameValueAllowed {@link #sameValueAllowed}
+     */
+    public HMapRegisterer(boolean nullKeyAllowed, boolean nullValueAllowed, boolean sameValueAllowed) {
+        super();
+        this.nullKeyAllowed = nullKeyAllowed;
+        this.nullValueAllowed = nullValueAllowed;
+        this.sameValueAllowed = sameValueAllowed;
+        this.map = new HashMap<>();
+    }
+
+    /**
+     * For inheritance.
+     */
+    protected HMapRegisterer(boolean nullKeyAllowed, boolean nullValueAllowed, boolean sameValueAllowed, @NotNull Map<K, V> map) {
+        super();
+        this.nullKeyAllowed = nullKeyAllowed;
+        this.nullValueAllowed = nullValueAllowed;
+        this.sameValueAllowed = sameValueAllowed;
+        this.map = map;
+    }
+
+    public boolean isNullKeyAllowed() {
+        return this.nullKeyAllowed;
+    }
+
+    public boolean isNullValueAllowed() {
+        return this.nullValueAllowed;
+    }
+
     public boolean isSameValueAllowed() {
         return this.sameValueAllowed;
     }
 
     /**
      * Register a new element pair.
-     * @param pair element pair
+     * @param pair the element pair
      * @throws HElementRegisteredException Key or value has been registered.
      */
     public void register(@NotNull Pair<? extends K, ? extends V> pair) throws HElementRegisteredException {
@@ -66,13 +111,15 @@ public class HMapRegisterer<K, V> implements Serializable {
 
     /**
      * Register a new element pair.
-     * @param key pair name
-     * @param value pair value
+     * @param key element pair key
+     * @param value element pair value
      * @throws HElementRegisteredException Key or value has been registered.
      */
     public void register(@Nullable K key, @Nullable V value) throws HElementRegisteredException {
-        if (key == null)
+        if (!this.nullKeyAllowed && key == null)
             throw new HElementRegisteredException("Null key.", null, value);
+        if (!this.nullValueAllowed && value == null)
+            throw new HElementRegisteredException("Null value.", key, null);
         if (this.map.containsKey(key))
             throw new HElementRegisteredException("Registered key.", key, value);
         if (!this.sameValueAllowed && this.map.containsValue(value))
@@ -82,21 +129,23 @@ public class HMapRegisterer<K, V> implements Serializable {
 
     /**
      * Reset a new element pair.
-     * @param pair element pair
-     * @return old value
+     * @param pair the element pair
      */
-    public @Nullable V reset(@NotNull Pair<? extends K, ? extends V> pair) {
-        return this.map.put(pair.getKey(), pair.getValue());
+    public void reset(@NotNull Pair<? extends K, ? extends V> pair) throws HElementRegisteredException {
+        this.reset(pair.getKey(), pair.getValue());
     }
 
     /**
      * Reset a new element pair.
-     * @param key pair name
-     * @param value pair value
-     * @return old value
+     * @param key element pair key
+     * @param value element pair value
      */
-    public @Nullable V reset(@Nullable K key, @Nullable V value) {
-        return this.map.put(key, value);
+    public void reset(@Nullable K key, @Nullable V value) throws HElementRegisteredException {
+        if (!this.nullKeyAllowed && key == null)
+            throw new HElementRegisteredException("Null key.", null, value);
+        if (!this.nullValueAllowed && value == null)
+            throw new HElementRegisteredException("Null value.", key, null);
+        this.map.put(key, value);
     }
 
     /**
@@ -104,8 +153,6 @@ public class HMapRegisterer<K, V> implements Serializable {
      * @param key element pair key
      */
     public void deregisterKey(@Nullable K key) {
-        if (key == null)
-            return;
         this.map.remove(key);
     }
 
@@ -116,8 +163,19 @@ public class HMapRegisterer<K, V> implements Serializable {
     public void deregisterValue(@Nullable V value) {
         if (!this.map.containsValue(value))
             return;
-        for (Map.Entry<K, V> entry : this.map.entrySet())
-            if (entry.getValue().equals(value)) {
+        if (value == null) {
+            if (!this.nullValueAllowed)
+                return;
+            for (Map.Entry<K, V> entry: this.map.entrySet())
+                if (entry.getValue() == null) {
+                    this.map.remove(entry.getKey());
+                    if (!this.sameValueAllowed)
+                        break;
+                }
+            return;
+        }
+        for (Map.Entry<K, V> entry: this.map.entrySet())
+            if (value.equals(entry.getValue())) {
                 this.map.remove(entry.getKey());
                 if (!this.sameValueAllowed)
                     break;
@@ -137,17 +195,19 @@ public class HMapRegisterer<K, V> implements Serializable {
      * @return true - registered. false - unregistered.
      */
     public boolean isRegisteredKey(@Nullable K key) {
-        if (key == null)
+        if (!this.nullKeyAllowed && key == null)
             return true;
         return this.map.containsKey(key);
     }
 
     /**
-     * If a element pair value has been registered.
+     * If an element pair value has been registered.
      * @param value element pair value
      * @return true - registered. false - unregistered.
      */
     public boolean isRegisteredValue(@Nullable V value) {
+        if (!this.nullValueAllowed && value == null)
+            return true;
         return this.map.containsValue(value);
     }
 
@@ -157,21 +217,23 @@ public class HMapRegisterer<K, V> implements Serializable {
      * @return element pair value
      * @throws HElementNotRegisteredException No element key registered.
      */
-    public @Nullable V getElement(@NotNull K key) throws HElementNotRegisteredException {
+    public @Nullable V getElement(@Nullable K key) throws HElementNotRegisteredException {
+        if (!this.nullKeyAllowed && key == null)
+            throw new HElementNotRegisteredException("Null key.");
         if (!this.map.containsKey(key))
             throw new HElementNotRegisteredException(null, key);
         return this.map.get(key);
     }
 
     /**
-     * Get a registered element value by key.
+     * Get a registered element value by key without exception.
      * @param key element pair key
      * @return element pair value
      */
     public @Nullable V getElementNullable(@NotNull K key) {
-        if (!this.map.containsKey(key))
-            return null;
-        return this.map.get(key);
+        if (this.map.containsKey(key))
+            return this.map.get(key);
+        return null;
     }
 
     /**
@@ -182,29 +244,33 @@ public class HMapRegisterer<K, V> implements Serializable {
         return this.map.size();
     }
 
-    /**
-     * Get registerer map. {@link HMapRegisterer#map} (for iterator)
-     * @return registerer map
-     */
-    public @NotNull Map<K, V> getMap() {
-        return this.map;
-    }
-
     @Override
     public @NotNull String toString() {
-        return "MapRegisterer:" + this.map;
+        return "HMapRegisterer:" + this.map;
     }
 
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        HMapRegisterer<?, ?> that = (HMapRegisterer<?, ?>) o;
+        if (!(o instanceof HMapRegisterer<?, ?> that)) return false;
         return this.sameValueAllowed == that.sameValueAllowed && this.map.equals(that.map);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.map, this.sameValueAllowed);
+    }
+
+    @Override
+    public @NotNull Iterator<Map.Entry<K, V>> iterator() {
+        return this.map.entrySet().iterator();
+    }
+
+    public @NotNull Collection<K> keys() {
+        return Collections.unmodifiableCollection(this.map.keySet());
+    }
+
+    public @NotNull Collection<V> values() {
+        return Collections.unmodifiableCollection(this.map.values());
     }
 }

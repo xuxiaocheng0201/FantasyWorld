@@ -25,7 +25,7 @@ public class MenuGui implements IBasicGui {
     public void update(double interval) {
     }
 
-    private long theta = 0;
+    private long theta;
 
     @Override
     public void render() {

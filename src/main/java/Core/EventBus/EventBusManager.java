@@ -89,8 +89,8 @@ public class EventBusManager {
         }
     }
 
-    public static @NotNull Set<EventBus> getAllEventBus() {
-        return ALL_EVENT_BUS_REVERSE.getMap().keySet();
+    public static @NotNull Collection<EventBus> getAllEventBus() {
+        return ALL_EVENT_BUS_REVERSE.keys();
     }
 
     private static final Collection<Class<?>> registeredClassesFlag = new HashSet<>();

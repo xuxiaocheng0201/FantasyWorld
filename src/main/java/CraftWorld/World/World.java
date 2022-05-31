@@ -72,7 +72,7 @@ public class World implements IDSTBase {
 
     public void update() {
         this.tick.aT();
-        for (Dimension dimension: this.loadedDimensions.getMap().values())
+        for (Dimension dimension: this.loadedDimensions.values())
             dimension.update();
     }
 
@@ -133,12 +133,10 @@ public class World implements IDSTBase {
         if (this.prepareDimensionsID.isRegisteredKey(dimensionId)) {
             try {
                 Integer count = this.prepareDimensionsID.getElement(dimensionId);
-                if (count == null) {
-                    this.prepareDimensionsID.reset(dimensionId, 1);
-                    return;
-                }
+                if (count == null)
+                    count = 0;
                 this.prepareDimensionsID.reset(dimensionId, count + 1);
-            } catch (HElementNotRegisteredException ignore) {
+            } catch (HElementNotRegisteredException | HElementRegisteredException ignore) {
             }
         }
         else
@@ -156,15 +154,19 @@ public class World implements IDSTBase {
                 return;
             }
             this.prepareDimensionsID.reset(dimensionId, count + 1);
-        } catch (HElementNotRegisteredException ignore) {
+        } catch (HElementNotRegisteredException | HElementRegisteredException ignore) {
         }
     }
 
     public void setPrepareDimension(String dimensionId, int count) {
         if (count <= 0)
             this.prepareDimensionsID.deregisterKey(dimensionId);
-        else
-            this.prepareDimensionsID.reset(dimensionId, count);
+        else {
+            try {
+                this.prepareDimensionsID.reset(dimensionId, count);
+            } catch (HElementRegisteredException ignore) {
+            }
+        }
     }
 
     public void addPrepareDimension(UUID dimensionUUID) {
@@ -210,7 +212,7 @@ public class World implements IDSTBase {
     public @NotNull HSetRegisterer<Dimension> getDimensions(String dimensionId) throws IOException {
         HSetRegisterer<UUID> uuids = this.getGeneratedDimensionsUUID(dimensionId);
         HSetRegisterer<Dimension> dimensions = new HSetRegisterer<>();
-        for (UUID uuid: uuids.getSet()) {
+        for (UUID uuid: uuids) {
             Dimension dimension = this.getAndLoadDimension(uuid);
             if (dimension != null) {
                 try {
@@ -272,10 +274,10 @@ public class World implements IDSTBase {
     }
 
     public void loadPrepareDimensions() throws IOException {
-        for (UUID dimensionUUID: this.prepareDimensionsUUID.getSet())
+        for (UUID dimensionUUID: this.prepareDimensionsUUID)
             if (!this.loadedDimensions.isRegisteredKey(dimensionUUID))
                 this.getAndLoadDimension(dimensionUUID);
-        for (Map.Entry<String, Integer> entry: this.prepareDimensionsID.getMap().entrySet()) {
+        for (Map.Entry<String, Integer> entry: this.prepareDimensionsID) {
             HSetRegisterer<UUID> uuids = this.getGeneratedDimensionsUUID(entry.getKey());
             int count = entry.getValue() - uuids.getRegisteredCount();
             if (count <= 0)
@@ -295,7 +297,7 @@ public class World implements IDSTBase {
     }
 
     public void unloadAllDimensions() throws IOException {
-        Iterable<UUID> dimensions = new ArrayList<>(this.loadedDimensions.getMap().keySet());
+        Iterable<UUID> dimensions = new ArrayList<>(this.loadedDimensions.keys());
         for (UUID dimensionUUID: dimensions)
             this.unloadDimension(dimensionUUID);
     }
@@ -328,7 +330,7 @@ public class World implements IDSTBase {
         dataOutputStream.close();
         String dimensionsDirectory = this.getDimensionsDirectory();
         HFileHelper.createNewDirectory(dimensionsDirectory);
-        for (Dimension dimension: this.loadedDimensions.getMap().values())
+        for (Dimension dimension: this.loadedDimensions.values())
             dimension.writeInformation();
     }
 
@@ -388,20 +390,20 @@ public class World implements IDSTBase {
         output.writeUTF(this.tick.getFullTick().toString(ConstantStorage.SAVE_NUMBER_RADIX));
         output.writeUTF(this.randomSeed);
         output.writeInt(this.prepareDimensionsUUID.getRegisteredCount());
-        for (UUID uuid: this.prepareDimensionsUUID.getSet()) {
+        for (UUID uuid: this.prepareDimensionsUUID) {
             output.writeLong(uuid.getMostSignificantBits());
             output.writeLong(uuid.getLeastSignificantBits());
         }
         output.writeInt(this.prepareDimensionsID.getRegisteredCount());
-        for (Map.Entry<String, Integer> entry: this.prepareDimensionsID.getMap().entrySet()) {
+        for (Map.Entry<String, Integer> entry: this.prepareDimensionsID) {
             output.writeUTF(entry.getKey());
             output.writeInt(entry.getValue());
         }
         output.writeInt(this.generatedDimensions.getRegisteredCount());
-        for (Map.Entry<String, HSetRegisterer<UUID>> entries: this.generatedDimensions.getMap().entrySet()) {
+        for (Map.Entry<String, HSetRegisterer<UUID>> entries: this.generatedDimensions) {
             output.writeUTF(entries.getKey());
             output.writeInt(entries.getValue().getRegisteredCount());
-            for (UUID uuid: entries.getValue().getSet()) {
+            for (UUID uuid: entries.getValue()) {
                 output.writeLong(uuid.getMostSignificantBits());
                 output.writeLong(uuid.getLeastSignificantBits());
             }

@@ -146,7 +146,7 @@ public class HStringHelper {
      * @param objects source objects
      * @return concatenate string
      */
-    @Deprecated
+    //@Deprecated
     public static @NotNull String concat(@NotNull Object ...objects) {
         if (objects.length == 0)
             return "";
@@ -162,7 +162,7 @@ public class HStringHelper {
      * @param strings source strings
      * @return concatenate string
      */
-    @Deprecated
+    //@Deprecated
     public static @NotNull String concat(@NotNull String ...strings) {
         if (strings.length == 0)
             return "";
