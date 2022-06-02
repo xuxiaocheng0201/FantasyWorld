@@ -9,6 +9,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Package {@link String} to {@code Version}.
@@ -20,14 +21,9 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
     private static final long serialVersionUID = -8779747563654866413L;
 
     /**
-     * Null version.
-     */
-    public static final HStringVersion EMPTY = new HStringVersion();
-
-    /**
      * Version.
      */
-    private @NotNull String version = "";
+    protected @NotNull String version = "";
 
     /**
      * Construct a null version.
@@ -64,6 +60,10 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         this.version = version.strip();
     }
 
+    public void setNull() {
+        this.version = "";
+    }
+
     public boolean inRange(@Nullable String versionRange) throws HVersionFormatException {
         if (versionRange == null)
             return false;
@@ -76,22 +76,25 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         return versionRange.versionInRange(this);
     }
 
+    public @NotNull ImmutableStringVersion toImmutable() {
+        return new ImmutableStringVersion(this);
+    }
+
     @Override
     public @NotNull String toString() {
         return this.version;
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        HStringVersion that = (HStringVersion) o;
+        if (!(o instanceof HStringVersion that)) return false;
         return this.version.equals(that.version);
     }
 
     @Override
     public int hashCode() {
-        return this.version.hashCode();
+        return Objects.hash(this.version);
     }
 
     @Override
@@ -204,5 +207,39 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
                 break;
         }
         return (difference != 0) ? difference : versionArray1.length - versionArray2.length;
+    }
+
+    public static class ImmutableStringVersion extends HStringVersion {
+        @Serial
+        private static final long serialVersionUID = HStringVersion.serialVersionUID;
+
+        public ImmutableStringVersion() {
+            super();
+        }
+
+        public ImmutableStringVersion(@Nullable String version) throws HVersionFormatException {
+            super(version);
+        }
+
+        public ImmutableStringVersion(@Nullable HStringVersion version) {
+            super();
+            if (version != null)
+                this.version = version.version;
+        }
+
+        @Override
+        public void setVersion(@Nullable String version) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setNull() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull ImmutableStringVersion toImmutable() {
+            return this;
+        }
     }
 }

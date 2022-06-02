@@ -22,11 +22,11 @@ public class HVersionComplex implements Serializable {
     /**
      * Single interval without any operation.
      */
-    private final List<HVersionRange> versionRanges = new ArrayList<>();
+    protected final List<HVersionRange> versionRanges = new ArrayList<>();
     /**
      * A single version number.
      */
-    private final List<HStringVersion> versionSingles = new ArrayList<>();
+    protected final List<HStringVersion> versionSingles = new ArrayList<>();
 
     /**
      * Construct an empty interval.
