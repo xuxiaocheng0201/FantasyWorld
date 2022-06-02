@@ -26,7 +26,7 @@ public interface ModImplement {
     }
 
     default @NotNull String getLanguagePath(@Nullable String lang) {
-        return FileTreeStorage.ASSETS_PATH + ModImplement.getModNameFromClass(this.getClass()) + "\\lang\\" +
+        return FileTreeStorage.ASSETS_PATH + getModNameFromClass(this.getClass()) + "\\lang\\" +
                 (lang == null ? GlobalConfigurations.CURRENT_LANGUAGE : lang) + ".lang";
     }
 

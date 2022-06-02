@@ -13,10 +13,10 @@ import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.*;
 import Core.Exceptions.*;
 import HeadLibs.ClassFinder.HClassFinder;
+import HeadLibs.DataStructures.Pair;
 import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
-import HeadLibs.DataStructures.Pair;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
@@ -368,12 +368,12 @@ public class ModClassesLoader {
     private static boolean firstTime = true;
     
     static boolean addMod(@Nullable File modsFile) {
-        if (modsFile == null || !modsFile.exists() || ModClassesLoader.getModsFiles().contains(modsFile))
+        if (modsFile == null || !modsFile.exists() || getModsFiles().contains(modsFile))
             return false;
         boolean first = firstTime;
         firstTime = false;
         ModClassesSorter.getSortedMods().clear();
-        ModClassesLoader.getModsFiles().add(modsFile);
+        getModsFiles().add(modsFile);
         if (loadMods(first)) {
             initializeMods(first);
             return ModClassesSorter.getExceptions().isEmpty();

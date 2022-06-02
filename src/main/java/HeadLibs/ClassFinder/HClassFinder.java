@@ -390,8 +390,7 @@ public class HClassFinder {
                 !(jarFile.getAbsolutePath().endsWith(".zip") || jarFile.getAbsolutePath().endsWith(".jar")))
             return null;
         try {
-            @SuppressWarnings("ClassLoaderInstantiation")
-            HDynamicJarClassLoader classLoader = new HDynamicJarClassLoader(new JarFile(jarFile));
+            @SuppressWarnings("ClassLoaderInstantiation") HDynamicJarClassLoader classLoader = new HDynamicJarClassLoader(new JarFile(jarFile));
             return classLoader.loadClass(className);
         } catch (NoClassDefFoundError error) {
             HLog.logger(HLogLevel.MISTAKE, "HClassFinder.loadClassInJar(\"", jarFile.getAbsolutePath(), "\", \"", className, "\") failed. Message: ", error.getMessage(), ".");

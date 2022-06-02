@@ -14,7 +14,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 public final class DSTComplexMeta implements IDSTBase {
@@ -68,7 +68,7 @@ public final class DSTComplexMeta implements IDSTBase {
     public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         output.writeUTF(this.name);
-        for (Map.Entry<String, IDSTBase> entry : this.dstMap) {
+        for (Entry<String, IDSTBase> entry : this.dstMap) {
             output.writeUTF(entry.getKey());
             entry.getValue().write(output);
         }

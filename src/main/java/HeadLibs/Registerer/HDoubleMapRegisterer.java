@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Elements registerer linked map.
@@ -15,7 +16,7 @@ import java.util.*;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HDoubleMapRegisterer<K, V> implements Serializable, Iterable<Map.Entry<K, V>> {
+public class HDoubleMapRegisterer<K, V> implements Serializable, Iterable<Entry<K, V>> {
     @Serial
     private static final long serialVersionUID = 4210339898718983379L;
 
@@ -197,7 +198,7 @@ public class HDoubleMapRegisterer<K, V> implements Serializable, Iterable<Map.En
      */
     public HDoubleMapRegisterer<V, K> reverse() {
         HDoubleMapRegisterer<V, K> reversed = new HDoubleMapRegisterer<>();
-        for (Map.Entry<K, V> entry: this) {
+        for (Entry<K, V> entry: this) {
             try {
                 reversed.register(entry.getValue(), entry.getKey());
             } catch (HElementRegisteredException ignore) {
@@ -224,7 +225,7 @@ public class HDoubleMapRegisterer<K, V> implements Serializable, Iterable<Map.En
     }
 
     @Override
-    public @NotNull Iterator<Map.Entry<K, V>> iterator() {
+    public @NotNull Iterator<Entry<K, V>> iterator() {
         return this.kvMap.entrySet().iterator();
     }
 

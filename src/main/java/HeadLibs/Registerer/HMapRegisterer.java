@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Elements map registerer.
@@ -15,7 +16,7 @@ import java.util.*;
  * @author xuxiaocheng
  */
 @SuppressWarnings("unused")
-public class HMapRegisterer<K, V> implements Serializable, Iterable<Map.Entry<K, V>> {
+public class HMapRegisterer<K, V> implements Serializable, Iterable<Entry<K, V>> {
     @Serial
     private static final long serialVersionUID = -5018927767212486603L;
 
@@ -166,7 +167,7 @@ public class HMapRegisterer<K, V> implements Serializable, Iterable<Map.Entry<K,
         if (value == null) {
             if (!this.nullValueAllowed)
                 return;
-            for (Map.Entry<K, V> entry: this.map.entrySet())
+            for (Entry<K, V> entry: this.map.entrySet())
                 if (entry.getValue() == null) {
                     this.map.remove(entry.getKey());
                     if (!this.sameValueAllowed)
@@ -174,7 +175,7 @@ public class HMapRegisterer<K, V> implements Serializable, Iterable<Map.Entry<K,
                 }
             return;
         }
-        for (Map.Entry<K, V> entry: this.map.entrySet())
+        for (Entry<K, V> entry: this.map.entrySet())
             if (value.equals(entry.getValue())) {
                 this.map.remove(entry.getKey());
                 if (!this.sameValueAllowed)
@@ -262,7 +263,7 @@ public class HMapRegisterer<K, V> implements Serializable, Iterable<Map.Entry<K,
     }
 
     @Override
-    public @NotNull Iterator<Map.Entry<K, V>> iterator() {
+    public @NotNull Iterator<Entry<K, V>> iterator() {
         return this.map.entrySet().iterator();
     }
 

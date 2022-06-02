@@ -9,11 +9,13 @@ import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
+import java.util.Objects;
 
 public class BoundingBoxCuboid implements IBoundingBoxBase {
     @Serial
@@ -29,7 +31,7 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         }
     }
 
-    private final EntityPos bld = new EntityPos();
+    private final @NotNull EntityPos bld = new EntityPos();
     private int rotationX;
     private int rotationY;
     private int rotationZ;
@@ -41,35 +43,128 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     /* l-left  r-right */
     /* u-up    d-down  */
     private boolean updatedPos = true;
-    private final transient EntityPos flu = new EntityPos();
-    private final transient EntityPos fld = new EntityPos();
-    private final transient EntityPos fru = new EntityPos();
-    private final transient EntityPos frd = new EntityPos();
-    private final transient EntityPos blu = new EntityPos();
-    private final transient EntityPos bru = new EntityPos();
-    private final transient EntityPos brd = new EntityPos();
-    private final transient EntityPos center = new EntityPos();
+    private transient @Nullable EntityPos flu;
+    private transient @Nullable EntityPos fld;
+    private transient @Nullable EntityPos fru;
+    private transient @Nullable EntityPos frd;
+    private transient @Nullable EntityPos blu;
+    private transient @Nullable EntityPos bru;
+    private transient @Nullable EntityPos brd;
+    private transient @Nullable EntityPos center;
+    private transient double minRadius;
+    private transient double maxRadius;
 
-    public void updateCenterPos() {
+    public int getRotationX() {
+        return this.rotationX;
+    }
+
+    public int getRotationY() {
+        return this.rotationY;
+    }
+
+    public int getRotationZ() {
+        return this.rotationZ;
+    }
+
+    public int getLength() {
+        return this.length;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public void updatePos() {
         if (this.updatedPos)
             return;
+        if (this.flu == null)
+            this.flu = new EntityPos();// = new EntityPos(null, 1, 1, 0);
+        if (this.fld == null)
+            this.fld = new EntityPos();// = new EntityPos(null, 1, 0, 0);
+        if (this.fru == null)
+            this.fru = new EntityPos();// = new EntityPos(null, 1, 1, 1);
+        if (this.frd == null)
+            this.frd = new EntityPos();// = new EntityPos(null, 1, 0, 1);
+        if (this.blu == null)
+            this.blu = new EntityPos();// = new EntityPos(null, 0, 1, 0);
+        if (this.bru == null)
+            this.bru = new EntityPos();// = new EntityPos(null, 0, 1, 1);
+        if (this.brd == null)
+            this.brd = new EntityPos();// = new EntityPos(null, 0, 0, 1);
+        if (this.center == null)
+            this.center = new EntityPos();
         //TODO
+        this.fld.setFullX(this.bld.getFullX());
+    }
+
+    public @NotNull EntityPos getFlu() {
+        this.updatePos();
+        assert this.flu != null;
+        return this.flu;
+    }
+
+    public @NotNull EntityPos getFld() {
+        this.updatePos();
+        assert this.fld != null;
+        return this.fld;
+    }
+
+    public @NotNull EntityPos getFru() {
+        this.updatePos();
+        assert this.fru != null;
+        return this.fru;
+    }
+
+    public @NotNull EntityPos getFrd() {
+        this.updatePos();
+        assert this.frd != null;
+        return this.frd;
+    }
+
+    public @NotNull EntityPos getBlu() {
+        this.updatePos();
+        assert this.blu != null;
+        return this.blu;
+    }
+
+    public @NotNull EntityPos getBld() {
+        this.updatePos();
+        return this.bld;
+    }
+
+    public @NotNull EntityPos getBru() {
+        this.updatePos();
+        assert this.bru != null;
+        return this.bru;
+    }
+
+    public @NotNull EntityPos getBrd() {
+        this.updatePos();
+        assert this.brd != null;
+        return this.brd;
     }
 
     @Override
     public @NotNull EntityPos getCentrePos() {
-        this.updateCenterPos();
+        this.updatePos();
+        assert this.center != null;
         return this.center;
     }
 
     @Override
     public double getMaxRadius() {
-        return 0;
+        this.updatePos();
+        return this.maxRadius;
     }
 
     @Override
     public double getMinRadius() {
-        return 0;
+        this.updatePos();
+        return this.minRadius;
     }
 
     @Override
@@ -99,5 +194,32 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         output.writeInt(this.width);
         output.writeInt(this.height);
         output.writeUTF(suffix);
+    }
+
+    @Override
+    public @NotNull String toString() {
+        this.updatePos();
+        return "BoundingBoxCuboid{" +
+                "flu=" + this.flu +
+                ", fld=" + this.fld +
+                ", fru=" + this.fru +
+                ", frd=" + this.frd +
+                ", blu=" + this.blu +
+                ", bld=" + this.bld +
+                ", bru=" + this.bru +
+                ", brd=" + this.brd +
+                '}';
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BoundingBoxCuboid that)) return false;
+        return this.rotationX == that.rotationX && this.rotationY == that.rotationY && this.rotationZ == that.rotationZ && this.length == that.length && this.width == that.width && this.height == that.height && this.bld.equals(that.bld);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.bld, this.rotationX, this.rotationY, this.rotationZ, this.length, this.width, this.height);
     }
 }

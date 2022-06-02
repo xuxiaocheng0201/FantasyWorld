@@ -12,6 +12,7 @@ import Core.Gui.Window;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
+import CraftWorld.Instance.Entity.BoundingBox.BoundingBoxCuboid;
 import CraftWorld.Instance.Gui.LoadingGui;
 import CraftWorld.Instance.Gui.MenuGui;
 import CraftWorld.Utils.SevenZipUtils;
@@ -25,9 +26,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.nio.channels.Selector;
 import java.util.concurrent.TimeUnit;
@@ -186,6 +185,17 @@ public class CraftWorld implements ModImplement {
             break;
         }
         this.world.unload();
+
+        BoundingBoxCuboid boundingBox;
+        try (ObjectInput in = new ObjectInputStream(new FileInputStream("test.dat"))) {
+            boundingBox = (BoundingBoxCuboid) in.readObject();
+        } catch (ClassNotFoundException e) {
+            return;
+        }
+        HLog.logger(boundingBox);
+//        ObjectOutput out = new ObjectOutputStream(new FileOutputStream("test.dat"));
+//        out.writeObject(boundingBox);
+//        out.close();
     }
 
     public void startClient(Socket client) throws IOException {

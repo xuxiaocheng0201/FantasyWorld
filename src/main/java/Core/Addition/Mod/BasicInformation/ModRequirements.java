@@ -1,5 +1,6 @@
 package Core.Addition.Mod.BasicInformation;
 
+import Core.Addition.Mod.BasicInformation.ModRequirements.Requirement.Modifier.BasicModifier;
 import Core.Exceptions.ModRequirementFormatException;
 import HeadLibs.Version.HVersionComplex;
 import HeadLibs.Version.HVersionFormatException;
@@ -17,7 +18,7 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class ModRequirements {
     private final List<Requirement> requirements = new ArrayList<>();
-    private @Nullable Requirement.Modifier.BasicModifier all;
+    private @Nullable BasicModifier all;
 
     public ModRequirements() {
         super();
@@ -28,11 +29,11 @@ public class ModRequirements {
         this.setRequirements(requirements);
     }
 
-    public @Nullable Requirement.Modifier.BasicModifier getAll() {
+    public @Nullable BasicModifier getAll() {
         return this.all;
     }
 
-    public void setAll(@Nullable Requirement.Modifier.BasicModifier all) {
+    public void setAll(@Nullable BasicModifier all) {
         this.all = all;
     }
 
@@ -48,11 +49,11 @@ public class ModRequirements {
         String[] requirementStrings = requirements.split(";");
         for (String requirement: requirementStrings) {
             if ("before:*".equalsIgnoreCase(requirement.strip())) {
-                this.all = Requirement.Modifier.BasicModifier.BEFORE;
+                this.all = BasicModifier.BEFORE;
                 continue;
             }
             if ("after:*".equalsIgnoreCase(requirement.strip())) {
-                this.all = Requirement.Modifier.BasicModifier.AFTER;
+                this.all = BasicModifier.AFTER;
                 continue;
             }
             this.requirements.add(new Requirement(requirement));

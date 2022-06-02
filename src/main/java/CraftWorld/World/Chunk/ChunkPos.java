@@ -4,7 +4,7 @@ import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.World.Block.BlockPos;
+import CraftWorld.World.Block.BlockPos.EFacing;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -327,7 +327,7 @@ public class ChunkPos implements IDSTBase, Cloneable {
         this.z = this.z.subtract(n);
     }
 
-    public void offset(@NotNull BlockPos.EFacing facing) {
+    public void offset(@NotNull EFacing facing) {
         switch (facing) {
             case UP -> this.up();
             case DOWN -> this.down();
@@ -338,7 +338,7 @@ public class ChunkPos implements IDSTBase, Cloneable {
         }
     }
 
-    public void offset(@NotNull BlockPos.EFacing facing, int n) {
+    public void offset(@NotNull EFacing facing, int n) {
         switch (facing) {
             case UP -> this.up(n);
             case DOWN -> this.down(n);
@@ -349,7 +349,7 @@ public class ChunkPos implements IDSTBase, Cloneable {
         }
     }
 
-    public void offset(@NotNull BlockPos.EFacing facing, @Nullable BigInteger n) {
+    public void offset(@NotNull EFacing facing, @Nullable BigInteger n) {
         if (n == null)
             return;
         switch (facing) {

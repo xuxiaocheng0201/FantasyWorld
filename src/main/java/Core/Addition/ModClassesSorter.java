@@ -3,6 +3,8 @@ package Core.Addition;
 import Core.Addition.Mod.BasicInformation.ModAvailableCraftworldVersion;
 import Core.Addition.Mod.BasicInformation.ModName;
 import Core.Addition.Mod.BasicInformation.ModRequirements;
+import Core.Addition.Mod.BasicInformation.ModRequirements.Requirement;
+import Core.Addition.Mod.BasicInformation.ModRequirements.Requirement.Modifier.BasicModifier;
 import Core.Addition.Mod.BasicInformation.ModVersion;
 import Core.Addition.Mod.ModImplement;
 import Core.Craftworld;
@@ -34,7 +36,7 @@ public class ModClassesSorter {
     }
 
     private static final Collection<Pair<Pair<Class<? extends ModImplement>, Pair<Pair<ModName, ModVersion>, ModAvailableCraftworldVersion>>, ModRequirements>> modContainer = new HashSet<>();
-    private static final Collection<Pair<Pair<Class<? extends ModImplement>, ModName>, Pair<Pair<Set<ModName>, Set<ModName>>, ModRequirements.Requirement.Modifier.BasicModifier>>> simpleModContainer = new HashSet<>();
+    private static final Collection<Pair<Pair<Class<? extends ModImplement>, ModName>, Pair<Pair<Set<ModName>, Set<ModName>>, BasicModifier>>> simpleModContainer = new HashSet<>();
 
     private static void buildModContainer() {
         for (Class<? extends ModImplement> modClass: ModClassesLoader.getModList()) {
@@ -53,7 +55,7 @@ public class ModClassesSorter {
             if (!mod.getKey().getValue().getValue().getVersion().versionInRange(Craftworld.CURRENT_VERSION))
                 exceptions.add(new ModUnsupportedCraftworldVersionException(mod.getKey().getKey()));
             //force requirement check
-            for (ModRequirements.Requirement requirement: mod.getValue().getRequirements())
+            for (Requirement requirement: mod.getValue().getRequirements())
                 if (requirement.getModifier().isRequired()) {
                     boolean flag = true;
                     for (Pair<Pair<Class<? extends ModImplement>, Pair<Pair<ModName, ModVersion>, ModAvailableCraftworldVersion>>, ModRequirements> i: modContainer)
@@ -66,15 +68,15 @@ public class ModClassesSorter {
                 }
             //request after and before the same mod
             Collection<ModName> requestAfterModName = new HashSet<>();
-            for (ModRequirements.Requirement requirement: mod.getValue().getRequirements())
-                if (requirement.getModifier().getBasic() == ModRequirements.Requirement.Modifier.BasicModifier.AFTER)
+            for (Requirement requirement: mod.getValue().getRequirements())
+                if (requirement.getModifier().getBasic() == BasicModifier.AFTER)
                     requestAfterModName.add(requirement.getModName());
-            for (ModRequirements.Requirement requirement: mod.getValue().getRequirements())
-                if (requirement.getModifier().getBasic() == ModRequirements.Requirement.Modifier.BasicModifier.BEFORE
+            for (Requirement requirement: mod.getValue().getRequirements())
+                if (requirement.getModifier().getBasic() == BasicModifier.BEFORE
                         && requestAfterModName.contains(requirement.getModName()))
                     exceptions.add(new ModInformationException("Request after and before the same mod '" + requirement.getModName() + "'.", mod.getKey().getKey()));
             //mod version check
-            for (ModRequirements.Requirement requirement: mod.getValue().getRequirements())
+            for (Requirement requirement: mod.getValue().getRequirements())
                 for (Pair<Pair<Class<? extends ModImplement>, Pair<Pair<ModName, ModVersion>, ModAvailableCraftworldVersion>>, ModRequirements> i: modContainer)
                     if (requirement.getModName().equals(i.getKey().getValue().getKey().getKey())
                             && !requirement.getVersionComplex().versionInRange(i.getKey().getValue().getKey().getValue().getVersion()))
@@ -89,13 +91,13 @@ public class ModClassesSorter {
             ModName modName = mod.getKey().getValue().getKey().getKey();
             Set<ModName> modRequireAfter = new HashSet<>();
             Set<ModName> modRequireBefore = new HashSet<>();
-            for (ModRequirements.Requirement requirement: mod.getValue().getRequirements()) {
-                if (requirement.getModifier().getBasic() == ModRequirements.Requirement.Modifier.BasicModifier.BEFORE)
+            for (Requirement requirement: mod.getValue().getRequirements()) {
+                if (requirement.getModifier().getBasic() == BasicModifier.BEFORE)
                     modRequireBefore.add(requirement.getModName());
-                if (requirement.getModifier().getBasic() == ModRequirements.Requirement.Modifier.BasicModifier.AFTER)
+                if (requirement.getModifier().getBasic() == BasicModifier.AFTER)
                     modRequireAfter.add(requirement.getModName());
             }
-            ModRequirements.Requirement.Modifier.BasicModifier modRequireAll = mod.getValue().getAll();
+            BasicModifier modRequireAll = mod.getValue().getAll();
             simpleModContainer.add(Pair.makePair(Pair.makePair(modClass, modName), Pair.makePair(Pair.makePair(modRequireAfter, modRequireBefore), modRequireAll)));
         }
         modContainer.clear(); //GC
@@ -105,7 +107,7 @@ public class ModClassesSorter {
 
     @SuppressWarnings("ConstantConditions")
     private static void sortFromSimpleModContainer() {
-        for (Pair<Pair<Class<? extends ModImplement>, ModName>, Pair<Pair<Set<ModName>, Set<ModName>>, ModRequirements.Requirement.Modifier.BasicModifier>> mod: simpleModContainer) {
+        for (Pair<Pair<Class<? extends ModImplement>, ModName>, Pair<Pair<Set<ModName>, Set<ModName>>, BasicModifier>> mod: simpleModContainer) {
             addSortMod(mod.getKey().getKey(), mod.getKey().getValue(),
                     mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue(), mod.getValue().getValue());
             searchedModsFlag.clear();
@@ -115,19 +117,19 @@ public class ModClassesSorter {
 
     @SuppressWarnings("ConstantConditions")
     private static void addSortMod(Class<? extends ModImplement> modClass, ModName modName,
-                                   Collection<? extends ModName> requireAfter, Collection<? extends ModName> requireBefore, ModRequirements.Requirement.Modifier.BasicModifier requireAll) {
+                                   Collection<? extends ModName> requireAfter, Collection<? extends ModName> requireBefore, BasicModifier requireAll) {
         if (sortedMods.contains(modClass) || searchedModsFlag.contains(modName))
             return;
         searchedModsFlag.add(modName);
         for (ModName after: requireAfter)
-            for (Pair<Pair<Class<? extends ModImplement>, ModName>, Pair<Pair<Set<ModName>, Set<ModName>>, ModRequirements.Requirement.Modifier.BasicModifier>> mod : simpleModContainer)
+            for (Pair<Pair<Class<? extends ModImplement>, ModName>, Pair<Pair<Set<ModName>, Set<ModName>>, BasicModifier>> mod : simpleModContainer)
                 if (after.equals(mod.getKey().getValue())) {
                     addSortMod(mod.getKey().getKey(), mod.getKey().getValue(),
                             mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue(), mod.getValue().getValue());
                     break;
                 }
         for (ModName before : requireBefore)
-            for (Pair<Pair<Class<? extends ModImplement>, ModName>, Pair<Pair<Set<ModName>, Set<ModName>>, ModRequirements.Requirement.Modifier.BasicModifier>> mod : simpleModContainer)
+            for (Pair<Pair<Class<? extends ModImplement>, ModName>, Pair<Pair<Set<ModName>, Set<ModName>>, BasicModifier>> mod : simpleModContainer)
                 if (before.equals(mod.getKey().getValue())) {
                     addSortMod(mod.getKey().getKey(), mod.getKey().getValue(),
                             mod.getValue().getKey().getKey(), mod.getValue().getKey().getValue(), mod.getValue().getValue());
@@ -151,7 +153,7 @@ public class ModClassesSorter {
         if (left > right)
             exceptions.add(new ModInformationException("Mod sort error! left=" + left + ", right=" + right + ", sortedMod=" + sortedMods + ".", modClass));
         else
-            if (requireAll == ModRequirements.Requirement.Modifier.BasicModifier.BEFORE)
+            if (requireAll == BasicModifier.BEFORE)
                 sortedMods.add(left, modClass);
             else
                 sortedMods.add(right, modClass);

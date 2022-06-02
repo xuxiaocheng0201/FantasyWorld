@@ -21,7 +21,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Random;
+import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -277,7 +281,7 @@ public class World implements IDSTBase {
         for (UUID dimensionUUID: this.prepareDimensionsUUID)
             if (!this.loadedDimensions.isRegisteredKey(dimensionUUID))
                 this.getAndLoadDimension(dimensionUUID);
-        for (Map.Entry<String, Integer> entry: this.prepareDimensionsID) {
+        for (Entry<String, Integer> entry: this.prepareDimensionsID) {
             HSetRegisterer<UUID> uuids = this.getGeneratedDimensionsUUID(entry.getKey());
             int count = entry.getValue() - uuids.getRegisteredCount();
             if (count <= 0)
@@ -395,12 +399,12 @@ public class World implements IDSTBase {
             output.writeLong(uuid.getLeastSignificantBits());
         }
         output.writeInt(this.prepareDimensionsID.getRegisteredCount());
-        for (Map.Entry<String, Integer> entry: this.prepareDimensionsID) {
+        for (Entry<String, Integer> entry: this.prepareDimensionsID) {
             output.writeUTF(entry.getKey());
             output.writeInt(entry.getValue());
         }
         output.writeInt(this.generatedDimensions.getRegisteredCount());
-        for (Map.Entry<String, HSetRegisterer<UUID>> entries: this.generatedDimensions) {
+        for (Entry<String, HSetRegisterer<UUID>> entries: this.generatedDimensions) {
             output.writeUTF(entries.getKey());
             output.writeInt(entries.getValue().getRegisteredCount());
             for (UUID uuid: entries.getValue()) {

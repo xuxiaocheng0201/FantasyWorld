@@ -17,6 +17,7 @@ import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.security.SecureRandom;
@@ -127,7 +128,7 @@ public class Dimension implements IDSTBase {
         return this.random;
     }
 
-    public Chunk loadChunk(ChunkPos pos) throws IOException {
+    public @Nullable Chunk loadChunk(ChunkPos pos) throws IOException {
         try {
             return this.loadedChunks.getElement(pos);
         } catch (HElementNotRegisteredException ignore) {

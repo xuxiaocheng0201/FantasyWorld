@@ -124,8 +124,7 @@ public class HClassHelper {
         }
         Constructor<?>[] constructors = aClass.getDeclaredConstructors();
         for (Constructor<?> constructor: constructors) {
-            @SuppressWarnings("SuspiciousArrayCast")
-            Class<?>[] types = (Class<?>[]) constructor.getGenericParameterTypes();
+            @SuppressWarnings("SuspiciousArrayCast") Class<?>[] types = (Class<?>[]) constructor.getGenericParameterTypes();
             Collection<Object> args = new ArrayList<>(types.length);
             for (Class<?> type: types) {
                 if (type.equals(boolean.class) || type.equals(Boolean.class)) {

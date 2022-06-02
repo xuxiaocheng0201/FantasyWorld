@@ -288,7 +288,7 @@ public class HLogLevel {
         }
 
         /**
-         * Use {@link HLogLevel.LogRegistererMap#register(HLogLevel)}
+         * Use {@link LogRegistererMap#register(HLogLevel)}
          */
         @Override
         @Deprecated
@@ -297,7 +297,7 @@ public class HLogLevel {
         }
 
         /**
-         * Use {@link HLogLevel.LogRegistererMap#register(HLogLevel)}
+         * Use {@link LogRegistererMap#register(HLogLevel)}
          */
         @Override
         @Deprecated

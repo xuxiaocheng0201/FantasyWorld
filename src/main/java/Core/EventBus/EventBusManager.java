@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -120,7 +119,7 @@ public class EventBusManager {
             return;
         registeredClassesFlag.add(aClass);
         if ("*".equals(HStringHelper.notNullStrip(subscribe.eventBus()))) {
-            for (EventBus eventBus: EventBusManager.getAllEventBus())
+            for (EventBus eventBus: getAllEventBus())
                 eventBus.register(instance);
             return;
         }

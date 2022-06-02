@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Implement at new mods element util classes.
@@ -18,7 +18,7 @@ import java.util.Map;
  * @see NewElementUtilCore
  */
 @SuppressWarnings("unused")
-public abstract class ElementUtil<T extends ElementImplement> implements Iterable<Map.Entry<String, Class<? extends T>>> {
+public abstract class ElementUtil<T extends ElementImplement> implements Iterable<Entry<String, Class<? extends T>>> {
     protected final HMapRegisterer<String, Class<? extends T>> elements = new HMapRegisterer<>(false, false, false);
 
     public void register(@NotNull String key, @NotNull Class<? extends T> value) throws HElementRegisteredException {
@@ -79,7 +79,7 @@ public abstract class ElementUtil<T extends ElementImplement> implements Iterabl
     }
 
     @Override
-    public @NotNull Iterator<Map.Entry<String, Class<? extends T>>> iterator() {
+    public @NotNull Iterator<Entry<String, Class<? extends T>>> iterator() {
         return this.elements.iterator();
     }
 

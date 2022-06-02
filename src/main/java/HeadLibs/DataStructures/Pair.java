@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 /**
@@ -14,7 +14,7 @@ import java.util.Objects;
  * @param <V> the type of value
  */
 @SuppressWarnings("unused")
-public class Pair<K, V> implements Map.Entry<K, V>, Serializable {
+public class Pair<K, V> implements Entry<K, V>, Serializable {
     @Serial
     private static final long serialVersionUID = -321522862154374460L;
 
@@ -82,7 +82,7 @@ public class Pair<K, V> implements Map.Entry<K, V>, Serializable {
         return new Pair<>(key, value);
     }
 
-    public static <K, V> @NotNull Pair<K, V> makePair(@Nullable Map.Entry<? extends K, ? extends V> entry) {
+    public static <K, V> @NotNull Pair<K, V> makePair(@Nullable Entry<? extends K, ? extends V> entry) {
         if (entry == null)
             return new Pair<>();
         return new Pair<>(entry.getKey(), entry.getValue());
