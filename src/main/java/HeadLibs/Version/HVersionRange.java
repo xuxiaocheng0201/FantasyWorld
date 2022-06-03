@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Range for versions.
+ * Range for versions. Default: Universal.
  * String form: [,] or (,) or [,) or (,]
  * @author xuxiaocheng
  */

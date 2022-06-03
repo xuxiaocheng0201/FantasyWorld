@@ -10,10 +10,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="More getter in BoundingBoxCuboid.">
-      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Immutable HVersion.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModRequirements.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModRequirements.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -177,9 +177,9 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HMapRegisterer.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HSetRegisterer.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionFormatException.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -205,6 +205,9 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;last_opened_file_path&quot;: &quot;C:/Users/admin/Desktop/BMISystem/2.5-ParkingSys&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;库&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
   }
@@ -287,13 +290,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00091" summary="Improve eventbus creator.">
-      <created>1650348268030</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1650348268030</updated>
     </task>
     <task id="LOCAL-00092" summary="Improve eventbus manager.">
       <created>1650418909613</created>
@@ -631,7 +627,14 @@
       <option name="project" value="LOCAL" />
       <updated>1654139779767</updated>
     </task>
-    <option name="localTasksCounter" value="140" />
+    <task id="LOCAL-00140" summary="Immutable HVersion.">
+      <created>1654143895117</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1654143895118</updated>
+    </task>
+    <option name="localTasksCounter" value="141" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -673,7 +676,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="More callback events." />
     <MESSAGE value="Restruct codes." />
     <MESSAGE value="Preparing loading gui." />
     <MESSAGE value="Link loading gui to menu gui." />
@@ -698,7 +700,8 @@
     <MESSAGE value="Fix some bugs." />
     <MESSAGE value="More getter in  BoundingBoxCuboid.java" />
     <MESSAGE value="More getter in BoundingBoxCuboid." />
-    <option name="LAST_COMMIT_MESSAGE" value="More getter in BoundingBoxCuboid." />
+    <MESSAGE value="Immutable HVersion." />
+    <option name="LAST_COMMIT_MESSAGE" value="Immutable HVersion." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

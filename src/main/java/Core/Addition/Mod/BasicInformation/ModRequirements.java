@@ -77,13 +77,13 @@ public class ModRequirements {
 
         public Requirement() {
             super();
-            this.versionComplex.setAll();
+            this.versionComplex.setUniversal();
         }
 
         public Requirement(@Nullable ModName modName) {
             super();
             this.setModName(modName);
-            this.versionComplex.setAll();
+            this.versionComplex.setUniversal();
         }
 
         public Requirement(@Nullable ModName modName, @Nullable HVersionComplex versionComplex) {
@@ -150,7 +150,7 @@ public class ModRequirements {
 
         public void setVersionComplex(@Nullable HVersionComplex versionComplex) {
             if (versionComplex == null) {
-                this.versionComplex.setAll();
+                this.versionComplex.setUniversal();
                 return;
             }
             this.versionComplex = versionComplex;
@@ -160,7 +160,7 @@ public class ModRequirements {
             if (modRequirement == null || modRequirement.isBlank()) {
                 this.modifier = Modifier.AFTER;
                 this.modName.setName("");
-                this.versionComplex.setAll();
+                this.versionComplex.setUniversal();
                 return;
             }
             int locationColon = modRequirement.indexOf(':');
@@ -171,7 +171,7 @@ public class ModRequirements {
             int locationAt = modComplexString.lastIndexOf('@');
             if (locationAt == -1) {
                 this.modName.setName(modComplexString);
-                this.versionComplex.setAll();
+                this.versionComplex.setUniversal();
                 return;
             }
             this.modName.setName(modComplexString.substring(0, locationAt));
