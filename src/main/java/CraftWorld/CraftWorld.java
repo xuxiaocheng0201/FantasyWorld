@@ -17,6 +17,7 @@ import CraftWorld.Instance.Gui.LoadingGui;
 import CraftWorld.Instance.Gui.MenuGui;
 import CraftWorld.Utils.SevenZipUtils;
 import CraftWorld.World.World;
+import HeadLibs.Helper.HMathHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
@@ -193,6 +194,12 @@ public class CraftWorld implements ModImplement {
             return;
         }
         HLog.logger(boundingBox);
+        HLog.logger(HMathHelper.cos((float) Math.PI * 2 / 3));
+        HLog.logger(HMathHelper.cosTaylor(Math.PI * 2 / 3));
+        HLog.logger(StrictMath.cos(Math.PI * 2 / 3));
+        HLog.logger(HMathHelper.cos((float) Math.PI / 2));
+        HLog.logger(HMathHelper.cosTaylor(Math.PI / 2));
+        HLog.logger(StrictMath.cos( Math.PI / 2));
 //        ObjectOutput out = new ObjectOutputStream(new FileOutputStream("test.dat"));
 //        out.writeObject(boundingBox);
 //        out.close();

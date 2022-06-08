@@ -255,6 +255,14 @@ public class HVersionComplex implements Serializable {
         return new ImmutableVersionComplex(this);
     }
 
+    public @NotNull List<HVersionRange> getVersionRanges() {
+        return this.versionRanges;
+    }
+
+    public @NotNull List<HStringVersion> getVersionSingles() {
+        return this.versionSingles;
+    }
+
     @Override
     public @NotNull String toString() {
         this.autoFix();
@@ -273,16 +281,8 @@ public class HVersionComplex implements Serializable {
         return builder.toString();
     }
 
-    public @NotNull List<HVersionRange> getVersionRanges() {
-        return this.versionRanges;
-    }
-
-    public @NotNull List<HStringVersion> getVersionSingles() {
-        return this.versionSingles;
-    }
-
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof HVersionComplex that)) return false;
         return this.versionRanges.equals(that.versionRanges) && this.versionSingles.equals(that.versionSingles);

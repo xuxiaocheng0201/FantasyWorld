@@ -5,6 +5,7 @@ import CraftWorld.DST.DSTUtils;
 import CraftWorld.Entity.BoundingBox.BoundingBoxUtils;
 import CraftWorld.Entity.BoundingBox.IBoundingBoxBase;
 import CraftWorld.Entity.EntityPos;
+import HeadLibs.Helper.HMathHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -98,7 +99,7 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         if (this.center == null)
             this.center = new EntityPos();
         //TODO
-        this.fld.setFullX(this.bld.getFullX());
+        this.brd.setFullX(this.height * HMathHelper.cosTaylor(this.rotationX));
     }
 
     public @NotNull EntityPos getFlu() {

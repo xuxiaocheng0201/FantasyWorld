@@ -7,12 +7,13 @@ import java.math.RoundingMode;
 /**
  * Quicker math calculations.
  */
-@SuppressWarnings({"CheckForOutOfMemoryOnLargeArrayAllocation", "unused", "MagicNumber", "NumericCastThatLosesPrecision"})
+@SuppressWarnings({"unused", "MagicNumber", "NumericCastThatLosesPrecision"})
 public class HMathHelper {
     /** Archimede's constant PI, ratio of circle circumference to diameter. */
-    public static final double PI = 3.141592653589793;
+    public static final double PI = 3.14159265358979323846;  // Math.PI
+    public static final double HALF_PI = 1.5707963267948966;  // PI / 2
     /** Napier's constant e, base of the natural logarithm. */
-    public static final double E = 2.718281828459045;
+    public static final double E = 2.7182818284590452354;  //Math.E
 
     public static final float SQRT_2 = 1.4142135623730951F;
     public static final float SQRT_3 = 1.7320508075688772F;
@@ -20,8 +21,10 @@ public class HMathHelper {
     public static final float SQRT_6 = 2.4494897427831781F;
     public static final float SQRT_7 = 2.6457513110645907F;
 
+    public static double FLOAT_ERROR = 1.0E-5F;
+
     /** A table of sin values computed from 0 (inclusive) to 2*pi (exclusive), with steps of 2*PI / 65536. */
-    private static final float[] SIN_TABLE = new float[65536];
+    private static final double[] SIN_TABLE;
     /**
      * Though it looks like an array, this is really more like a mapping.  Key (index of this array) is the upper 5 bits
      * of the result of multiplying a 32-bit unsigned integer by the B(2, 5) De Bruijn sequence 0x077CB531.  Value
@@ -37,15 +40,32 @@ public class HMathHelper {
     /**
      * sin looked up in a table.
      */
-    public static float sin(float value) {
+    public static double sin(float value) {
         return SIN_TABLE[(int)(value * 10430.378F) & 65535];
     }
 
     /**
      * cos looked up in the sin table with the appropriate offset.
      */
-    public static float cos(float value) {
+    public static double cos(float value) {
         return SIN_TABLE[(int)(value * 10430.378F + 16384.0F) & 65535];
+    }
+
+    private static final double taylor0 = -4.172325134277344E-7;  // -0x7 / (double) 0x1000000
+    private static final double taylor1 = 1.0000254133639503;  // 0x1922253 / (double) 0x1000000 * 2 / PI;
+    private static final double taylor2 = -2.6529055565837706E-4;  // -0x2ae6 / (double) 0x1000000 * 4 / (PI * PI);
+    private static final double taylor3 = -0.1656240165739414;  // -0xa45511 / (double) 0x1000000 * 8 / (PI * PI * PI);
+    private static final double taylor4 = -0.0019645325977732703;  // -0x30fd3 / (double) 0x1000000 * 16 / (PI * PI * PI * PI);
+    private static final double taylor5 = 0.010257509876096116;  // 0x191cac / (double) 0x1000000 * 32 / (PI * PI * PI * PI * PI);
+    private static final double taylor6 = -9.580378236498403E-4;  // -0x3af27 / (double) 0x1000000 * 64 / (PI * PI * PI * PI * PI * PI);
+
+    @SuppressWarnings("OverlyComplexArithmeticExpression")
+    public static double sinTaylor(double x) {
+        return ((((((((taylor6 * x) + taylor5) * x) + taylor4) * x + taylor3) * x) + taylor2) * x + taylor1) * x + taylor0;
+    }
+
+    public static double cosTaylor(double x) {
+        return sinTaylor(HALF_PI - x);
     }
 
     /**
@@ -128,21 +148,21 @@ public class HMathHelper {
      * Return the absolute value of an int.
      */
     public static int abs(int value) {
-        return value >= 0 ? value : -value;
+        return value < 0 ? -value : value;
     }
 
     /**
      * Return the absolute value of a float.
      */
     public static float abs(float value) {
-        return value >= 0.0F ? value : -value;
+        return value < 0.0F ? -value : value;
     }
 
     /**
      * Return the absolute value of a double.
      */
     public static double abs(double value) {
-        return value >= 0.0F ? value : -value;
+        return value < 0.0F ? -value : value;
     }
 
     /**
@@ -314,7 +334,7 @@ public class HMathHelper {
      */
     public static double average(int[] values) {
         int i = 0;
-        for (int j : values)
+        for (int j: values)
             i += j;
         return (double) i / values.length;
     }
@@ -324,7 +344,7 @@ public class HMathHelper {
      */
     public static double average(float[] values) {
         float i = 0;
-        for (float j : values)
+        for (float j: values)
             i += j;
         return (double) i / values.length;
     }
@@ -333,8 +353,8 @@ public class HMathHelper {
      * Return the average of a double array.
      */
     public static double average(double[] values) {
-        double i = 0L;
-        for (double j : values)
+        double i = 0;
+        for (double j: values)
             i += j;
         return  i / values.length;
     }
@@ -343,14 +363,14 @@ public class HMathHelper {
      * Compare two float values.
      */
     public static boolean decimalEquals(float value1, float value2) {
-        return abs(value2 - value1) < 1.0E-5F;
+        return abs(value2 - value1) < FLOAT_ERROR;
     }
 
     /**
      * Compare two double values.
      */
     public static boolean decimalEquals(double value1, double value2) {
-        return abs(value2 - value1) < 1.0E-5F;
+        return abs(value2 - value1) < FLOAT_ERROR;
     }
 
     /**
@@ -492,9 +512,7 @@ public class HMathHelper {
             return value;
         if (value == 0)
             return interval;
-        int interval_ = interval;
-        if (value < 0)
-            interval_ = -interval_;
+        int interval_ = abs(interval);
         return (value / interval_) * interval_;
     }
 
@@ -550,17 +568,16 @@ public class HMathHelper {
     }
 
     static {
-        for (int i = 0; i < 65536; ++i)
-            SIN_TABLE[i] = (float) StrictMath.sin(i * Math.PI * 2.0D / 65536.0D);
-
         MULTIPLY_DE_BRUIJN_BIT_POSITION = new int[] {
                  0,  1, 28,  2, 29, 14, 24,  3, 30, 22, 20, 15, 25, 17,  4,  8,
                 31, 27, 13, 23, 21, 19, 16,  7, 26, 12, 18,  6, 11,  5, 10,  9};
-
         FRAC_BIAS = Double.longBitsToDouble(4805340802404319232L);
+
+        SIN_TABLE = new double[65536];
+        for (int i = 0; i < 65536; ++i)
+            SIN_TABLE[i] = StrictMath.sin(i * Math.PI * 2.0D / 65536.0D);
         ASIN_TAB = new double[257];
         COS_TAB = new double[257];
-
         for (int i = 0; i < 257; ++i)
         {
             double asin = StrictMath.asin(i / 256.0D);
