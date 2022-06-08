@@ -25,6 +25,9 @@ public class HMathHelper {
 
     /** A table of sin values computed from 0 (inclusive) to 2*pi (exclusive), with steps of 2*PI / 65536. */
     private static final double[] SIN_TABLE;
+    private static final double[] ASIN_TABLE;
+    private static final double[] COS_TABLE;
+    //private static final double[] ACOS_TABLE;
     /**
      * Though it looks like an array, this is really more like a mapping.  Key (index of this array) is the upper 5 bits
      * of the result of multiplying a 32-bit unsigned integer by the B(2, 5) De Bruijn sequence 0x077CB531.  Value
@@ -34,8 +37,6 @@ public class HMathHelper {
      */
     private static final int[] MULTIPLY_DE_BRUIJN_BIT_POSITION;
     private static final double FRAC_BIAS;
-    private static final double[] ASIN_TAB;
-    private static final double[] COS_TAB;
 
     /**
      * sin looked up in a table.
@@ -49,23 +50,6 @@ public class HMathHelper {
      */
     public static double cos(float value) {
         return SIN_TABLE[(int)(value * 10430.378F + 16384.0F) & 65535];
-    }
-
-    private static final double taylor0 = -4.172325134277344E-7;  // -0x7 / (double) 0x1000000
-    private static final double taylor1 = 1.0000254133639503;  // 0x1922253 / (double) 0x1000000 * 2 / PI;
-    private static final double taylor2 = -2.6529055565837706E-4;  // -0x2ae6 / (double) 0x1000000 * 4 / (PI * PI);
-    private static final double taylor3 = -0.1656240165739414;  // -0xa45511 / (double) 0x1000000 * 8 / (PI * PI * PI);
-    private static final double taylor4 = -0.0019645325977732703;  // -0x30fd3 / (double) 0x1000000 * 16 / (PI * PI * PI * PI);
-    private static final double taylor5 = 0.010257509876096116;  // 0x191cac / (double) 0x1000000 * 32 / (PI * PI * PI * PI * PI);
-    private static final double taylor6 = -9.580378236498403E-4;  // -0x3af27 / (double) 0x1000000 * 64 / (PI * PI * PI * PI * PI * PI);
-
-    @SuppressWarnings("OverlyComplexArithmeticExpression")
-    public static double sinTaylor(double x) {
-        return ((((((((taylor6 * x) + taylor5) * x) + taylor4) * x + taylor3) * x) + taylor2) * x + taylor1) * x + taylor0;
-    }
-
-    public static double cosTaylor(double x) {
-        return sinTaylor(HALF_PI - x);
     }
 
     /**
@@ -162,7 +146,7 @@ public class HMathHelper {
      * Return the absolute value of a double.
      */
     public static double abs(double value) {
-        return value < 0.0F ? -value : value;
+        return value < 0.0D ? -value : value;
     }
 
     /**
@@ -290,6 +274,42 @@ public class HMathHelper {
         if (slide > 1.0D)
             return upperBnd;
         return lowerBnd + (upperBnd - lowerBnd) * slide;
+    }
+
+    /**
+     * Return ths slided value, cyclically clamped to be within the lower(inclusive) and upper(exclusive) limits.
+     */
+    public static int cyclicClamp(int num, int minimum, int maximum) {
+        int interval = maximum - minimum;
+        if (num < minimum)
+            return num + interval * floorDivide(minimum - num, interval) + interval;
+        if (num >= maximum)
+            return num - interval * floorDivide(num - maximum, interval) - interval;
+        return num;
+    }
+
+    /**
+     * Return ths slided value, cyclically clamped to be within the lower(inclusive) and upper(exclusive) limits.
+     */
+    public static float cyclicClamp(float num, float minimum, float maximum) {
+        float interval = maximum - minimum;
+        if (num < minimum)
+            return num + interval * floorDivide(minimum - num, interval) + interval;
+        if (num >= maximum)
+            return num - interval * floorDivide(num - maximum, interval) - interval;
+        return num;
+    }
+
+    /**
+     * Return ths slided value, cyclically clamped to be within the lower(inclusive) and upper(exclusive) limits.
+     */
+    public static double cyclicClamp(double num, double minimum, double maximum) {
+        double interval = maximum - minimum;
+        if (num < minimum)
+            return num + interval * floorDivide(minimum - num, interval) + interval;
+        if (num >= maximum)
+            return num - interval * floorDivide(num - maximum, interval) - interval;
+        return num;
     }
 
     /**
@@ -497,9 +517,7 @@ public class HMathHelper {
             return value;
         if (value == 0)
             return interval;
-        int interval_ = interval;
-        if (value < 0)
-            interval_ = -interval_;
+        int interval_ = abs(interval);
         int n = value % interval_;
         return n == 0 ? value : value - n + interval_;
     }
@@ -517,16 +535,11 @@ public class HMathHelper {
     }
 
     /**
-     * Compute 1/sqrt(n) using <a href="https://en.wikipedia.org/wiki/Fast_inverse_square_root">the fast inverse square
-     * root</a> with a constant of 0x5FE6EB50C7B537AA.
+     * Compute 1/sqrt(n) using <a href="https://en.wikipedia.org/wiki/Fast_inverse_square_root">the fast inverse square root</a> with a constant of 0x5FE6EB50C7B537AA.
      */
     public static double quicklyInverseSqrt(double n) {
-        double d0 = 0.5D * n;
-        long i = Double.doubleToRawLongBits(n);
-        i = 6910469410427058090L - (i >> 1);
-        double d = Double.longBitsToDouble(i);
-        d = d * (1.5D - d0 * d * d);
-        return d;
+        double d = Double.longBitsToDouble(0x5FE6EB50C7B537AAL - (Double.doubleToRawLongBits(n) >> 1));
+        return d * (1.5D - 0.5D * n * d * d);
     }
 
     public static double atan2(double y, double x) {
@@ -552,8 +565,8 @@ public class HMathHelper {
         b = b * d9;
         double d2 = FRAC_BIAS + b;
         int i = (int)Double.doubleToRawLongBits(d2);
-        double d3 = ASIN_TAB[i];
-        double d4 = COS_TAB[i];
+        double d3 = ASIN_TABLE[i];
+        double d4 = COS_TABLE[i];
         double d5 = d2 - FRAC_BIAS;
         double d6 = b * d4 - a * d5;
         double d7 = (6.0D + d6 * d6) * d6 * 0.16666666666666666D;
@@ -571,18 +584,18 @@ public class HMathHelper {
         MULTIPLY_DE_BRUIJN_BIT_POSITION = new int[] {
                  0,  1, 28,  2, 29, 14, 24,  3, 30, 22, 20, 15, 25, 17,  4,  8,
                 31, 27, 13, 23, 21, 19, 16,  7, 26, 12, 18,  6, 11,  5, 10,  9};
-        FRAC_BIAS = Double.longBitsToDouble(4805340802404319232L);
 
+        FRAC_BIAS = Double.longBitsToDouble(4805340802404319232L);
         SIN_TABLE = new double[65536];
         for (int i = 0; i < 65536; ++i)
             SIN_TABLE[i] = StrictMath.sin(i * Math.PI * 2.0D / 65536.0D);
-        ASIN_TAB = new double[257];
-        COS_TAB = new double[257];
+        ASIN_TABLE = new double[257];
+        COS_TABLE = new double[257];
         for (int i = 0; i < 257; ++i)
         {
             double asin = StrictMath.asin(i / 256.0D);
-            COS_TAB[i] = StrictMath.cos(asin);
-            ASIN_TAB[i] = asin;
+            COS_TABLE[i] = StrictMath.cos(asin);
+            ASIN_TABLE[i] = asin;
         }
     }
 }

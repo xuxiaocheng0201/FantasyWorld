@@ -187,22 +187,21 @@ public class CraftWorld implements ModImplement {
         }
         this.world.unload();
 
-        BoundingBoxCuboid boundingBox;
-        try (ObjectInput in = new ObjectInputStream(new FileInputStream("test.dat"))) {
-            boundingBox = (BoundingBoxCuboid) in.readObject();
-        } catch (ClassNotFoundException e) {
-            return;
-        }
-        HLog.logger(boundingBox);
-        HLog.logger(HMathHelper.cos((float) Math.PI * 2 / 3));
-        HLog.logger(HMathHelper.cosTaylor(Math.PI * 2 / 3));
-        HLog.logger(StrictMath.cos(Math.PI * 2 / 3));
-        HLog.logger(HMathHelper.cos((float) Math.PI / 2));
-        HLog.logger(HMathHelper.cosTaylor(Math.PI / 2));
-        HLog.logger(StrictMath.cos( Math.PI / 2));
-//        ObjectOutput out = new ObjectOutputStream(new FileOutputStream("test.dat"));
-//        out.writeObject(boundingBox);
-//        out.close();
+//        BoundingBoxCuboid boundingBox;
+//        try (ObjectInput in = new ObjectInputStream(new FileInputStream("test.dat"))) {
+//            boundingBox = (BoundingBoxCuboid) in.readObject();
+//        } catch (ClassNotFoundException e) {
+//            return;
+//        }
+//        HLog.logger(boundingBox);
+//        HLog.logger(HMathHelper.cos( Math.PI * 2 / 3));
+//        HLog.logger(StrictMath.cos(Math.PI * 2 / 3));
+//        HLog.logger(HMathHelper.cos( Math.PI / 2));
+//        HLog.logger(StrictMath.cos( Math.PI / 2));
+        ObjectOutput out = new ObjectOutputStream(new FileOutputStream("test.dat"));
+        out.writeObject(new BoundingBoxCuboid());
+        out.close();
+        HLog.logger(HMathHelper.cyclicClamp( 11.0D, 0, 2));
     }
 
     public void startClient(Socket client) throws IOException {

@@ -10,15 +10,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Immutable HVersion.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Entity/BoundingBox/BoundingBoxSphere.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix some things.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/Angle.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Entity/BoundingBox/BoundingBoxCuboid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Entity/BoundingBox/BoundingBoxCuboid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HCharHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HCharHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HMathHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HMathHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -294,13 +291,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00093" summary="Cached HClassHelper#getInstance(Class, boolean).">
-      <created>1650425342975</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1650425342975</updated>
     </task>
     <task id="LOCAL-00094" summary="Allow mods to add MODS FILE PATH.">
       <created>1650532887829</created>
@@ -638,7 +628,14 @@
       <option name="project" value="LOCAL" />
       <updated>1654255178420</updated>
     </task>
-    <option name="localTasksCounter" value="142" />
+    <task id="LOCAL-00142" summary="Fix some things.">
+      <created>1654657984618</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1654657984620</updated>
+    </task>
+    <option name="localTasksCounter" value="143" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -680,7 +677,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Restruct codes." />
     <MESSAGE value="Preparing loading gui." />
     <MESSAGE value="Link loading gui to menu gui." />
     <MESSAGE value="Doing UUID." />
@@ -705,7 +701,8 @@
     <MESSAGE value="More getter in  BoundingBoxCuboid.java" />
     <MESSAGE value="More getter in BoundingBoxCuboid." />
     <MESSAGE value="Immutable HVersion." />
-    <option name="LAST_COMMIT_MESSAGE" value="Immutable HVersion." />
+    <MESSAGE value="Fix some things." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix some things." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
