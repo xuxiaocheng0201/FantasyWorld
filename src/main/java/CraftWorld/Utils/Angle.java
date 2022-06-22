@@ -16,7 +16,8 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class Angle implements IDSTBase {
+@SuppressWarnings("MagicNumber")
+public class Angle implements IDSTBase, Comparable<Angle> {
     @Serial
     private static final long serialVersionUID = -7098267381934801986L;
     public static final String id = "Angle";
@@ -31,7 +32,7 @@ public class Angle implements IDSTBase {
     }
 
     private static final double MIN_ANGLE = 0.0D;
-    private static final double MAX_ANGLE = 2 * HMathHelper.PI;
+    private static final double MAX_ANGLE = HMathHelper.DOUBLE_PI;
 
     private double angle;
 
@@ -41,15 +42,59 @@ public class Angle implements IDSTBase {
 
     public Angle(double angle) {
         super();
-        this.setAngle(angle);
+        this.setAngleRadian(angle);
     }
 
-    public double getAngle() {
+    public double getAngleRadian() {
         return this.angle;
     }
 
-    public void setAngle(double angle) {
+    public double getAngleDegree() {
+        return Math.toDegrees(this.angle);
+    }
+
+    public void setAngleRadian(double angle) {
         this.angle = HMathHelper.cyclicClamp(angle, MIN_ANGLE, MAX_ANGLE);
+    }
+
+    public void setAngleDegree(double angle) {
+        this.angle = HMathHelper.cyclicClamp(Math.toRadians(angle), MIN_ANGLE, MAX_ANGLE);
+    }
+
+    public void addAngleRadian(double angle) {
+        this.angle += angle;
+        if (this.angle < MIN_ANGLE || this.angle > MAX_ANGLE) // a bit quicker
+            this.angle = HMathHelper.cyclicClamp(this.angle, MIN_ANGLE, MAX_ANGLE);
+    }
+
+    public void addAngleDegree(double angle) {
+        this.addAngleRadian(Math.toRadians(angle));
+    }
+
+    public void subAngleRadian(double angle) {
+        this.angle -= angle;
+        if (this.angle < MIN_ANGLE || this.angle > MAX_ANGLE) // a bit quicker
+            this.angle = HMathHelper.cyclicClamp(this.angle, MIN_ANGLE, MAX_ANGLE);
+    }
+
+    public void subAngleDegree(double angle) {
+        this.subAngleRadian(Math.toRadians(angle));
+    }
+
+    public double sin() {
+        return HMathHelper.sin(this.angle);
+    }
+
+    public double cos() {
+        return HMathHelper.cos(this.angle);
+    }
+
+    public double tan() {
+        return HMathHelper.tan(this.angle);
+    }
+
+    public double cot() {
+        return HMathHelper.cot(this.angle);
     }
 
     @Override
@@ -68,7 +113,7 @@ public class Angle implements IDSTBase {
 
     @Override
     public @NotNull String toString() {
-        return "Angle:" + this.angle;
+        return "Angle:" + this.angle + " rad(" + this.angle * 180.0D / HMathHelper.PI + "°)";
     }
 
     @Override
@@ -81,5 +126,10 @@ public class Angle implements IDSTBase {
     @Override
     public int hashCode() {
         return Objects.hash(this.angle);
+    }
+
+    @Override
+    public int compareTo(@NotNull Angle o) {
+        return Double.compare(this.angle, o.angle);
     }
 }

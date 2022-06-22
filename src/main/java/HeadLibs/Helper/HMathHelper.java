@@ -12,6 +12,7 @@ public class HMathHelper {
     /** Archimede's constant PI, ratio of circle circumference to diameter. */
     public static final double PI = 3.14159265358979323846;  // Math.PI
     public static final double HALF_PI = 1.5707963267948966;  // PI / 2
+    public static final double DOUBLE_PI = 6.283185307179586;  // PI * 2
     /** Napier's constant e, base of the natural logarithm. */
     public static final double E = 2.7182818284590452354;  //Math.E
 
@@ -21,12 +22,22 @@ public class HMathHelper {
     public static final float SQRT_6 = 2.4494897427831781F;
     public static final float SQRT_7 = 2.6457513110645907F;
 
-    public static double FLOAT_ERROR = 1.0E-5F;
+    public static double DECIMAL_ERROR = 1.0E-5F;
 
-    /** A table of sin values computed from 0 (inclusive) to 2*pi (exclusive), with steps of 2*PI / 65536. */
+    private static final int TABLE_STEP = 65536;
+    private static final int ARC_TABLE_STEP = 256;
+    /**
+     * A table of sin values computed from 0 (inclusive) to 2*pi (exclusive)
+     * Step: 2*PI / 65536({@code TABLE_STEP}).
+     */
     private static final double[] SIN_TABLE;
-    private static final double[] ASIN_TABLE;
     private static final double[] COS_TABLE;
+    private static final double[] TAN_TABLE;
+    private static final double[] COT_TABLE;
+    private static int toTableStep(double angle) {
+        return (int)(angle * (TABLE_STEP / 2.0D / PI)) & (TABLE_STEP - 1);
+    }
+
     //private static final double[] ACOS_TABLE;
     /**
      * Though it looks like an array, this is really more like a mapping.  Key (index of this array) is the upper 5 bits
@@ -36,20 +47,33 @@ public class HMathHelper {
      * this number" calculations.
      */
     private static final int[] MULTIPLY_DE_BRUIJN_BIT_POSITION;
-    private static final double FRAC_BIAS;
 
     /**
      * sin looked up in a table.
      */
-    public static double sin(float value) {
-        return SIN_TABLE[(int)(value * 10430.378F) & 65535];
+    public static double sin(double angle) {
+        return SIN_TABLE[toTableStep(angle)];
     }
 
     /**
-     * cos looked up in the sin table with the appropriate offset.
+     * cos looked up in a table.
      */
-    public static double cos(float value) {
-        return SIN_TABLE[(int)(value * 10430.378F + 16384.0F) & 65535];
+    public static double cos(double angle) {
+        return COS_TABLE[toTableStep(angle)];
+    }
+
+    /**
+     * tan looked up in a table.
+     */
+    public static double tan(double angle) {
+        return TAN_TABLE[toTableStep(angle)];
+    }
+
+    /**
+     * cot looked up in a table.
+     */
+    public static double cot(double angle) {
+        return COT_TABLE[toTableStep(angle)];
     }
 
     /**
@@ -382,15 +406,15 @@ public class HMathHelper {
     /**
      * Compare two float values.
      */
-    public static boolean decimalEquals(float value1, float value2) {
-        return abs(value2 - value1) < FLOAT_ERROR;
+    public static boolean decimalEqualsWithError(float value1, float value2) {
+        return abs(value2 - value1) < DECIMAL_ERROR;
     }
 
     /**
      * Compare two double values.
      */
-    public static boolean decimalEquals(double value1, double value2) {
-        return abs(value2 - value1) < FLOAT_ERROR;
+    public static boolean decimalEqualsWithError(double value1, double value2) {
+        return abs(value2 - value1) < DECIMAL_ERROR;
     }
 
     /**
@@ -543,59 +567,37 @@ public class HMathHelper {
     }
 
     public static double atan2(double y, double x) {
-        double a = x;
-        double b = y;
-        double d0 = a * a + b * b;
-        if (Double.isNaN(d0))
-            return Double.NaN;
-        boolean flag = b < 0.0D;
-        if (flag)
-            b = -b;
-        boolean flag1 = a < 0.0D;
-        if (flag1)
-            a = -a;
-        boolean flag2 = b > a;
-        if (flag2) {
-            double d1 = a;
-            a = b;
-            b = d1;
-        }
-        double d9 = quicklyInverseSqrt(d0);
-        a = a * d9;
-        b = b * d9;
-        double d2 = FRAC_BIAS + b;
-        int i = (int)Double.doubleToRawLongBits(d2);
-        double d3 = ASIN_TABLE[i];
-        double d4 = COS_TABLE[i];
-        double d5 = d2 - FRAC_BIAS;
-        double d6 = b * d4 - a * d5;
-        double d7 = (6.0D + d6 * d6) * d6 * 0.16666666666666666D;
-        double d8 = d3 + d7;
-        if (flag2)
-            d8 = (Math.PI / 2.0D) - d8;
-        if (flag1)
-            d8 = Math.PI - d8;
-        if (flag)
-            d8 = -d8;
-        return d8;
+        double dx = abs(x);
+        double dy = abs(y);
+        double a = Math.min(dx, dy) / Math.max(dx, dy);
+        //noinspection OverlyComplexArithmeticExpression
+        double r = ((-0.0464964749 * a * a + 0.15931422) * a * a - 0.327622764) * a * a * a + a;
+        if (dy > dx)
+            r = HALF_PI - r;
+        if (x < 0)
+            r = PI - r;
+        if (y < 0)
+            r = DOUBLE_PI - r; // range: [0, 2*PI)
+            // r = -r; // range:[-PI, PI)
+        return r;
     }
 
     static {
-        MULTIPLY_DE_BRUIJN_BIT_POSITION = new int[] {
-                 0,  1, 28,  2, 29, 14, 24,  3, 30, 22, 20, 15, 25, 17,  4,  8,
-                31, 27, 13, 23, 21, 19, 16,  7, 26, 12, 18,  6, 11,  5, 10,  9};
-
-        FRAC_BIAS = Double.longBitsToDouble(4805340802404319232L);
-        SIN_TABLE = new double[65536];
-        for (int i = 0; i < 65536; ++i)
-            SIN_TABLE[i] = StrictMath.sin(i * Math.PI * 2.0D / 65536.0D);
-        ASIN_TABLE = new double[257];
-        COS_TABLE = new double[257];
-        for (int i = 0; i < 257; ++i)
-        {
-            double asin = StrictMath.asin(i / 256.0D);
-            COS_TABLE[i] = StrictMath.cos(asin);
-            ASIN_TABLE[i] = asin;
+        /* sin, cos, tan, cot */
+        SIN_TABLE = new double[TABLE_STEP];
+        COS_TABLE = new double[TABLE_STEP];
+        TAN_TABLE = new double[TABLE_STEP];
+        COT_TABLE = new double[TABLE_STEP];
+        for (int i = 0; i < TABLE_STEP; ++i) {
+            SIN_TABLE[i] = StrictMath.sin(i * PI * 2.0D / TABLE_STEP);
+            COS_TABLE[i] = StrictMath.cos(i * PI * 2.0D / TABLE_STEP);
+            TAN_TABLE[i] = StrictMath.tan(i * PI * 2.0D / TABLE_STEP);
+            COT_TABLE[i] = 1 / TAN_TABLE[i];
         }
+
+
+        MULTIPLY_DE_BRUIJN_BIT_POSITION = new int[] {
+                0,  1, 28,  2, 29, 14, 24,  3, 30, 22, 20, 15, 25, 17,  4,  8,
+                31, 27, 13, 23, 21, 19, 16,  7, 26, 12, 18,  6, 11,  5, 10,  9};
     }
 }

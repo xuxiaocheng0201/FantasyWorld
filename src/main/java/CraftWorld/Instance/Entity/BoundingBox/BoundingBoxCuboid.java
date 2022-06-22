@@ -222,7 +222,7 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof BoundingBoxCuboid that)) return false;
-        return this.rotationX == that.rotationX && this.rotationY == that.rotationY && this.rotationZ == that.rotationZ && this.length == that.length && this.width == that.width && this.height == that.height && this.bld.equals(that.bld);
+        return this.rotationX.equals(that.rotationX) && this.rotationY.equals(that.rotationY) && this.rotationZ.equals(that.rotationZ) && this.length == that.length && this.width == that.width && this.height == that.height && this.bld.equals(that.bld);
     }
 
     @Override

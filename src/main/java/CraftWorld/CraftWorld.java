@@ -12,12 +12,10 @@ import Core.Gui.Window;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
 import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
-import CraftWorld.Instance.Entity.BoundingBox.BoundingBoxCuboid;
 import CraftWorld.Instance.Gui.LoadingGui;
 import CraftWorld.Instance.Gui.MenuGui;
 import CraftWorld.Utils.SevenZipUtils;
 import CraftWorld.World.World;
-import HeadLibs.Helper.HMathHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
@@ -27,7 +25,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.nio.channels.Selector;
 import java.util.concurrent.TimeUnit;
@@ -194,14 +194,13 @@ public class CraftWorld implements ModImplement {
 //            return;
 //        }
 //        HLog.logger(boundingBox);
-//        HLog.logger(HMathHelper.cos( Math.PI * 2 / 3));
-//        HLog.logger(StrictMath.cos(Math.PI * 2 / 3));
-//        HLog.logger(HMathHelper.cos( Math.PI / 2));
-//        HLog.logger(StrictMath.cos( Math.PI / 2));
-        ObjectOutput out = new ObjectOutputStream(new FileOutputStream("test.dat"));
-        out.writeObject(new BoundingBoxCuboid());
-        out.close();
-        HLog.logger(HMathHelper.cyclicClamp( 11.0D, 0, 2));
+//        double a = Math.PI * 2 / 3;
+//        HLog.logger(Math.toDegrees(HMathHelper.atan2( 1, 1)));
+//        HLog.logger(Math.toDegrees(StrictMath.atan2( 1, 1)));
+//        ObjectOutput out = new ObjectOutputStream(new FileOutputStream("test.dat"));
+//        out.writeObject(new BoundingBoxCuboid());
+//        out.close();
+//        HLog.logger(HMathHelper.cyclicClamp( 11.0D, 0, 2));
     }
 
     public void startClient(Socket client) throws IOException {

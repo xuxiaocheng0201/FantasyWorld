@@ -44,9 +44,8 @@ public class ElementName implements Serializable {
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        ElementName modName = (ElementName) o;
-        return this.name.equals(modName.name);
+        if (!(o instanceof ElementName that)) return false;
+        return this.name.equals(that.name);
     }
 
     @Override
