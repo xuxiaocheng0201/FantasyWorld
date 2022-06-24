@@ -15,7 +15,9 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class BoundingBoxSphere implements IBoundingBoxBase {
     @Serial
@@ -32,13 +34,13 @@ public class BoundingBoxSphere implements IBoundingBoxBase {
     }
 
     protected @NotNull EntityPos centre = new EntityPos();
-    protected int range;
+    protected double range;
 
     public @NotNull EntityPos getCentre() {
         return this.centre;
     }
 
-    public int getRange() {
+    public double getRange() {
         return this.range;
     }
 
@@ -58,11 +60,21 @@ public class BoundingBoxSphere implements IBoundingBoxBase {
     }
 
     @Override
+    public @Nullable IBoundingBoxBase getBaseBoundingBox() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Set<IBoundingBoxBase> getAdditionalBoundingBox() {
+        return new HashSet<>();
+    }
+
+    @Override
     public void read(@NotNull DataInput input) throws IOException {
         if (!EntityPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.centre.read(input);
-        this.range = input.readInt();
+        this.range = input.readDouble();
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
@@ -71,7 +83,7 @@ public class BoundingBoxSphere implements IBoundingBoxBase {
     public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
         this.centre.write(output);
-        output.writeInt(this.range);
+        output.writeDouble(this.range);
         output.writeUTF(suffix);
     }
 

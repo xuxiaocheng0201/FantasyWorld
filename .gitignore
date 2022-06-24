@@ -30,6 +30,10 @@ hs_err_pid*
 out
 gen
 
+### Custom files
+.gradle
+.shelf
+
 ### Craftworld test files
 # Saved world files
 *.cww

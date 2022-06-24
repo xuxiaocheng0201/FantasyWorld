@@ -16,7 +16,10 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
+import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class BoundingBoxCuboid implements IBoundingBoxBase {
     @Serial
@@ -36,9 +39,9 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     private @NotNull Angle rotationX = new Angle();
     private @NotNull Angle rotationY = new Angle();
     private @NotNull Angle rotationZ = new Angle();
-    private int length;
-    private int width;
-    private int height;
+    private double length;
+    private double width;
+    private double height;
 
     /* f-front b-back  */
     /* l-left  r-right */
@@ -67,15 +70,15 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         return this.rotationZ;
     }
 
-    public int getLength() {
+    public double getLength() {
         return this.length;
     }
 
-    public int getWidth() {
+    public double getWidth() {
         return this.width;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return this.height;
     }
 
@@ -99,7 +102,7 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         if (this.center == null)
             this.center = new EntityPos();
         //TODO
-        //this.brd.setFullX(this.height * this.rotationX.cos());
+        this.brd.setFullX(this.bld.getFullX().add(new BigDecimal(this.height * this.rotationX.cos())));
     }
 
     public @NotNull EntityPos getFlu() {
@@ -169,6 +172,16 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     }
 
     @Override
+    public @Nullable IBoundingBoxBase getBaseBoundingBox() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Set<IBoundingBoxBase> getAdditionalBoundingBox() {
+        return new HashSet<>();
+    }
+
+    @Override
     public void read(@NotNull DataInput input) throws IOException {
         this.updatedPos = false;
         if (!EntityPos.prefix.equals(input.readUTF()))
@@ -183,9 +196,9 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         if (!Angle.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.rotationZ.read(input);
-        this.length = input.readInt();
-        this.width = input.readInt();
-        this.height = input.readInt();
+        this.length = input.readDouble();
+        this.width = input.readDouble();
+        this.height = input.readDouble();
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
@@ -197,9 +210,9 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         this.rotationX.write(output);
         this.rotationY.write(output);
         this.rotationZ.write(output);
-        output.writeInt(this.length);
-        output.writeInt(this.width);
-        output.writeInt(this.height);
+        output.writeDouble(this.length);
+        output.writeDouble(this.width);
+        output.writeDouble(this.height);
         output.writeUTF(suffix);
     }
 

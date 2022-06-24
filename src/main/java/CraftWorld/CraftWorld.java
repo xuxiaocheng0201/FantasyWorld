@@ -1,5 +1,6 @@
 package CraftWorld;
 
+import Core.Addition.Element.ElementImplement;
 import Core.Addition.Mod.ModImplement;
 import Core.Addition.Mod.NewMod;
 import Core.Craftworld;
@@ -15,6 +16,7 @@ import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
 import CraftWorld.Instance.Gui.LoadingGui;
 import CraftWorld.Instance.Gui.MenuGui;
 import CraftWorld.Utils.SevenZipUtils;
+import CraftWorld.World.Block.IBlockBase;
 import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
@@ -194,9 +196,11 @@ public class CraftWorld implements ModImplement {
 //            return;
 //        }
 //        HLog.logger(boundingBox);
-//        double a = Math.PI * 2 / 3;
-//        HLog.logger(Math.toDegrees(HMathHelper.atan2( 1, 1)));
-//        HLog.logger(Math.toDegrees(StrictMath.atan2( 1, 1)));
+//        Angle angle = new Angle();
+//        angle.setAngleDegree(90);
+//        HLog.logger(angle);
+        HLog.logger(ElementImplement.getElementNameFromClass(IBlockBase.class));
+        HLog.logger(ElementImplement.getParentsElementNameFromClass(IBlockBase.class));
 //        ObjectOutput out = new ObjectOutputStream(new FileOutputStream("test.dat"));
 //        out.writeObject(new BoundingBoxCuboid());
 //        out.close();

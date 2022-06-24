@@ -61,6 +61,13 @@ public class Angle implements IDSTBase, Comparable<Angle> {
         this.angle = HMathHelper.cyclicClamp(Math.toRadians(angle), MIN_ANGLE, MAX_ANGLE);
     }
 
+    public void setAngleRadian(@Nullable Angle angle) {
+        if (angle == null)
+            this.angle = 0.0D;
+        else
+            this.angle = angle.angle;
+    }
+
     public void addAngleRadian(double angle) {
         this.angle += angle;
         if (this.angle < MIN_ANGLE || this.angle > MAX_ANGLE) // a bit quicker
@@ -71,6 +78,14 @@ public class Angle implements IDSTBase, Comparable<Angle> {
         this.addAngleRadian(Math.toRadians(angle));
     }
 
+    public void addAngleRadian(@Nullable Angle angle) {
+        if (angle == null)
+            return;
+        this.angle += angle.angle;
+        if (this.angle < MIN_ANGLE || this.angle > MAX_ANGLE) // a bit quicker
+            this.angle = HMathHelper.cyclicClamp(this.angle, MIN_ANGLE, MAX_ANGLE);
+    }
+
     public void subAngleRadian(double angle) {
         this.angle -= angle;
         if (this.angle < MIN_ANGLE || this.angle > MAX_ANGLE) // a bit quicker
@@ -79,6 +94,14 @@ public class Angle implements IDSTBase, Comparable<Angle> {
 
     public void subAngleDegree(double angle) {
         this.subAngleRadian(Math.toRadians(angle));
+    }
+
+    public void subAngleRadian(@Nullable Angle angle) {
+        if (angle == null)
+            return;
+        this.angle -= angle.angle;
+        if (this.angle < MIN_ANGLE || this.angle > MAX_ANGLE) // a bit quicker
+            this.angle = HMathHelper.cyclicClamp(this.angle, MIN_ANGLE, MAX_ANGLE);
     }
 
     public double sin() {

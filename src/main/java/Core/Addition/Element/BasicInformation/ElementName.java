@@ -36,6 +36,10 @@ public class ElementName implements Serializable {
         this.name = HStringHelper.notNullStrip(name);
     }
 
+    public boolean isEmpty() {
+        return this.name.isEmpty();
+    }
+
     @Override
     public @NotNull String toString() {
         return this.name;

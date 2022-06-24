@@ -16,5 +16,4 @@ import java.lang.annotation.*;
 public @interface NewElementImplementCore {
     @NotNull String modName() default "Craftworld";
     @NotNull String elementName();
-    @NotNull String parentElements() default "";
 }
