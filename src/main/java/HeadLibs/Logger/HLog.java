@@ -294,7 +294,10 @@ public class HLog {
             this.log(level, "Null object.");
             return;
         }
-        this.log(level, String.valueOf(object));
+        if (object instanceof Throwable)
+            this.log(level, (Throwable) object);
+        else
+            this.log(level, String.valueOf(object));
     }
 
     /**
@@ -338,10 +341,20 @@ public class HLog {
             this.log(level, "Null object.");
             return;
         }
+        boolean appended = false;
         StringBuilder builder = new StringBuilder(3 * objects.length);
         for (Object i: objects)
-            builder.append(i);
-        this.log(level, builder.toString());
+            if (i instanceof Throwable) {
+                this.log(level, builder.toString());
+                builder.delete(0, builder.length());
+                this.log(level, (Throwable) i);
+                appended = false;
+            } else {
+                builder.append(i);
+                appended = true;
+            }
+        if (appended)
+            this.log(level, builder.toString());
     }
 
     /**

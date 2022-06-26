@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,23 +23,27 @@ public interface ElementImplement {
         if (elementClass == null)
             return new ElementName();
         NewElementImplementCore elementAnnouncement = elementClass.getAnnotation(NewElementImplementCore.class);
-        if (elementAnnouncement == null)
-            return new ElementName();
+        if (elementAnnouncement == null) {
+            List<ElementName> names = getParentsElementNameFromClass(elementClass);
+            if (names.isEmpty())
+                return new ElementName();
+            return names.get(0);
+        }
         return new ElementName(elementAnnouncement.elementName());
     }
 
     static @NotNull List<ElementName> getParentsElementNameFromClass(@Nullable Class<? extends ElementImplement> elementClass) {
         if (elementClass == null)
             return new ArrayList<>();
-        List<ElementName> parents = new ArrayList<>();
-        if (elementClass.getSuperclass() != null) {
-            if (!ElementImplement.class.isAssignableFrom(elementClass.getSuperclass()))
-                return new ArrayList<>();
+        Collection<ElementName> parents = new ArrayList<>();
+        if (elementClass.getSuperclass() != null && ElementImplement.class.isAssignableFrom(elementClass.getSuperclass())) {
             @SuppressWarnings("unchecked")
             Class<? extends ElementImplement> superclass = (Class<? extends ElementImplement>) elementClass.getSuperclass();
             parents.addAll(getParentsElementNameFromClass(superclass));
         }
-        parents.add(getElementNameFromClass(elementClass));
+        NewElementImplementCore elementAnnouncement = elementClass.getAnnotation(NewElementImplementCore.class);
+        if (elementAnnouncement != null)
+            parents.add(new ElementName(elementAnnouncement.elementName()));
         for (Class<?> superinterfaces: elementClass.getInterfaces())
             if (ElementImplement.class.isAssignableFrom(superinterfaces)) {
                 @SuppressWarnings("unchecked")

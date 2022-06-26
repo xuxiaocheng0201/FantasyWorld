@@ -81,7 +81,7 @@ public class ModManager {
      */
     public static @NotNull String crashClassInformation(@Nullable Class<?> aClass) {
         if (aClass == null)
-            return " At a null class.";
+            return " Null class.";
         File file = getAllClassesWithJarFiles().get(aClass);
         if (file == null)
             return " At class '" + aClass.getName() + "'.";

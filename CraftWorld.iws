@@ -10,19 +10,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="More angle math helper.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix some bugs.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldMod.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/BasicInformation/ElementName.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/BasicInformation/ElementName.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/ElementImplement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/Element/ElementImplement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Core/Craftworld.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/BoundingBox/IBoundingBoxBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/BoundingBox/IBoundingBoxBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Entity/BoundingBox/BoundingBoxCuboid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Entity/BoundingBox/BoundingBoxCuboid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Entity/BoundingBox/BoundingBoxSphere.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/Entity/BoundingBox/BoundingBoxSphere.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/Angle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/Angle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/ClassFinder/HClassFinder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,9 +59,9 @@
       <list>
         <option value="JavaFXApplication" />
         <option value="Enum" />
-        <option value="AnnotationType" />
         <option value="Record" />
         <option value="Interface" />
+        <option value="AnnotationType" />
         <option value="Class" />
       </list>
     </option>
@@ -98,7 +100,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/BasicInformation/ModVersion.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/ModImplement.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/Mod/NewMod.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesLoader.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModClassesSorter.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Addition/ModManager.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Craftworld.java" root0="FORCE_HIGHLIGHTING" />
@@ -124,7 +126,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModNameClashException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModRequirementFormatException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Exceptions/ModUnsupportedCraftworldVersionException.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Core/FileTreeStorage.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/GCThread.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/GlobalConfigurations.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/Gui/Callback/CharCallbackEvent.java" root0="SKIP_INSPECTION" />
@@ -140,6 +142,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Core/PortManager.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/ConstantStorage.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorld.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/CraftWorldMod.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTFormatException.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/DST/DSTUtils.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/CraftWorld/DST/IDSTBase.java" root0="FORCE_HIGHLIGHTING" />
@@ -178,7 +181,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HStringHelper.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HTimeHelper.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HZipHelper.java" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLog.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Logger/HLogLevel.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HDoubleMapRegisterer.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Registerer/HElementNotRegisteredException.java" root0="SKIP_INSPECTION" />
@@ -213,16 +216,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/admin/Desktop/BMISystem/2.5-ParkingSys&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;库&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "C:/Users/admin/Desktop/CraftWorld/lib/eventbus-java-3.3.1-sources.jar",
+    "project.structure.last.edited": "库",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="ReaderModeSettings">
     <option name="showRenderedDocs" value="false" />
   </component>
@@ -301,13 +304,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00096" summary="Math helper.">
-      <created>1650544896130</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1650544896130</updated>
     </task>
     <task id="LOCAL-00097" summary="Math helper.">
       <created>1650610369887</created>
@@ -645,7 +641,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655896639630</updated>
     </task>
-    <option name="localTasksCounter" value="145" />
+    <task id="LOCAL-00145" summary="Fix some bugs.">
+      <created>1656061739235</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1656061739238</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -705,14 +708,14 @@
     <MESSAGE value="Redo registerers." />
     <MESSAGE value="Redo registerer." />
     <MESSAGE value="Doing bounding box." />
-    <MESSAGE value="Fix some bugs." />
     <MESSAGE value="More getter in  BoundingBoxCuboid.java" />
     <MESSAGE value="More getter in BoundingBoxCuboid." />
     <MESSAGE value="Immutable HVersion." />
     <MESSAGE value="Fix some things." />
     <MESSAGE value="Angle.java." />
     <MESSAGE value="More angle math helper." />
-    <option name="LAST_COMMIT_MESSAGE" value="More angle math helper." />
+    <MESSAGE value="Fix some bugs." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix some bugs." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -722,11 +725,6 @@
           <properties class="java.lang.NoClassDefFoundError" package="java.lang" />
           <option name="timeStamp" value="1" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Core/Addition/Element/ElementImplement.java</url>
-          <line>42</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint enabled="true" type="java-exception">

@@ -340,6 +340,7 @@ public class ModClassesLoader {
     }
 
     private static void initializeMods(boolean firstTime) {
+        HLog logger = new HLog("ModLauncher", Thread.currentThread().getName());
         EventBusManager.getDefaultEventBus().post(new PreInitializationModsEvent(firstTime));
         Collection<Class<? extends ModImplement>> sortedMods = new ArrayList<>(ModClassesSorter.getSortedMods());
         for (Class<? extends ModImplement> aClass: sortedMods) {
@@ -349,14 +350,14 @@ public class ModClassesLoader {
             EventBusManager.getDefaultEventBus().post(new ModInitializingEvent(aClass));
             ModImplement instance = HClassHelper.getInstance(aClass);
             if (instance == null) {
-                (new HLog("ModLauncher", Thread.currentThread().getName()))
-                        .log(HLogLevel.ERROR, "No Common Constructor for creating Mod instance." + ModManager.crashClassInformation(aClass));
+                logger.log(HLogLevel.ERROR, "No Common Constructor for creating Mod instance." + ModManager.crashClassInformation(aClass));
                 continue;
             }
             try {
                 instance.mainInitialize();
                 EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, true));
             } catch (Exception exception) {
+                logger.log(HLogLevel.BUG, "Mod main initialization failed.", ModManager.crashClassInformation(aClass), exception);
                 EventBusManager.getDefaultEventBus().post(new ModInitializedEvent(aClass, false));
             }
             if (!sortedMods.equals(ModClassesSorter.getSortedMods()))
@@ -368,12 +369,12 @@ public class ModClassesLoader {
     private static boolean firstTime = true;
     
     static boolean addMod(@Nullable File modsFile) {
-        if (modsFile == null || !modsFile.exists() || getModsFiles().contains(modsFile))
+        if (modsFile == null || !modsFile.exists() || MODS_FILES.contains(modsFile))
             return false;
         boolean first = firstTime;
         firstTime = false;
         ModClassesSorter.getSortedMods().clear();
-        getModsFiles().add(modsFile);
+        MODS_FILES.add(modsFile);
         if (loadMods(first)) {
             initializeMods(first);
             return ModClassesSorter.getExceptions().isEmpty();

@@ -1,29 +1,20 @@
 package CraftWorld;
 
-import Core.Addition.Element.ElementImplement;
-import Core.Addition.Mod.ModImplement;
-import Core.Addition.Mod.NewMod;
 import Core.Craftworld;
 import Core.EventBus.EventBusManager;
-import Core.EventBus.EventSubscribe;
-import Core.EventBus.Events.PreInitializationModsEvent;
-import Core.FileTreeStorage;
 import Core.GlobalConfigurations;
 import Core.Gui.Window;
 import CraftWorld.Events.LoadedWorldEvent;
 import CraftWorld.Events.LoadingWorldEvent;
-import CraftWorld.Instance.Dimensions.DimensionEarthSurface;
 import CraftWorld.Instance.Gui.LoadingGui;
 import CraftWorld.Instance.Gui.MenuGui;
 import CraftWorld.Utils.SevenZipUtils;
-import CraftWorld.World.Block.IBlockBase;
 import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -34,10 +25,7 @@ import java.net.Socket;
 import java.nio.channels.Selector;
 import java.util.concurrent.TimeUnit;
 
-@SuppressWarnings("MethodMayBeStatic")
-@EventSubscribe
-@NewMod(name = "CraftWorld", version = "0.0.1", requirements = "before:*")
-public class CraftWorld implements ModImplement {
+public class CraftWorld {
     private static final CraftWorld instance = new CraftWorld();
     public static CraftWorld getInstance() {
         return instance;
@@ -57,17 +45,6 @@ public class CraftWorld implements ModImplement {
     }
     public static EventBus getCraftWorldEventBus() {
         return CRAFT_WORLD_EVENT_BUS;
-    }
-
-    @Subscribe
-    @SuppressWarnings("unused")
-    public void preInitialize(PreInitializationModsEvent event) throws IOException {
-        logger.setName("CraftWorld", Thread.currentThread().getName());
-        FileTreeStorage.extractFiles(CraftWorld.class, "assets\\CraftWorld", "assets\\CraftWorld");
-    }
-    @Override
-    public void mainInitialize() {
-        this.world.addPrepareDimension(DimensionEarthSurface.id);
     }
 
     public void loading() {
@@ -188,23 +165,6 @@ public class CraftWorld implements ModImplement {
             break;
         }
         this.world.unload();
-
-//        BoundingBoxCuboid boundingBox;
-//        try (ObjectInput in = new ObjectInputStream(new FileInputStream("test.dat"))) {
-//            boundingBox = (BoundingBoxCuboid) in.readObject();
-//        } catch (ClassNotFoundException e) {
-//            return;
-//        }
-//        HLog.logger(boundingBox);
-//        Angle angle = new Angle();
-//        angle.setAngleDegree(90);
-//        HLog.logger(angle);
-        HLog.logger(ElementImplement.getElementNameFromClass(IBlockBase.class));
-        HLog.logger(ElementImplement.getParentsElementNameFromClass(IBlockBase.class));
-//        ObjectOutput out = new ObjectOutputStream(new FileOutputStream("test.dat"));
-//        out.writeObject(new BoundingBoxCuboid());
-//        out.close();
-//        HLog.logger(HMathHelper.cyclicClamp( 11.0D, 0, 2));
     }
 
     public void startClient(Socket client) throws IOException {

@@ -61,6 +61,7 @@ public class Craftworld implements ModImplement {
                 HLog.saveLogs(FileTreeStorage.LOG_FILE);
             }
         });
+        Thread.setDefaultUncaughtExceptionHandler((thread, error) -> logger.log(HLogLevel.FAULT, "An uncaught exception has been thrown in thread '" + thread + "'.", error));
         GlobalConfigurations.getConfigurations();
         for (String arg: args) {
             if ("runClient".equals(arg))
@@ -119,7 +120,7 @@ public class Craftworld implements ModImplement {
     public static class AllEventBusRegister {
         private static final HLog logger = new HLog("EventNoSubscriberReporter");
         @SuppressWarnings("MethodMayBeStatic")
-        @Subscribe(priority = Integer.MAX_VALUE - 1)
+        @Subscribe(priority = - 1)
         public void noSubscriberEvent(NoSubscriberEvent event) {
             logger.log(HLogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
         }

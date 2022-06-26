@@ -4,9 +4,6 @@ import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import HeadLibs.Helper.HMathHelper;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,13 +20,6 @@ public class Angle implements IDSTBase, Comparable<Angle> {
     public static final String id = "Angle";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, Angle.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
     private static final double MIN_ANGLE = 0.0D;
     private static final double MAX_ANGLE = HMathHelper.DOUBLE_PI;
