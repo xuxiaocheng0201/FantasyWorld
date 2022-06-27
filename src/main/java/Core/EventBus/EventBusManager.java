@@ -5,9 +5,10 @@ import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Helper.HStringHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
+import HeadLibs.Registerer.HDoubleMapRegisterer;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
-import HeadLibs.Registerer.HMapRegisterer;
+import HeadLibs.Registerer.HSetRegisterer;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.EventBusBuilder;
 import org.greenrobot.eventbus.Logger;
@@ -16,9 +17,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Event bus manager.
@@ -26,8 +29,8 @@ import java.util.logging.Level;
  */
 @SuppressWarnings("unused")
 public class EventBusManager {
-    private static final HMapRegisterer<String, EventBus> ALL_EVENT_BUS = new HMapRegisterer<>(false);
-    private static final HMapRegisterer<EventBus, String> ALL_EVENT_BUS_REVERSE = new HMapRegisterer<>(false);
+    private static final HDoubleMapRegisterer<String, EventBus> ALL_EVENT_BUS = new HDoubleMapRegisterer<>();
+    private static final HSetRegisterer<Object> REGISTER_ALL_EVENTBUS_CLASS = new HSetRegisterer<>(false);
 
     /**
      * Register a new event bus.
@@ -44,7 +47,8 @@ public class EventBusManager {
         if (s.isEmpty())
             throw new HElementRegisteredException("Empty eventbus name.");
         ALL_EVENT_BUS.register(s, eventBus);
-        ALL_EVENT_BUS_REVERSE.register(eventBus, s);
+        for (Object instance: REGISTER_ALL_EVENTBUS_CLASS)
+            eventBus.register(instance);
     }
 
     private static final EventBus DEFAULT_EVENT_BUS = loggerEventBusBuilder(new HLog("DefaultEventBus", Thread.currentThread().getName()))
@@ -74,7 +78,7 @@ public class EventBusManager {
 
     public static EventBus getEventBusByName(String name) {
         try {
-            return ALL_EVENT_BUS.getElement(HStringHelper.notNullStrip(name));
+            return ALL_EVENT_BUS.getValue(HStringHelper.notNullStrip(name));
         } catch (HElementNotRegisteredException exception) {
             return DEFAULT_EVENT_BUS;
         }
@@ -82,14 +86,14 @@ public class EventBusManager {
 
     public static String getNameByEventBus(EventBus eventBus) {
         try {
-            return ALL_EVENT_BUS_REVERSE.getElement(eventBus);
+            return ALL_EVENT_BUS.getKey(eventBus);
         } catch (HElementNotRegisteredException exception) {
             return "undefined";
         }
     }
 
     public static @NotNull Collection<EventBus> getAllEventBus() {
-        return ALL_EVENT_BUS_REVERSE.keys();
+        return ALL_EVENT_BUS.values();
     }
 
     private static final Collection<Class<?>> registeredClassesFlag = new HashSet<>();
@@ -111,7 +115,7 @@ public class EventBusManager {
             }
         if (noSubscriber)
             return;
-        Object instance = HClassHelper.getInstance(aClass);
+        Object instance = HClassHelper.getInstance(aClass, true);
         if (instance == null)
             throw new NoSuchMethodException("Get instance failed. Can't register class to event bus '" + subscribe.eventBus() + "'."
                     + ModManager.crashClassInformation(aClass));
@@ -121,17 +125,16 @@ public class EventBusManager {
         if ("*".equals(HStringHelper.notNullStrip(subscribe.eventBus()))) {
             for (EventBus eventBus: getAllEventBus())
                 eventBus.register(instance);
+            try {
+                REGISTER_ALL_EVENTBUS_CLASS.register(instance);
+            } catch (HElementRegisteredException ignore) {
+            }
             return;
         }
-        String[] buses = HStringHelper.notEmptyStrip(subscribe.eventBus().split(";"));
-        Collection<EventBus> registered = new HashSet<>();
-        for (String name: buses) {
-            EventBus eventBus = getEventBusByName(name);
-            if (registered.contains(eventBus))
-                continue;
-            registered.add(eventBus);
-            eventBus.register(instance);
-        }
+        Collection<String> buses = Arrays.asList(HStringHelper.notEmptyStrip(subscribe.eventBus().split(";")))
+                .stream().distinct().collect(Collectors.toList());
+        for (String name: buses)
+            getEventBusByName(name).register(instance);
     }
 
     /**
@@ -146,8 +149,7 @@ public class EventBusManager {
             }
             @Override
             public void log(Level level, String msg, Throwable th) {
-                HLog.logger(HLogLevel.mapFromLevel(level), msg, " Cause message: ", th.getMessage());
-                HLog.logger(HLogLevel.mapFromLevel(level), th);
+                HLog.logger(HLogLevel.mapFromLevel(level), msg, th);
             }
         });
     }
@@ -167,8 +169,7 @@ public class EventBusManager {
             }
             @Override
             public void log(Level level, String msg, Throwable th) {
-                logger.log(HLogLevel.mapFromLevel(level), msg, " Cause message: ", th);
-                logger.log(HLogLevel.mapFromLevel(level), th);
+                logger.log(HLogLevel.mapFromLevel(level), msg, th);
             }
         });
     }

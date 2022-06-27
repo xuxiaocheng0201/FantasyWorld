@@ -31,6 +31,7 @@ import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.Subscribe;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -41,7 +42,7 @@ public class CraftWorldMod implements ModImplement {
     private static final HLog logger = new HLog("CraftWorldMod");
 
     @Subscribe(priority = Integer.MIN_VALUE)
-    public void elementsChecked(ElementsCheckedEvent event) throws HElementRegisteredException {
+    public void elementsChecked(@NotNull ElementsCheckedEvent event) throws HElementRegisteredException {
         if (!event.firstPost())
             return;
         DSTUtils.prefix("null");
@@ -55,16 +56,9 @@ public class CraftWorldMod implements ModImplement {
         DSTUtils.getInstance().register(DSTShort.id, DSTShort.class);
         DSTUtils.getInstance().register(DSTString.id, DSTString.class);
         DSTUtils.getInstance().register(DSTPair.id, DSTPair.class);
+        DSTUtils.getInstance().register(DSTCollection.id, DSTCollection.class);
+        DSTUtils.getInstance().register(DSTMap.id, DSTMap.class);
         DSTUtils.getInstance().register(DSTComplexMeta.id, DSTComplexMeta.class);
-        DSTUtils.getInstance().register(DSTTagBooleanCollection.id, DSTTagBooleanCollection.class);
-        DSTUtils.getInstance().register(DSTTagByteCollection.id, DSTTagByteCollection.class);
-        DSTUtils.getInstance().register(DSTTagCharCollection.id, DSTTagCharCollection.class);
-        DSTUtils.getInstance().register(DSTTagDoubleCollection.id, DSTTagDoubleCollection.class);
-        DSTUtils.getInstance().register(DSTTagFloatCollection.id, DSTTagFloatCollection.class);
-        DSTUtils.getInstance().register(DSTTagIntCollection.id, DSTTagIntCollection.class);
-        DSTUtils.getInstance().register(DSTTagLongCollection.id, DSTTagLongCollection.class);
-        DSTUtils.getInstance().register(DSTTagShortCollection.id, DSTTagShortCollection.class);
-        DSTUtils.getInstance().register(DSTTagStringCollection.id, DSTTagStringCollection.class);
         DSTUtils.getInstance().register(Angle.id, Angle.class);
         DSTUtils.getInstance().register(IDResource.id, IDResource.class);
         DSTUtils.getInstance().register(Block.id, Block.class);
@@ -85,15 +79,15 @@ public class CraftWorldMod implements ModImplement {
     }
 
     @Subscribe
-    public void preInitialize(PreInitializationModsEvent event) throws IOException {
+    public void preInitialize(@NotNull PreInitializationModsEvent event) throws IOException {
         if (!event.firstPost())
             return;
-        logger.setName("CraftWorldMod", Thread.currentThread().getName());
         FileTreeStorage.extractFiles(CraftWorldMod.class, "assets\\CraftWorld", "assets\\CraftWorld");
     }
 
     @Override
     public void mainInitialize() {
+        logger.setName("CraftWorldMod", Thread.currentThread().getName());
         CraftWorld.getInstance().getWorld().addPrepareDimension(DimensionEarthSurface.id);
     }
 }

@@ -111,7 +111,7 @@ public class Craftworld implements ModImplement {
         @SuppressWarnings("MethodMayBeStatic")
         @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void defaultEventBusPostEvent(Object event) {
-            logger.log(HLogLevel.FINE, "Default Event bus post event '", event, "'(at '", event.getClass().getName(), "').");
+            logger.log(HLogLevel.FINE, "Default Event bus post event '", event, "'(at '", event.getClass().getName(), "'). At thread '", Thread.currentThread().getName(), "'.");
         }
     }
 
@@ -122,7 +122,7 @@ public class Craftworld implements ModImplement {
         @SuppressWarnings("MethodMayBeStatic")
         @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void noSubscriberEvent(NoSubscriberEvent event) {
-            logger.log(HLogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
+            logger.log(HLogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber. At thread '", Thread.currentThread().getName(), "'.");
         }
     }
 
