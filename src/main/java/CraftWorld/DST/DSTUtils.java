@@ -2,6 +2,7 @@ package CraftWorld.DST;
 
 import Core.Addition.Element.ElementUtil;
 import Core.Addition.Element.NewElementUtilCore;
+import HeadLibs.Logger.HLog;
 import HeadLibs.Registerer.HDoubleMapRegisterer;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
@@ -16,6 +17,10 @@ public class DSTUtils extends ElementUtil<IDSTBase> {
         return instance;
     }
 
+    @Override
+    public void register(@NotNull String key, @NotNull Class<? extends IDSTBase> value) throws HElementRegisteredException {
+        HLog.logger(value);
+    }
 
     private static final HDoubleMapRegisterer<String, String> prefixMap = new HDoubleMapRegisterer<>();
     private static final HDoubleMapRegisterer<String, String> suffixMap = new HDoubleMapRegisterer<>();

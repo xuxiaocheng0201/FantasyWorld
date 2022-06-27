@@ -120,7 +120,7 @@ public class Craftworld implements ModImplement {
     public static class AllEventBusRegister {
         private static final HLog logger = new HLog("EventNoSubscriberReporter");
         @SuppressWarnings("MethodMayBeStatic")
-        @Subscribe(priority = - 1)
+        @Subscribe(priority = Integer.MAX_VALUE - 1)
         public void noSubscriberEvent(NoSubscriberEvent event) {
             logger.log(HLogLevel.FINE, "Event bus '", EventBusManager.getNameByEventBus(event.eventBus), "' post event '", event.originalEvent, "'(at '", event.originalEvent.getClass().getName(), "'), but no subscriber.");
         }

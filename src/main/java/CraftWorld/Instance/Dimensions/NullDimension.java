@@ -5,11 +5,7 @@ import CraftWorld.DST.DSTUtils;
 import CraftWorld.Events.ChunkGenerateEvent;
 import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Chunk.ChunkPos;
-import CraftWorld.World.Dimension.DimensionUtils;
 import CraftWorld.World.Dimension.IDimensionBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HLinkedSetRegisterer;
 import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
@@ -28,14 +24,7 @@ public class NullDimension implements IDimensionBase {
     public static final String id = "NullDimension";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DimensionUtils.getInstance().register(id, NullDimension.class);
-            DSTUtils.getInstance().register(id, NullDimension.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
+
     @Override
     public String getDimensionId() {
         return id;

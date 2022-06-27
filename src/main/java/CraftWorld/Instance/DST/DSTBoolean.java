@@ -2,11 +2,9 @@ package CraftWorld.Instance.DST;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
+import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -14,29 +12,20 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTPureBoolean implements IDSTBase {
+public class DSTBoolean extends PureDSTBase<Boolean> {
     @Serial
     private static final long serialVersionUID = -2610545773823934027L;
-    public static final String id = "DSTPureBoolean";
+    public static final String id = "DSTBoolean";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTPureBoolean.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
-    private boolean data;
-
-    public DSTPureBoolean() {
+    public DSTBoolean() {
         super();
     }
 
-    public DSTPureBoolean(boolean data) {
+    public DSTBoolean(Boolean data) {
         super();
-        this.data = data;
+        this.setData(data);
     }
 
     @Override
@@ -53,24 +42,21 @@ public class DSTPureBoolean implements IDSTBase {
         output.writeUTF(suffix);
     }
 
-    public boolean getData() {
-        return this.data;
-    }
-
-    public void setData(boolean data) {
-        this.data = data;
+    @Override
+    public void setData(Boolean data) {
+        this.data = Objects.requireNonNullElse(data, false);
     }
 
     @Override
-    public String toString() {
-        return "DSTPureBoolean{" + this.data + '}';
+    public @NotNull String toString() {
+        return "DSTBoolean{" + this.data + '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (!(o instanceof DSTPureBoolean that)) return false;
-        return this.data == that.data;
+        if (!(o instanceof DSTBoolean that)) return false;
+        return Objects.equals(this.data, that.data);
     }
 
     @Override

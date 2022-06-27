@@ -3,12 +3,11 @@ package CraftWorld.Instance.DST;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -23,13 +22,6 @@ public final class DSTComplexMeta implements IDSTBase {
     public static final String id = "DSTComplexMeta";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTComplexMeta.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
     private String name = id;
     private final @NotNull HMapRegisterer<String, IDSTBase> dstMap = new HMapRegisterer<>(true);
@@ -88,7 +80,7 @@ public final class DSTComplexMeta implements IDSTBase {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "DSTComplexMeta{" +
                 "name='" + this.name + '\'' +
                 ", dstMap=" + this.dstMap +
@@ -96,7 +88,7 @@ public final class DSTComplexMeta implements IDSTBase {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof DSTComplexMeta that)) return false;
         return Objects.equals(this.name, that.name) && this.dstMap.equals(that.dstMap);

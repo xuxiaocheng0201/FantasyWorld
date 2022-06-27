@@ -11,9 +11,6 @@ import CraftWorld.World.Block.Block;
 import CraftWorld.World.Block.BlockPos;
 import CraftWorld.World.Block.IBlockBase;
 import CraftWorld.World.Dimension.Dimension;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -36,13 +33,7 @@ public class Chunk implements IDSTBase {
     public static final String id = "Chunk";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, Chunk.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
+
     public static final int SIZE = 16;
     public static final BigInteger SIZE_BigInteger = BigInteger.valueOf(SIZE);
     public static final BigDecimal SIZE_BigDecimal = BigDecimal.valueOf(SIZE);

@@ -2,11 +2,9 @@ package CraftWorld.Instance.DST;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
+import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -14,29 +12,20 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTPureFloat implements IDSTBase {
+public class DSTFloat extends PureDSTBase<Float> {
     @Serial
     private static final long serialVersionUID = -6654553278710532324L;
-    public static final String id = "DSTPureFloat";
+    public static final String id = "DSTFloat";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTPureFloat.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
-    private float data;
-
-    public DSTPureFloat() {
+    public DSTFloat() {
         super();
     }
 
-    public DSTPureFloat(float data) {
+    public DSTFloat(Float data) {
         super();
-        this.data = data;
+        this.setData(data);
     }
 
     @Override
@@ -53,23 +42,20 @@ public class DSTPureFloat implements IDSTBase {
         output.writeUTF(suffix);
     }
 
-    public float getData() {
-        return this.data;
-    }
-
-    public void setData(float data) {
-        this.data = data;
+    @Override
+    public void setData(Float data) {
+        this.data = Objects.requireNonNullElse(data, (float) 0);
     }
 
     @Override
-    public String toString() {
-        return "DSTPureFloat{" + this.data + '}';
+    public @NotNull String toString() {
+        return "DSTFloat{" + this.data + '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (!(o instanceof DSTPureFloat that)) return false;
+        if (!(o instanceof DSTFloat that)) return false;
         return Float.compare(that.data, this.data) == 0;
     }
 

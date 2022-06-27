@@ -2,11 +2,9 @@ package CraftWorld.Instance.DST;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
+import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -14,29 +12,20 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTPureByte implements IDSTBase {
+public class DSTByte extends PureDSTBase<Byte> {
     @Serial
     private static final long serialVersionUID = -4917521423532940232L;
-    public static final String id = "DSTPureByte";
+    public static final String id = "DSTByte";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTPureByte.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
-    private byte data;
-
-    public DSTPureByte() {
+    public DSTByte() {
         super();
     }
 
-    public DSTPureByte(byte data) {
+    public DSTByte(Byte data) {
         super();
-        this.data = data;
+        this.setData(data);
     }
 
     @Override
@@ -53,24 +42,21 @@ public class DSTPureByte implements IDSTBase {
         output.writeUTF(suffix);
     }
 
-    public byte getData() {
-        return this.data;
-    }
-
-    public void setData(byte data) {
-        this.data = data;
+    @Override
+    public void setData(Byte data) {
+        this.data = Objects.requireNonNullElse(data, (byte) 0);
     }
 
     @Override
-    public String toString() {
-        return "DSTPureByte{" + this.data + '}';
+    public @NotNull String toString() {
+        return "DSTByte{" + this.data + '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (!(o instanceof DSTPureByte that)) return false;
-        return this.data == that.data;
+        if (!(o instanceof DSTByte that)) return false;
+        return Objects.equals(this.data, that.data);
     }
 
     @Override

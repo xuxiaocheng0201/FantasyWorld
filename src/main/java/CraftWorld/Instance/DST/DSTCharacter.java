@@ -2,11 +2,9 @@ package CraftWorld.Instance.DST;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
+import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -14,29 +12,20 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTPureChar implements IDSTBase {
+public class DSTCharacter extends PureDSTBase<Character> {
     @Serial
     private static final long serialVersionUID = -1823625739787733526L;
-    public static final String id = "DSTPureChar";
+    public static final String id = "DSTCharacter";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTPureChar.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
-    private char data;
-
-    public DSTPureChar() {
+    public DSTCharacter() {
         super();
     }
 
-    public DSTPureChar(char data) {
+    public DSTCharacter(Character data) {
         super();
-        this.data = data;
+        this.setData(data);
     }
 
     @Override
@@ -53,24 +42,21 @@ public class DSTPureChar implements IDSTBase {
         output.writeUTF(suffix);
     }
 
-    public char getData() {
-        return this.data;
-    }
-
-    public void setData(char data) {
-        this.data = data;
+    @Override
+    public void setData(Character data) {
+        this.data = Objects.requireNonNullElse(data, (char) 0);
     }
 
     @Override
-    public String toString() {
-        return "DSTPureChar{" + this.data + '}';
+    public @NotNull String toString() {
+        return "DSTCharacter{" + this.data + '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (!(o instanceof DSTPureChar that)) return false;
-        return this.data == that.data;
+        if (!(o instanceof DSTCharacter that)) return false;
+        return Objects.equals(this.data, that.data);
     }
 
     @Override

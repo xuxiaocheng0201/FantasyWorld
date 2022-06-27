@@ -2,12 +2,8 @@ package CraftWorld.Instance.Entity.BoundingBox;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.Entity.BoundingBox.BoundingBoxUtils;
 import CraftWorld.Entity.BoundingBox.IBoundingBoxBase;
 import CraftWorld.Entity.EntityPos;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,13 +21,6 @@ public class BoundingBoxSphere implements IBoundingBoxBase {
     public static final String id = "BoundingBoxSphere";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            BoundingBoxUtils.getInstance().register(id, BoundingBoxSphere.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
     protected @NotNull EntityPos centre = new EntityPos();
     protected double range;
@@ -99,7 +88,7 @@ public class BoundingBoxSphere implements IBoundingBoxBase {
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof BoundingBoxSphere that)) return false;
-        return this.range == that.range && this.centre.equals(that.centre);
+        return Double.compare(this.range, that.range) == 0 && this.centre.equals(that.centre);
     }
 
     @Override

@@ -2,11 +2,9 @@ package CraftWorld.Instance.DST;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
+import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -14,29 +12,20 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTPureDouble implements IDSTBase {
+public class DSTDouble extends PureDSTBase<Double> {
     @Serial
     private static final long serialVersionUID = 6259019204523330694L;
-    public static final String id = "DSTPureDouble";
+    public static final String id = "DSTDouble";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTPureDouble.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
-    private double data;
-
-    public DSTPureDouble() {
+    public DSTDouble() {
         super();
     }
 
-    public DSTPureDouble(double data) {
+    public DSTDouble(Double data) {
         super();
-        this.data = data;
+        this.setData(data);
     }
 
     @Override
@@ -53,23 +42,20 @@ public class DSTPureDouble implements IDSTBase {
         output.writeUTF(suffix);
     }
 
-    public double getData() {
-        return this.data;
-    }
-
-    public void setData(double data) {
-        this.data = data;
+    @Override
+    public void setData(Double data) {
+        this.data = Objects.requireNonNullElse(data, (double) 0);
     }
 
     @Override
-    public String toString() {
-        return "DSTPureDouble{" + this.data + '}';
+    public @NotNull String toString() {
+        return "DSTDouble{" + this.data + '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (!(o instanceof DSTPureDouble that)) return false;
+        if (!(o instanceof DSTDouble that)) return false;
         return Double.compare(that.data, this.data) == 0;
     }
 

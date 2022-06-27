@@ -9,7 +9,6 @@ import HeadLibs.Helper.HRandomHelper;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
-import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -26,13 +25,6 @@ public class Entity implements IDSTBase {
     public static final String id = "Entity";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, Entity.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
     protected UUID uuid = HRandomHelper.getRandomUUID();
     protected Dimension dimension;

@@ -2,9 +2,6 @@ package CraftWorld.Utils;
 
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -21,14 +18,7 @@ public class IDResource implements IDSTBase {
     private String assets = "null";
 
     public static final String id = "IDResource";
-    public static final String prefix = id;
-    static {
-        try {
-            DSTUtils.getInstance().register(id, IDResource.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
+    public static final String prefix = DSTUtils.prefix(id);
 
     private String name = id;
 

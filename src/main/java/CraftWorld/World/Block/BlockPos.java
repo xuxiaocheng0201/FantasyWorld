@@ -8,9 +8,6 @@ import CraftWorld.Entity.EntityPos;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
 import HeadLibs.Helper.HMathHelper;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -29,13 +26,6 @@ public class BlockPos implements IDSTBase, Cloneable {
     public static final String id = "BlockPos";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, BlockPos.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
     private @NotNull ChunkPos chunkPos;
     private @Range(from = 0, to = Chunk.SIZE - 1) int x;

@@ -3,9 +3,6 @@ package CraftWorld.Instance.DST;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -22,13 +19,6 @@ public class DSTTagBooleanCollection implements IDSTBase {
     public static final String id = "DSTTagBooleanCollection";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTTagBooleanCollection.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
     private String name = id;
     private final @NotNull Collection<Boolean> data;

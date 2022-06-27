@@ -1,15 +1,24 @@
 package CraftWorld.Utils;
 
+import CraftWorld.ConstantStorage;
+import CraftWorld.DST.DSTFormatException;
+import CraftWorld.DST.DSTUtils;
+import CraftWorld.DST.IDSTBase;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serial;
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
 
-public class QuickTick implements Serializable {
+public class QuickTick implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -7856577519248919328L;
+    public static final String id = "QuickTick";
+    public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
 
     private @NotNull BigInteger tick = BigInteger.ZERO;
     private long cacheTick;
@@ -126,6 +135,21 @@ public class QuickTick implements Serializable {
 
     public long sN(long n) {  //tick-n
         return this.cacheTick + this.quickTick - n;
+    }
+
+    @Override
+    public void read(@NotNull DataInput input) throws IOException {
+        this.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
+        if (!suffix.equals(input.readUTF()))
+            throw new DSTFormatException();
+    }
+
+    @Override
+    public void write(@NotNull DataOutput output) throws IOException {
+        this.standardized();
+        output.writeUTF(prefix);
+        output.writeUTF(this.tick.toString(ConstantStorage.SAVE_NUMBER_RADIX));
+        output.writeUTF(suffix);
     }
 
     @Override

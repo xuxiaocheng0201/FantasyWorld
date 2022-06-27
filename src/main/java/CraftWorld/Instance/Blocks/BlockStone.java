@@ -1,11 +1,7 @@
 package CraftWorld.Instance.Blocks;
 
 import CraftWorld.Instance.DST.DSTComplexMeta;
-import CraftWorld.World.Block.BlockUtils;
 import CraftWorld.World.Block.IBlockBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
@@ -15,13 +11,7 @@ public class BlockStone implements IBlockBase {
     @Serial
     private static final long serialVersionUID = -1361010945938452870L;
     public static final String id = "BlockStone";
-    static {
-        try {
-            BlockUtils.getInstance().register(id, BlockStone.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
+
     @Override
     public @NotNull String getBlockId() {
         return id;

@@ -2,11 +2,9 @@ package CraftWorld.Instance.DST;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
+import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -14,29 +12,20 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTPureInt implements IDSTBase {
+public class DSTInteger extends PureDSTBase<Integer> {
     @Serial
     private static final long serialVersionUID = 6818666709777429561L;
-    public static final String id = "DSTPureInt";
+    public static final String id = "DSTInteger";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTPureInt.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
-    private int data;
-
-    public DSTPureInt() {
+    public DSTInteger() {
         super();
     }
 
-    public DSTPureInt(int data) {
+    public DSTInteger(Integer data) {
         super();
-        this.data = data;
+        this.setData(data);
     }
 
     @Override
@@ -53,24 +42,21 @@ public class DSTPureInt implements IDSTBase {
         output.writeUTF(suffix);
     }
 
-    public int getData() {
-        return this.data;
-    }
-
-    public void setData(int data) {
-        this.data = data;
+    @Override
+    public void setData(Integer data) {
+        this.data = Objects.requireNonNullElse(data, 0);
     }
 
     @Override
-    public String toString() {
-        return "DSTPureInt{" + this.data + '}';
+    public @NotNull String toString() {
+        return "DSTInteger{" + this.data + '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (!(o instanceof DSTPureInt that)) return false;
-        return this.data == that.data;
+        if (!(o instanceof DSTInteger that)) return false;
+        return Objects.equals(this.data, that.data);
     }
 
     @Override

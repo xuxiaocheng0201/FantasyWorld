@@ -34,13 +34,6 @@ public class Dimension implements IDSTBase {
     public static final String id = "Dimension";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, Dimension.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
     private @NotNull File dimensionSavedDirectory;
     private boolean unloaded;

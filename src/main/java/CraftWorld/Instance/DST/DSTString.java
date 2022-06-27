@@ -2,11 +2,9 @@ package CraftWorld.Instance.DST;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
+import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -14,29 +12,20 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTPureString implements IDSTBase {
+public class DSTString extends PureDSTBase<String> {
     @Serial
     private static final long serialVersionUID = -2996774276718275691L;
-    public static final String id = "DSTPureString";
+    public static final String id = "DSTString";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTPureString.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
-    private String data = "";
-
-    public DSTPureString() {
+    public DSTString() {
         super();
     }
 
-    public DSTPureString(String data) {
+    public DSTString(String data) {
         super();
-        this.data = data;
+        this.setData(data);
     }
 
     @Override
@@ -53,23 +42,20 @@ public class DSTPureString implements IDSTBase {
         output.writeUTF(suffix);
     }
 
-    public String getData() {
-        return this.data;
-    }
-
+    @Override
     public void setData(String data) {
-        this.data = data;
+        this.data = Objects.requireNonNullElse(data, "");
     }
 
     @Override
-    public String toString() {
-        return "DSTPureString{'" + this.data + "'}";
+    public @NotNull String toString() {
+        return "DSTString{'" + this.data + "'}";
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (!(o instanceof DSTPureString that)) return false;
+        if (!(o instanceof DSTString that)) return false;
         return Objects.equals(this.data, that.data);
     }
 

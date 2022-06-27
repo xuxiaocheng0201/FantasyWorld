@@ -2,11 +2,9 @@ package CraftWorld.Instance.DST;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.IDSTBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
+import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -14,29 +12,20 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTPureLong implements IDSTBase {
+public class DSTLong extends PureDSTBase<Long> {
     @Serial
     private static final long serialVersionUID = -8391379240891769836L;
-    public static final String id = "DSTPureLong";
+    public static final String id = "DSTLong";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, DSTPureLong.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
-    private long data;
-
-    public DSTPureLong() {
+    public DSTLong() {
         super();
     }
 
-    public DSTPureLong(long data) {
+    public DSTLong(Long data) {
         super();
-        this.data = data;
+        this.setData(data);
     }
 
     @Override
@@ -53,24 +42,21 @@ public class DSTPureLong implements IDSTBase {
         output.writeUTF(suffix);
     }
 
-    public long getData() {
-        return this.data;
-    }
-
-    public void setData(long data) {
-        this.data = data;
+    @Override
+    public void setData(Long data) {
+        this.data = Objects.requireNonNullElse(data, 0L);
     }
 
     @Override
-    public String toString() {
-        return "DSTPureLong{" + this.data + '}';
+    public @NotNull String toString() {
+        return "DSTLong{" + this.data + '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (!(o instanceof DSTPureLong that)) return false;
-        return this.data == that.data;
+        if (!(o instanceof DSTLong that)) return false;
+        return Objects.equals(this.data, that.data);
     }
 
     @Override

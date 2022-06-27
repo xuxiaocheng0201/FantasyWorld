@@ -10,8 +10,6 @@ import CraftWorld.World.Dimension.Dimension;
 import CraftWorld.World.Dimension.DimensionUtils;
 import CraftWorld.World.Dimension.IDimensionBase;
 import HeadLibs.Helper.HFileHelper;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
@@ -36,13 +34,6 @@ public class World implements IDSTBase {
     public static final String id = "World";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DSTUtils.getInstance().register(id, World.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
     private @NotNull File worldSavedDirectory = (new File(ConstantStorage.WORLD_PATH)).getAbsoluteFile();
     private boolean unloaded = true;

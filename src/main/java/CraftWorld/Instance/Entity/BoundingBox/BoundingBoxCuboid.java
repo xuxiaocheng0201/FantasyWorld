@@ -2,13 +2,9 @@ package CraftWorld.Instance.Entity.BoundingBox;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.Entity.BoundingBox.BoundingBoxUtils;
 import CraftWorld.Entity.BoundingBox.IBoundingBoxBase;
 import CraftWorld.Entity.EntityPos;
 import CraftWorld.Utils.Angle;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,13 +23,6 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     public static final String id = "BoundingBoxCuboid";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            BoundingBoxUtils.getInstance().register(id, BoundingBoxCuboid.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
 
     private final @NotNull EntityPos bld = new EntityPos();
     private @NotNull Angle rotationX = new Angle();
@@ -235,7 +224,7 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof BoundingBoxCuboid that)) return false;
-        return this.rotationX.equals(that.rotationX) && this.rotationY.equals(that.rotationY) && this.rotationZ.equals(that.rotationZ) && this.length == that.length && this.width == that.width && this.height == that.height && this.bld.equals(that.bld);
+        return this.rotationX.equals(that.rotationX) && this.rotationY.equals(that.rotationY) && this.rotationZ.equals(that.rotationZ) && Double.compare(this.length, that.length) == 0 && Double.compare(this.width, that.width) == 0 && Double.compare(this.height, that.height) == 0 && this.bld.equals(that.bld);
     }
 
     @Override

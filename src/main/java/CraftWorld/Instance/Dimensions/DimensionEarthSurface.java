@@ -3,10 +3,7 @@ package CraftWorld.Instance.Dimensions;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Chunk.ChunkPos;
-import CraftWorld.World.Dimension.DimensionUtils;
 import CraftWorld.World.Dimension.IDimensionBase;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HLinkedSetRegisterer;
 import org.jetbrains.annotations.NotNull;
@@ -24,14 +21,7 @@ public class DimensionEarthSurface implements IDimensionBase {
     public static final String id = "DimensionEarthSurface";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
-    static {
-        try {
-            DimensionUtils.getInstance().register(id, DimensionEarthSurface.class);
-            DSTUtils.getInstance().register(id, DimensionEarthSurface.class);
-        } catch (HElementRegisteredException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-        }
-    }
+
     @Override
     public String getDimensionId() {
         return id;
