@@ -2,6 +2,7 @@ package HeadLibs.Helper;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 /**
@@ -152,64 +153,99 @@ public class HMathHelper {
         return number - floor(number);
     }
 
+
     /**
-     * Return the absolute value of an int.
+     * Minimum of some int numbers.
+     */
+    public static int min(int[] values) {
+        if (values == null)
+            return Integer.MAX_VALUE;
+        int min_est = Integer.MAX_VALUE;
+        for (int value: values)
+            min_est = Math.min(min_est, value);
+        return min_est;
+    }
+
+    /**
+     * Minimum of some float numbers.
+     */
+    public static float min(float[] values) {
+        if (values == null)
+            return Float.MAX_VALUE;
+        float min_est = Float.MAX_VALUE;
+        for (float value: values)
+            min_est = Math.min(min_est, value);
+        return min_est;
+    }
+
+    /**
+     * Minimum of some double numbers.
+     */
+    public static double min(double[] values) {
+        if (values == null)
+            return Double.MAX_VALUE;
+        double min_est = Double.MAX_VALUE;
+        for (double value: values)
+            min_est = Math.min(min_est, value);
+        return min_est;
+    }
+
+
+    /**
+     * Maximum of some int numbers.
+     */
+    public static int max(int[] values) {
+        if (values == null)
+            return Integer.MIN_VALUE;
+        int max_est = Integer.MIN_VALUE;
+        for (int value: values)
+            max_est = Math.max(max_est, value);
+        return max_est;
+    }
+
+    /**
+     * Maximum of some float numbers.
+     */
+    public static float max(float[] values) {
+        if (values == null)
+            return Float.MIN_VALUE;
+        float max_est = Float.MIN_VALUE;
+        for (float value: values)
+            max_est = Math.max(max_est, value);
+        return max_est;
+    }
+
+    /**
+     * Maximum of some double numbers.
+     */
+    public static double max(double[] values) {
+        if (values == null)
+            return Double.MIN_VALUE;
+        double max_est = Double.MIN_VALUE;
+        for (double value: values)
+            max_est = Math.max(max_est, value);
+        return max_est;
+    }
+
+    /**
+     * The absolute value of an int.
      */
     public static int abs(int value) {
         return value < 0 ? -value : value;
     }
 
     /**
-     * Return the absolute value of a float.
+     * The absolute value of a float.
      */
     public static float abs(float value) {
         return value < 0.0F ? -value : value;
     }
 
     /**
-     * Return the absolute value of a double.
+     * The absolute value of a double.
      */
     public static double abs(double value) {
         return value < 0.0D ? -value : value;
-    }
-
-    /**
-     * Maximum of the absolute value of two int numbers.
-     */
-    public static int absMax(int value1, int value2) {
-        int absValue1 = value1;
-        int absValue2 = value2;
-        if (absValue1 < 0.0D)
-            absValue1 = -absValue1;
-        if (absValue2 < 0.0D)
-            absValue2 = -absValue2;
-        return Math.max(absValue1, absValue2);
-    }
-
-    /**
-     * Maximum of the absolute value of two float numbers.
-     */
-    public static float absMax(float value1, float value2) {
-        float absValue1 = value1;
-        float absValue2 = value2;
-        if (absValue1 < 0.0D)
-            absValue1 = -absValue1;
-        if (absValue2 < 0.0D)
-            absValue2 = -absValue2;
-        return Math.max(absValue1, absValue2);
-    }
-
-    /**
-     * Maximum of the absolute value of two double numbers.
-     */
-    public static double absMax(double value1, double value2) {
-        double absValue1 = value1;
-        double absValue2 = value2;
-        if (absValue1 < 0.0D)
-            absValue1 = -absValue1;
-        if (absValue2 < 0.0D)
-            absValue2 = -absValue2;
-        return Math.max(absValue1, absValue2);
     }
 
     /**
@@ -226,6 +262,18 @@ public class HMathHelper {
     }
 
     /**
+     * Minimum of the absolute value of some int numbers.
+     */
+    public static int absMin(int[] values) {
+        if (values == null)
+            return 0;
+        int min_est = 0;
+        for (int value: values)
+            min_est = absMin(min_est, value);
+        return min_est;
+    }
+
+    /**
      * Minimum of the absolute value of two float numbers.
      */
     public static float absMin(float value1, float value2) {
@@ -239,6 +287,18 @@ public class HMathHelper {
     }
 
     /**
+     * Minimum of the absolute value of some float numbers.
+     */
+    public static float absMin(float[] values) {
+        if (values == null)
+            return 0.0F;
+        float min_est = 0.0F;
+        for (float value: values)
+            min_est = absMin(min_est, value);
+        return min_est;
+    }
+
+    /**
      * Minimum of the absolute value of two double numbers.
      */
     public static double absMin(double value1, double value2) {
@@ -249,6 +309,93 @@ public class HMathHelper {
         if (absValue2 < 0.0D)
             absValue2 = -absValue2;
         return Math.min(absValue1, absValue2);
+    }
+
+    /**
+     * Minimum of the absolute value of some double numbers.
+     */
+    public static double absMin(double[] values) {
+        if (values == null)
+            return 0.0D;
+        double min_est = 0.0D;
+        for (double value: values)
+            min_est = absMin(min_est, value);
+        return min_est;
+    }
+
+    /**
+     * Maximum of the absolute value of two int numbers.
+     */
+    public static int absMax(int value1, int value2) {
+        int absValue1 = value1;
+        int absValue2 = value2;
+        if (absValue1 < 0.0D)
+            absValue1 = -absValue1;
+        if (absValue2 < 0.0D)
+            absValue2 = -absValue2;
+        return Math.max(absValue1, absValue2);
+    }
+
+    /**
+     * Maximum of the absolute value of some int numbers.
+     */
+    public static int absMax(int[] values) {
+        if (values == null)
+            return 0;
+        int max_est = 0;
+        for (int value: values)
+            max_est = absMax(max_est, value);
+        return max_est;
+    }
+
+    /**
+     * Maximum of the absolute value of two float numbers.
+     */
+    public static float absMax(float value1, float value2) {
+        float absValue1 = value1;
+        float absValue2 = value2;
+        if (absValue1 < 0.0D)
+            absValue1 = -absValue1;
+        if (absValue2 < 0.0D)
+            absValue2 = -absValue2;
+        return Math.max(absValue1, absValue2);
+    }
+
+    /**
+     * Maximum of the absolute value of some float numbers.
+     */
+    public static float absMax(float[] values) {
+        if (values == null)
+            return 0.0F;
+        float max_est = 0.0F;
+        for (float value: values)
+            max_est = absMax(max_est, value);
+        return max_est;
+    }
+
+    /**
+     * Maximum of the absolute value of two double numbers.
+     */
+    public static double absMax(double value1, double value2) {
+        double absValue1 = value1;
+        double absValue2 = value2;
+        if (absValue1 < 0.0D)
+            absValue1 = -absValue1;
+        if (absValue2 < 0.0D)
+            absValue2 = -absValue2;
+        return Math.max(absValue1, absValue2);
+    }
+
+    /**
+     * Maximum of the absolute value of some double numbers.
+     */
+    public static double absMax(double[] values) {
+        if (values == null)
+            return 0.0D;
+        double max_est = 0.0D;
+        for (double value: values)
+            max_est = absMax(max_est, value);
+        return max_est;
     }
 
     /**
@@ -355,22 +502,6 @@ public class HMathHelper {
      */
     public static int floorDivide(double value1, double value2) {
         return value1 < 0 ? -(floor((-value1 - 1) / value2)) - 1 : floor(value1 / value2);
-    }
-
-    /**
-     * BigInteger version of floorDivide()
-     */
-    public static BigInteger floorDivide(BigInteger value1, BigInteger value2) {
-        return value1.signum() < 0 ? value1.negate().subtract(BigInteger.ONE).divide(value2).negate().subtract(BigInteger.ONE) : value1.divide(value2);
-    }
-
-    /**
-     * BigDecimal version of floorDivide()
-     */
-    public static BigInteger floorDivide(BigDecimal value1, BigDecimal value2) {
-        return value1.signum() < 0 ?
-                value1.negate().subtract(BigDecimal.ONE).divide(value2, RoundingMode.FLOOR).negate().toBigInteger().subtract(BigInteger.ONE)
-                : value1.divide(value2, RoundingMode.FLOOR).toBigInteger();
     }
 
     /**
@@ -599,5 +730,36 @@ public class HMathHelper {
         MULTIPLY_DE_BRUIJN_BIT_POSITION = new int[] {
                 0,  1, 28,  2, 29, 14, 24,  3, 30, 22, 20, 15, 25, 17,  4,  8,
                 31, 27, 13, 23, 21, 19, 16,  7, 26, 12, 18,  6, 11,  5, 10,  9};
+    }
+
+    public static class BigIntegerHelper {
+        /**
+         * BigInteger version of floorDivide()
+         */
+        public static BigInteger floorDivide(BigInteger value1, BigInteger value2) {
+            return value1.signum() < 0 ? value1.negate().subtract(BigInteger.ONE).divide(value2).negate().subtract(BigInteger.ONE) : value1.divide(value2);
+        }
+    }
+
+    public static class BigDecimalHelper {
+        public static BigDecimal BigDecimal_TWO = new BigDecimal("2");
+
+        /**
+         * BigDecimal version of floorDivide()
+         */
+        public static BigInteger floorDivide(BigDecimal value1, BigDecimal value2) {
+            return value1.signum() < 0 ?
+                    value1.negate().subtract(BigDecimal.ONE).divide(value2, RoundingMode.FLOOR).negate().toBigInteger().subtract(BigInteger.ONE)
+                    : value1.divide(value2, RoundingMode.FLOOR).toBigInteger();
+        }
+
+        public static BigDecimal sqrt(BigDecimal value, int scale) {
+            int precision = 100;
+            MathContext mc = new MathContext(scale, RoundingMode.HALF_UP);
+            BigDecimal deviation = value;
+            for (int cnt = 0; cnt < precision; ++cnt)
+                deviation = deviation.add(value.divide(deviation, mc)).divide(BigDecimal_TWO, mc);
+            return deviation.setScale(scale, RoundingMode.HALF_UP);
+        }
     }
 }

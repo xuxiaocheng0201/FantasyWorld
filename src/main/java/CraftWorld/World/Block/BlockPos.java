@@ -78,7 +78,7 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.x = 0;
             return;
         }
-        BigInteger chunk = HMathHelper.floorDivide(x, Chunk.SIZE_BigInteger);
+        BigInteger chunk = HMathHelper.BigIntegerHelper.floorDivide(x, Chunk.SIZE_BigInteger);
         this.chunkPos.setX(chunk);
         this.x = x.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
@@ -109,7 +109,7 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.y = 0;
             return;
         }
-        BigInteger chunk = HMathHelper.floorDivide(y, Chunk.SIZE_BigInteger);
+        BigInteger chunk = HMathHelper.BigIntegerHelper.floorDivide(y, Chunk.SIZE_BigInteger);
         this.chunkPos.setY(chunk);
         this.y = y.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
@@ -140,7 +140,7 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.z = 0;
             return;
         }
-        BigInteger chunk = HMathHelper.floorDivide(z, Chunk.SIZE_BigInteger);
+        BigInteger chunk = HMathHelper.BigIntegerHelper.floorDivide(z, Chunk.SIZE_BigInteger);
         this.chunkPos.setZ(chunk);
         this.z = z.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }

@@ -5,6 +5,7 @@ import Core.Addition.Mod.NewMod;
 import Core.EventBus.EventSubscribe;
 import Core.EventBus.Events.ElementsCheckedEvent;
 import Core.EventBus.Events.PreInitializationModsEvent;
+import Core.EventBus.Events.ServerStopEvent;
 import Core.FileTreeStorage;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.Entity.BoundingBox.BoundingBoxUtils;
@@ -41,7 +42,7 @@ import java.io.IOException;
 public class CraftWorldMod implements ModImplement {
     private static final HLog logger = new HLog("CraftWorldMod");
 
-    @Subscribe(priority = Integer.MIN_VALUE)
+    @Subscribe
     public void elementsChecked(@NotNull ElementsCheckedEvent event) throws HElementRegisteredException {
         if (!event.firstPost())
             return;
@@ -89,5 +90,11 @@ public class CraftWorldMod implements ModImplement {
     public void mainInitialize() {
         logger.setName("CraftWorldMod", Thread.currentThread().getName());
         CraftWorld.getInstance().getWorld().addPrepareDimension(DimensionEarthSurface.id);
+    }
+
+    @Subscribe
+    public void test(ServerStopEvent event) {
+        BoundingBoxCuboid bbc = new BoundingBoxCuboid();
+        //bbc.g
     }
 }

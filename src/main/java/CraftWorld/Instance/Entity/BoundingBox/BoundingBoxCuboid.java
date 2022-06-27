@@ -1,10 +1,12 @@
 package CraftWorld.Instance.Entity.BoundingBox;
 
+import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.Entity.BoundingBox.IBoundingBoxBase;
 import CraftWorld.Entity.EntityPos;
 import CraftWorld.Utils.Angle;
+import HeadLibs.Helper.HMathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +15,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -25,9 +28,9 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     public static final String suffix = DSTUtils.suffix(id);
 
     private final @NotNull EntityPos bld = new EntityPos();
-    private @NotNull Angle rotationX = new Angle();
-    private @NotNull Angle rotationY = new Angle();
-    private @NotNull Angle rotationZ = new Angle();
+    private final @NotNull Angle rotationX = new Angle();
+    private final @NotNull Angle rotationY = new Angle();
+    private final @NotNull Angle rotationZ = new Angle();
     private double length;
     private double width;
     private double height;
@@ -90,8 +93,45 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
             this.brd = new EntityPos();// = new EntityPos(null, 0, 0, 1);
         if (this.center == null)
             this.center = new EntityPos();
-        //TODO
-        this.brd.setFullX(this.bld.getFullX().add(new BigDecimal(this.height * this.rotationX.cos())));
+        double xy = this.rotationX.cos() * this.rotationY.cos();
+        double xz = this.rotationX.cos() * this.rotationZ.cos();
+        double yz = this.rotationY.cos() * this.rotationZ.cos();
+        BigDecimal wx = new BigDecimal(this.width * yz);
+        BigDecimal wy = new BigDecimal(this.width * xz);
+        BigDecimal wz = new BigDecimal(this.width * xy);
+        BigDecimal lx = new BigDecimal(this.length * yz);
+        BigDecimal ly = new BigDecimal(this.length * xz);
+        BigDecimal lz = new BigDecimal(this.length * xy);
+        BigDecimal hx = new BigDecimal(this.height * yz);
+        BigDecimal hy = new BigDecimal(this.height * xz);
+        BigDecimal hz = new BigDecimal(this.height * xy);
+        this.brd.setFullX(this.bld.getFullX().add(wx));
+        this.brd.setFullY(this.bld.getFullY().add(wy));
+        this.brd.setFullZ(this.bld.getFullZ().add(wz));
+        this.fld.setFullX(this.bld.getFullX().add(lx));
+        this.fld.setFullY(this.bld.getFullY().add(ly));
+        this.fld.setFullZ(this.bld.getFullZ().add(lz));
+        this.blu.setFullX(this.bld.getFullX().add(hx));
+        this.blu.setFullY(this.bld.getFullY().add(hy));
+        this.blu.setFullZ(this.bld.getFullZ().add(hz));
+        this.frd.setFullX(this.brd.getFullX().add(lx));
+        this.frd.setFullY(this.brd.getFullY().add(ly));
+        this.frd.setFullZ(this.brd.getFullZ().add(lz));
+        this.bru.setFullX(this.blu.getFullX().add(wx));
+        this.bru.setFullY(this.blu.getFullY().add(wy));
+        this.bru.setFullZ(this.blu.getFullZ().add(wz));
+        this.flu.setFullX(this.fld.getFullX().add(hx));
+        this.flu.setFullY(this.fld.getFullY().add(hy));
+        this.flu.setFullZ(this.fld.getFullZ().add(hz));
+        this.fru.setFullX(this.frd.getFullX().add(hx));
+        this.fru.setFullY(this.frd.getFullY().add(hy));
+        this.fru.setFullZ(this.frd.getFullZ().add(hz));
+        this.center.setFullX(this.bld.getFullX().add(this.fru.getFullX()).divide(HMathHelper.BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
+        this.center.setFullY(this.bld.getFullY().add(this.fru.getFullY()).divide(HMathHelper.BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
+        this.center.setFullZ(this.bld.getFullZ().add(this.fru.getFullZ()).divide(HMathHelper.BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
+        this.minRadius = HMathHelper.min(new double[]{this.length, this.width, this.height}) / 2;
+        this.maxRadius = this.bld.distance(this.center).doubleValue();
+        this.updatedPos = true;
     }
 
     public @NotNull EntityPos getFlu() {

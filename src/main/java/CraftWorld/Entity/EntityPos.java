@@ -1,5 +1,6 @@
 package CraftWorld.Entity;
 
+import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -16,6 +17,8 @@ import java.io.IOException;
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -81,7 +84,7 @@ public class EntityPos implements IDSTBase, Cloneable {
             this.x = 0.0D;
             return;
         }
-        BigInteger chunk = HMathHelper.floorDivide(x, Chunk.SIZE_BigDecimal);
+        BigInteger chunk = HMathHelper.BigDecimalHelper.floorDivide(x, Chunk.SIZE_BigDecimal);
         this.chunkPos.setX(chunk);
         this.x = x.subtract(new BigDecimal(chunk.multiply(Chunk.SIZE_BigInteger))).remainder(Chunk.SIZE_BigDecimal).doubleValue();
     }
@@ -112,7 +115,7 @@ public class EntityPos implements IDSTBase, Cloneable {
             this.y = 0.0D;
             return;
         }
-        BigInteger chunk = HMathHelper.floorDivide(y, Chunk.SIZE_BigDecimal);
+        BigInteger chunk = HMathHelper.BigDecimalHelper.floorDivide(y, Chunk.SIZE_BigDecimal);
         this.chunkPos.setY(chunk);
         this.y = y.subtract(new BigDecimal(chunk.multiply(Chunk.SIZE_BigInteger))).remainder(Chunk.SIZE_BigDecimal).doubleValue();
     }
@@ -143,7 +146,7 @@ public class EntityPos implements IDSTBase, Cloneable {
             this.z = 0.0D;
             return;
         }
-        BigInteger chunk = HMathHelper.floorDivide(z, Chunk.SIZE_BigDecimal);
+        BigInteger chunk = HMathHelper.BigDecimalHelper.floorDivide(z, Chunk.SIZE_BigDecimal);
         this.chunkPos.setZ(chunk);
         this.z = z.subtract(new BigDecimal(chunk.multiply(Chunk.SIZE_BigInteger))).remainder(Chunk.SIZE_BigDecimal).doubleValue();
     }
@@ -298,6 +301,19 @@ public class EntityPos implements IDSTBase, Cloneable {
         this.setX(this.x - pos.getX());
         this.setY(this.y - pos.getY());
         this.setZ(this.z - pos.getZ());
+    }
+
+    public BigDecimal distance(@Nullable EntityPos that) {
+        if (that == null)
+            return this.getFullX().multiply(this.getFullX())
+                    .add(this.getFullY().multiply(this.getFullY()))
+                    .add(this.getFullZ().multiply(this.getFullZ()))
+                    .sqrt(new MathContext(ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.HALF_UP));
+        EntityPos delta = new EntityPos();
+        delta.setFullX(this.getFullX().subtract(that.getFullX()));
+        delta.setFullY(this.getFullY().subtract(that.getFullY()));
+        delta.setFullZ(this.getFullZ().subtract(that.getFullZ()));
+        return delta.distance(null);
     }
 
     @Override
