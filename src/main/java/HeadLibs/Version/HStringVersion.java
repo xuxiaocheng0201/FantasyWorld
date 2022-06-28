@@ -86,7 +86,7 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof HStringVersion that)) return false;
         return this.version.equals(that.version);
@@ -142,50 +142,32 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         for (int i = 0; i < minLength; ++i) {
             List<String> version1 = new ArrayList<>();
             boolean isNumber = false;
-            StringBuilder temp = new StringBuilder(2);
+            StringBuilder temp = new StringBuilder(3);
             for (int j = 0; j < versionArray1[i].length(); ++j) {
                 char ch = versionArray1[i].charAt(j);
-                if (HCharHelper.isNumber(ch))
-                    if (isNumber)
-                        temp.append(ch);
-                    else {
-                        isNumber = true;
-                        if (!temp.isEmpty())
-                            version1.add(temp.toString());
-                        temp = new StringBuilder(String.valueOf(ch));
-                    }
-                else
-                if (isNumber) {
-                    isNumber = false;
+                if (HCharHelper.isNumber(ch) == isNumber)
+                    temp.append(ch);
+                else {
+                    isNumber = !isNumber;
                     if (!temp.isEmpty())
                         version1.add(temp.toString());
                     temp = new StringBuilder(String.valueOf(ch));
-                } else
-                    temp.append(ch);
+                }
             }
             version1.add(temp.toString());
             List<String> version2 = new ArrayList<>();
             isNumber = false;
-            temp = new StringBuilder(2);
+            temp.delete(0, temp.length());
             for (int j = 0; j < versionArray2[i].length(); ++j) {
                 char ch = versionArray2[i].charAt(j);
-                if (HCharHelper.isNumber(ch))
-                    if (isNumber)
-                        temp.append(ch);
-                    else {
-                        isNumber = true;
-                        if (!temp.isEmpty())
-                            version2.add(temp.toString());
-                        temp = new StringBuilder(String.valueOf(ch));
-                    }
-                else
-                if (isNumber) {
-                    isNumber = false;
+                if (HCharHelper.isNumber(ch) == isNumber)
+                    temp.append(ch);
+                else {
+                    isNumber = !isNumber;
                     if (!temp.isEmpty())
                         version2.add(temp.toString());
                     temp = new StringBuilder(String.valueOf(ch));
-                } else
-                    temp.append(ch);
+                }
             }
             version2.add(temp.toString());
             int minLen = Math.min(version1.size(), version2.size());

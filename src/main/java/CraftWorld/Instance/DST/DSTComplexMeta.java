@@ -23,22 +23,11 @@ public final class DSTComplexMeta implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private String name = id;
     private final @NotNull HMapRegisterer<String, IDSTBase> dstMap = new HMapRegisterer<>(true);
-
-    public DSTComplexMeta() {
-        super();
-    }
-
-    public DSTComplexMeta(String name) {
-        super();
-        this.name = name;
-    }
 
     @Override
     public void read(@NotNull DataInput input) throws IOException {
         this.dstMap.deregisterAll();
-        this.name = input.readUTF();
         String name = input.readUTF();
         while (!suffix.equals(name)) {
             IDSTBase dst;
@@ -59,20 +48,11 @@ public final class DSTComplexMeta implements IDSTBase {
     @Override
     public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
-        output.writeUTF(this.name);
         for (Entry<String, IDSTBase> entry : this.dstMap) {
             output.writeUTF(entry.getKey());
             entry.getValue().write(output);
         }
         output.writeUTF(suffix);
-    }
-
-    public String getDSTName() {
-        return this.name;
-    }
-
-    public void setDSTName(String name) {
-        this.name = name;
     }
 
     public @NotNull HMapRegisterer<String, IDSTBase> getDstMap() {
@@ -81,21 +61,18 @@ public final class DSTComplexMeta implements IDSTBase {
 
     @Override
     public @NotNull String toString() {
-        return "DSTComplexMeta{" +
-                "name='" + this.name + '\'' +
-                ", dstMap=" + this.dstMap +
-                '}';
+        return "DSTComplexMeta:" + this.dstMap;
     }
 
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof DSTComplexMeta that)) return false;
-        return Objects.equals(this.name, that.name) && this.dstMap.equals(that.dstMap);
+        return this.dstMap.equals(that.dstMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.dstMap);
+        return Objects.hash(this.dstMap);
     }
 }

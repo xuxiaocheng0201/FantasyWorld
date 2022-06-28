@@ -8,6 +8,7 @@ import CraftWorld.World.Block.BlockPos;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
 import HeadLibs.Helper.HMathHelper;
+import HeadLibs.Helper.HMathHelper.BigDecimalHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,10 +30,10 @@ public class EntityPos implements IDSTBase, Cloneable {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private @NotNull ChunkPos chunkPos;
-    private double x;
-    private double y;
-    private double z;
+    protected @NotNull ChunkPos chunkPos;
+    protected double x;
+    protected double y;
+    protected double z;
 
     public EntityPos() {
         this(new ChunkPos(), 0, 0, 0);
@@ -48,6 +49,14 @@ public class EntityPos implements IDSTBase, Cloneable {
         this.setX(x);
         this.setY(y);
         this.setZ(z);
+    }
+
+    public EntityPos(@Nullable BigDecimal x, @Nullable BigDecimal y, @Nullable BigDecimal z) {
+        super();
+        this.chunkPos = new ChunkPos();
+        this.setFullX(x);
+        this.setFullY(y);
+        this.setFullZ(z);
     }
 
     public @NotNull ChunkPos getChunkPos() {
@@ -84,7 +93,7 @@ public class EntityPos implements IDSTBase, Cloneable {
             this.x = 0.0D;
             return;
         }
-        BigInteger chunk = HMathHelper.BigDecimalHelper.floorDivide(x, Chunk.SIZE_BigDecimal);
+        BigInteger chunk = BigDecimalHelper.floorDivide(x, Chunk.SIZE_BigDecimal);
         this.chunkPos.setX(chunk);
         this.x = x.subtract(new BigDecimal(chunk.multiply(Chunk.SIZE_BigInteger))).remainder(Chunk.SIZE_BigDecimal).doubleValue();
     }
@@ -115,7 +124,7 @@ public class EntityPos implements IDSTBase, Cloneable {
             this.y = 0.0D;
             return;
         }
-        BigInteger chunk = HMathHelper.BigDecimalHelper.floorDivide(y, Chunk.SIZE_BigDecimal);
+        BigInteger chunk = BigDecimalHelper.floorDivide(y, Chunk.SIZE_BigDecimal);
         this.chunkPos.setY(chunk);
         this.y = y.subtract(new BigDecimal(chunk.multiply(Chunk.SIZE_BigInteger))).remainder(Chunk.SIZE_BigDecimal).doubleValue();
     }
@@ -146,7 +155,7 @@ public class EntityPos implements IDSTBase, Cloneable {
             this.z = 0.0D;
             return;
         }
-        BigInteger chunk = HMathHelper.BigDecimalHelper.floorDivide(z, Chunk.SIZE_BigDecimal);
+        BigInteger chunk = BigDecimalHelper.floorDivide(z, Chunk.SIZE_BigDecimal);
         this.chunkPos.setZ(chunk);
         this.z = z.subtract(new BigDecimal(chunk.multiply(Chunk.SIZE_BigInteger))).remainder(Chunk.SIZE_BigDecimal).doubleValue();
     }
@@ -309,11 +318,18 @@ public class EntityPos implements IDSTBase, Cloneable {
                     .add(this.getFullY().multiply(this.getFullY()))
                     .add(this.getFullZ().multiply(this.getFullZ()))
                     .sqrt(new MathContext(ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.HALF_UP));
-        EntityPos delta = new EntityPos();
-        delta.setFullX(this.getFullX().subtract(that.getFullX()));
-        delta.setFullY(this.getFullY().subtract(that.getFullY()));
-        delta.setFullZ(this.getFullZ().subtract(that.getFullZ()));
-        return delta.distance(null);
+        ImmutableEntityPos delta = new ImmutableEntityPos(
+                this.getFullX().subtract(that.getFullX()),
+                this.getFullY().subtract(that.getFullY()),
+                this.getFullZ().subtract(that.getFullZ()));
+        return delta.getFullX().multiply(delta.getFullX())
+                .add(delta.getFullY().multiply(delta.getFullY()))
+                .add(delta.getFullZ().multiply(delta.getFullZ()))
+                .sqrt(new MathContext(ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.HALF_UP));
+    }
+
+    public @NotNull ImmutableEntityPos toImmutable() {
+        return new ImmutableEntityPos(this);
     }
 
     @Override
@@ -339,7 +355,7 @@ public class EntityPos implements IDSTBase, Cloneable {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "EntityPos{" +
                 "chunkPos=" + this.chunkPos +
                 ", x=" + this.x +
@@ -349,11 +365,10 @@ public class EntityPos implements IDSTBase, Cloneable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        EntityPos entityPos = (EntityPos) o;
-        return Double.compare(entityPos.x, this.x) == 0 && Double.compare(entityPos.y, this.y) == 0 && Double.compare(entityPos.z, this.z) == 0 && this.chunkPos.equals(entityPos.chunkPos);
+        if (!(o instanceof EntityPos that)) return false;
+        return Double.compare(that.x, this.x) == 0 && Double.compare(that.y, this.y) == 0 && Double.compare(that.z, this.z) == 0 && this.chunkPos.equals(that.chunkPos);
     }
 
     @Override
@@ -371,5 +386,238 @@ public class EntityPos implements IDSTBase, Cloneable {
         }
         entityPos.chunkPos = this.chunkPos.clone();
         return entityPos;
+    }
+
+    public static class ImmutableEntityPos extends EntityPos {
+        @Serial
+        private static final long serialVersionUID = -3777475711600587517L;
+
+        protected @NotNull BigDecimal fullX;
+        protected @NotNull BigDecimal fullY;
+        protected @NotNull BigDecimal fullZ;
+
+        public ImmutableEntityPos() {
+            super();
+            this.fullX = super.getFullX();
+            this.fullY = super.getFullY();
+            this.fullZ = super.getFullZ();
+        }
+
+        public ImmutableEntityPos(@Nullable ChunkPos chunkPos) {
+            super(chunkPos);
+            this.fullX = super.getFullX();
+            this.fullY = super.getFullY();
+            this.fullZ = super.getFullZ();
+        }
+
+        public ImmutableEntityPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
+            super(chunkPos, x, y, z);
+            this.fullX = super.getFullX();
+            this.fullY = super.getFullY();
+            this.fullZ = super.getFullZ();
+        }
+
+        public ImmutableEntityPos(@Nullable BigDecimal x, @Nullable BigDecimal y, @Nullable BigDecimal z) {
+            super(x, y, z);
+            this.fullX = Objects.requireNonNullElse(x, BigDecimal.ZERO);
+            this.fullY = Objects.requireNonNullElse(y, BigDecimal.ZERO);
+            this.fullZ = Objects.requireNonNullElse(z, BigDecimal.ZERO);
+        }
+
+        public ImmutableEntityPos(@Nullable EntityPos entityPos) {
+            super();
+            if (entityPos != null) {
+                this.fullX = entityPos.getFullX();
+                this.fullY = entityPos.getFullY();
+                this.fullZ = entityPos.getFullZ();
+                super.setFullX(this.fullX);
+                super.setFullY(this.fullY);
+                super.setFullZ(this.fullZ);
+            } else {
+                this.fullX = BigDecimal.ZERO;
+                this.fullY = BigDecimal.ZERO;
+                this.fullZ = BigDecimal.ZERO;
+            }
+        }
+
+        @Override
+        public void setChunkPos(@Nullable ChunkPos chunkPos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull BigDecimal getFullX() {
+            return this.fullX;
+        }
+
+        @Override
+        public void setX(double x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullX(double x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullX(@Nullable BigDecimal x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull BigDecimal getFullY() {
+            return this.fullY;
+        }
+
+        @Override
+        public void setY(double y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullY(double y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullY(@Nullable BigDecimal y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull BigDecimal getFullZ() {
+            return this.fullZ;
+        }
+
+        @Override
+        public void setZ(double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullZ(double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullZ(@Nullable BigDecimal z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clearOffset() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(double x, double y, double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable ChunkPos pos, double x, double y, double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addX(double x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addY(double y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addZ(double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(double x, double y, double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addOffset(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addOffset(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractX(double x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractY(double y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractZ(double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(double x, double y, double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractOffset(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractOffset(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull ImmutableEntityPos toImmutable() {
+            return this;
+        }
     }
 }

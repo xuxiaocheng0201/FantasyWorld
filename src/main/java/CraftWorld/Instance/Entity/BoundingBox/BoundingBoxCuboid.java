@@ -7,6 +7,7 @@ import CraftWorld.Entity.BoundingBox.IBoundingBoxBase;
 import CraftWorld.Entity.EntityPos;
 import CraftWorld.Utils.Angle;
 import HeadLibs.Helper.HMathHelper;
+import HeadLibs.Helper.HMathHelper.BigDecimalHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,12 +67,36 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         return this.length;
     }
 
+    public void setLength(double length) {
+        double new_length = Math.max(length, 0.0D);
+        if (Double.compare(this.length, new_length) != 0) {
+            this.updatedPos = false;
+            this.length = new_length;
+        }
+    }
+
     public double getWidth() {
         return this.width;
     }
 
+    public void setWidth(double width) {
+        double new_width = Math.max(width, 0.0D);
+        if (Double.compare(this.width, new_width) != 0) {
+            this.updatedPos = false;
+            this.width = new_width;
+        }
+    }
+
     public double getHeight() {
         return this.height;
+    }
+
+    public void setHeight(double height) {
+        double new_height = Math.max(height, 0.0D);
+        if (Double.compare(this.height, new_height) != 0) {
+            this.updatedPos = false;
+            this.height = new_height;
+        }
     }
 
     public void updatePos() {
@@ -126,9 +151,9 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         this.fru.setFullX(this.frd.getFullX().add(hx));
         this.fru.setFullY(this.frd.getFullY().add(hy));
         this.fru.setFullZ(this.frd.getFullZ().add(hz));
-        this.center.setFullX(this.bld.getFullX().add(this.fru.getFullX()).divide(HMathHelper.BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
-        this.center.setFullY(this.bld.getFullY().add(this.fru.getFullY()).divide(HMathHelper.BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
-        this.center.setFullZ(this.bld.getFullZ().add(this.fru.getFullZ()).divide(HMathHelper.BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
+        this.center.setFullX(this.bld.getFullX().add(this.fru.getFullX()).divide(BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
+        this.center.setFullY(this.bld.getFullY().add(this.fru.getFullY()).divide(BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
+        this.center.setFullZ(this.bld.getFullZ().add(this.fru.getFullZ()).divide(BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
         this.minRadius = HMathHelper.min(new double[]{this.length, this.width, this.height}) / 2;
         this.maxRadius = this.bld.distance(this.center).doubleValue();
         this.updatedPos = true;
