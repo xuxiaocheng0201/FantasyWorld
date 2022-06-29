@@ -23,7 +23,7 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class EntityPos implements IDSTBase, Cloneable {
+public class EntityPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 6848352277198863392L;
     public static final String id = "EntityPos";
@@ -39,6 +39,14 @@ public class EntityPos implements IDSTBase, Cloneable {
         this(new ChunkPos(), 0, 0, 0);
     }
 
+    public EntityPos(@Nullable BigDecimal x, @Nullable BigDecimal y, @Nullable BigDecimal z) {
+        super();
+        this.chunkPos = new ChunkPos();
+        this.setFullX(x);
+        this.setFullY(y);
+        this.setFullZ(z);
+    }
+
     public EntityPos(@Nullable ChunkPos chunkPos) {
         this(chunkPos, 0, 0, 0);
     }
@@ -51,12 +59,19 @@ public class EntityPos implements IDSTBase, Cloneable {
         this.setZ(z);
     }
 
-    public EntityPos(@Nullable BigDecimal x, @Nullable BigDecimal y, @Nullable BigDecimal z) {
+    public EntityPos(@Nullable EntityPos entityPos) {
         super();
-        this.chunkPos = new ChunkPos();
-        this.setFullX(x);
-        this.setFullY(y);
-        this.setFullZ(z);
+        if (entityPos == null) {
+            this.chunkPos = new ChunkPos();
+            this.x = 0.0D;
+            this.y = 0.0D;
+            this.z = 0.0D;
+        } else {
+            this.chunkPos = new ChunkPos(entityPos.chunkPos);
+            this.x = entityPos.x;
+            this.y = entityPos.y;
+            this.z = entityPos.z;
+        }
     }
 
     public @NotNull ChunkPos getChunkPos() {
@@ -189,7 +204,7 @@ public class EntityPos implements IDSTBase, Cloneable {
             this.clear();
             return;
         }
-        this.chunkPos = pos.getChunkPos().clone();
+        this.chunkPos = new ChunkPos(pos.getChunkPos());
         this.x = pos.getX();
         this.y = pos.getY();
         this.z = pos.getZ();
@@ -331,7 +346,11 @@ public class EntityPos implements IDSTBase, Cloneable {
     public @NotNull ImmutableEntityPos toImmutable() {
         return new ImmutableEntityPos(this);
     }
-
+/*
+    public @NotNull ChangeableEntityPos toChangeable() {
+        return new ChangeableEntityPos(this);
+    }
+*/
     @Override
     public void read(@NotNull DataInput input) throws IOException {
         if (!ChunkPos.prefix.equals(input.readUTF()))
@@ -374,18 +393,6 @@ public class EntityPos implements IDSTBase, Cloneable {
     @Override
     public int hashCode() {
         return Objects.hash(this.chunkPos, this.x, this.y, this.z);
-    }
-
-    @Override
-    public EntityPos clone() {
-        EntityPos entityPos;
-        try {
-            entityPos = (EntityPos) super.clone();
-        } catch (CloneNotSupportedException exception) {
-            throw new AssertionError(exception);
-        }
-        entityPos.chunkPos = this.chunkPos.clone();
-        return entityPos;
     }
 
     public static class ImmutableEntityPos extends EntityPos {
@@ -620,4 +627,194 @@ public class EntityPos implements IDSTBase, Cloneable {
             return this;
         }
     }
+/*
+    public static class ChangeableEntityPos extends EntityPos {
+        @Serial
+        private static final long serialVersionUID = -3777475711600587517L;
+
+        public ChangeableEntityPos() {
+            super();
+        }
+
+        public ChangeableEntityPos(@Nullable ChunkPos chunkPos) {
+            super(chunkPos);
+        }
+
+        public ChangeableEntityPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
+            super(chunkPos, x, y, z);
+        }
+
+        public ChangeableEntityPos(@Nullable BigDecimal x, @Nullable BigDecimal y, @Nullable BigDecimal z) {
+            super(x, y, z);
+        }
+
+        public ChangeableEntityPos(@Nullable EntityPos entityPos) {
+            super(entityPos);
+        }
+
+        @Override
+        public void setChunkPos(@Nullable ChunkPos chunkPos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setX(double x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullX(double x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullX(@Nullable BigDecimal x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setY(double y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullY(double y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullY(@Nullable BigDecimal y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setZ(double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullZ(double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullZ(@Nullable BigDecimal z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clearOffset() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(double x, double y, double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable ChunkPos pos, double x, double y, double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addX(double x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addY(double y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addZ(double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(double x, double y, double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addOffset(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addOffset(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractX(double x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractY(double y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractZ(double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(double x, double y, double z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractOffset(@Nullable EntityPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractOffset(@Nullable BlockPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull ChangeableEntityPos toChangeable() {
+            return this;
+        }
+    }*/
 }

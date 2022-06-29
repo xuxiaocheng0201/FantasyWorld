@@ -297,34 +297,55 @@ public class HVersionComplex implements Serializable {
         @Serial
         private static final long serialVersionUID = HVersionComplex.serialVersionUID;
 
+        protected List<HVersionRange> unmodifiableVersionRanges;
+        protected List<HStringVersion> unmodifiableVersionSingles;
+
+        private void init() {
+            List<ImmutableVersionRange> list1 = new ArrayList<>(this.versionRanges.size());
+            for (HVersionRange range: this.versionRanges)
+                list1.add(range.toImmutable());
+            this.unmodifiableVersionRanges = Collections.unmodifiableList(list1);
+            List<HStringVersion> list2 = new ArrayList<>(this.versionSingles.size());
+            for (HStringVersion version: this.versionSingles)
+                list2.add(version.toImmutable());
+            this.unmodifiableVersionSingles = Collections.unmodifiableList(list2);
+        }
+
         public ImmutableVersionComplex() {
             super();
+            this.init();
         }
 
         public ImmutableVersionComplex(@Nullable String version) throws HVersionFormatException {
             super(version);
+            this.init();
         }
 
         public ImmutableVersionComplex(@Nullable HStringVersion version) {
             super(version);
+            this.init();
         }
 
         public ImmutableVersionComplex(@NotNull HStringVersion[] versions) {
             super(versions);
+            this.init();
         }
 
         public ImmutableVersionComplex(@Nullable HVersionRange versionRange) {
             super(versionRange);
+            this.init();
         }
 
         public ImmutableVersionComplex(@NotNull HVersionRange[] versionRanges) {
             super(versionRanges);
+            this.init();
         }
 
         public ImmutableVersionComplex(@Nullable HVersionComplex versionComplex) {
             super();
             if (versionComplex != null)
                 super.addVersions(versionComplex);
+            this.init();
         }
 
         @Override
@@ -397,17 +418,11 @@ public class HVersionComplex implements Serializable {
         }
 
         public @NotNull List<HVersionRange> getVersionRanges() {
-            List<ImmutableVersionRange> list = new ArrayList<>(this.versionRanges.size());
-            for (HVersionRange range: this.versionRanges)
-                list.add(range.toImmutable());
-            return Collections.unmodifiableList(list);
+            return this.unmodifiableVersionRanges;
         }
 
         public @NotNull List<HStringVersion> getVersionSingles() {
-            List<HStringVersion> list = new ArrayList<>(this.versionSingles.size());
-            for (HStringVersion version: this.versionSingles)
-                list.add(version.toImmutable());
-            return Collections.unmodifiableList(list);
+            return this.unmodifiableVersionSingles;
         }
 
         @Override
