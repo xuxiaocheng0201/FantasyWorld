@@ -4,6 +4,8 @@ import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
+import CraftWorld.Utils.IImmutable;
+import CraftWorld.Utils.IUpdatable;
 import CraftWorld.World.Block.BlockPos.EFacing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -363,6 +365,10 @@ public class ChunkPos implements IDSTBase {
         return new ImmutableChunkPos(this);
     }
 
+    public @NotNull UpdatableChunkPos toUpdatable() {
+        return new UpdatableChunkPos(this);
+    }
+
     @Override
     public void read(@NotNull DataInput input) throws IOException {
         this.x = new BigInteger(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
@@ -394,6 +400,7 @@ public class ChunkPos implements IDSTBase {
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof ChunkPos that)) return false;
+        //noinspection SuspiciousNameCombination
         return this.x.equals(that.x) && this.y.equals(that.y) && this.z.equals(that.z);
     }
 
@@ -402,7 +409,7 @@ public class ChunkPos implements IDSTBase {
         return Objects.hash(this.x, this.y, this.z);
     }
 
-    public static class ImmutableChunkPos extends ChunkPos {
+    public static class ImmutableChunkPos extends ChunkPos implements IImmutable {
         @Serial
         private static final long serialVersionUID = 9188493119787729593L;
 
@@ -665,6 +672,284 @@ public class ChunkPos implements IDSTBase {
         @Override
         public @NotNull ImmutableChunkPos toImmutable() {
             return this;
+        }
+    }
+
+    public static class UpdatableChunkPos extends ChunkPos implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = 868801259959331268L;
+//TODO
+        protected boolean updated = true;
+
+        public UpdatableChunkPos() {
+            super();
+        }
+
+        public UpdatableChunkPos(int x, int y, int z) {
+            super(x, y, z);
+        }
+
+        public UpdatableChunkPos(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+            super(x, y, z);
+        }
+
+        public UpdatableChunkPos(@Nullable ChunkPos pos) {
+            super(pos);
+        }
+
+        @Override
+        public void setX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setX(@Nullable BigInteger x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setY(@Nullable BigInteger y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setZ(@Nullable BigInteger z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable ChunkPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addX(@Nullable BigInteger x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addY(@Nullable BigInteger y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addZ(@Nullable BigInteger z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(@Nullable ChunkPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractX(@Nullable BigInteger x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractY(@Nullable BigInteger y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractZ(@Nullable BigInteger z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(@Nullable ChunkPos pos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void up() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void up(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void up(@Nullable BigInteger n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void down() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void down(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void down(@Nullable BigInteger n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void north() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void north(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void north(@Nullable BigInteger n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void south() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void south(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void south(@Nullable BigInteger n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void east() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void east(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void east(@Nullable BigInteger n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void west() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void west(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void west(@Nullable BigInteger n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void offset(@NotNull EFacing facing) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void offset(@NotNull EFacing facing, int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void offset(@NotNull EFacing facing, @Nullable BigInteger n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull UpdatableChunkPos toUpdatable() {
+            return this;
+        }
+
+        @Override
+        public boolean getUpdated() {
+            return this.updated;
+        }
+
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
         }
     }
 }

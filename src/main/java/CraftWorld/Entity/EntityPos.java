@@ -4,6 +4,8 @@ import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
+import CraftWorld.Utils.IImmutable;
+import CraftWorld.Utils.IUpdatable;
 import CraftWorld.World.Block.BlockPos;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
@@ -22,6 +24,10 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+/**
+ * Immutable version: {@link ImmutableEntityPos}
+ * Updatable version: {@link UpdatableEntityPos}
+ */
 @SuppressWarnings("unused")
 public class EntityPos implements IDSTBase {
     @Serial
@@ -346,11 +352,11 @@ public class EntityPos implements IDSTBase {
     public @NotNull ImmutableEntityPos toImmutable() {
         return new ImmutableEntityPos(this);
     }
-/*
-    public @NotNull ChangeableEntityPos toChangeable() {
-        return new ChangeableEntityPos(this);
+
+    public @NotNull UpdatableEntityPos toUpdatable() {
+        return new UpdatableEntityPos(this);
     }
-*/
+
     @Override
     public void read(@NotNull DataInput input) throws IOException {
         if (!ChunkPos.prefix.equals(input.readUTF()))
@@ -395,7 +401,7 @@ public class EntityPos implements IDSTBase {
         return Objects.hash(this.chunkPos, this.x, this.y, this.z);
     }
 
-    public static class ImmutableEntityPos extends EntityPos {
+    public static class ImmutableEntityPos extends EntityPos implements IImmutable {
         @Serial
         private static final long serialVersionUID = -3777475711600587517L;
 
@@ -627,194 +633,238 @@ public class EntityPos implements IDSTBase {
             return this;
         }
     }
-/*
-    public static class ChangeableEntityPos extends EntityPos {
-        @Serial
-        private static final long serialVersionUID = -3777475711600587517L;
 
-        public ChangeableEntityPos() {
+    public static class UpdatableEntityPos extends EntityPos implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = -8601686941041844530L;
+
+        protected boolean updated = true;
+
+        public UpdatableEntityPos() {
             super();
         }
 
-        public ChangeableEntityPos(@Nullable ChunkPos chunkPos) {
+        public UpdatableEntityPos(@Nullable ChunkPos chunkPos) {
             super(chunkPos);
         }
 
-        public ChangeableEntityPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
+        public UpdatableEntityPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
             super(chunkPos, x, y, z);
         }
 
-        public ChangeableEntityPos(@Nullable BigDecimal x, @Nullable BigDecimal y, @Nullable BigDecimal z) {
+        public UpdatableEntityPos(@Nullable BigDecimal x, @Nullable BigDecimal y, @Nullable BigDecimal z) {
             super(x, y, z);
         }
 
-        public ChangeableEntityPos(@Nullable EntityPos entityPos) {
+        public UpdatableEntityPos(@Nullable EntityPos entityPos) {
             super(entityPos);
         }
 
         @Override
         public void setChunkPos(@Nullable ChunkPos chunkPos) {
-            throw new UnsupportedOperationException();
+            super.setChunkPos(chunkPos);
+            this.updated = true;
         }
 
         @Override
         public void setX(double x) {
-            throw new UnsupportedOperationException();
+            super.setX(x);
+            this.updated = true;
         }
 
         @Override
         public void setFullX(double x) {
-            throw new UnsupportedOperationException();
+            super.setFullX(x);
+            this.updated = true;
         }
 
         @Override
         public void setFullX(@Nullable BigDecimal x) {
-            throw new UnsupportedOperationException();
+            super.setFullX(x);
+            this.updated = true;
         }
 
         @Override
         public void setY(double y) {
-            throw new UnsupportedOperationException();
+            super.setY(y);
+            this.updated = true;
         }
 
         @Override
         public void setFullY(double y) {
-            throw new UnsupportedOperationException();
+            super.setFullY(y);
+            this.updated = true;
         }
 
         @Override
         public void setFullY(@Nullable BigDecimal y) {
-            throw new UnsupportedOperationException();
+            super.setFullY(y);
+            this.updated = true;
         }
 
         @Override
         public void setZ(double z) {
-            throw new UnsupportedOperationException();
+            super.setZ(z);
+            this.updated = true;
         }
 
         @Override
         public void setFullZ(double z) {
-            throw new UnsupportedOperationException();
+            super.setFullZ(z);
+            this.updated = true;
         }
 
         @Override
         public void setFullZ(@Nullable BigDecimal z) {
-            throw new UnsupportedOperationException();
+            super.setFullZ(z);
+            this.updated = true;
         }
 
         @Override
         public void clear() {
-            throw new UnsupportedOperationException();
+            super.clear();
+            this.updated = true;
         }
 
         @Override
         public void clearOffset() {
-            throw new UnsupportedOperationException();
+            super.clearOffset();
+            this.updated = true;
         }
 
         @Override
         public void set(@Nullable EntityPos pos) {
-            throw new UnsupportedOperationException();
+            super.set(pos);
+            this.updated = true;
         }
 
         @Override
         public void set(@Nullable BlockPos pos) {
-            throw new UnsupportedOperationException();
+            super.set(pos);
+            this.updated = true;
         }
 
         @Override
         public void set(double x, double y, double z) {
-            throw new UnsupportedOperationException();
+            super.set(x, y, z);
+            this.updated = true;
         }
 
         @Override
         public void set(@Nullable ChunkPos pos, double x, double y, double z) {
-            throw new UnsupportedOperationException();
+            super.set(pos, x, y, z);
+            this.updated = true;
         }
 
         @Override
         public void addX(double x) {
-            throw new UnsupportedOperationException();
+            super.addX(x);
+            this.updated = true;
         }
 
         @Override
         public void addY(double y) {
-            throw new UnsupportedOperationException();
+            super.addY(y);
+            this.updated = true;
         }
 
         @Override
         public void addZ(double z) {
-            throw new UnsupportedOperationException();
+            super.addZ(z);
+            this.updated = true;
         }
 
         @Override
         public void add(double x, double y, double z) {
-            throw new UnsupportedOperationException();
+            super.add(x, y, z);
+            this.updated = true;
         }
 
         @Override
         public void add(@Nullable EntityPos pos) {
-            throw new UnsupportedOperationException();
+            super.add(pos);
+            this.updated = true;
         }
 
         @Override
         public void addOffset(@Nullable EntityPos pos) {
-            throw new UnsupportedOperationException();
+            super.addOffset(pos);
+            this.updated = true;
         }
 
         @Override
         public void add(@Nullable BlockPos pos) {
-            throw new UnsupportedOperationException();
+            super.add(pos);
+            this.updated = true;
         }
 
         @Override
         public void addOffset(@Nullable BlockPos pos) {
-            throw new UnsupportedOperationException();
+            super.addOffset(pos);
+            this.updated = true;
         }
 
         @Override
         public void subtractX(double x) {
-            throw new UnsupportedOperationException();
+            super.subtractX(x);
+            this.updated = true;
         }
 
         @Override
         public void subtractY(double y) {
-            throw new UnsupportedOperationException();
+            super.subtractY(y);
+            this.updated = true;
         }
 
         @Override
         public void subtractZ(double z) {
-            throw new UnsupportedOperationException();
+            super.subtractZ(z);
+            this.updated = true;
         }
 
         @Override
         public void subtract(double x, double y, double z) {
-            throw new UnsupportedOperationException();
+            super.subtract(x, y, z);
+            this.updated = true;
         }
 
         @Override
         public void subtract(@Nullable EntityPos pos) {
-            throw new UnsupportedOperationException();
+            super.subtract(pos);
+            this.updated = true;
         }
 
         @Override
         public void subtractOffset(@Nullable EntityPos pos) {
-            throw new UnsupportedOperationException();
+            super.subtractOffset(pos);
+            this.updated = true;
         }
 
         @Override
         public void subtract(@Nullable BlockPos pos) {
-            throw new UnsupportedOperationException();
+            super.subtract(pos);
+            this.updated = true;
         }
 
         @Override
         public void subtractOffset(@Nullable BlockPos pos) {
-            throw new UnsupportedOperationException();
+            super.subtractOffset(pos);
+            this.updated = true;
         }
 
         @Override
-        public @NotNull ChangeableEntityPos toChangeable() {
+        public @NotNull UpdatableEntityPos toUpdatable() {
             return this;
         }
-    }*/
+
+        @Override
+        public boolean getUpdated() {
+            return this.updated;
+        }
+        
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
+        }
+    }
 }
