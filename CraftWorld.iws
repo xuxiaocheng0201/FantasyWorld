@@ -11,11 +11,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Immutable EntityPos.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/IImmutable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/IUpdatable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CraftWorld.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/EntityPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Entity/EntityPos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/IImmutable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/IImmutable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Utils/IUpdatable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/IUpdatable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/ChunkPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/ChunkPos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,7 +188,7 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HStringVersion.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionFormatException.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -298,13 +301,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00103" summary="Available Block Part.">
-      <created>1650854165925</created>
-      <option name="number" value="00103" />
-      <option name="presentableId" value="LOCAL-00103" />
-      <option name="project" value="LOCAL" />
-      <updated>1650854165928</updated>
     </task>
     <task id="LOCAL-00104" summary="Smaller DST saved files.">
       <created>1650861582264</created>
@@ -642,7 +638,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656482900646</updated>
     </task>
-    <option name="localTasksCounter" value="152" />
+    <task id="LOCAL-00152" summary="Immutable EntityPos.">
+      <created>1656490325758</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1656490325758</updated>
+    </task>
+    <option name="localTasksCounter" value="153" />
     <servers />
   </component>
   <component name="UnknownFeatures">

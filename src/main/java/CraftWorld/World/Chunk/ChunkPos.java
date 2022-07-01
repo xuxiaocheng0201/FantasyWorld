@@ -4,9 +4,9 @@ import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Utils.IImmutable;
-import CraftWorld.Utils.IUpdatable;
 import CraftWorld.World.Block.BlockPos.EFacing;
+import HeadLibs.DataStructures.IImmutable;
+import HeadLibs.DataStructures.IUpdatable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

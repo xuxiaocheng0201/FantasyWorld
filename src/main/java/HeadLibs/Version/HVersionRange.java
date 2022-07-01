@@ -1,5 +1,7 @@
 package HeadLibs.Version;
 
+import HeadLibs.DataStructures.IImmutable;
+import HeadLibs.DataStructures.IUpdatable;
 import HeadLibs.Helper.HStringHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,63 +27,81 @@ public class HVersionRange implements Serializable {
 
     protected boolean leftEquable;
     protected boolean rightEquable;
-    protected @NotNull HStringVersion leftVersion = new HStringVersion();
-    protected @NotNull HStringVersion rightVersion = new HStringVersion();
+    protected /*final*/ @NotNull HStringVersion leftVersion = new HStringVersion();
+    protected /*final*/ @NotNull HStringVersion rightVersion = new HStringVersion();
+
+    protected boolean autoFixed;
 
     public HVersionRange() {
         super();
     }
 
-    public HVersionRange(@Nullable String version) throws HVersionFormatException {
+    public HVersionRange(@Nullable String versionRange) throws HVersionFormatException {
         super();
-        this.setVersionRange(version);
+        this.setVersionRange(versionRange);
+    }
+
+    public HVersionRange(@Nullable HVersionRange versionRange) {
+        super();
+        this.setVersionRange(versionRange);
     }
 
     public boolean isEmpty() {
+        this.autoFix();
         return this.empty && !this.leftEquable && !this.rightEquable
                 && HStringVersion.isNull(this.leftVersion) && HStringVersion.isNull(this.rightVersion);
     }
 
     public boolean isLeftEquable() {
+        this.autoFix();
         return this.leftEquable;
     }
 
     public void setLeftEquable(boolean leftEquable) {
         this.leftEquable = leftEquable;
+        this.autoFixed = false;
     }
 
     public boolean isRightEquable() {
+        this.autoFix();
         return this.rightEquable;
     }
 
     public void setRightEquable(boolean rightEquable) {
         this.rightEquable = rightEquable;
+        this.autoFixed = false;
     }
 
     public @NotNull HStringVersion getLeftVersion() {
+        this.autoFix();
         return this.leftVersion;
     }
 
     public void setLeftVersion(@Nullable String leftVersion) throws HVersionFormatException {
-        this.leftVersion = new HStringVersion(leftVersion);
+        this.leftVersion.setVersion(leftVersion);
+        this.autoFixed = false;
     }
 
-    public void setLeftVersion(@Nullable HStringVersion versionLeft) {
-        this.leftVersion = Objects.requireNonNullElseGet(versionLeft, HStringVersion::new);
+    public void setLeftVersion(@Nullable HStringVersion leftVersion) {
+        this.leftVersion.setVersion(leftVersion);
         this.empty = false;
+        this.autoFixed = false;
     }
 
     public @NotNull HStringVersion getRightVersion() {
+        this.autoFix();
         return this.rightVersion;
     }
 
     public void setRightVersion(@Nullable String rightVersion) throws HVersionFormatException {
-        this.rightVersion = new HStringVersion(rightVersion);
+        this.rightVersion.setVersion(rightVersion);
+        this.autoFixed = false;
     }
 
     public void setRightVersion(@Nullable HStringVersion rightVersion) {
-        this.rightVersion = Objects.requireNonNullElseGet(rightVersion, HStringVersion::new);
+        this.rightVersion.setVersion(rightVersion);
         this.empty = false;
+        this.autoFixed = false;
     }
 
     public void setUniversal() {
@@ -90,6 +110,7 @@ public class HVersionRange implements Serializable {
         this.leftVersion.setNull();
         this.rightVersion.setNull();
         this.empty = false;
+        this.autoFixed = true;
     }
 
     public void setEmpty() {
@@ -98,10 +119,12 @@ public class HVersionRange implements Serializable {
         this.leftVersion.setNull();
         this.rightVersion.setNull();
         this.empty = true;
+        this.autoFixed = true;
     }
 
     public void setVersionSingle(@Nullable String version) throws HVersionFormatException {
         this.setVersionSingle(new HStringVersion(version));
+        this.autoFixed = true;
     }
 
     public void setVersionSingle(@Nullable HStringVersion version) {
@@ -111,9 +134,10 @@ public class HVersionRange implements Serializable {
         }
         this.leftEquable = true;
         this.rightEquable = true;
-        this.leftVersion = version;
-        this.rightVersion = version;
+        this.leftVersion.setVersion(version);
+        this.rightVersion.setVersion(version);
         this.empty = false;
+        this.autoFixed = true;
     }
 
     public void setVersionRange(@Nullable String minVersion, @Nullable String maxVersion) throws HVersionFormatException {
@@ -133,32 +157,32 @@ public class HVersionRange implements Serializable {
         this.rightEquable = rightEquable;
         this.setLeftVersion(minVersion);
         this.setRightVersion(maxVersion);
-        this.autoFix();
+        this.autoFixed = false;
     }
 
-    public void setVersionRange(@Nullable String versionIn) throws HVersionFormatException {
-        String version = HStringHelper.nullableStrip(versionIn);
-        if (version == null || version.isEmpty()) {
+    public void setVersionRange(@Nullable String versionRangeIn) throws HVersionFormatException {
+        String versionRange = HStringHelper.nullableStrip(versionRangeIn);
+        if (versionRange == null || versionRange.isEmpty()) {
             this.setUniversal();
             return;
         }
         byte canEqualLeft = 0;
-        if (version.charAt(0) == '[')
+        if (versionRange.charAt(0) == '[')
             canEqualLeft = 1;
-        if (version.charAt(0) == '(')
+        if (versionRange.charAt(0) == '(')
             canEqualLeft = -1;
         byte canEqualRight = 0;
-        if (version.charAt(version.length() - 1) == ']')
+        if (versionRange.charAt(versionRange.length() - 1) == ']')
             canEqualRight = 1;
-        if (version.charAt(version.length() - 1) == ')')
+        if (versionRange.charAt(versionRange.length() - 1) == ')')
             canEqualRight = -1;
         if (canEqualLeft == 0 && canEqualRight == 0) {
-            this.setVersionSingle(new HStringVersion(version));
+            this.setVersionSingle(new HStringVersion(versionRange));
             return;
         }
         if (canEqualLeft == 0 || canEqualRight == 0)
-            throw new HVersionFormatException("Unpaired brackets.", version);
-        String versions = HStringHelper.notNullStrip(version.substring(1, version.length() - 1));
+            throw new HVersionFormatException("Unpaired brackets.", versionRange);
+        String versions = HStringHelper.notNullStrip(versionRange.substring(1, versionRange.length() - 1));
         int locationComma = versions.indexOf(',');
         if (locationComma == -1) {
             this.setVersionSingle(new HStringVersion(versions));
@@ -166,19 +190,35 @@ public class HVersionRange implements Serializable {
         }
         int locationComma1 = versions.lastIndexOf(',');
         if (locationComma != locationComma1)
-            throw new HVersionFormatException("Too many commas in version range.", version);
+            throw new HVersionFormatException("Too many commas in version range.", versionRange);
         this.leftEquable = canEqualLeft == 1;
         this.rightEquable = canEqualRight == 1;
-        this.leftVersion = new HStringVersion(versions.substring(0, locationComma));
-        this.rightVersion = new HStringVersion(versions.substring(locationComma + 1));
+        this.leftVersion.setVersion(versions.substring(0, locationComma));
+        this.rightVersion.setVersion(versions.substring(locationComma + 1));
         this.empty = false;
-        this.autoFix();
+        this.autoFixed = false;
+    }
+
+    public void setVersionRange(@Nullable HVersionRange versionRange) {
+        if (versionRange == null) {
+            this.setUniversal();
+            return;
+        }
+        this.empty = versionRange.empty;
+        this.leftEquable = versionRange.leftEquable;
+        this.rightEquable = versionRange.rightEquable;
+        this.leftVersion.setVersion(versionRange.leftVersion);
+        this.rightVersion.setVersion(versionRange.rightVersion);
+        this.autoFixed = false;
     }
 
     /**
      * Deal with some obvious mistakes automatically.
      */
     public void autoFix() {
+        if (this.autoFixed)
+            return;
+        this.autoFixed = true;
         if (this.empty) {
             this.setEmpty();
             return;
@@ -220,6 +260,10 @@ public class HVersionRange implements Serializable {
         return new ImmutableVersionRange(this);
     }
 
+    public @NotNull UpdatableVersionRange toUpdatable() {
+        return new UpdatableVersionRange(this);
+    }
+
     @Override
     public @NotNull String toString() {
         this.autoFix();
@@ -248,28 +292,26 @@ public class HVersionRange implements Serializable {
         return Objects.hash(this.leftEquable, this.rightEquable, this.leftVersion, this.rightVersion);
     }
 
-    public static class ImmutableVersionRange extends HVersionRange {
+    public static class ImmutableVersionRange extends HVersionRange implements IImmutable {
         @Serial
-        private static final long serialVersionUID = HVersionRange.serialVersionUID;
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(HVersionRange.serialVersionUID);
 
         public ImmutableVersionRange() {
             super();
+            this.leftVersion = this.leftVersion.toImmutable();
+            this.rightVersion = this.rightVersion.toImmutable();
         }
 
-        public ImmutableVersionRange(@Nullable String version) throws HVersionFormatException {
-            super(version);
+        public ImmutableVersionRange(@Nullable String versionRange) throws HVersionFormatException {
+            super(versionRange);
+            this.leftVersion = this.leftVersion.toImmutable();
+            this.rightVersion = this.rightVersion.toImmutable();
         }
 
-        public ImmutableVersionRange(@Nullable HVersionRange version) {
-            super();
-            if (version != null) {
-                version.autoFix();
-                this.empty = version.empty;
-                this.leftEquable = version.leftEquable;
-                this.rightEquable = version.rightEquable;
-                this.leftVersion = version.leftVersion.toImmutable();
-                this.rightVersion = version.rightVersion.toImmutable();
-            }
+        public ImmutableVersionRange(@Nullable HVersionRange versionRange) {
+            super(versionRange);
+            this.leftVersion = this.leftVersion.toImmutable();
+            this.rightVersion = this.rightVersion.toImmutable();
         }
 
         @Override
@@ -288,7 +330,7 @@ public class HVersionRange implements Serializable {
         }
 
         @Override
-        public void setLeftVersion(@Nullable HStringVersion versionLeft) {
+        public void setLeftVersion(@Nullable HStringVersion leftVersion) {
             throw new UnsupportedOperationException();
         }
 
@@ -343,7 +385,12 @@ public class HVersionRange implements Serializable {
         }
 
         @Override
-        public void setVersionRange(@Nullable String versionIn) {
+        public void setVersionRange(@Nullable String versionRangeIn) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setVersionRange(@Nullable HVersionRange versionRange) {
             throw new UnsupportedOperationException();
         }
 
@@ -354,6 +401,144 @@ public class HVersionRange implements Serializable {
         @Override
         public @NotNull ImmutableVersionRange toImmutable() {
             return this;
+        }
+    }
+
+    public static class UpdatableVersionRange extends HVersionRange implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = IUpdatable.getSerialVersionUID(HVersionRange.serialVersionUID);
+
+        protected boolean updated;
+
+        public UpdatableVersionRange() {
+            super();
+            this.leftVersion = this.leftVersion.toUpdatable();
+            this.rightVersion = this.rightVersion.toUpdatable();
+        }
+
+        public UpdatableVersionRange(@Nullable String versionRange) throws HVersionFormatException {
+            super(versionRange);
+            this.leftVersion = this.leftVersion.toUpdatable();
+            this.rightVersion = this.rightVersion.toUpdatable();
+        }
+
+        public UpdatableVersionRange(@Nullable HVersionRange versionRange) {
+            super(versionRange);
+            this.leftVersion = this.leftVersion.toUpdatable();
+            this.rightVersion = this.rightVersion.toUpdatable();
+        }
+
+        @Override
+        public void setLeftEquable(boolean leftEquable) {
+            super.setLeftEquable(leftEquable);
+            this.updated = true;
+        }
+
+        @Override
+        public void setRightEquable(boolean rightEquable) {
+            super.setRightEquable(rightEquable);
+            this.updated = true;
+        }
+
+        @Override
+        public void setLeftVersion(@Nullable String leftVersion) throws HVersionFormatException {
+            super.setLeftVersion(leftVersion);
+            this.updated = true;
+        }
+
+        @Override
+        public void setLeftVersion(@Nullable HStringVersion leftVersion) {
+            super.setLeftVersion(leftVersion);
+            this.updated = true;
+        }
+
+        @Override
+        public void setRightVersion(@Nullable String rightVersion) throws HVersionFormatException {
+            super.setRightVersion(rightVersion);
+            this.updated = true;
+        }
+
+        @Override
+        public void setRightVersion(@Nullable HStringVersion rightVersion) {
+            super.setRightVersion(rightVersion);
+            this.updated = true;
+        }
+
+        @Override
+        public void setUniversal() {
+            super.setUniversal();
+            this.updated = true;
+        }
+
+        @Override
+        public void setEmpty() {
+            super.setEmpty();
+            this.updated = true;
+        }
+
+        @Override
+        public void setVersionSingle(@Nullable String version) throws HVersionFormatException {
+            super.setVersionSingle(version);
+            this.updated = true;
+        }
+
+        @Override
+        public void setVersionSingle(@Nullable HStringVersion version) {
+            super.setVersionSingle(version);
+            this.updated = true;
+        }
+
+        @Override
+        public void setVersionRange(@Nullable String minVersion, @Nullable String maxVersion) throws HVersionFormatException {
+            super.setVersionRange(minVersion, maxVersion);
+            this.updated = true;
+        }
+
+        @Override
+        public void setVersionRange(@Nullable HStringVersion minVersion, @Nullable HStringVersion maxVersion) {
+            super.setVersionRange(minVersion, maxVersion);
+            this.updated = true;
+        }
+
+        @Override
+        public void setVersionRange(boolean leftEquable, @Nullable String minVersion, @Nullable String maxVersion, boolean rightEquable) throws HVersionFormatException {
+            super.setVersionRange(leftEquable, minVersion, maxVersion, rightEquable);
+            this.updated = true;
+        }
+
+        @Override
+        public void setVersionRange(boolean leftEquable, @Nullable HStringVersion minVersion, @Nullable HStringVersion maxVersion, boolean rightEquable) {
+            super.setVersionRange(leftEquable, minVersion, maxVersion, rightEquable);
+            this.updated = true;
+        }
+
+        @Override
+        public void setVersionRange(@Nullable String versionRangeIn) throws HVersionFormatException {
+            super.setVersionRange(versionRangeIn);
+            this.updated = true;
+        }
+
+        @Override
+        public void setVersionRange(@Nullable HVersionRange versionRange) {
+            super.setVersionRange(versionRange);
+            this.updated = true;
+        }
+
+        @Override
+        public @NotNull UpdatableVersionRange toUpdatable() {
+            return this;
+        }
+
+        @Override
+        public boolean getUpdated() {
+            return this.updated || ((IUpdatable) this.leftVersion).getUpdated() || ((IUpdatable) this.rightVersion).getUpdated();
+        }
+
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
+            ((IUpdatable) this.leftVersion).setUpdated(updated);
+            ((IUpdatable) this.rightVersion).setUpdated(updated);
         }
     }
 }

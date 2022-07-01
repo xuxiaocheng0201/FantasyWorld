@@ -1,5 +1,7 @@
 package HeadLibs.Version;
 
+import HeadLibs.DataStructures.IImmutable;
+import HeadLibs.DataStructures.IUpdatable;
 import HeadLibs.Helper.HCharHelper;
 import HeadLibs.Helper.HStringHelper;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +16,8 @@ import java.util.Objects;
 /**
  * Package {@link String} to {@code Version}.
  * @author xuxiaocheng
+ * Immutable version: {@link ImmutableStringVersion}
+ * Updatable version: {@link UpdatableStringVersion}
  */
 @SuppressWarnings("unused")
 public class HStringVersion implements Serializable, Comparable<HStringVersion> {
@@ -42,6 +46,11 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         this.setVersion(version);
     }
 
+    public HStringVersion(@Nullable HStringVersion version) {
+        super();
+        this.setVersion(version);
+    }
+
     public @NotNull String getVersion() {
         return this.version;
     }
@@ -58,6 +67,13 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         if (version.contains(",") || version.contains("&"))
             throw new HVersionFormatException("Found separation character in string version.", version);
         this.version = version.strip();
+    }
+
+    public void setVersion(@Nullable HStringVersion version) {
+        if (version == null)
+            this.version = "";
+        else
+            this.version = version.version;
     }
 
     public void setNull() {
@@ -78,6 +94,10 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
 
     public @NotNull ImmutableStringVersion toImmutable() {
         return new ImmutableStringVersion(this);
+    }
+
+    public @NotNull UpdatableStringVersion toUpdatable() {
+        return new UpdatableStringVersion(this);
     }
 
     @Override
@@ -191,9 +211,9 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         return (difference != 0) ? difference : versionArray1.length - versionArray2.length;
     }
 
-    public static class ImmutableStringVersion extends HStringVersion {
+    public static class ImmutableStringVersion extends HStringVersion implements IImmutable {
         @Serial
-        private static final long serialVersionUID = HStringVersion.serialVersionUID;
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(HStringVersion.serialVersionUID);
 
         public ImmutableStringVersion() {
             super();
@@ -204,13 +224,16 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         }
 
         public ImmutableStringVersion(@Nullable HStringVersion version) {
-            super();
-            if (version != null)
-                this.version = version.version;
+            super(version);
         }
 
         @Override
         public void setVersion(@Nullable String version) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setVersion(@Nullable HStringVersion version) {
             throw new UnsupportedOperationException();
         }
 
@@ -222,6 +245,58 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         @Override
         public @NotNull ImmutableStringVersion toImmutable() {
             return this;
+        }
+    }
+
+    public static class UpdatableStringVersion extends HStringVersion implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = IUpdatable.getSerialVersionUID(HStringVersion.serialVersionUID);
+
+        protected boolean updated = true;
+
+        public UpdatableStringVersion() {
+            super();
+        }
+
+        public UpdatableStringVersion(@Nullable String version) throws HVersionFormatException {
+            super(version);
+        }
+
+        public UpdatableStringVersion(@Nullable HStringVersion version) {
+            super(version);
+        }
+
+        @Override
+        public void setVersion(@Nullable String version) throws HVersionFormatException {
+            super.setVersion(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void setVersion(@Nullable HStringVersion version) {
+            super.setVersion(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void setNull() {
+            super.setNull();
+            this.updated = false;
+        }
+
+        @Override
+        public @NotNull UpdatableStringVersion toUpdatable() {
+            return this;
+        }
+
+        @Override
+        public boolean getUpdated() {
+            return this.updated;
+        }
+
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
         }
     }
 }
