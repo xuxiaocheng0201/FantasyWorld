@@ -3,6 +3,7 @@ package HeadLibs.Version;
 import HeadLibs.DataStructures.IImmutable;
 import HeadLibs.DataStructures.IUpdatable;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Version.HStringVersion.ImmutableStringVersion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,9 +73,9 @@ public class HVersionRange implements Serializable {
         this.autoFixed = false;
     }
 
-    public @NotNull HStringVersion getLeftVersion() {
+    public @NotNull ImmutableStringVersion getLeftVersion() {
         this.autoFix();
-        return this.leftVersion;
+        return this.leftVersion.toImmutable();
     }
 
     public void setLeftVersion(@Nullable String leftVersion) throws HVersionFormatException {
@@ -88,9 +89,9 @@ public class HVersionRange implements Serializable {
         this.autoFixed = false;
     }
 
-    public @NotNull HStringVersion getRightVersion() {
+    public @NotNull ImmutableStringVersion getRightVersion() {
         this.autoFix();
-        return this.rightVersion;
+        return this.rightVersion.toImmutable();
     }
 
     public void setRightVersion(@Nullable String rightVersion) throws HVersionFormatException {
@@ -124,7 +125,6 @@ public class HVersionRange implements Serializable {
 
     public void setVersionSingle(@Nullable String version) throws HVersionFormatException {
         this.setVersionSingle(new HStringVersion(version));
-        this.autoFixed = true;
     }
 
     public void setVersionSingle(@Nullable HStringVersion version) {

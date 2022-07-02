@@ -1,7 +1,11 @@
 package HeadLibs.Version;
 
+import HeadLibs.DataStructures.IImmutable;
+import HeadLibs.DataStructures.IUpdatable;
 import HeadLibs.Helper.HStringHelper;
+import HeadLibs.Version.HStringVersion.UpdatableStringVersion;
 import HeadLibs.Version.HVersionRange.ImmutableVersionRange;
+import HeadLibs.Version.HVersionRange.UpdatableVersionRange;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +33,7 @@ public class HVersionComplex implements Serializable {
      */
     protected final @NotNull List<HStringVersion> versionSingles = new ArrayList<>();
 
-    private boolean autoFixFlag = true;
+    protected boolean autoFixed = true;
 
     /**
      * Construct an empty interval.
@@ -70,17 +74,22 @@ public class HVersionComplex implements Serializable {
             this.addVersionRange(versionRange);
     }
 
+    public HVersionComplex(@Nullable HVersionComplex version) {
+        super();
+        this.setVersions(version);
+    }
+
     public void setUniversal() {
         this.versionRanges.clear();
         this.versionSingles.clear();
         this.versionRanges.add(new HVersionRange());
-        this.autoFixFlag = true;
+        this.autoFixed = true;
     }
 
     public void setEmpty() {
         this.versionRanges.clear();
         this.versionSingles.clear();
-        this.autoFixFlag = true;
+        this.autoFixed = true;
     }
 
     public void setVersionSingle(@Nullable String version) throws HVersionFormatException {
@@ -106,6 +115,11 @@ public class HVersionComplex implements Serializable {
         this.addVersions(version);
     }
 
+    public void setVersions(@Nullable HVersionComplex version) {
+        this.setEmpty();
+        this.addVersions(version);
+    }
+
     public void addVersionSingle(@Nullable String version) throws HVersionFormatException {
         this.addVersionSingle(new HStringVersion(version));
     }
@@ -114,16 +128,16 @@ public class HVersionComplex implements Serializable {
         if (HStringVersion.isNull(version))
             return;
         this.versionSingles.add(version);
-        this.autoFixFlag = false;
+        this.autoFixed = false;
     }
 
     public void addVersionRange(@Nullable String version) throws HVersionFormatException {
         this.addVersionSingle(new HStringVersion(version));
     }
 
-    public void addVersionRange(@Nullable HVersionRange versionRange) {
-        this.versionRanges.add(versionRange);
-        this.autoFixFlag = false;
+    public void addVersionRange(@Nullable HVersionRange version) {
+        this.versionRanges.add(version);
+        this.autoFixed = false;
     }
 
     public void addVersions(@Nullable String versions) throws HVersionFormatException {
@@ -143,20 +157,21 @@ public class HVersionComplex implements Serializable {
             else
                 this.addVersionSingle(new HStringVersion(version));
         }
-        this.autoFixFlag = false;
+        this.autoFixed = false;
     }
 
-    public void addVersions(@Nullable HVersionComplex versionComplex) {
-        if (versionComplex == null)
+    public void addVersions(@Nullable HVersionComplex versions) {
+        if (versions == null)
             return;
-        this.versionRanges.addAll(versionComplex.versionRanges);
-        this.versionSingles.addAll(versionComplex.versionSingles);
-        this.autoFixFlag = false;
+        this.versionRanges.addAll(versions.versionRanges);
+        this.versionSingles.addAll(versions.versionSingles);
+        this.autoFixed = false;
     }
 
     public void autoFix() {
-        if (this.autoFixFlag)
+        if (this.autoFixed)
             return;
+        this.autoFixed = true;
         // Remove null and duplicate values.
         this.versionRanges.removeIf(HVersionRange::isEmpty);
         Collection<HVersionRange> noDuplicateRanges = this.versionRanges.stream().distinct().toList();
@@ -231,7 +246,6 @@ public class HVersionComplex implements Serializable {
         }
         this.versionRanges.clear();
         this.versionRanges.addAll(ranges);
-        this.autoFixFlag = true;
     }
 
     public boolean versionInRange(@Nullable String version) throws HVersionFormatException {
@@ -255,12 +269,8 @@ public class HVersionComplex implements Serializable {
         return new ImmutableVersionComplex(this);
     }
 
-    public @NotNull List<HVersionRange> getVersionRanges() {
-        return this.versionRanges;
-    }
-
-    public @NotNull List<HStringVersion> getVersionSingles() {
-        return this.versionSingles;
+    public @NotNull UpdatableVersionComplex toUpdatable() {
+        return new UpdatableVersionComplex(this);
     }
 
     @Override
@@ -293,22 +303,21 @@ public class HVersionComplex implements Serializable {
         return Objects.hash(this.versionRanges, this.versionSingles);
     }
 
-    public static class ImmutableVersionComplex extends HVersionComplex {
+    public static class ImmutableVersionComplex extends HVersionComplex implements IImmutable {
         @Serial
-        private static final long serialVersionUID = HVersionComplex.serialVersionUID;
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(HVersionComplex.serialVersionUID);
 
-        protected List<HVersionRange> unmodifiableVersionRanges;
-        protected List<HStringVersion> unmodifiableVersionSingles;
-
-        private void init() {
-            List<ImmutableVersionRange> list1 = new ArrayList<>(this.versionRanges.size());
+        protected void init() {
+            Collection<ImmutableVersionRange> list1 = new ArrayList<>(this.versionRanges.size());
             for (HVersionRange range: this.versionRanges)
                 list1.add(range.toImmutable());
-            this.unmodifiableVersionRanges = Collections.unmodifiableList(list1);
-            List<HStringVersion> list2 = new ArrayList<>(this.versionSingles.size());
+            this.versionRanges.clear();
+            this.versionRanges.addAll(list1);
+            Collection<HStringVersion> list2 = new ArrayList<>(this.versionSingles.size());
             for (HStringVersion version: this.versionSingles)
                 list2.add(version.toImmutable());
-            this.unmodifiableVersionSingles = Collections.unmodifiableList(list2);
+            this.versionSingles.clear();
+            this.versionSingles.addAll(list2);
         }
 
         public ImmutableVersionComplex() {
@@ -341,10 +350,8 @@ public class HVersionComplex implements Serializable {
             this.init();
         }
 
-        public ImmutableVersionComplex(@Nullable HVersionComplex versionComplex) {
-            super();
-            if (versionComplex != null)
-                super.addVersions(versionComplex);
+        public ImmutableVersionComplex(@Nullable HVersionComplex version) {
+            super(version);
             this.init();
         }
 
@@ -384,6 +391,11 @@ public class HVersionComplex implements Serializable {
         }
 
         @Override
+        public void setVersions(@Nullable HVersionComplex version) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public void addVersionSingle(@Nullable String version) {
             throw new UnsupportedOperationException();
         }
@@ -399,7 +411,7 @@ public class HVersionComplex implements Serializable {
         }
 
         @Override
-        public void addVersionRange(@Nullable HVersionRange versionRange) {
+        public void addVersionRange(@Nullable HVersionRange version) {
             throw new UnsupportedOperationException();
         }
 
@@ -409,7 +421,7 @@ public class HVersionComplex implements Serializable {
         }
 
         @Override
-        public void addVersions(@Nullable HVersionComplex versionComplex) {
+        public void addVersions(@Nullable HVersionComplex versions) {
             throw new UnsupportedOperationException();
         }
 
@@ -418,16 +430,182 @@ public class HVersionComplex implements Serializable {
         }
 
         public @NotNull List<HVersionRange> getVersionRanges() {
-            return this.unmodifiableVersionRanges;
+            return Collections.unmodifiableList(this.versionRanges);
         }
 
         public @NotNull List<HStringVersion> getVersionSingles() {
-            return this.unmodifiableVersionSingles;
+            return Collections.unmodifiableList(this.versionSingles);
         }
 
         @Override
         public @NotNull ImmutableVersionComplex toImmutable() {
             return this;
+        }
+    }
+
+    public static class UpdatableVersionComplex extends HVersionComplex implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = IUpdatable.getSerialVersionUID(HVersionComplex.serialVersionUID);
+
+        protected boolean updated;
+
+        protected void init() {
+            Collection<UpdatableVersionRange> list1 = new ArrayList<>(this.versionRanges.size());
+            for (HVersionRange range: this.versionRanges)
+                list1.add(range.toUpdatable());
+            this.versionRanges.clear();
+            this.versionRanges.addAll(list1);
+            Collection<UpdatableStringVersion> list2 = new ArrayList<>(this.versionSingles.size());
+            for (HStringVersion version: this.versionSingles)
+                list2.add(version.toUpdatable());
+            this.versionSingles.clear();
+            this.versionSingles.addAll(list2);
+        }
+
+        public UpdatableVersionComplex() {
+            super();
+            this.init();
+        }
+
+        public UpdatableVersionComplex(@Nullable String version) throws HVersionFormatException {
+            super(version);
+            this.init();
+        }
+
+        public UpdatableVersionComplex(@Nullable HStringVersion version) {
+            super(version);
+            this.init();
+        }
+
+        public UpdatableVersionComplex(@NotNull HStringVersion[] versions) {
+            super(versions);
+            this.init();
+        }
+
+        public UpdatableVersionComplex(@Nullable HVersionRange versionRange) {
+            super(versionRange);
+            this.init();
+        }
+
+        public UpdatableVersionComplex(@NotNull HVersionRange[] versionRanges) {
+            super(versionRanges);
+            this.init();
+        }
+
+        public UpdatableVersionComplex(@Nullable HVersionComplex version) {
+            super(version);
+            this.init();
+        }
+
+        @Override
+        public void setUniversal() {
+            super.setUniversal();
+            this.updated = false;
+        }
+
+        @Override
+        public void setEmpty() {
+            super.setEmpty();
+            this.updated = false;
+        }
+
+        @Override
+        public void setVersionSingle(@Nullable String version) throws HVersionFormatException {
+            super.setVersionSingle(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void setVersionSingle(@Nullable HStringVersion version) {
+            super.setVersionSingle(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void setVersionRange(@Nullable String version) throws HVersionFormatException {
+            super.setVersionRange(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void setVersionRange(@Nullable HVersionRange version) {
+            super.setVersionRange(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void setVersions(@Nullable String version) throws HVersionFormatException {
+            super.setVersions(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void setVersions(@Nullable HVersionComplex version) {
+            super.setVersions(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void addVersionSingle(@Nullable String version) throws HVersionFormatException {
+            super.addVersionSingle(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void addVersionSingle(@Nullable HStringVersion version) {
+            super.addVersionSingle(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void addVersionRange(@Nullable String version) throws HVersionFormatException {
+            super.addVersionRange(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void addVersionRange(@Nullable HVersionRange version) {
+            super.addVersionRange(version);
+            this.updated = false;
+        }
+
+        @Override
+        public void addVersions(@Nullable String versions) throws HVersionFormatException {
+            super.addVersions(versions);
+            this.updated = false;
+        }
+
+        @Override
+        public void addVersions(@Nullable HVersionComplex versions) {
+            super.addVersions(versions);
+            this.updated = false;
+        }
+
+        @Override
+        public @NotNull UpdatableVersionComplex toUpdatable() {
+            return this;
+        }
+
+        @Override
+        public boolean getUpdated() {
+            if (this.updated)
+                return true;
+            for (HVersionRange versionRange: this.versionRanges)
+                if (((IUpdatable) versionRange).getUpdated())
+                    return true;
+            for (HStringVersion version: this.versionSingles)
+                if (((IUpdatable) version).getUpdated())
+                    return true;
+            return false;
+        }
+
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
+            for (HVersionRange versionRange: this.versionRanges)
+                ((IUpdatable) versionRange).setUpdated(updated);
+            for (HStringVersion version: this.versionSingles)
+                ((IUpdatable) version).setUpdated(updated);
         }
     }
 }

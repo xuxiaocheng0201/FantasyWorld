@@ -411,7 +411,7 @@ public class ChunkPos implements IDSTBase {
 
     public static class ImmutableChunkPos extends ChunkPos implements IImmutable {
         @Serial
-        private static final long serialVersionUID = 9188493119787729593L;
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(ChunkPos.serialVersionUID);
 
         public ImmutableChunkPos() {
             super();
@@ -677,7 +677,7 @@ public class ChunkPos implements IDSTBase {
 
     public static class UpdatableChunkPos extends ChunkPos implements IUpdatable {
         @Serial
-        private static final long serialVersionUID = 868801259959331268L;
+        private static final long serialVersionUID = IUpdatable.getSerialVersionUID(ChunkPos.serialVersionUID);
 //TODO
         protected boolean updated = true;
 
