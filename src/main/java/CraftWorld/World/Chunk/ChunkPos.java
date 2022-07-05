@@ -678,7 +678,7 @@ public class ChunkPos implements IDSTBase {
     public static class UpdatableChunkPos extends ChunkPos implements IUpdatable {
         @Serial
         private static final long serialVersionUID = IUpdatable.getSerialVersionUID(ChunkPos.serialVersionUID);
-//TODO
+
         protected boolean updated = true;
 
         public UpdatableChunkPos() {
@@ -699,242 +699,290 @@ public class ChunkPos implements IDSTBase {
 
         @Override
         public void setX(int x) {
-            throw new UnsupportedOperationException();
+            super.setX(x);
+            this.updated = false;
         }
 
         @Override
         public void setX(@Nullable BigInteger x) {
-            throw new UnsupportedOperationException();
+            super.setX(x);
+            this.updated = false;
         }
 
         @Override
         public void setY(int y) {
-            throw new UnsupportedOperationException();
+            super.setY(y);
+            this.updated = false;
         }
 
         @Override
         public void setY(@Nullable BigInteger y) {
-            throw new UnsupportedOperationException();
+            super.setY(y);
+            this.updated = false;
         }
 
         @Override
         public void setZ(int z) {
-            throw new UnsupportedOperationException();
+            super.setZ(z);
+            this.updated = false;
         }
 
         @Override
         public void setZ(@Nullable BigInteger z) {
-            throw new UnsupportedOperationException();
+            super.setZ(z);
+            this.updated = false;
         }
 
         @Override
         public void set(int x, int y, int z) {
-            throw new UnsupportedOperationException();
+            super.set(x, y, z);
+            this.updated = false;
         }
 
         @Override
         public void set(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
-            throw new UnsupportedOperationException();
+            super.set(x, y, z);
+            this.updated = false;
         }
 
         @Override
         public void set(@Nullable ChunkPos pos) {
-            throw new UnsupportedOperationException();
+            super.set(pos);
+            this.updated = false;
         }
 
         @Override
         public void addX(int x) {
-            throw new UnsupportedOperationException();
+            super.addX(x);
+            this.updated = false;
         }
 
         @Override
         public void addX(@Nullable BigInteger x) {
-            throw new UnsupportedOperationException();
+            super.addX(x);
+            this.updated = false;
         }
 
         @Override
         public void addY(int y) {
-            throw new UnsupportedOperationException();
+            super.addY(y);
+            this.updated = false;
         }
 
         @Override
         public void addY(@Nullable BigInteger y) {
-            throw new UnsupportedOperationException();
+            super.addY(y);
+            this.updated = false;
         }
 
         @Override
         public void addZ(int z) {
-            throw new UnsupportedOperationException();
+            super.addZ(z);
+            this.updated = false;
         }
 
         @Override
         public void addZ(@Nullable BigInteger z) {
-            throw new UnsupportedOperationException();
+            super.addZ(z);
+            this.updated = false;
         }
 
         @Override
         public void add(int x, int y, int z) {
-            throw new UnsupportedOperationException();
+            super.add(x, y, z);
+            this.updated = false;
         }
 
         @Override
         public void add(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
-            throw new UnsupportedOperationException();
+            super.add(x, y, z);
+            this.updated = false;
         }
 
         @Override
         public void add(@Nullable ChunkPos pos) {
-            throw new UnsupportedOperationException();
+            super.add(pos);
+            this.updated = false;
         }
 
         @Override
         public void subtractX(int x) {
-            throw new UnsupportedOperationException();
+            super.subtractX(x);
+            this.updated = false;
         }
 
         @Override
         public void subtractX(@Nullable BigInteger x) {
-            throw new UnsupportedOperationException();
+            super.subtractX(x);
+            this.updated = false;
         }
 
         @Override
         public void subtractY(int y) {
-            throw new UnsupportedOperationException();
+            super.subtractY(y);
+            this.updated = false;
         }
 
         @Override
         public void subtractY(@Nullable BigInteger y) {
-            throw new UnsupportedOperationException();
+            super.subtractY(y);
+            this.updated = false;
         }
 
         @Override
         public void subtractZ(int z) {
-            throw new UnsupportedOperationException();
+            super.subtractZ(z);
+            this.updated = false;
         }
 
         @Override
         public void subtractZ(@Nullable BigInteger z) {
-            throw new UnsupportedOperationException();
+            super.subtractZ(z);
+            this.updated = false;
         }
 
         @Override
         public void subtract(int x, int y, int z) {
-            throw new UnsupportedOperationException();
+            super.subtract(x, y, z);
+            this.updated = false;
         }
 
         @Override
         public void subtract(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
-            throw new UnsupportedOperationException();
+            super.subtract(x, y, z);
+            this.updated = false;
         }
 
         @Override
         public void subtract(@Nullable ChunkPos pos) {
-            throw new UnsupportedOperationException();
+            super.subtract(pos);
+            this.updated = false;
         }
 
         @Override
         public void up() {
-            throw new UnsupportedOperationException();
+            super.up();
+            this.updated = false;
         }
 
         @Override
         public void up(int n) {
-            throw new UnsupportedOperationException();
+            super.up(n);
+            this.updated = false;
         }
 
         @Override
         public void up(@Nullable BigInteger n) {
-            throw new UnsupportedOperationException();
+            super.up(n);
+            this.updated = false;
         }
 
         @Override
         public void down() {
-            throw new UnsupportedOperationException();
+            super.down();
+            this.updated = false;
         }
 
         @Override
         public void down(int n) {
-            throw new UnsupportedOperationException();
+            super.down(n);
+            this.updated = false;
         }
 
         @Override
         public void down(@Nullable BigInteger n) {
-            throw new UnsupportedOperationException();
+            super.down(n);
+            this.updated = false;
         }
 
         @Override
         public void north() {
-            throw new UnsupportedOperationException();
+            super.north();
+            this.updated = false;
         }
 
         @Override
         public void north(int n) {
-            throw new UnsupportedOperationException();
+            super.north(n);
+            this.updated = false;
         }
 
         @Override
         public void north(@Nullable BigInteger n) {
-            throw new UnsupportedOperationException();
+            super.north(n);
+            this.updated = false;
         }
 
         @Override
         public void south() {
-            throw new UnsupportedOperationException();
+            super.south();
+            this.updated = false;
         }
 
         @Override
         public void south(int n) {
-            throw new UnsupportedOperationException();
+            super.south(n);
+            this.updated = false;
         }
 
         @Override
         public void south(@Nullable BigInteger n) {
-            throw new UnsupportedOperationException();
+            super.south(n);
+            this.updated = false;
         }
 
         @Override
         public void east() {
-            throw new UnsupportedOperationException();
+            super.east();
+            this.updated = false;
         }
 
         @Override
         public void east(int n) {
-            throw new UnsupportedOperationException();
+            super.east(n);
+            this.updated = false;
         }
 
         @Override
         public void east(@Nullable BigInteger n) {
-            throw new UnsupportedOperationException();
+            super.east(n);
+            this.updated = false;
         }
 
         @Override
         public void west() {
-            throw new UnsupportedOperationException();
+            super.west();
+            this.updated = false;
         }
 
         @Override
         public void west(int n) {
-            throw new UnsupportedOperationException();
+            super.west(n);
+            this.updated = false;
         }
 
         @Override
         public void west(@Nullable BigInteger n) {
-            throw new UnsupportedOperationException();
+            super.west(n);
+            this.updated = false;
         }
 
         @Override
         public void offset(@NotNull EFacing facing) {
-            throw new UnsupportedOperationException();
+            super.offset(facing);
+            this.updated = false;
         }
 
         @Override
         public void offset(@NotNull EFacing facing, int n) {
-            throw new UnsupportedOperationException();
+            super.offset(facing, n);
+            this.updated = false;
         }
 
         @Override
         public void offset(@NotNull EFacing facing, @Nullable BigInteger n) {
-            throw new UnsupportedOperationException();
+            super.offset(facing, n);
+            this.updated = false;
         }
 
         @Override

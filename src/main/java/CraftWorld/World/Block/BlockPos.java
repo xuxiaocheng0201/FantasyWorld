@@ -8,6 +8,7 @@ import CraftWorld.Entity.EntityPos;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
 import HeadLibs.Helper.HMathHelper;
+import HeadLibs.Helper.HMathHelper.BigIntegerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -20,7 +21,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class BlockPos implements IDSTBase, Cloneable {
+public class BlockPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -1091178102319329091L;
     public static final String id = "BlockPos";
@@ -78,7 +79,7 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.x = 0;
             return;
         }
-        BigInteger chunk = HMathHelper.BigIntegerHelper.floorDivide(x, Chunk.SIZE_BigInteger);
+        BigInteger chunk = BigIntegerHelper.floorDivide(x, Chunk.SIZE_BigInteger);
         this.chunkPos.setX(chunk);
         this.x = x.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
@@ -109,7 +110,7 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.y = 0;
             return;
         }
-        BigInteger chunk = HMathHelper.BigIntegerHelper.floorDivide(y, Chunk.SIZE_BigInteger);
+        BigInteger chunk = BigIntegerHelper.floorDivide(y, Chunk.SIZE_BigInteger);
         this.chunkPos.setY(chunk);
         this.y = y.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
@@ -140,7 +141,7 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.z = 0;
             return;
         }
-        BigInteger chunk = HMathHelper.BigIntegerHelper.floorDivide(z, Chunk.SIZE_BigInteger);
+        BigInteger chunk = BigIntegerHelper.floorDivide(z, Chunk.SIZE_BigInteger);
         this.chunkPos.setZ(chunk);
         this.z = z.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
@@ -163,7 +164,7 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.clear();
             return;
         }
-        this.chunkPos = pos.chunkPos.clone();
+        this.chunkPos = new ChunkPos(pos.chunkPos);
         this.x = pos.x;
         this.y = pos.y;
         this.z = pos.z;
@@ -174,7 +175,7 @@ public class BlockPos implements IDSTBase, Cloneable {
             this.clear();
             return;
         }
-        this.chunkPos = pos.getChunkPos().clone();
+        this.chunkPos = new ChunkPos(pos.getChunkPos());
         this.x = HMathHelper.floor(pos.getX());
         this.y = HMathHelper.floor(pos.getY());
         this.z = HMathHelper.floor(pos.getZ());
@@ -390,7 +391,7 @@ public class BlockPos implements IDSTBase, Cloneable {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "BlockPos{" +
                 "chunkPos=" + this.chunkPos +
                 ", x=" + this.x +
@@ -400,10 +401,9 @@ public class BlockPos implements IDSTBase, Cloneable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        BlockPos blockPos = (BlockPos) o;
+        if (!(o instanceof BlockPos blockPos)) return false;
         return this.x == blockPos.x && this.y == blockPos.y && this.z == blockPos.z && this.chunkPos.equals(blockPos.chunkPos);
     }
 
@@ -412,19 +412,9 @@ public class BlockPos implements IDSTBase, Cloneable {
         return Objects.hash(this.chunkPos, this.x, this.y, this.z);
     }
 
-    @Override
-    public BlockPos clone() {
-        BlockPos blockPos;
-        try {
-            blockPos = (BlockPos) super.clone();
-        } catch (CloneNotSupportedException exception) {
-            throw new AssertionError(exception);
-        }
-        blockPos.chunkPos = this.chunkPos.clone();
-        return blockPos;
-    }
-
     public enum EFacing {
         NORTH, SOUTH, WEST, EAST, UP, DOWN
     }
+
+
 }

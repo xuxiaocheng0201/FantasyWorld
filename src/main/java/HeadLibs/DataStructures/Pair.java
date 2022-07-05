@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map.Entry;
 import java.util.Objects;
 
@@ -18,8 +19,8 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
     @Serial
     private static final long serialVersionUID = -321522862154374460L;
 
-    private @Nullable K key;
-    private @Nullable V value;
+    protected @Nullable K key;
+    protected @Nullable V value;
 
     public Pair() {
         super();
@@ -31,6 +32,14 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         super();
         this.key = key;
         this.value = value;
+    }
+
+    public Pair(@Nullable Entry<K, V> entry) {
+        super();
+        if (entry != null) {
+            this.key = entry.getKey();
+            this.value = entry.getValue();
+        }
     }
 
     public @Nullable K getKey() {
@@ -49,6 +58,14 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         V oldValue = this.value;
         this.value = value;
         return oldValue;
+    }
+
+    public @NotNull ImmutablePair<K, V> toImmutable() {
+        return new ImmutablePair<>(this);
+    }
+
+    public @NotNull UpdatablePair<K, V> toUpdatable() {
+        return new UpdatablePair<>(this);
     }
 
     @Override
@@ -86,5 +103,148 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         if (entry == null)
             return new Pair<>();
         return new Pair<>(entry.getKey(), entry.getValue());
+    }
+
+    public static class ImmutablePair<K, V> extends Pair<K, V> implements IImmutable {
+        @Serial
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(-321522862154374460L);
+
+        @SuppressWarnings("unchecked")
+        protected void init() {
+            if (this.key != null && IImmutable.hasImmutableVersion(this.key.getClass()))
+                try {
+                    this.key = (K & IImmutable) this.key.getClass().getDeclaredMethod("toImmutable").invoke(this.key);
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassCastException ignore) {
+                }
+            if (this.value != null && IImmutable.hasImmutableVersion(this.value.getClass()))
+                try {
+                    this.value = (V & IImmutable) this.value.getClass().getDeclaredMethod("toImmutable").invoke(this.value);
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassCastException ignore) {
+                }
+        }
+
+        public ImmutablePair() {
+            super();
+        }
+
+        public ImmutablePair(@Nullable K key, @Nullable V value) {
+            super(key, value);
+            this.init();
+        }
+
+        public ImmutablePair(@Nullable Entry<K, V> entry) {
+            super(entry);
+            this.init();
+        }
+
+        @Override
+        public void setKey(@Nullable K key) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @Nullable V setValue(@Nullable V value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull ImmutablePair<K, V> toImmutable() {
+            return this;
+        }
+    }
+
+    public static class UpdatablePair<K, V> extends Pair<K, V> implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = IUpdatable.getSerialVersionUID(-321522862154374460L);
+
+        protected boolean updated = true;
+
+        @SuppressWarnings("unchecked")
+        protected void initKey() {
+            if (this.key != null && IUpdatable.hasUpdatableVersion(this.key.getClass()))
+                try {
+                    this.key = (K & IUpdatable) this.key.getClass().getDeclaredMethod("toUpdatable").invoke(this.key);
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassCastException ignore) {
+                }
+        }
+
+        @SuppressWarnings("unchecked")
+        protected void initValue() {
+            if (this.value != null && IUpdatable.hasUpdatableVersion(this.value.getClass()))
+                try {
+                    this.value = (V & IUpdatable) this.value.getClass().getDeclaredMethod("toUpdatable").invoke(this.value);
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassCastException ignore) {
+                }
+        }
+
+        public UpdatablePair() {
+            super();
+        }
+
+        public UpdatablePair(@Nullable K key, @Nullable V value) {
+            super(key, value);
+            this.initKey();
+            this.initValue();
+        }
+
+        public UpdatablePair(@Nullable Entry<K, V> entry) {
+            super(entry);
+            this.initKey();
+            this.initValue();
+        }
+
+        @Override
+        public @Nullable K getKey() {
+            if (!(this.key instanceof IUpdatable))
+                this.updated = false;
+            return super.getKey();
+        }
+
+        @Override
+        public void setKey(@Nullable K key) {
+            super.setKey(key);
+            this.initKey();
+            this.updated = false;
+        }
+
+        @Override
+        public @Nullable V getValue() {
+            if (!(this.value instanceof IUpdatable))
+                this.updated = false;
+            return super.getValue();
+        }
+
+        @Override
+        public @Nullable V setValue(@Nullable V value) {
+            V old = super.setValue(value);
+            this.initValue();
+            this.updated = false;
+            return old;
+        }
+
+        @Override
+        public @NotNull UpdatablePair<K, V> toUpdatable() {
+            return this;
+        }
+
+        @SuppressWarnings("ChainOfInstanceofChecks")
+        @Override
+        public boolean getUpdated() {
+            if (this.key instanceof IUpdatable && !((IUpdatable) this.key).getUpdated())
+                return false;
+            if (this.value instanceof IUpdatable && !((IUpdatable) this.value).getUpdated())
+                return false;
+            return this.updated;
+        }
+
+        @SuppressWarnings("ChainOfInstanceofChecks")
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
+            if (this.key instanceof IUpdatable)
+                ((IUpdatable) this.key).setUpdated(updated);
+            if (this.value instanceof IUpdatable)
+                ((IUpdatable) this.value).setUpdated(updated);
+        }
     }
 }

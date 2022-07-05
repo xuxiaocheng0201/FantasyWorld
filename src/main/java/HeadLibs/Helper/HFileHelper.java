@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Some tools about {@link File}
@@ -70,15 +69,15 @@ public class HFileHelper {
      * @param overwrite overwrite target directory
      * @throws IOException copy exception
      */
+    @SuppressWarnings("BulkFileAttributesRead")
     public static void copyFiles(@NotNull String sourcePath, @NotNull String targetPath, boolean overwrite) throws IOException {
         File sourceFile = new File(sourcePath);
         File targetFile = new File(targetPath);
         if (!sourceFile.exists())
             throw new NoSuchFileException("Source file not exists. sourcePath='" + sourcePath + "', targetPath='" + targetPath + "'.");
-        BasicFileAttributes targetFileAttributes = Files.readAttributes(targetFile.toPath(), BasicFileAttributes.class);
         if (sourceFile.isFile()) {
             if (targetFile.exists()) {
-                if (targetFileAttributes.isDirectory())
+                if (targetFile.isDirectory())
                     throw new IOException("Target file is directory. sourcePath='" + sourcePath + "', targetPath='" + targetPath + "'.");
                 if (overwrite)
                     copyFile(sourcePath, targetPath, true);
@@ -87,10 +86,13 @@ public class HFileHelper {
             copyFile(sourcePath, targetPath, overwrite);
             return;
         }
-        if (targetFile.exists()) {
-            if (targetFileAttributes.isRegularFile() && overwrite && !targetFile.delete())
-                throw new IOException("Fail to delete existed target file. sourcePath='" + sourcePath + "', targetPath='" + targetPath + "'.");
-            }
+        if (targetFile.isFile()) {
+            if (overwrite) {
+                if (!targetFile.delete())
+                    throw new IOException("Fail to delete existed target file. sourcePath='" + sourcePath + "', targetPath='" + targetPath + "'.");
+            } else
+                return;
+        }
         if (!targetFile.exists() && !targetFile.mkdirs())
             throw new IOException("Fail to make directories to create target file. sourcePath='" + sourcePath + "', targetPath='" + targetPath + "'.");
         File[] files = sourceFile.listFiles();

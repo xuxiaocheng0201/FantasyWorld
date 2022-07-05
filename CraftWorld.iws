@@ -10,9 +10,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Immutable and updatable HVersionRange and HStringVersion.">
+    <list default="true" id="8d2f6880-af7a-414b-bd5e-6a29e6b53989" name="Changes" comment="Fix some bugs.">
       <change beforePath="$PROJECT_DIR$/CraftWorld.iws" beforeDir="false" afterPath="$PROJECT_DIR$/CraftWorld.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTComplexMeta.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/Instance/DST/DSTComplexMeta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/BlockPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Block/BlockPos.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/ChunkPos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CraftWorld/World/Chunk/ChunkPos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/IImmutable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/IImmutable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/IUpdatable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/IUpdatable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/Pair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/DataStructures/Pair.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HFileHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Helper/HFileHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionComplex.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HeadLibs/Version/HVersionRange.java" afterDir="false" />
     </list>
@@ -297,13 +303,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644246459567</updated>
-    </task>
-    <task id="LOCAL-00105" summary="Construct world saved file tree.">
-      <created>1650869273155</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1650869273155</updated>
     </task>
     <task id="LOCAL-00106" summary="Save Chunks!">
       <created>1650889561853</created>
@@ -641,7 +640,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656686955901</updated>
     </task>
-    <option name="localTasksCounter" value="154" />
+    <task id="LOCAL-00154" summary="Immutable and updatable HVersion.">
+      <created>1656747934646</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1656747934648</updated>
+    </task>
+    <option name="localTasksCounter" value="155" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -683,7 +689,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Null Dimension." />
     <MESSAGE value="Pure DST basic types." />
     <MESSAGE value="Tag DST collections." />
     <MESSAGE value="Documented annotations." />
@@ -701,14 +706,15 @@
     <MESSAGE value="Fix some things." />
     <MESSAGE value="Angle.java." />
     <MESSAGE value="More angle math helper." />
-    <MESSAGE value="Fix some bugs." />
     <MESSAGE value="Log exceptions. New method to register DST." />
     <MESSAGE value="New methods to register elements." />
     <MESSAGE value="More abstract DSTs." />
     <MESSAGE value="BoundingBoxCuboid update pos." />
     <MESSAGE value="Immutable EntityPos." />
     <MESSAGE value="Immutable and updatable HVersionRange and HStringVersion." />
-    <option name="LAST_COMMIT_MESSAGE" value="Immutable and updatable HVersionRange and HStringVersion." />
+    <MESSAGE value="Immutable and updatable HVersion." />
+    <MESSAGE value="Fix some bugs." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix some bugs." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

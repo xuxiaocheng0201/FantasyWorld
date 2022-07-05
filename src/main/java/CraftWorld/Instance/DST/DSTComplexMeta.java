@@ -32,7 +32,7 @@ public final class DSTComplexMeta implements IDSTBase {
         while (!suffix.equals(name)) {
             IDSTBase dst;
             try {
-                dst = DSTUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false);
+                dst = DSTUtils.getInstance().getElementInstance(DSTUtils.dePrefix(name), false);
             } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
                 throw new DSTFormatException(exception);
             }
