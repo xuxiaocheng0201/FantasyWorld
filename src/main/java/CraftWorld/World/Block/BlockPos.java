@@ -4,20 +4,24 @@ import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.Entity.EntityPos;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
+import HeadLibs.Annotations.IntRange;
+import HeadLibs.DataStructures.IImmutable;
+import HeadLibs.DataStructures.IUpdatable;
 import HeadLibs.Helper.HMathHelper;
 import HeadLibs.Helper.HMathHelper.BigIntegerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -28,21 +32,52 @@ public class BlockPos implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private @NotNull ChunkPos chunkPos;
-    private @Range(from = 0, to = Chunk.SIZE - 1) int x;
-    private @Range(from = 0, to = Chunk.SIZE - 1) int y;
-    private @Range(from = 0, to = Chunk.SIZE - 1) int z;
+    protected @NotNull ChunkPos chunkPos = new ChunkPos();
+    protected @IntRange(minimum = 0, maximum = Chunk.SIZE, maximum_equally = false) int x;
+    protected @IntRange(minimum = 0, maximum = Chunk.SIZE, maximum_equally = false) int y;
+    protected @IntRange(minimum = 0, maximum = Chunk.SIZE, maximum_equally = false) int z;
 
-    public BlockPos(ChunkPos chunkPos) {
-        this(chunkPos, 0, 0, 0);
+    public BlockPos() {
+        super();
+        this.clear();
     }
 
-    public BlockPos(ChunkPos chunkPos, int x, int y, int z) {
+    public BlockPos(int x, int y, int z) {
         super();
-        this.chunkPos = Objects.requireNonNullElseGet(chunkPos, ChunkPos::new);
-        this.setX(x);
-        this.setY(y);
-        this.setZ(z);
+        this.set(x, y, z);
+    }
+
+    public BlockPos(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+        super();
+        this.set(x, y, z);
+    }
+
+    public BlockPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
+        super();
+        this.set(chunkPos, x, y, z);
+    }
+
+    public BlockPos(@Nullable ChunkPos chunkPos) {
+        super();
+        this.chunkPos.set(chunkPos);
+    }
+
+    public BlockPos(@Nullable BlockPos blockPos) {
+        super();
+        this.set(blockPos);
+    }
+
+    public void clear() {
+        this.chunkPos.clear();
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+    }
+
+    public void clearOffset() {
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
     }
 
     public @NotNull ChunkPos getChunkPos() {
@@ -50,10 +85,11 @@ public class BlockPos implements IDSTBase {
     }
 
     public void setChunkPos(@Nullable ChunkPos chunkPos) {
-        this.chunkPos = Objects.requireNonNullElseGet(chunkPos, ChunkPos::new);
+        this.chunkPos.set(chunkPos);
     }
 
-    public @Range(from = 0, to = Chunk.SIZE - 1) int getX() {
+    @IntRange(minimum = 0, maximum = Chunk.SIZE, maximum_equally = false)
+    public int getX() {
         return this.x;
     }
 
@@ -65,6 +101,10 @@ public class BlockPos implements IDSTBase {
         int chunk = HMathHelper.floorDivide(x, Chunk.SIZE);
         this.chunkPos.addX(chunk);
         this.x = (x - chunk * Chunk.SIZE) % Chunk.SIZE;
+    }
+
+    public void setClampX(int x) {
+        this.x = HMathHelper.cyclicClamp(x, 0, Chunk.SIZE);
     }
 
     public void setFullX(int x) {
@@ -84,7 +124,8 @@ public class BlockPos implements IDSTBase {
         this.x = x.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
 
-    public @Range(from = 0, to = Chunk.SIZE - 1) int getY() {
+    @IntRange(minimum = 0, maximum = Chunk.SIZE, maximum_equally = false)
+    public int getY() {
         return this.y;
     }
 
@@ -96,6 +137,10 @@ public class BlockPos implements IDSTBase {
         int chunk = HMathHelper.floorDivide(y, Chunk.SIZE);
         this.chunkPos.addY(chunk);
         this.y = (y - chunk * Chunk.SIZE) % Chunk.SIZE;
+    }
+
+    public void setClampY(int y) {
+        this.y = HMathHelper.cyclicClamp(y, 0, Chunk.SIZE);
     }
 
     public void setFullY(int y) {
@@ -115,7 +160,8 @@ public class BlockPos implements IDSTBase {
         this.y = y.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
 
-    public @Range(from = 0, to = Chunk.SIZE - 1) int getZ() {
+    @IntRange(minimum = 0, maximum = Chunk.SIZE, maximum_equally = false)
+    public int getZ() {
         return this.z;
     }
 
@@ -127,6 +173,10 @@ public class BlockPos implements IDSTBase {
         int chunk = HMathHelper.floorDivide(z, Chunk.SIZE);
         this.chunkPos.addZ(chunk);
         this.z = (z - chunk * Chunk.SIZE) % Chunk.SIZE;
+    }
+
+    public void setClampZ(int z) {
+        this.z = HMathHelper.cyclicClamp(z, 0, Chunk.SIZE);
     }
 
     public void setFullZ(int z) {
@@ -146,64 +196,73 @@ public class BlockPos implements IDSTBase {
         this.z = z.subtract(chunk.multiply(Chunk.SIZE_BigInteger)).mod(Chunk.SIZE_BigInteger).intValue();
     }
 
-    public void clear() {
-        this.chunkPos.clear();
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
-    }
-
-    public void clearOffset() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
-    }
-
-    public void set(@Nullable BlockPos pos) {
-        if (pos == null) {
-            this.clear();
-            return;
-        }
-        this.chunkPos = new ChunkPos(pos.chunkPos);
-        this.x = pos.x;
-        this.y = pos.y;
-        this.z = pos.z;
-    }
-
-    public void set(@Nullable EntityPos pos) {
-        if (pos == null) {
-            this.clear();
-            return;
-        }
-        this.chunkPos = new ChunkPos(pos.getChunkPos());
-        this.x = HMathHelper.floor(pos.getX());
-        this.y = HMathHelper.floor(pos.getY());
-        this.z = HMathHelper.floor(pos.getZ());
-    }
-
     public void set(int x, int y, int z) {
+        this.setFullX(x);
+        this.setFullY(y);
+        this.setFullZ(z);
+    }
+
+    public void set(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+        this.setFullX(x);
+        this.setFullY(y);
+        this.setFullZ(z);
+    }
+
+    public void set(@Nullable ChunkPos chunkPos, int x, int y, int z) {
+        this.setChunkPos(chunkPos);
         this.setX(x);
         this.setY(y);
         this.setZ(z);
     }
 
-    public void set(@Nullable ChunkPos pos, int x, int y, int z) {
-        this.setChunkPos(pos);
+    public void set(@Nullable BlockPos blockPos) {
+        if (blockPos == null) {
+            this.chunkPos.clear();
+            this.x = 0;
+            this.y = 0;
+            this.z = 0;
+        } else {
+            this.chunkPos.set(blockPos.chunkPos);
+            this.x = blockPos.x;
+            this.y = blockPos.y;
+            this.z = blockPos.z;
+        }
+    }
+
+    public void setOffset(int x, int y, int z) {
         this.setX(x);
         this.setY(y);
         this.setZ(z);
+    }
+
+    public void setClamp(int x, int y, int z) {
+        this.setClampX(x);
+        this.setClampY(y);
+        this.setClampZ(z);
     }
 
     public void addX(int x) {
         this.setX(this.x + x);
     }
 
+    public void addClampX(int x) {
+        this.setClampX(this.x + x);
+    }
+
     public void addY(int y) {
         this.setY(this.y + y);
     }
 
+    public void addClampY(int y) {
+        this.setClampY(this.y + y);
+    }
+
     public void addZ(int z) {
         this.setZ(this.z + z);
+    }
+
+    public void addClampZ(int z) {
+        this.setClampZ(this.z + z);
     }
 
     public void add(int x, int y, int z) {
@@ -212,50 +271,51 @@ public class BlockPos implements IDSTBase {
         this.setZ(this.z + z);
     }
 
-    public void add(@Nullable BlockPos pos) {
-        if (pos == null)
-            return;
-        this.chunkPos.add(pos.chunkPos);
-        this.setX(this.x + pos.x);
-        this.setY(this.y + pos.y);
-        this.setZ(this.z + pos.z);
+    public void addClamp(int x, int y, int z) {
+        this.setClampX(this.x + x);
+        this.setClampY(this.y + y);
+        this.setClampZ(this.z + z);
     }
 
-    public void addOffset(@Nullable BlockPos pos) {
-        if (pos == null)
+    public void add(@Nullable BlockPos blockPos) {
+        if (blockPos == null)
             return;
-        this.setX(this.x + pos.x);
-        this.setY(this.y + pos.y);
-        this.setZ(this.z + pos.z);
+        this.chunkPos.add(blockPos.chunkPos);
+        this.setX(this.x + blockPos.x);
+        this.setY(this.y + blockPos.y);
+        this.setZ(this.z + blockPos.z);
     }
 
-    public void add(@Nullable EntityPos pos) {
-        if (pos == null)
+    public void addOffset(@Nullable BlockPos blockPos) {
+        if (blockPos == null)
             return;
-        this.chunkPos.add(pos.getChunkPos());
-        this.setX(this.x + HMathHelper.floor(pos.getX()));
-        this.setY(this.y + HMathHelper.floor(pos.getY()));
-        this.setZ(this.z + HMathHelper.floor(pos.getZ()));
-    }
-
-    public void addOffset(@Nullable EntityPos pos) {
-        if (pos == null)
-            return;
-        this.setX(this.x + HMathHelper.floor(pos.getX()));
-        this.setY(this.y + HMathHelper.floor(pos.getY()));
-        this.setZ(this.z + HMathHelper.floor(pos.getZ()));
+        this.setX(this.x + blockPos.x);
+        this.setY(this.y + blockPos.y);
+        this.setZ(this.z + blockPos.z);
     }
 
     public void subtractX(int x) {
         this.setX(this.x - x);
     }
 
+    public void subtractClampX(int x) {
+        this.setClampX(this.x - x);
+    }
+
     public void subtractY(int y) {
         this.setY(this.y - y);
     }
 
+    public void subtractClampY(int y) {
+        this.setClampY(this.y - y);
+    }
+
     public void subtractZ(int z) {
         this.setZ(this.z - z);
+    }
+
+    public void subtractClampZ(int z) {
+        this.setClampZ(this.z - z);
     }
 
     public void subtract(int x, int y, int z) {
@@ -264,38 +324,27 @@ public class BlockPos implements IDSTBase {
         this.setZ(this.z - z);
     }
 
-    public void subtract(@Nullable BlockPos pos) {
-        if (pos == null)
-            return;
-        this.chunkPos.subtract(pos.chunkPos);
-        this.setX(this.x - pos.x);
-        this.setY(this.y - pos.y);
-        this.setZ(this.z - pos.z);
+    public void subtractClamp(int x, int y, int z) {
+        this.setClampX(this.x - x);
+        this.setClampY(this.y - y);
+        this.setClampZ(this.z - z);
     }
 
-    public void subtractOffset(@Nullable BlockPos pos) {
-        if (pos == null)
+    public void subtract(@Nullable BlockPos blockPos) {
+        if (blockPos == null)
             return;
-        this.setX(this.x - pos.x);
-        this.setY(this.y - pos.y);
-        this.setZ(this.z - pos.z);
+        this.chunkPos.subtract(blockPos.chunkPos);
+        this.setX(this.x - blockPos.x);
+        this.setY(this.y - blockPos.y);
+        this.setZ(this.z - blockPos.z);
     }
 
-    public void subtract(@Nullable EntityPos pos) {
-        if (pos == null)
+    public void subtractOffset(@Nullable BlockPos blockPos) {
+        if (blockPos == null)
             return;
-        this.chunkPos.subtract(pos.getChunkPos());
-        this.setX(this.x - HMathHelper.floor(pos.getX()));
-        this.setY(this.y - HMathHelper.floor(pos.getY()));
-        this.setZ(this.z - HMathHelper.floor(pos.getZ()));
-    }
-
-    public void subtractOffset(@Nullable EntityPos pos) {
-        if (pos == null)
-            return;
-        this.setX(this.x - HMathHelper.floor(pos.getX()));
-        this.setY(this.y - HMathHelper.floor(pos.getY()));
-        this.setZ(this.z - HMathHelper.floor(pos.getZ()));
+        this.setX(this.x - blockPos.x);
+        this.setY(this.y - blockPos.y);
+        this.setZ(this.z - blockPos.z);
     }
 
     public void up() {
@@ -346,7 +395,7 @@ public class BlockPos implements IDSTBase {
         this.subtractX(n);
     }
 
-    public void offset(EFacing facing) {
+    public void offset(@NotNull EFacing facing) {
         switch (facing) {
             case UP -> this.up();
             case DOWN -> this.down();
@@ -357,7 +406,7 @@ public class BlockPos implements IDSTBase {
         }
     }
 
-    public void offset(EFacing facing, int n) {
+    public void offset(@NotNull EFacing facing, int n) {
         switch (facing) {
             case UP -> this.up(n);
             case DOWN -> this.down(n);
@@ -366,6 +415,29 @@ public class BlockPos implements IDSTBase {
             case NORTH -> this.north(n);
             case SOUTH -> this.south(n);
         }
+    }
+
+    public @NotNull ImmutableBlockPos toImmutable() {
+        return new ImmutableBlockPos(this);
+    }
+
+    public @NotNull UpdatableBlockPos toUpdatable() {
+        return new UpdatableBlockPos(this);
+    }
+
+    public @NotNull BigDecimal distance(@Nullable BlockPos that) {
+        BigInteger x, y, z;
+        if (that == null) {
+            x = this.getFullX();
+            y = this.getFullY();
+            z = this.getFullZ();
+        } else {
+            x = this.getFullX().subtract(that.getFullX());
+            y = this.getFullY().subtract(that.getFullY());
+            z = this.getFullZ().subtract(that.getFullZ());
+        }
+        return new BigDecimal(x.multiply(x).add(y.multiply(y)).add(z.multiply(z)))
+                .sqrt(new MathContext(ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.HALF_UP));
     }
 
     @Override
@@ -416,5 +488,733 @@ public class BlockPos implements IDSTBase {
         NORTH, SOUTH, WEST, EAST, UP, DOWN
     }
 
+    public static class ImmutableBlockPos extends BlockPos implements IImmutable {
+        @Serial
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(BlockPos.serialVersionUID);
 
+        protected @NotNull BigInteger fullX = BigInteger.ZERO;
+        protected @NotNull BigInteger fullY = BigInteger.ZERO;
+        protected @NotNull BigInteger fullZ = BigInteger.ZERO;
+
+        protected void init() {
+            this.chunkPos = this.chunkPos.toImmutable();
+            this.fullX = super.getFullX();
+            this.fullY = super.getFullY();
+            this.fullZ = super.getFullZ();
+        }
+
+        public ImmutableBlockPos() {
+            super();
+            this.init();
+        }
+
+        public ImmutableBlockPos(int x, int y, int z) {
+            super(x, y, z);
+            this.init();
+        }
+
+        public ImmutableBlockPos(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+            super(x, y, z);
+            this.init();
+        }
+
+        public ImmutableBlockPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
+            super(chunkPos, x, y, z);
+            this.init();
+        }
+
+        public ImmutableBlockPos(@Nullable ChunkPos chunkPos) {
+            super(chunkPos);
+            this.init();
+        }
+
+        public ImmutableBlockPos(@Nullable BlockPos blockPos) {
+            super(blockPos);
+            this.init();
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clearOffset() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setChunkPos(@Nullable ChunkPos chunkPos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull BigInteger getFullX() {
+            return this.fullX;
+        }
+
+        @Override
+        public void setX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setClampX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullX(@Nullable BigInteger x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull BigInteger getFullY() {
+            return this.fullY;
+        }
+
+        @Override
+        public void setY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setClampY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullY(@Nullable BigInteger y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull BigInteger getFullZ() {
+            return this.fullZ;
+        }
+
+        @Override
+        public void setZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setClampZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setFullZ(@Nullable BigInteger z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable ChunkPos chunkPos, int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable BlockPos blockPos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setOffset(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setClamp(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addClampX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addClampY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addClampZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addClamp(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(@Nullable BlockPos blockPos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addOffset(@Nullable BlockPos blockPos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractClampX(int x) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractClampY(int y) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractClampZ(int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractClamp(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtract(@Nullable BlockPos blockPos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subtractOffset(@Nullable BlockPos blockPos) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void up() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void up(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void down() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void down(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void north() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void north(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void south() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void south(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void east() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void east(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void west() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void west(int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void offset(@NotNull EFacing facing) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void offset(@NotNull EFacing facing, int n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull ImmutableBlockPos toImmutable() {
+            return this;
+        }
+    }
+
+    public static class UpdatableBlockPos extends BlockPos implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = IUpdatable.getSerialVersionUID(BlockPos.serialVersionUID);
+
+        protected boolean updated = true;
+
+        protected void init() {
+            this.chunkPos = this.chunkPos.toUpdatable();
+        }
+
+        public UpdatableBlockPos() {
+            super();
+            this.init();
+        }
+
+        public UpdatableBlockPos(int x, int y, int z) {
+            super(x, y, z);
+            this.init();
+        }
+
+        public UpdatableBlockPos(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+            super(x, y, z);
+            this.init();
+        }
+
+        public UpdatableBlockPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
+            super(chunkPos, x, y, z);
+            this.init();
+        }
+
+        public UpdatableBlockPos(@Nullable ChunkPos chunkPos) {
+            super(chunkPos);
+            this.init();
+        }
+
+        public UpdatableBlockPos(@Nullable BlockPos blockPos) {
+            super(blockPos);
+            this.init();
+        }
+
+        @Override
+        public void clear() {
+            super.clear();
+            this.updated = true;
+        }
+
+        @Override
+        public void clearOffset() {
+            super.clearOffset();
+            this.updated = true;
+        }
+
+        @Override
+        public void setChunkPos(@Nullable ChunkPos chunkPos) {
+            super.setChunkPos(chunkPos);
+            this.updated = true;
+        }
+
+        @Override
+        public void setX(int x) {
+            super.setX(x);
+            this.updated = true;
+        }
+
+        @Override
+        public void setClampX(int x) {
+            super.setClampX(x);
+            this.updated = true;
+        }
+
+        @Override
+        public void setFullX(int x) {
+            super.setFullX(x);
+            this.updated = true;
+        }
+
+        @Override
+        public void setFullX(@Nullable BigInteger x) {
+            super.setFullX(x);
+            this.updated = true;
+        }
+
+        @Override
+        public void setY(int y) {
+            super.setY(y);
+            this.updated = true;
+        }
+
+        @Override
+        public void setClampY(int y) {
+            super.setClampY(y);
+            this.updated = true;
+        }
+
+        @Override
+        public void setFullY(int y) {
+            super.setFullY(y);
+            this.updated = true;
+        }
+
+        @Override
+        public void setFullY(@Nullable BigInteger y) {
+            super.setFullY(y);
+            this.updated = true;
+        }
+
+        @Override
+        public void setZ(int z) {
+            super.setZ(z);
+            this.updated = true;
+        }
+
+        @Override
+        public void setClampZ(int z) {
+            super.setClampZ(z);
+            this.updated = true;
+        }
+
+        @Override
+        public void setFullZ(int z) {
+            super.setFullZ(z);
+            this.updated = true;
+        }
+
+        @Override
+        public void setFullZ(@Nullable BigInteger z) {
+            super.setFullZ(z);
+            this.updated = true;
+        }
+
+        @Override
+        public void set(int x, int y, int z) {
+            super.set(x, y, z);
+            this.updated = true;
+        }
+
+        @Override
+        public void set(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
+            super.set(x, y, z);
+            this.updated = true;
+        }
+
+        @Override
+        public void set(@Nullable ChunkPos chunkPos, int x, int y, int z) {
+            super.set(chunkPos, x, y, z);
+            this.updated = true;
+        }
+
+        @Override
+        public void set(@Nullable BlockPos blockPos) {
+            super.set(blockPos);
+            this.updated = true;
+        }
+
+        @Override
+        public void setOffset(int x, int y, int z) {
+            super.setOffset(x, y, z);
+            this.updated = true;
+        }
+
+        @Override
+        public void setClamp(int x, int y, int z) {
+            super.setClamp(x, y, z);
+            this.updated = true;
+        }
+
+        @Override
+        public void addX(int x) {
+            super.addX(x);
+            this.updated = true;
+        }
+
+        @Override
+        public void addClampX(int x) {
+            super.addClampX(x);
+            this.updated = true;
+        }
+
+        @Override
+        public void addY(int y) {
+            super.addY(y);
+            this.updated = true;
+        }
+
+        @Override
+        public void addClampY(int y) {
+            super.addClampY(y);
+            this.updated = true;
+        }
+
+        @Override
+        public void addZ(int z) {
+            super.addZ(z);
+            this.updated = true;
+        }
+
+        @Override
+        public void addClampZ(int z) {
+            super.addClampZ(z);
+            this.updated = true;
+        }
+
+        @Override
+        public void add(int x, int y, int z) {
+            super.add(x, y, z);
+            this.updated = true;
+        }
+
+        @Override
+        public void addClamp(int x, int y, int z) {
+            super.addClamp(x, y, z);
+            this.updated = true;
+        }
+
+        @Override
+        public void add(@Nullable BlockPos blockPos) {
+            super.add(blockPos);
+            this.updated = true;
+        }
+
+        @Override
+        public void addOffset(@Nullable BlockPos blockPos) {
+            super.addOffset(blockPos);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtractX(int x) {
+            super.subtractX(x);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtractClampX(int x) {
+            super.subtractClampX(x);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtractY(int y) {
+            super.subtractY(y);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtractClampY(int y) {
+            super.subtractClampY(y);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtractZ(int z) {
+            super.subtractZ(z);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtractClampZ(int z) {
+            super.subtractClampZ(z);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtract(int x, int y, int z) {
+            super.subtract(x, y, z);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtractClamp(int x, int y, int z) {
+            super.subtractClamp(x, y, z);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtract(@Nullable BlockPos blockPos) {
+            super.subtract(blockPos);
+            this.updated = true;
+        }
+
+        @Override
+        public void subtractOffset(@Nullable BlockPos blockPos) {
+            super.subtractOffset(blockPos);
+            this.updated = true;
+        }
+
+        @Override
+        public void up() {
+            super.up();
+            this.updated = true;
+        }
+
+        @Override
+        public void up(int n) {
+            super.up(n);
+            this.updated = true;
+        }
+
+        @Override
+        public void down() {
+            super.down();
+            this.updated = true;
+        }
+
+        @Override
+        public void down(int n) {
+            super.down(n);
+            this.updated = true;
+        }
+
+        @Override
+        public void north() {
+            super.north();
+            this.updated = true;
+        }
+
+        @Override
+        public void north(int n) {
+            super.north(n);
+            this.updated = true;
+        }
+
+        @Override
+        public void south() {
+            super.south();
+            this.updated = true;
+        }
+
+        @Override
+        public void south(int n) {
+            super.south(n);
+            this.updated = true;
+        }
+
+        @Override
+        public void east() {
+            super.east();
+            this.updated = true;
+        }
+
+        @Override
+        public void east(int n) {
+            super.east(n);
+            this.updated = true;
+        }
+
+        @Override
+        public void west() {
+            super.west();
+            this.updated = true;
+        }
+
+        @Override
+        public void west(int n) {
+            super.west(n);
+            this.updated = true;
+        }
+
+        @Override
+        public void offset(@NotNull EFacing facing) {
+            super.offset(facing);
+            this.updated = true;
+        }
+
+        @Override
+        public void offset(@NotNull EFacing facing, int n) {
+            super.offset(facing, n);
+            this.updated = true;
+        }
+
+        @Override
+        public @NotNull UpdatableBlockPos toUpdatable() {
+            return this;
+        }
+
+        @Override
+        public boolean getUpdated() {
+            if (((IUpdatable) this.chunkPos).getUpdated())
+                return true;
+            return this.updated;
+        }
+
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
+            ((IUpdatable) this.chunkPos).setUpdated(updated);
+        }
+    }
 }

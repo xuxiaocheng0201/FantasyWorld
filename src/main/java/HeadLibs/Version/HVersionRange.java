@@ -531,10 +531,10 @@ public class HVersionRange implements Serializable {
 
         @Override
         public boolean getUpdated() {
-            if (!((IUpdatable) this.leftVersion).getUpdated())
-                return false;
-            if (!((IUpdatable) this.rightVersion).getUpdated())
-                return false;
+            if (((IUpdatable) this.leftVersion).getUpdated())
+                return true;
+            if (((IUpdatable) this.rightVersion).getUpdated())
+                return true;
             return this.updated;
         }
 

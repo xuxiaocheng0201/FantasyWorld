@@ -113,12 +113,12 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         protected void init() {
             if (this.key != null && IImmutable.hasImmutableVersion(this.key.getClass()))
                 try {
-                    this.key = (K & IImmutable) this.key.getClass().getDeclaredMethod("toImmutable").invoke(this.key);
+                    this.key = (K) this.key.getClass().getDeclaredMethod("toImmutable").invoke(this.key);
                 } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassCastException ignore) {
                 }
             if (this.value != null && IImmutable.hasImmutableVersion(this.value.getClass()))
                 try {
-                    this.value = (V & IImmutable) this.value.getClass().getDeclaredMethod("toImmutable").invoke(this.value);
+                    this.value = (V) this.value.getClass().getDeclaredMethod("toImmutable").invoke(this.value);
                 } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassCastException ignore) {
                 }
         }
@@ -157,13 +157,13 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         @Serial
         private static final long serialVersionUID = IUpdatable.getSerialVersionUID(-321522862154374460L);
 
-        protected boolean updated = true;
+        protected boolean updated;
 
         @SuppressWarnings("unchecked")
         protected void initKey() {
             if (this.key != null && IUpdatable.hasUpdatableVersion(this.key.getClass()))
                 try {
-                    this.key = (K & IUpdatable) this.key.getClass().getDeclaredMethod("toUpdatable").invoke(this.key);
+                    this.key = (K) this.key.getClass().getDeclaredMethod("toUpdatable").invoke(this.key);
                 } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassCastException ignore) {
                 }
         }
@@ -172,7 +172,7 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         protected void initValue() {
             if (this.value != null && IUpdatable.hasUpdatableVersion(this.value.getClass()))
                 try {
-                    this.value = (V & IUpdatable) this.value.getClass().getDeclaredMethod("toUpdatable").invoke(this.value);
+                    this.value = (V) this.value.getClass().getDeclaredMethod("toUpdatable").invoke(this.value);
                 } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassCastException ignore) {
                 }
         }
@@ -196,7 +196,7 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         @Override
         public @Nullable K getKey() {
             if (!(this.key instanceof IUpdatable))
-                this.updated = false;
+                this.updated = true;
             return super.getKey();
         }
 
@@ -204,13 +204,13 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         public void setKey(@Nullable K key) {
             super.setKey(key);
             this.initKey();
-            this.updated = false;
+            this.updated = true;
         }
 
         @Override
         public @Nullable V getValue() {
             if (!(this.value instanceof IUpdatable))
-                this.updated = false;
+                this.updated = true;
             return super.getValue();
         }
 
@@ -218,7 +218,7 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         public @Nullable V setValue(@Nullable V value) {
             V old = super.setValue(value);
             this.initValue();
-            this.updated = false;
+            this.updated = true;
             return old;
         }
 
@@ -230,10 +230,10 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
         @SuppressWarnings("ChainOfInstanceofChecks")
         @Override
         public boolean getUpdated() {
-            if (this.key instanceof IUpdatable && !((IUpdatable) this.key).getUpdated())
-                return false;
-            if (this.value instanceof IUpdatable && !((IUpdatable) this.value).getUpdated())
-                return false;
+            if (this.key instanceof IUpdatable && ((IUpdatable) this.key).getUpdated())
+                return true;
+            if (this.value instanceof IUpdatable && ((IUpdatable) this.value).getUpdated())
+                return true;
             return this.updated;
         }
 

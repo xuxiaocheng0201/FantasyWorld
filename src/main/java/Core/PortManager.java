@@ -1,9 +1,9 @@
 package Core;
 
+import HeadLibs.Annotations.IntRange;
 import HeadLibs.Helper.HRandomHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -23,7 +23,7 @@ public class PortManager {
     private static final int timeout = 2000;
 
     private static final Collection<Integer> checkedPortsFlag = new HashSet<>();
-    private static boolean checkPortAvailableInFlag(@NotNull String host, @Range(from = 1, to = 65535) int port, boolean isClient) {
+    private static boolean checkPortAvailableInFlag(@NotNull String host, @IntRange(minimum = 1, maximum = 65535) int port, boolean isClient) {
         if (checkedPortsFlag.contains(port))
             return false;
         checkedPortsFlag.add(port);
@@ -37,7 +37,7 @@ public class PortManager {
      *                 false - check with {@link PortManager#portIsAvailableForServer(String, int)}.
      * @return 0 - failed. others - found port.
      */
-    @Range(from = 0, to = 65535)
+    @IntRange(minimum = 1, maximum = 65535)
     public static synchronized int getNextAvailablePortRandom(@Nullable String hostIn, boolean isClient) {
         if (hostIn == null)
             return 0;
@@ -70,7 +70,7 @@ public class PortManager {
      *                 false - check with {@link PortManager#portIsAvailableForServer(String, int)}.
      * @return 0 - failed. others - found port.
      */
-    @Range(from = 0, to = 65535)
+    @IntRange(minimum = 1, maximum = 65535)
     public static synchronized int getNextAvailablePortOrderly(@Nullable String hostIn, boolean isClient) {
         if (hostIn == null)
             return 0;

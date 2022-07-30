@@ -588,15 +588,15 @@ public class HVersionComplex implements Serializable {
 
         @Override
         public boolean getUpdated() {
-            if (!this.updated)
+            if (this.updated)
                 return false;
             for (HVersionRange versionRange: this.versionRanges)
-                if (!((IUpdatable) versionRange).getUpdated())
-                    return false;
+                if (((IUpdatable) versionRange).getUpdated())
+                    return true;
             for (HStringVersion version: this.versionSingles)
-                if (!((IUpdatable) version).getUpdated())
-                    return false;
-            return true;
+                if (((IUpdatable) version).getUpdated())
+                    return true;
+            return false;
         }
 
         @Override

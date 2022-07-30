@@ -11,9 +11,9 @@ import CraftWorld.World.Block.Block;
 import CraftWorld.World.Block.BlockPos;
 import CraftWorld.World.Block.IBlockBase;
 import CraftWorld.World.Dimension.Dimension;
+import HeadLibs.Annotations.IntRange;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -87,11 +87,15 @@ public class Chunk implements IDSTBase {
         return this.dst;
     }
 
-    public @NotNull Block getBlock(@Range(from = 0, to = SIZE - 1) int x, @Range(from = 0, to = SIZE - 1) int y, @Range(from = 0, to = SIZE - 1) int z) {
+    public @NotNull Block getBlock(@IntRange(minimum = 0, maximum = SIZE, maximum_equally = false) int x,
+                                   @IntRange(minimum = 0, maximum = SIZE, maximum_equally = false) int y,
+                                   @IntRange(minimum = 0, maximum = SIZE, maximum_equally = false) int z) {
         return this.blocks.get(x).get(y).get(z);
     }
 
-    public void setBlock(@Range(from = 0, to = SIZE - 1) int x, @Range(from = 0, to = SIZE - 1) int y, @Range(from = 0, to = SIZE - 1) int z, @Nullable IBlockBase block) {
+    public void setBlock(@IntRange(minimum = 0, maximum = SIZE, maximum_equally = false) int x,
+                         @IntRange(minimum = 0, maximum = SIZE, maximum_equally = false) int y,
+                         @IntRange(minimum = 0, maximum = SIZE, maximum_equally = false) int z, @Nullable IBlockBase block) {
         this.blocks.get(x).get(y).set(z, new Block(this, new BlockPos(this.pos, x, y, z), block));
     }
 
