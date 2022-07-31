@@ -21,6 +21,8 @@ import org.lwjgl.opengl.GL11;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.net.Socket;
 import java.nio.channels.Selector;
 import java.util.concurrent.TimeUnit;
@@ -184,4 +186,6 @@ public class CraftWorld {
     public boolean needCreateNewServer() {
         return true;
     }
+
+    public static final MathContext divideMc = new MathContext(ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.HALF_UP);
 }

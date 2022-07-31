@@ -1,6 +1,7 @@
 package CraftWorld.World.Block;
 
 import CraftWorld.ConstantStorage;
+import CraftWorld.CraftWorld;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -20,8 +21,6 @@ import java.io.IOException;
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -39,7 +38,6 @@ public class BlockPos implements IDSTBase {
 
     public BlockPos() {
         super();
-        this.clear();
     }
 
     public BlockPos(int x, int y, int z) {
@@ -436,8 +434,7 @@ public class BlockPos implements IDSTBase {
             y = this.getFullY().subtract(that.getFullY());
             z = this.getFullZ().subtract(that.getFullZ());
         }
-        return new BigDecimal(x.multiply(x).add(y.multiply(y)).add(z.multiply(z)))
-                .sqrt(new MathContext(ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.HALF_UP));
+        return (new BigDecimal(x.multiply(x).add(y.multiply(y)).add(z.multiply(z)))).sqrt(CraftWorld.divideMc);
     }
 
     @Override
@@ -509,27 +506,32 @@ public class BlockPos implements IDSTBase {
         }
 
         public ImmutableBlockPos(int x, int y, int z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
             this.init();
         }
 
         public ImmutableBlockPos(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
             this.init();
         }
 
         public ImmutableBlockPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
-            super(chunkPos, x, y, z);
+            super();
+            super.set(chunkPos, x, y, z);
             this.init();
         }
 
         public ImmutableBlockPos(@Nullable ChunkPos chunkPos) {
-            super(chunkPos);
+            super();
+            super.chunkPos.set(chunkPos);
             this.init();
         }
 
         public ImmutableBlockPos(@Nullable BlockPos blockPos) {
-            super(blockPos);
+            super();
+            super.set(blockPos);
             this.init();
         }
 
@@ -845,27 +847,32 @@ public class BlockPos implements IDSTBase {
         }
 
         public UpdatableBlockPos(int x, int y, int z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
             this.init();
         }
 
         public UpdatableBlockPos(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
             this.init();
         }
 
         public UpdatableBlockPos(@Nullable ChunkPos chunkPos, int x, int y, int z) {
-            super(chunkPos, x, y, z);
+            super();
+            super.set(chunkPos, x, y, z);
             this.init();
         }
 
         public UpdatableBlockPos(@Nullable ChunkPos chunkPos) {
-            super(chunkPos);
+            super();
+            super.chunkPos.set(chunkPos);
             this.init();
         }
 
         public UpdatableBlockPos(@Nullable BlockPos blockPos) {
-            super(blockPos);
+            super();
+            super.set(blockPos);
             this.init();
         }
 

@@ -2,8 +2,9 @@ package CraftWorld.Instance.Entity.BoundingBox;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.Entity.BoundingBox.IBoundingBoxBase;
+import CraftWorld.Entity.BoundingBox.BoundingBoxBase;
 import CraftWorld.Entity.EntityPos;
+import CraftWorld.Entity.EntityPos.UpdatableEntityPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,26 +12,32 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
-public class BoundingBoxSphere implements IBoundingBoxBase {
+public class BoundingBoxSphere extends BoundingBoxBase {
     @Serial
     private static final long serialVersionUID = 4710597949935360512L;
     public static final String id = "BoundingBoxSphere";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    protected @NotNull EntityPos centre = new EntityPos();
+    protected @NotNull UpdatableEntityPos centre = new UpdatableEntityPos();
     protected double range;
-
-    public @NotNull EntityPos getCentre() {
-        return this.centre;
-    }
 
     public double getRange() {
         return this.range;
+    }
+
+    public void setRange(double range) {
+        double new_range = Math.max(range, 0.0D);
+        if (Double.compare(this.range, new_range) != 0) {
+            this.updated = true;
+            this.range = new_range;
+        }
+    }
+
+    public @NotNull UpdatableEntityPos getCentre() {
+        return this.centre;
     }
 
     @Override
@@ -49,16 +56,6 @@ public class BoundingBoxSphere implements IBoundingBoxBase {
     }
 
     @Override
-    public @Nullable IBoundingBoxBase getBaseBoundingBox() {
-        return null;
-    }
-
-    @Override
-    public @NotNull Set<IBoundingBoxBase> getAdditionalBoundingBox() {
-        return new HashSet<>();
-    }
-
-    @Override
     public void read(@NotNull DataInput input) throws IOException {
         if (!EntityPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
@@ -74,6 +71,19 @@ public class BoundingBoxSphere implements IBoundingBoxBase {
         this.centre.write(output);
         output.writeDouble(this.range);
         output.writeUTF(suffix);
+    }
+
+    @Override
+    public boolean getUpdated() {
+        if (this.centre.getUpdated())
+            return true;
+        return super.getUpdated();
+    }
+
+    @Override
+    public void setUpdated(boolean updated) {
+        super.setUpdated(updated);
+        this.centre.setUpdated(updated);
     }
 
     @Override

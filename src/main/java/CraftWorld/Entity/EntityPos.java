@@ -1,6 +1,6 @@
 package CraftWorld.Entity;
 
-import CraftWorld.ConstantStorage;
+import CraftWorld.CraftWorld;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
@@ -44,7 +42,6 @@ public class EntityPos implements IDSTBase {
 
     public EntityPos() {
         super();
-        this.clear();
     }
 
     public EntityPos(double x, double y, double z) {
@@ -406,8 +403,7 @@ public class EntityPos implements IDSTBase {
             y = this.getFullY().subtract(that.getFullY());
             z = this.getFullZ().subtract(that.getFullZ());
         }
-        return x.multiply(x).add(y.multiply(y)).add(z.multiply(z))
-                .sqrt(new MathContext(ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.HALF_UP));
+        return x.multiply(x).add(y.multiply(y)).add(z.multiply(z)).sqrt(CraftWorld.divideMc);
     }
 
     @Override
@@ -475,27 +471,32 @@ public class EntityPos implements IDSTBase {
         }
 
         public ImmutableEntityPos(double x, double y, double z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
             this.init();
         }
 
         public ImmutableEntityPos(@Nullable BigDecimal x, @Nullable BigDecimal y, @Nullable BigDecimal z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
             this.init();
         }
 
         public ImmutableEntityPos(@Nullable ChunkPos chunkPos, double x, double y, double z) {
-            super(chunkPos, x, y, z);
+            super();
+            super.set(chunkPos, x, y, z);
             this.init();
         }
 
         public ImmutableEntityPos(@Nullable ChunkPos chunkPos) {
-            super(chunkPos);
+            super();
+            super.chunkPos.set(chunkPos);
             this.init();
         }
 
         public ImmutableEntityPos(@Nullable EntityPos entityPos) {
-            super(entityPos);
+            super();
+            super.set(entityPos);
             this.init();
         }
 
@@ -764,7 +765,7 @@ public class EntityPos implements IDSTBase {
         @Serial
         private static final long serialVersionUID = IUpdatable.getSerialVersionUID(EntityPos.serialVersionUID);
 
-        protected boolean updated = true;
+        protected boolean updated;
 
         protected void init() {
             this.chunkPos = this.chunkPos.toUpdatable();
@@ -776,27 +777,32 @@ public class EntityPos implements IDSTBase {
         }
 
         public UpdatableEntityPos(double x, double y, double z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
             this.init();
         }
 
         public UpdatableEntityPos(@Nullable BigDecimal x, @Nullable BigDecimal y, @Nullable BigDecimal z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
             this.init();
         }
 
         public UpdatableEntityPos(@Nullable ChunkPos chunkPos, double x, double y, double z) {
-            super(chunkPos, x, y, z);
+            super();
+            super.set(chunkPos, x, y, z);
             this.init();
         }
 
         public UpdatableEntityPos(@Nullable ChunkPos chunkPos) {
-            super(chunkPos);
+            super();
+            super.chunkPos.set(chunkPos);
             this.init();
         }
 
         public UpdatableEntityPos(@Nullable EntityPos entityPos) {
-            super(entityPos);
+            super();
+            super.set(entityPos);
             this.init();
         }
 

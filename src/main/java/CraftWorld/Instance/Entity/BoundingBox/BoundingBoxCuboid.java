@@ -1,11 +1,14 @@
 package CraftWorld.Instance.Entity.BoundingBox;
 
-import CraftWorld.ConstantStorage;
+import CraftWorld.CraftWorld;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.Entity.BoundingBox.IBoundingBoxBase;
+import CraftWorld.Entity.BoundingBox.BoundingBoxBase;
 import CraftWorld.Entity.EntityPos;
+import CraftWorld.Entity.EntityPos.ImmutableEntityPos;
+import CraftWorld.Entity.EntityPos.UpdatableEntityPos;
 import CraftWorld.Utils.Angle;
+import CraftWorld.Utils.Angle.UpdatableAngle;
 import HeadLibs.Helper.HMathHelper;
 import HeadLibs.Helper.HMathHelper.BigDecimalHelper;
 import org.jetbrains.annotations.NotNull;
@@ -16,40 +19,36 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
-public class BoundingBoxCuboid implements IBoundingBoxBase {
+public class BoundingBoxCuboid extends BoundingBoxBase {
     @Serial
     private static final long serialVersionUID = -4387064885692092859L;
     public static final String id = "BoundingBoxCuboid";
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private final @NotNull EntityPos bld = new EntityPos();
-    private final @NotNull Angle rotationX = new Angle();
-    private final @NotNull Angle rotationY = new Angle();
-    private final @NotNull Angle rotationZ = new Angle();
-    private double length;
-    private double width;
-    private double height;
+    protected final @NotNull UpdatableEntityPos bld = new UpdatableEntityPos();
+    protected final @NotNull UpdatableAngle rotationX = new UpdatableAngle();
+    protected final @NotNull UpdatableAngle rotationY = new UpdatableAngle();
+    protected final @NotNull UpdatableAngle rotationZ = new UpdatableAngle();
+    protected double length;
+    protected double width;
+    protected double height;
 
-    /* f-front b-back  */
-    /* l-left  r-right */
-    /* u-up    d-down  */
-    private boolean updatedPos = true;
-    private transient @Nullable EntityPos flu;
-    private transient @Nullable EntityPos fld;
-    private transient @Nullable EntityPos fru;
-    private transient @Nullable EntityPos frd;
-    private transient @Nullable EntityPos blu;
-    private transient @Nullable EntityPos bru;
-    private transient @Nullable EntityPos brd;
-    private transient @Nullable EntityPos center;
-    private transient double minRadius;
-    private transient double maxRadius;
+    /* f-front b-back  *
+     * l-left  r-right *
+     * u-up    d-down  */
+    protected transient @Nullable EntityPos flu;
+    protected transient @Nullable EntityPos fld;
+    protected transient @Nullable EntityPos fru;
+    protected transient @Nullable EntityPos frd;
+    protected transient @Nullable EntityPos blu;
+    protected transient @Nullable EntityPos bru;
+    protected transient @Nullable EntityPos brd;
+    protected transient @Nullable EntityPos center;
+    protected transient double minRadius;
+    protected transient double maxRadius;
 
     public @NotNull Angle getRotationX() {
         return this.rotationX;
@@ -70,7 +69,7 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     public void setLength(double length) {
         double new_length = Math.max(length, 0.0D);
         if (Double.compare(this.length, new_length) != 0) {
-            this.updatedPos = false;
+            this.updated = true;
             this.length = new_length;
         }
     }
@@ -82,7 +81,7 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     public void setWidth(double width) {
         double new_width = Math.max(width, 0.0D);
         if (Double.compare(this.width, new_width) != 0) {
-            this.updatedPos = false;
+            this.updated = true;
             this.width = new_width;
         }
     }
@@ -94,14 +93,17 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     public void setHeight(double height) {
         double new_height = Math.max(height, 0.0D);
         if (Double.compare(this.height, new_height) != 0) {
-            this.updatedPos = false;
+            this.updated = true;
             this.height = new_height;
         }
     }
 
+    @Override
     public void updatePos() {
-        if (this.updatedPos)
+        if (!this.getUpdated())
             return;
+        if (this.baseBoundingBox != null)
+            this.baseBoundingBox.updatePos();
         if (this.flu == null)
             this.flu = new EntityPos();// = new EntityPos(null, 1, 1, 0);
         if (this.fld == null)
@@ -121,15 +123,15 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         double xy = this.rotationX.cos() * this.rotationY.cos();
         double xz = this.rotationX.cos() * this.rotationZ.cos();
         double yz = this.rotationY.cos() * this.rotationZ.cos();
-        BigDecimal wx = new BigDecimal(this.width * yz);
-        BigDecimal wy = new BigDecimal(this.width * xz);
-        BigDecimal wz = new BigDecimal(this.width * xy);
-        BigDecimal lx = new BigDecimal(this.length * yz);
-        BigDecimal ly = new BigDecimal(this.length * xz);
-        BigDecimal lz = new BigDecimal(this.length * xy);
-        BigDecimal hx = new BigDecimal(this.height * yz);
-        BigDecimal hy = new BigDecimal(this.height * xz);
-        BigDecimal hz = new BigDecimal(this.height * xy);
+        BigDecimal wx = new BigDecimal(this.width * yz, CraftWorld.divideMc);
+        BigDecimal wy = new BigDecimal(this.width * xz, CraftWorld.divideMc);
+        BigDecimal wz = new BigDecimal(this.width * xy, CraftWorld.divideMc);
+        BigDecimal lx = new BigDecimal(this.length * yz, CraftWorld.divideMc);
+        BigDecimal ly = new BigDecimal(this.length * xz, CraftWorld.divideMc);
+        BigDecimal lz = new BigDecimal(this.length * xy, CraftWorld.divideMc);
+        BigDecimal hx = new BigDecimal(this.height * yz, CraftWorld.divideMc);
+        BigDecimal hy = new BigDecimal(this.height * xz, CraftWorld.divideMc);
+        BigDecimal hz = new BigDecimal(this.height * xy, CraftWorld.divideMc);
         this.brd.setFullX(this.bld.getFullX().add(wx));
         this.brd.setFullY(this.bld.getFullY().add(wy));
         this.brd.setFullZ(this.bld.getFullZ().add(wz));
@@ -151,66 +153,66 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         this.fru.setFullX(this.frd.getFullX().add(hx));
         this.fru.setFullY(this.frd.getFullY().add(hy));
         this.fru.setFullZ(this.frd.getFullZ().add(hz));
-        this.center.setFullX(this.bld.getFullX().add(this.fru.getFullX()).divide(BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
-        this.center.setFullY(this.bld.getFullY().add(this.fru.getFullY()).divide(BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
-        this.center.setFullZ(this.bld.getFullZ().add(this.fru.getFullZ()).divide(BigDecimalHelper.BigDecimal_TWO, ConstantStorage.CALCULATE_DECIMAL_DEGREE, RoundingMode.FLOOR));
+        this.center.setFullX(this.bld.getFullX().add(this.fru.getFullX()).divide(BigDecimalHelper.BigDecimal_TWO, CraftWorld.divideMc));
+        this.center.setFullY(this.bld.getFullY().add(this.fru.getFullY()).divide(BigDecimalHelper.BigDecimal_TWO, CraftWorld.divideMc));
+        this.center.setFullZ(this.bld.getFullZ().add(this.fru.getFullZ()).divide(BigDecimalHelper.BigDecimal_TWO, CraftWorld.divideMc));
         this.minRadius = HMathHelper.min(new double[]{this.length, this.width, this.height}) / 2;
         this.maxRadius = this.bld.distance(this.center).doubleValue();
-        this.updatedPos = true;
+        this.setUpdated(false);
     }
 
-    public @NotNull EntityPos getFlu() {
+    public @NotNull ImmutableEntityPos getFlu() {
         this.updatePos();
         assert this.flu != null;
-        return this.flu;
+        return this.flu.toImmutable();
     }
 
-    public @NotNull EntityPos getFld() {
+    public @NotNull ImmutableEntityPos getFld() {
         this.updatePos();
         assert this.fld != null;
-        return this.fld;
+        return this.fld.toImmutable();
     }
 
-    public @NotNull EntityPos getFru() {
+    public @NotNull ImmutableEntityPos getFru() {
         this.updatePos();
         assert this.fru != null;
-        return this.fru;
+        return this.fru.toImmutable();
     }
 
-    public @NotNull EntityPos getFrd() {
+    public @NotNull ImmutableEntityPos getFrd() {
         this.updatePos();
         assert this.frd != null;
-        return this.frd;
+        return this.frd.toImmutable();
     }
 
-    public @NotNull EntityPos getBlu() {
+    public @NotNull ImmutableEntityPos getBlu() {
         this.updatePos();
         assert this.blu != null;
-        return this.blu;
+        return this.blu.toImmutable();
     }
 
-    public @NotNull EntityPos getBld() {
+    public @NotNull UpdatableEntityPos getBld() {
         this.updatePos();
         return this.bld;
     }
 
-    public @NotNull EntityPos getBru() {
+    public @NotNull ImmutableEntityPos getBru() {
         this.updatePos();
         assert this.bru != null;
-        return this.bru;
+        return this.bru.toImmutable();
     }
 
-    public @NotNull EntityPos getBrd() {
+    public @NotNull ImmutableEntityPos getBrd() {
         this.updatePos();
         assert this.brd != null;
-        return this.brd;
+        return this.brd.toImmutable();
     }
 
     @Override
-    public @NotNull EntityPos getCentrePos() {
+    public @NotNull ImmutableEntityPos getCentrePos() {
         this.updatePos();
         assert this.center != null;
-        return this.center;
+        return this.center.toImmutable();
     }
 
     @Override
@@ -226,18 +228,8 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
     }
 
     @Override
-    public @Nullable IBoundingBoxBase getBaseBoundingBox() {
-        return null;
-    }
-
-    @Override
-    public @NotNull Set<IBoundingBoxBase> getAdditionalBoundingBox() {
-        return new HashSet<>();
-    }
-
-    @Override
     public void read(@NotNull DataInput input) throws IOException {
-        this.updatedPos = false;
+        this.updated = true;
         if (!EntityPos.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.bld.read(input);
@@ -268,6 +260,28 @@ public class BoundingBoxCuboid implements IBoundingBoxBase {
         output.writeDouble(this.width);
         output.writeDouble(this.height);
         output.writeUTF(suffix);
+    }
+
+    @Override
+    public boolean getUpdated() {
+        if (this.bld.getUpdated())
+            return true;
+        if (this.rotationX.getUpdated())
+            return true;
+        if (this.rotationY.getUpdated())
+            return true;
+        if (this.rotationZ.getUpdated())
+            return true;
+        return super.getUpdated();
+    }
+
+    @Override
+    public void setUpdated(boolean updated) {
+        super.setUpdated(updated);
+        this.bld.setUpdated(updated);
+        this.rotationX.setUpdated(updated);
+        this.rotationY.setUpdated(updated);
+        this.rotationZ.setUpdated(updated);
     }
 
     @Override

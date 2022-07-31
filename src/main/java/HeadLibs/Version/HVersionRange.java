@@ -296,22 +296,26 @@ public class HVersionRange implements Serializable {
         @Serial
         private static final long serialVersionUID = IImmutable.getSerialVersionUID(HVersionRange.serialVersionUID);
 
-        public ImmutableVersionRange() {
-            super();
+        protected void init() {
             this.leftVersion = this.leftVersion.toImmutable();
             this.rightVersion = this.rightVersion.toImmutable();
+        }
+
+        public ImmutableVersionRange() {
+            super();
+            this.init();
         }
 
         public ImmutableVersionRange(@Nullable String versionRange) throws HVersionFormatException {
-            super(versionRange);
-            this.leftVersion = this.leftVersion.toImmutable();
-            this.rightVersion = this.rightVersion.toImmutable();
+            super();
+            this.setVersionRange(versionRange);
+            this.init();
         }
 
         public ImmutableVersionRange(@Nullable HVersionRange versionRange) {
-            super(versionRange);
-            this.leftVersion = this.leftVersion.toImmutable();
-            this.rightVersion = this.rightVersion.toImmutable();
+            super();
+            this.setVersionRange(versionRange);
+            this.init();
         }
 
         @Override
@@ -410,22 +414,26 @@ public class HVersionRange implements Serializable {
 
         protected boolean updated;
 
-        public UpdatableVersionRange() {
-            super();
+        protected void init() {
             this.leftVersion = this.leftVersion.toUpdatable();
             this.rightVersion = this.rightVersion.toUpdatable();
+        }
+
+        public UpdatableVersionRange() {
+            super();
+            this.init();
         }
 
         public UpdatableVersionRange(@Nullable String versionRange) throws HVersionFormatException {
-            super(versionRange);
-            this.leftVersion = this.leftVersion.toUpdatable();
-            this.rightVersion = this.rightVersion.toUpdatable();
+            super();
+            this.setVersionRange(versionRange);
+            this.init();
         }
 
         public UpdatableVersionRange(@Nullable HVersionRange versionRange) {
-            super(versionRange);
-            this.leftVersion = this.leftVersion.toUpdatable();
-            this.rightVersion = this.rightVersion.toUpdatable();
+            super();
+            this.setVersionRange(versionRange);
+            this.init();
         }
 
         @Override

@@ -31,7 +31,6 @@ public class ChunkPos implements IDSTBase {
 
     public ChunkPos() {
         super();
-        this.clear();
     }
 
     public ChunkPos(int x, int y, int z) {
@@ -397,15 +396,23 @@ public class ChunkPos implements IDSTBase {
         }
 
         public ImmutableChunkPos(int x, int y, int z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
         }
 
         public ImmutableChunkPos(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
         }
 
         public ImmutableChunkPos(@Nullable ChunkPos chunkPos) {
-            super(chunkPos);
+            super();
+            super.set(chunkPos);
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -665,15 +672,24 @@ public class ChunkPos implements IDSTBase {
         }
 
         public UpdatableChunkPos(int x, int y, int z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
         }
 
         public UpdatableChunkPos(@Nullable BigInteger x, @Nullable BigInteger y, @Nullable BigInteger z) {
-            super(x, y, z);
+            super();
+            super.set(x, y, z);
         }
 
         public UpdatableChunkPos(@Nullable ChunkPos chunkPos) {
-            super(chunkPos);
+            super();
+            super.set(chunkPos);
+        }
+
+        @Override
+        public void clear() {
+            super.clear();
+            this.updated = true;
         }
 
         @Override

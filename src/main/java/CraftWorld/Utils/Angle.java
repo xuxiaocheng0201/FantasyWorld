@@ -3,6 +3,9 @@ package CraftWorld.Utils;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
+import HeadLibs.Annotations.DoubleRange;
+import HeadLibs.DataStructures.IImmutable;
+import HeadLibs.DataStructures.IUpdatable;
 import HeadLibs.Helper.HMathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,16 +24,21 @@ public class Angle implements IDSTBase, Comparable<Angle> {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private static final double MIN_ANGLE = 0.0D;
-    private static final double MAX_ANGLE = HMathHelper.DOUBLE_PI;
+    public static final double MIN_ANGLE = 0.0D;
+    public static final double MAX_ANGLE = HMathHelper.DOUBLE_PI;
 
-    private double angle;
+    protected @DoubleRange(minimum = MIN_ANGLE, maximum = MAX_ANGLE, maximum_equally = false) double angle;
 
     public Angle() {
         super();
     }
 
     public Angle(double angle) {
+        super();
+        this.setAngleRadian(angle);
+    }
+
+    public Angle(@Nullable Angle angle) {
         super();
         this.setAngleRadian(angle);
     }
@@ -110,6 +118,14 @@ public class Angle implements IDSTBase, Comparable<Angle> {
         return HMathHelper.cot(this.angle);
     }
 
+    public @NotNull ImmutableAngle toImmutable() {
+        return new ImmutableAngle(this);
+    }
+
+    public @NotNull UpdatableAngle toUpdatable() {
+        return new UpdatableAngle(this);
+    }
+
     @Override
     public void read(@NotNull DataInput input) throws IOException {
         this.angle = input.readDouble();
@@ -144,5 +160,164 @@ public class Angle implements IDSTBase, Comparable<Angle> {
     @Override
     public int compareTo(@NotNull Angle o) {
         return Double.compare(this.angle, o.angle);
+    }
+
+    public static class ImmutableAngle extends Angle implements IImmutable {
+        @Serial
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(Angle.serialVersionUID);
+
+        public ImmutableAngle() {
+            super();
+        }
+
+        public ImmutableAngle(double angle) {
+            super();
+            super.setAngleRadian(angle);
+        }
+
+        public ImmutableAngle(@Nullable Angle angle) {
+            super();
+            super.setAngleRadian(angle);
+        }
+
+        @Override
+        public void setAngleRadian(double angle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setAngleDegree(double angle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setAngleRadian(@Nullable Angle angle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addAngleRadian(double angle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addAngleDegree(double angle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addAngleRadian(@Nullable Angle angle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subAngleRadian(double angle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subAngleDegree(double angle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void subAngleRadian(@Nullable Angle angle) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull ImmutableAngle toImmutable() {
+            return this;
+        }
+    }
+
+    public static class UpdatableAngle extends Angle implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = IUpdatable.getSerialVersionUID(Angle.serialVersionUID);
+
+        protected boolean updated;
+
+        public UpdatableAngle() {
+            super();
+        }
+
+        public UpdatableAngle(double angle) {
+            super();
+            super.setAngleRadian(angle);
+        }
+
+        public UpdatableAngle(@Nullable Angle angle) {
+            super();
+            super.setAngleRadian(angle);
+        }
+
+        @Override
+        public void setAngleRadian(double angle) {
+            super.setAngleRadian(angle);
+            this.updated = true;
+        }
+
+        @Override
+        public void setAngleDegree(double angle) {
+            super.setAngleDegree(angle);
+            this.updated = true;
+        }
+
+        @Override
+        public void setAngleRadian(@Nullable Angle angle) {
+            super.setAngleRadian(angle);
+            this.updated = true;
+        }
+
+        @Override
+        public void addAngleRadian(double angle) {
+            super.addAngleRadian(angle);
+            this.updated = true;
+        }
+
+        @Override
+        public void addAngleDegree(double angle) {
+            super.addAngleDegree(angle);
+            this.updated = true;
+        }
+
+        @Override
+        public void addAngleRadian(@Nullable Angle angle) {
+            super.addAngleRadian(angle);
+            this.updated = true;
+        }
+
+        @Override
+        public void subAngleRadian(double angle) {
+            super.subAngleRadian(angle);
+            this.updated = true;
+        }
+
+        @Override
+        public void subAngleDegree(double angle) {
+            super.subAngleDegree(angle);
+            this.updated = true;
+        }
+
+        @Override
+        public void subAngleRadian(@Nullable Angle angle) {
+            super.subAngleRadian(angle);
+            this.updated = true;
+        }
+
+        @Override
+        public @NotNull UpdatableAngle toUpdatable() {
+            return this;
+        }
+
+        @Override
+        public boolean getUpdated() {
+            return this.updated;
+        }
+
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
+        }
     }
 }

@@ -326,32 +326,40 @@ public class HVersionComplex implements Serializable {
         }
 
         public ImmutableVersionComplex(@Nullable String version) throws HVersionFormatException {
-            super(version);
+            super();
+            super.addVersions(version);
             this.init();
         }
 
         public ImmutableVersionComplex(@Nullable HStringVersion version) {
-            super(version);
+            super();
+            super.addVersionSingle(version);
             this.init();
         }
 
         public ImmutableVersionComplex(@NotNull HStringVersion[] versions) {
-            super(versions);
+            super();
+            for (HStringVersion version: versions)
+                super.addVersionSingle(version);
             this.init();
         }
 
         public ImmutableVersionComplex(@Nullable HVersionRange versionRange) {
-            super(versionRange);
+            super();
+            super.addVersionRange(versionRange);
             this.init();
         }
 
         public ImmutableVersionComplex(@NotNull HVersionRange[] versionRanges) {
-            super(versionRanges);
+            super();
+            for (HVersionRange versionRange: versionRanges)
+                super.addVersionRange(versionRange);
             this.init();
         }
 
         public ImmutableVersionComplex(@Nullable HVersionComplex version) {
-            super(version);
+            super();
+            super.setVersions(version);
             this.init();
         }
 
@@ -468,32 +476,40 @@ public class HVersionComplex implements Serializable {
         }
 
         public UpdatableVersionComplex(@Nullable String version) throws HVersionFormatException {
-            super(version);
+            super();
+            super.addVersions(version);
             this.init();
         }
 
         public UpdatableVersionComplex(@Nullable HStringVersion version) {
-            super(version);
+            super();
+            super.addVersionSingle(version);
             this.init();
         }
 
         public UpdatableVersionComplex(@NotNull HStringVersion[] versions) {
-            super(versions);
+            super();
+            for (HStringVersion version: versions)
+                super.addVersionSingle(version);
             this.init();
         }
 
         public UpdatableVersionComplex(@Nullable HVersionRange versionRange) {
-            super(versionRange);
+            super();
+            super.addVersionRange(versionRange);
             this.init();
         }
 
         public UpdatableVersionComplex(@NotNull HVersionRange[] versionRanges) {
-            super(versionRanges);
+            super();
+            for (HVersionRange versionRange: versionRanges)
+                super.addVersionRange(versionRange);
             this.init();
         }
 
         public UpdatableVersionComplex(@Nullable HVersionComplex version) {
-            super(version);
+            super();
+            super.addVersions(version);
             this.init();
         }
 

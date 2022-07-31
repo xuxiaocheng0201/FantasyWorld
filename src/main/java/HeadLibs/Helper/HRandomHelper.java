@@ -20,6 +20,14 @@ public class HRandomHelper {
         return nextInt(RANDOM, minimum, maximum);
     }
 
+    public static long nextLong(RandomGenerator random, long minimum, long maximum) {
+        return minimum >= maximum ? minimum : random.nextLong(maximum - minimum + 1) + minimum;
+    }
+
+    public static long nextLong(long minimum, long maximum) {
+        return nextLong(RANDOM, minimum, maximum);
+    }
+
     public static float nextFloat(RandomGenerator random, float minimum, float maximum) {
         return minimum >= maximum ? minimum : random.nextFloat() * (maximum - minimum) + minimum;
     }

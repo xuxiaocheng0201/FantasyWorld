@@ -220,11 +220,13 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         }
 
         public ImmutableStringVersion(@Nullable String version) throws HVersionFormatException {
-            super(version);
+            super();
+            super.setVersion(version);
         }
 
         public ImmutableStringVersion(@Nullable HStringVersion version) {
-            super(version);
+            super();
+            super.setVersion(version);
         }
 
         @Override
@@ -259,11 +261,13 @@ public class HStringVersion implements Serializable, Comparable<HStringVersion> 
         }
 
         public UpdatableStringVersion(@Nullable String version) throws HVersionFormatException {
-            super(version);
+            super();
+            super.setVersion(version);
         }
 
         public UpdatableStringVersion(@Nullable HStringVersion version) {
-            super(version);
+            super();
+            super.setVersion(version);
         }
 
         @Override
