@@ -12,7 +12,6 @@ import java.io.Serial;
  * IT IS A RUNTIME EXCEPTION!!!
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModRequirementFormatException extends ModInformationException {
     @Serial
     private static final long serialVersionUID = -4542217647636150904L;

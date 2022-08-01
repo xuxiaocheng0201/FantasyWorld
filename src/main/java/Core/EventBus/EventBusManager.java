@@ -21,13 +21,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 /**
  * Event bus manager.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class EventBusManager {
     private static final HDoubleMapRegisterer<String, EventBus> ALL_EVENT_BUS = new HDoubleMapRegisterer<>();
     private static final HSetRegisterer<Object> REGISTER_ALL_EVENTBUS_CLASS = new HSetRegisterer<>(false);
@@ -131,8 +129,7 @@ public class EventBusManager {
             }
             return;
         }
-        Collection<String> buses = Arrays.asList(HStringHelper.notEmptyStrip(subscribe.eventBus().split(";")))
-                .stream().distinct().collect(Collectors.toList());
+        Collection<String> buses = Arrays.stream(HStringHelper.notEmptyStrip(subscribe.eventBus().split(";"))).distinct().toList();
         for (String name: buses)
             getEventBusByName(name).register(instance);
     }

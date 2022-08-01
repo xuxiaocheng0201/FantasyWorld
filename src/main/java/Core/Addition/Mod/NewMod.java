@@ -10,7 +10,6 @@ import java.lang.annotation.*;
  * @author xuxiaocheng
  * @see ModImplement
  */
-@SuppressWarnings("unused")
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

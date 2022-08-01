@@ -12,7 +12,6 @@ import java.io.Serializable;
  * Mod information - version.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModVersion implements Serializable {
     @Serial
     private static final long serialVersionUID = 81384734643607231L;

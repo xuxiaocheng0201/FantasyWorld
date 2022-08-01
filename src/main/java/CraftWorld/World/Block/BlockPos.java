@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
 public class BlockPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -1091178102319329091L;

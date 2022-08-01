@@ -16,7 +16,6 @@ import java.util.function.Function;
  * Configuration type.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HConfigType implements Serializable {
     @Serial
     private static final long serialVersionUID = -7824027279249219691L;
@@ -229,10 +228,10 @@ public class HConfigType implements Serializable {
             if (single == null)
                 return null;
             fixed.append(single);
-            fixed.append(",");
+            fixed.append(',');
         }
         fixed.deleteCharAt(fixed.length() - 1);
-        fixed.append("]");
+        fixed.append(']');
         return fixed.toString();
     }
 }

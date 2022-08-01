@@ -1,5 +1,8 @@
 package HeadLibs.Helper;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
@@ -8,9 +11,8 @@ import java.util.random.RandomGenerator;
 /**
  * Some tools about {@link Random}
  */
-@SuppressWarnings("unused")
 public class HRandomHelper {
-    private static final RandomGenerator RANDOM = new SecureRandom();
+    public static final RandomGenerator RANDOM = new SecureRandom();
 
     public static int nextInt(RandomGenerator random, int minimum, int maximum) {
         return minimum >= maximum ? minimum : random.nextInt(maximum - minimum + 1) + minimum;
@@ -104,5 +106,14 @@ public class HRandomHelper {
 
     public static UUID getRandomUUID() {
         return getRandomUUID(RANDOM);
+    }
+
+    @Contract(pure = true)
+    @SuppressWarnings({"MagicNumber", "CharUsedInArithmeticContext"})
+    public static long getSeed(@NotNull String source) {
+        long seed = 0;
+        for (int i = 0; i < source.length(); ++i)
+            seed = 31 * seed + source.charAt(i);
+        return seed * (seed + source).hashCode();
     }
 }

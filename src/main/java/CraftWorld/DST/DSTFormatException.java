@@ -10,7 +10,6 @@ import java.io.Serial;
  * Throw when read an impossible DST element.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class DSTFormatException extends IOException {
     @Serial
     private static final long serialVersionUID = -8277448868946723580L;

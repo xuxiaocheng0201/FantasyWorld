@@ -9,9 +9,9 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.random.RandomGenerator;
 
 /**
@@ -46,7 +46,7 @@ public class PortManager {
             host = host.substring(8);
         if (host.startsWith("http://"))
             host = host.substring(7);
-        RandomGenerator random = new SecureRandom("Craftworld".getBytes());
+        RandomGenerator random = new Random(HRandomHelper.getSeed("Craftworld"));
         synchronized (checkedPortsFlag) {
             checkedPortsFlag.clear();
             int r = HRandomHelper.nextInt(random, 1, 65535);

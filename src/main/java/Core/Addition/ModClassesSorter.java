@@ -22,7 +22,6 @@ import java.util.*;
  * Check mod dependencies and sort them.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModClassesSorter {
     private static final List<Class<? extends ModImplement>> sortedMods = new ArrayList<>();
     private static final List<ModInformationException> exceptions = new ArrayList<>();

@@ -9,6 +9,5 @@ import org.lwjgl.glfw.GLFWCharModsCallbackI;
  * @see org.lwjgl.glfw.GLFW#glfwSetCharModsCallback(long, GLFWCharModsCallbackI)
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public record CharModsCallbackEvent(long window, int codePoint, int mods) {
 }

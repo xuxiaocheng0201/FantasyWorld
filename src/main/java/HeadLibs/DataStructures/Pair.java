@@ -14,7 +14,6 @@ import java.util.Objects;
  * @param <K> the type of key
  * @param <V> the type of value
  */
-@SuppressWarnings("unused")
 public class Pair<K, V> implements Entry<K, V>, Serializable {
     @Serial
     private static final long serialVersionUID = -321522862154374460L;

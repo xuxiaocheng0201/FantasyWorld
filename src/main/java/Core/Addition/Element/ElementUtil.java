@@ -17,7 +17,6 @@ import java.util.Map.Entry;
  * @author xuxiaocheng
  * @see NewElementUtilCore
  */
-@SuppressWarnings("unused")
 public abstract class ElementUtil<T extends ElementImplement> implements Iterable<Entry<String, Class<? extends T>>> {
     protected final HMapRegisterer<String, Class<? extends T>> elements = new HMapRegisterer<>(false, false, false);
 

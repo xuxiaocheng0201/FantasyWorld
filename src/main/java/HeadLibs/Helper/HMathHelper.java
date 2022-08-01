@@ -715,10 +715,14 @@ public class HMathHelper {
 
     static {
         /* sin, cos, tan, cot */
-        SIN_TABLE = new double[TABLE_STEP];
-        COS_TABLE = new double[TABLE_STEP];
-        TAN_TABLE = new double[TABLE_STEP];
-        COT_TABLE = new double[TABLE_STEP];
+        try {
+            SIN_TABLE = new double[TABLE_STEP];
+            COS_TABLE = new double[TABLE_STEP];
+            TAN_TABLE = new double[TABLE_STEP];
+            COT_TABLE = new double[TABLE_STEP];
+        } catch (OutOfMemoryError error) {
+            throw new RuntimeException("Failed to create trigonometric functions table.", error);
+        }
         for (int i = 0; i < TABLE_STEP; ++i) {
             SIN_TABLE[i] = StrictMath.sin(i * PI * 2.0D / TABLE_STEP);
             COS_TABLE[i] = StrictMath.cos(i * PI * 2.0D / TABLE_STEP);

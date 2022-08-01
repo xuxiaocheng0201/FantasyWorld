@@ -13,7 +13,6 @@ import java.util.Properties;
 /**
  * Some tools about system.
  */
-@SuppressWarnings("unused")
 public class HSystemHelp {
     /**
      * Get jvm bit.

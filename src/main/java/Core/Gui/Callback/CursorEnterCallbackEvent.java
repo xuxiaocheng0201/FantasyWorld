@@ -9,6 +9,5 @@ import org.lwjgl.glfw.GLFWCursorEnterCallbackI;
  * @see org.lwjgl.glfw.GLFW#glfwSetCursorEnterCallback(long, GLFWCursorEnterCallbackI) 
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public record CursorEnterCallbackEvent(long window, boolean entered) {
 }

@@ -33,7 +33,6 @@ import java.util.*;
  * Initialize all classes, register eventbuses and collect mod classes and element classes.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModClassesLoader {
     private static final List<File> MODS_FILES = new ArrayList<>();
 

@@ -15,7 +15,6 @@ import java.util.Objects;
  * Mod information - requirements.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModRequirements {
     private final List<Requirement> requirements = new ArrayList<>();
     private @Nullable BasicModifier all;

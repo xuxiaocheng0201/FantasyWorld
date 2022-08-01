@@ -9,6 +9,5 @@ import org.lwjgl.glfw.GLFWScrollCallbackI;
  * @see org.lwjgl.glfw.GLFW#glfwSetScrollCallback(long, GLFWScrollCallbackI) 
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public record ScrollCallbackEvent(long window, double xOffset, double yOffset) {
 }

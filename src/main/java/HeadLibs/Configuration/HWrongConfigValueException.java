@@ -10,7 +10,6 @@ import java.io.Serial;
  * Throw when Configuration value isn't suitable for the type.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HWrongConfigValueException extends IOException {
     @Serial
     private static final long serialVersionUID = -4695385007029343114L;
@@ -41,6 +40,6 @@ public class HWrongConfigValueException extends IOException {
     }
 
     public HWrongConfigValueException(@Nullable String message, @NotNull HConfigType type, @Nullable String value) {
-        super(getWrongConfigValueMessage(message) + "type=" + type.getName() + " value='" + value + "'");
+        super(getWrongConfigValueMessage(message) + "type=" + type.getName() + " value='" + value + '\'');
     }
 }

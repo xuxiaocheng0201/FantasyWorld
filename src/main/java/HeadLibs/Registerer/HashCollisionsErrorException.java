@@ -6,8 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serial;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
-public class HashCollisionsErrorException extends RuntimeException{
+public class HashCollisionsErrorException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 2572968988882422778L;
 

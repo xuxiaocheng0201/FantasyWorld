@@ -12,7 +12,6 @@ import java.util.Objects;
  * Element information - name/id.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ElementName implements Serializable {
     @Serial
     private static final long serialVersionUID = -4421475659404411813L;

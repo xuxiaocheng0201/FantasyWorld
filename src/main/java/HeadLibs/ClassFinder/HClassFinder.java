@@ -17,7 +17,6 @@ import java.util.jar.JarFile;
  * Find classes in files and jars.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HClassFinder {
     /**
      * Find classes with package.

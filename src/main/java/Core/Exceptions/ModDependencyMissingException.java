@@ -14,7 +14,6 @@ import java.io.Serial;
  * IT IS A RUNTIME EXCEPTION!!!
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModDependencyMissingException extends ModInformationException {
     @Serial
     private static final long serialVersionUID = -7028339289330024072L;

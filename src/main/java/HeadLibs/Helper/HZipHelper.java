@@ -20,7 +20,6 @@ import java.util.zip.ZipOutputStream;
 /**
  * Some tools about zip/jar file.
  */
-@SuppressWarnings("unused")
 public class HZipHelper {
     /**
      * Zip a directory to zip file.
@@ -42,7 +41,7 @@ public class HZipHelper {
                     String name = base.relativize(kid.toURI()).getPath();
                     if (kid.isDirectory()) {
                         queue.push(kid);
-                        name = !name.isEmpty() && name.charAt(name.length() - 1) == '/' ? name : name + "/";
+                        name = !name.isEmpty() && name.charAt(name.length() - 1) == '/' ? name : name + '/';
                         outputStream.putNextEntry(new ZipEntry(name));
                     } else {
                         outputStream.putNextEntry(new ZipEntry(name));

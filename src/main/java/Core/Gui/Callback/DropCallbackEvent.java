@@ -11,6 +11,5 @@ import java.util.List;
  * @see org.lwjgl.glfw.GLFW#glfwSetDropCallback(long, GLFWDropCallbackI)
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public record DropCallbackEvent(long window, List<String> paths) {
 }

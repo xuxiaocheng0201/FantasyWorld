@@ -13,8 +13,8 @@ import java.io.IOException;
 @NewElementImplementCore(modName = "CraftWorld", elementName = "Block")
 public interface IBlockBase extends IDSTBase {
     @NotNull String getBlockId();
-    String getBlockName();
-    void setBlockName(String name);
+    @NotNull String getBlockName();
+    void setBlockName(@NotNull String name);
     @NotNull DSTComplexMeta getBlockDST();
 
     @Override

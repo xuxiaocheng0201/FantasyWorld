@@ -13,7 +13,6 @@ import java.io.Serial;
  * IT IS A RUNTIME EXCEPTION!!!
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModNameClashException extends ModInformationException {
     @Serial
     private static final long serialVersionUID = -8621018554566357361L;

@@ -10,7 +10,6 @@ import java.util.LinkedHashSet;
  * @param <T> the type of elements
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HLinkedSetRegisterer<T> extends HSetRegisterer<T> {
     @Serial
     private static final long serialVersionUID = 7067717630174449685L;

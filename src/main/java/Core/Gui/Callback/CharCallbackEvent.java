@@ -9,6 +9,5 @@ import org.lwjgl.glfw.GLFWCharCallbackI;
  * @see org.lwjgl.glfw.GLFW#glfwSetCharCallback(long, GLFWCharCallbackI)
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public record CharCallbackEvent(long window, int codePoint) {
 }

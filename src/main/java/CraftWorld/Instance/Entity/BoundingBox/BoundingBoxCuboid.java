@@ -50,15 +50,15 @@ public class BoundingBoxCuboid extends BoundingBoxBase {
     protected transient double minRadius;
     protected transient double maxRadius;
 
-    public @NotNull Angle getRotationX() {
+    public @NotNull UpdatableAngle getRotationX() {
         return this.rotationX;
     }
 
-    public @NotNull Angle getRotationY() {
+    public @NotNull UpdatableAngle getRotationY() {
         return this.rotationY;
     }
 
-    public @NotNull Angle getRotationZ() {
+    public @NotNull UpdatableAngle getRotationZ() {
         return this.rotationZ;
     }
 
@@ -120,6 +120,8 @@ public class BoundingBoxCuboid extends BoundingBoxBase {
             this.brd = new EntityPos();// = new EntityPos(null, 0, 0, 1);
         if (this.center == null)
             this.center = new EntityPos();
+        //TODO: [FIX]Wrong algorithm to calculate pos.
+        /*
         double xy = this.rotationX.cos() * this.rotationY.cos();
         double xz = this.rotationX.cos() * this.rotationZ.cos();
         double yz = this.rotationY.cos() * this.rotationZ.cos();
@@ -153,6 +155,41 @@ public class BoundingBoxCuboid extends BoundingBoxBase {
         this.fru.setFullX(this.frd.getFullX().add(hx));
         this.fru.setFullY(this.frd.getFullY().add(hy));
         this.fru.setFullZ(this.frd.getFullZ().add(hz));
+        */
+        double xy = this.rotationX.cos() * this.rotationY.cos();
+        double xz = this.rotationX.cos() * this.rotationZ.cos();
+        double yz = this.rotationY.cos() * this.rotationZ.cos();
+        BigDecimal wx = new BigDecimal(this.width * yz, CraftWorld.divideMc);
+        BigDecimal wy = new BigDecimal(this.width * xz, CraftWorld.divideMc);
+        BigDecimal wz = new BigDecimal(this.width * xy, CraftWorld.divideMc);
+        BigDecimal lx = new BigDecimal(this.length * yz, CraftWorld.divideMc);
+        BigDecimal ly = new BigDecimal(this.length * xz, CraftWorld.divideMc);
+        BigDecimal lz = new BigDecimal(this.length * xy, CraftWorld.divideMc);
+        BigDecimal hx = new BigDecimal(this.height * yz, CraftWorld.divideMc);
+        BigDecimal hy = new BigDecimal(this.height * xz, CraftWorld.divideMc);
+        BigDecimal hz = new BigDecimal(this.height * xy, CraftWorld.divideMc);
+        this.brd.setFullX(this.bld.getFullX().add(wx));
+        this.brd.setFullY(this.bld.getFullY());
+        this.brd.setFullZ(this.bld.getFullZ());
+        this.fld.setFullX(this.bld.getFullX());
+        this.fld.setFullY(this.bld.getFullY().add(ly));
+        this.fld.setFullZ(this.bld.getFullZ());
+        this.blu.setFullX(this.bld.getFullX());
+        this.blu.setFullY(this.bld.getFullY());
+        this.blu.setFullZ(this.bld.getFullZ().add(hz));
+        this.frd.setFullX(this.brd.getFullX());
+        this.frd.setFullY(this.brd.getFullY().add(ly));
+        this.frd.setFullZ(this.brd.getFullZ());
+        this.bru.setFullX(this.blu.getFullX().add(wx));
+        this.bru.setFullY(this.blu.getFullY());
+        this.bru.setFullZ(this.blu.getFullZ());
+        this.flu.setFullX(this.fld.getFullX());
+        this.flu.setFullY(this.fld.getFullY());
+        this.flu.setFullZ(this.fld.getFullZ().add(hz));
+        this.fru.setFullX(this.frd.getFullX());
+        this.fru.setFullY(this.frd.getFullY());
+        this.fru.setFullZ(this.frd.getFullZ().add(hz));
+
         this.center.setFullX(this.bld.getFullX().add(this.fru.getFullX()).divide(BigDecimalHelper.BigDecimal_TWO, CraftWorld.divideMc));
         this.center.setFullY(this.bld.getFullY().add(this.fru.getFullY()).divide(BigDecimalHelper.BigDecimal_TWO, CraftWorld.divideMc));
         this.center.setFullZ(this.bld.getFullZ().add(this.fru.getFullZ()).divide(BigDecimalHelper.BigDecimal_TWO, CraftWorld.divideMc));
@@ -286,6 +323,21 @@ public class BoundingBoxCuboid extends BoundingBoxBase {
 
     @Override
     public @NotNull String toString() {
+        return "BoundingBoxCuboid{" +
+                "bld=" + this.bld +
+                ", rotationX=" + this.rotationX +
+                ", rotationY=" + this.rotationY +
+                ", rotationZ=" + this.rotationZ +
+                ", length=" + this.length +
+                ", width=" + this.width +
+                ", height=" + this.height +
+                ", uuid=" + this.uuid +
+                ", baseBoundingBox=" + (this.baseBoundingBox == null ? "null" : this.baseBoundingBox.getUUID()) +
+                ", additionalBoundingBox=" + this.additionalBoundingBox +
+                '}';
+    }
+
+    public @NotNull String toStringUpdated() {
         this.updatePos();
         return "BoundingBoxCuboid{" +
                 "flu=" + this.flu +

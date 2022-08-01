@@ -19,7 +19,6 @@ import java.io.IOException;
  * @author xuxiaocheng
  * @see ModImplement#getLanguagePath(String)
  */
-@SuppressWarnings("unused")
 public class LanguageI18N {
     public static final String DEFAULT_LANGUAGE = "en_us";
 

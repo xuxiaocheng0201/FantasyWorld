@@ -15,7 +15,6 @@ import java.util.Set;
  * @param <T> the type of elements
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HSetRegisterer<T> implements Serializable, Iterable<T> {
     @Serial
     private static final long serialVersionUID = 2481392558972738677L;

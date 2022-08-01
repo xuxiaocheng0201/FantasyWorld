@@ -41,12 +41,12 @@ public class BlockStone implements IBlockBase {
     }
 
     @Override
-    public String getBlockName() {
+    public @NotNull String getBlockName() {
         return this.name;
     }
 
     @Override
-    public void setBlockName(String name) {
+    public void setBlockName(@NotNull String name) {
         this.name = name;
     }
 

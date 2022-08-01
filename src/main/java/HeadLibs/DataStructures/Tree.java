@@ -9,7 +9,6 @@ import java.util.Objects;
  * Basic binary tree.
  * @param <T> the type of data
  */
-@SuppressWarnings("unused")
 public class Tree<T> {
     private @Nullable T data;
     private @Nullable Tree<T> leftChild;

@@ -16,7 +16,6 @@ import java.util.logging.Level;
  * @author xuxiaocheng
  * @see HLog
  */
-@SuppressWarnings("unused")
 public class HLogLevel {
     /**
      * All Registered log types.

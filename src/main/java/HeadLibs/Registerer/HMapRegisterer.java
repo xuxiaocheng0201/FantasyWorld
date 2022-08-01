@@ -15,7 +15,6 @@ import java.util.Map.Entry;
  * @param <V> The type of elements value
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HMapRegisterer<K, V> implements Serializable, Iterable<Entry<K, V>> {
     @Serial
     private static final long serialVersionUID = -5018927767212486603L;

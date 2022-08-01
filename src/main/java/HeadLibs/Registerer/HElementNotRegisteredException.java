@@ -9,7 +9,6 @@ import java.io.Serial;
  * Throw when getting an unregistered element.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HElementNotRegisteredException extends Exception {
     @Serial
     private static final long serialVersionUID = -4342199817525193050L;

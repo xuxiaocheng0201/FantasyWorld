@@ -19,7 +19,6 @@ import java.util.HashSet;
  * Some tools about {@link Class}
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HClassHelper {
     private static final HMapRegisterer<Class<?>, Object> cacheClasses = new HMapRegisterer<>(false);
     private static final Collection<Class<?>> gottenFlags = new HashSet<>();

@@ -9,7 +9,6 @@ import java.io.Serial;
  * Throw when finding wrong formation in formatting version string to Version.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HVersionFormatException extends Exception{
     @Serial
     private static final long serialVersionUID = -2079369912007846357L;

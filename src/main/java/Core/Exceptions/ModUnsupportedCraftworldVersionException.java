@@ -13,7 +13,6 @@ import java.io.Serial;
  * IT IS A RUNTIME EXCEPTION!!!
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModUnsupportedCraftworldVersionException extends ModInformationException {
     @Serial
     private static final long serialVersionUID = -8851833450852889381L;

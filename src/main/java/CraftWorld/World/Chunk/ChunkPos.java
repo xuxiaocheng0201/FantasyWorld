@@ -17,7 +17,6 @@ import java.io.Serial;
 import java.math.BigInteger;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
 public class ChunkPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 1974205833401624407L;

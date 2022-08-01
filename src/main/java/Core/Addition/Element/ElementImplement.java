@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  * @author xuxiaocheng
  * @see NewElementImplementCore
  */
-@SuppressWarnings("unused")
 public interface ElementImplement {
 
     // -------------------- Mod basic information getter --------------------

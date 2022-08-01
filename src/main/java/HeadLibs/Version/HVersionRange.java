@@ -16,7 +16,6 @@ import java.util.Objects;
  * String form: [,] or (,) or [,) or (,]
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HVersionRange implements Serializable {
     @Serial
     private static final long serialVersionUID = 4882505281267885490L;

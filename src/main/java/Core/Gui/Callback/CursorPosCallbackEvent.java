@@ -9,6 +9,5 @@ import org.lwjgl.glfw.GLFWCursorPosCallbackI;
  * @see org.lwjgl.glfw.GLFW#glfwSetCursorPosCallback(long, GLFWCursorPosCallbackI) 
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public record CursorPosCallbackEvent(long window, double xPos, double yPos) {
 }

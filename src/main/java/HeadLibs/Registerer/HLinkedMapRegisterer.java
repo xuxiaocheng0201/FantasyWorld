@@ -11,7 +11,6 @@ import java.util.LinkedHashMap;
  * @param <V> The type of elements value
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HLinkedMapRegisterer<K, V> extends HMapRegisterer<K, V> {
     @Serial
     private static final long serialVersionUID = 4210339898718983379L;

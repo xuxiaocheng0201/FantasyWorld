@@ -9,7 +9,6 @@ import java.lang.annotation.*;
  * @author xuxiaocheng
  * @see ElementImplement
  */
-@SuppressWarnings("unused")
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

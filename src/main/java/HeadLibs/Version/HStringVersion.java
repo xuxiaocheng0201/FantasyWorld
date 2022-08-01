@@ -19,7 +19,6 @@ import java.util.Objects;
  * Immutable version: {@link ImmutableStringVersion}
  * Updatable version: {@link UpdatableStringVersion}
  */
-@SuppressWarnings("unused")
 public class HStringVersion implements Serializable, Comparable<HStringVersion> {
     @Serial
     private static final long serialVersionUID = -8779747563654866413L;

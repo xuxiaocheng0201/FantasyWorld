@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
@@ -56,7 +55,7 @@ public class Dimension implements IDSTBase {
         this.world = world;
         this.instance = Objects.requireNonNullElseGet(instance, NullDimension::new);
         this.randomSeed = HRandomHelper.nextString(this.world.getRandom(), 1, HRandomHelper.nextInt(5, 10));
-        this.random = new SecureRandom(this.randomSeed.getBytes());
+        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
         this.uuid = HRandomHelper.getRandomUUID(this.random);
         this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this.uuid));
         this.tickHasUpdated = new QuickTick();
@@ -83,8 +82,8 @@ public class Dimension implements IDSTBase {
 
     public String getChunkSaveFile(ChunkPos pos) {
         return this.dimensionSavedDirectory.getPath() + "\\chunks\\" +
-                pos.getBigX().toString(ConstantStorage.SAVE_NUMBER_RADIX) + "\\" +
-                pos.getBigY().toString(ConstantStorage.SAVE_NUMBER_RADIX) + "\\" +
+                pos.getBigX().toString(ConstantStorage.SAVE_NUMBER_RADIX) + '\\' +
+                pos.getBigY().toString(ConstantStorage.SAVE_NUMBER_RADIX) + '\\' +
                 pos.getBigZ().toString(ConstantStorage.SAVE_NUMBER_RADIX) + ".dat";
     }
 
@@ -226,7 +225,7 @@ public class Dimension implements IDSTBase {
         this.instance.read(input);
         this.tickHasUpdated.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
         this.randomSeed = input.readUTF();
-        this.random = new SecureRandom(this.randomSeed.getBytes());
+        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }

@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
  * @author xuxiaocheng
  * @see NewMod
  */
-@SuppressWarnings("unused")
 public interface ModImplement {
     /**
      * Main method. Be called when mod initializing.

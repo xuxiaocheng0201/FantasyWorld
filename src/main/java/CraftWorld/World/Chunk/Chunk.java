@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
 public class Chunk implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -1248493755702372576L;

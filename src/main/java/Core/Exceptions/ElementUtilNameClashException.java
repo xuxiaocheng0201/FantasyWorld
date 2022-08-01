@@ -13,7 +13,6 @@ import java.io.Serial;
  * IT IS A RUNTIME EXCEPTION!!!
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ElementUtilNameClashException extends ElementImplementInformationException {
     @Serial
     private static final long serialVersionUID = -6560058512796698990L;

@@ -12,7 +12,6 @@ import java.util.Objects;
  * @author xuxiaocheng
  * @see HConfigurationsSimple
  */
-@SuppressWarnings("unused")
 public class HConfigElementSimple implements Serializable {
     @Serial
     private static final long serialVersionUID = -2691268100491960817L;

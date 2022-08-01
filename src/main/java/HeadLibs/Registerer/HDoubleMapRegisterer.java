@@ -15,7 +15,6 @@ import java.util.Map.Entry;
  * @param <V> The type of elements value
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class HDoubleMapRegisterer<K, V> implements Serializable, Iterable<Entry<K, V>> {
     @Serial
     private static final long serialVersionUID = 4210339898718983379L;

@@ -9,6 +9,5 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
  * @see org.lwjgl.glfw.GLFW#glfwSetMouseButtonCallback(long, GLFWMouseButtonCallbackI) 
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public record MouseButtonCallbackEvent(long window, int button, int action, int mods) {
 }

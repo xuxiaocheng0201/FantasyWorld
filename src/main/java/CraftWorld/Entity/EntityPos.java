@@ -27,7 +27,6 @@ import java.util.Objects;
  * Immutable version: {@link ImmutableEntityPos}
  * Updatable version: {@link UpdatableEntityPos}
  */
-@SuppressWarnings("unused")
 public class EntityPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 6848352277198863392L;

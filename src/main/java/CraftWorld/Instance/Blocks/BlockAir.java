@@ -17,36 +17,25 @@ public class BlockAir implements IBlockBase {
         return id;
     }
 
-    private String name = "Air";
-    private DSTComplexMeta dst = new DSTComplexMeta();
+    protected String name = "Air";
+    protected DSTComplexMeta dst = new DSTComplexMeta();
 
     public BlockAir() {
         super();
     }
 
-    public BlockAir(String name) {
+    public BlockAir(@NotNull String name) {
         super();
         this.name = name;
-    }
-
-    public BlockAir(DSTComplexMeta dst) {
-        super();
-        this.dst = dst;
-    }
-
-    public BlockAir(String name, DSTComplexMeta dst) {
-        super();
-        this.name = name;
-        this.dst = dst;
     }
 
     @Override
-    public String getBlockName() {
+    public @NotNull String getBlockName() {
         return this.name;
     }
 
     @Override
-    public void setBlockName(String name) {
+    public void setBlockName(@NotNull String name) {
         this.name = name;
     }
 

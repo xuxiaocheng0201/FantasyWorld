@@ -19,7 +19,6 @@ import java.util.Set;
  * Mods manager.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModManager {
     /**
      * Get all loaded classes.

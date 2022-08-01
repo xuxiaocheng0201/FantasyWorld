@@ -9,8 +9,7 @@ import java.io.Serial;
  * Throw when registering an element that has been registered.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
-public class HElementRegisteredException extends Exception{
+public class HElementRegisteredException extends Exception {
     @Serial
     private static final long serialVersionUID = 5758033473623251615L;
 

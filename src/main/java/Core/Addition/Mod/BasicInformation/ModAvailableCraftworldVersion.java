@@ -12,7 +12,6 @@ import java.io.Serializable;
  * Mod information - available craftworld version.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModAvailableCraftworldVersion implements Serializable {
     @Serial
     private static final long serialVersionUID = -2356864710659062812L;

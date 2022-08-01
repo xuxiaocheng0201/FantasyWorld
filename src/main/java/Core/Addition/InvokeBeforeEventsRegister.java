@@ -17,7 +17,6 @@ import java.lang.annotation.*;
  * }
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 @Documented
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

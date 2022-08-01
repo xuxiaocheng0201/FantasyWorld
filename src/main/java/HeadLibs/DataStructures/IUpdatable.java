@@ -9,7 +9,6 @@ public interface IUpdatable {
     boolean getUpdated();
     void setUpdated(boolean updated);
 
-    @SuppressWarnings("UnsecureRandomNumberGeneration")
     static long getSerialVersionUID(long sourceUID) {
         return (new Random(sourceUID)).nextLong();
     }

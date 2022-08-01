@@ -10,7 +10,6 @@ import java.lang.annotation.*;
  * @see HeadLibs.Helper.HClassHelper#getInstance(Class)
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

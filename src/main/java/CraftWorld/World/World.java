@@ -10,6 +10,7 @@ import CraftWorld.World.Dimension.Dimension;
 import CraftWorld.World.Dimension.DimensionUtils;
 import CraftWorld.World.Dimension.IDimensionBase;
 import HeadLibs.Helper.HFileHelper;
+import HeadLibs.Helper.HRandomHelper;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -27,7 +27,6 @@ import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-@SuppressWarnings("unused")
 public class World implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -383984335814983830L;
@@ -35,34 +34,34 @@ public class World implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private @NotNull File worldSavedDirectory = (new File(ConstantStorage.WORLD_PATH)).getAbsoluteFile();
-    private boolean unloaded = true;
+    protected @NotNull File worldSavedDirectory = (new File(ConstantStorage.WORLD_PATH)).getAbsoluteFile();
+    protected boolean unloaded = true;
 
-    private String worldName = "New world";
-    private final DSTComplexMeta dst = new DSTComplexMeta();
-    private final @NotNull QuickTick tick = new QuickTick();
-    private @NotNull String randomSeed;
-    private @NotNull Random random;
+    protected String worldName = "New world";
+    protected final DSTComplexMeta dst = new DSTComplexMeta();
+    protected final @NotNull QuickTick tick = new QuickTick();
+    protected @NotNull String randomSeed;
+    protected @NotNull Random random;
 
-    // Load all dimensions which id is in keys of {@code prepareDimensionsID}.
+    // Load all dimensions whose id is in keys of {@code prepareDimensionsID}.
     // At least load value dimensions include {@code prepareDimensionsUUID}.
-    private final HMapRegisterer<String, Integer> prepareDimensionsID = new HMapRegisterer<>(true);
-    private final HSetRegisterer<UUID> prepareDimensionsUUID = new HSetRegisterer<>();
-    private final HMapRegisterer<UUID, Dimension> loadedDimensions = new HMapRegisterer<>(false);
-    private final HMapRegisterer<String, HSetRegisterer<UUID>> generatedDimensions = new HMapRegisterer<>(true);
+    protected final HMapRegisterer<String, Integer> prepareDimensionsID = new HMapRegisterer<>(true);
+    protected final HSetRegisterer<UUID> prepareDimensionsUUID = new HSetRegisterer<>();
+    protected final HMapRegisterer<UUID, Dimension> loadedDimensions = new HMapRegisterer<>(false);
+    protected final HMapRegisterer<String, HSetRegisterer<UUID>> generatedDimensions = new HMapRegisterer<>(true);
 
     public World(@NotNull String randomSeed) throws IOException {
         super();
         HFileHelper.createNewDirectory(ConstantStorage.WORLD_PATH);
         this.randomSeed = randomSeed;
-        this.random = new SecureRandom(this.randomSeed.getBytes());
+        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
     }
 
     public World(String worldDirectoryPath, @NotNull String randomSeed) throws IOException {
         super();
         this.setWorldSavedDirectory(worldDirectoryPath);
         this.randomSeed = randomSeed;
-        this.random = new SecureRandom(this.randomSeed.getBytes());
+        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
     }
 
     public void update() {
@@ -89,11 +88,11 @@ public class World implements IDSTBase {
     }
 
     public String getDimensionDirectory(UUID dimensionUUID) {
-        return this.getDimensionsDirectory() + "\\" + dimensionUUID.toString();
+        return this.getDimensionsDirectory() + '\\' + dimensionUUID.toString();
     }
 
     public String getDimensionDirectory(Dimension dimension) {
-        return this.getDimensionsDirectory() + "\\" + dimension.getUUID().toString();
+        return this.getDimensionsDirectory() + '\\' + dimension.getUUID().toString();
     }
 
     public boolean isUnloaded() {
@@ -338,7 +337,7 @@ public class World implements IDSTBase {
         this.dst.read(input);
         this.tick.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
         this.randomSeed = input.readUTF();
-        this.random = new SecureRandom(this.randomSeed.getBytes());
+        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
         this.prepareDimensionsUUID.deregisterAll();
         int size = input.readInt();
         for (int i = 0; i < size; ++i) {

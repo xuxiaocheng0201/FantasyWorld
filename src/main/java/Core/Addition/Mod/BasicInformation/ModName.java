@@ -12,7 +12,6 @@ import java.util.Objects;
  * Mod information - name/id.
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModName implements Serializable {
     @Serial
     private static final long serialVersionUID = 3003306076015173618L;

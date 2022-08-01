@@ -4,7 +4,10 @@ import CraftWorld.ConstantStorage;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
+import HeadLibs.DataStructures.IImmutable;
+import HeadLibs.DataStructures.IUpdatable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -20,9 +23,9 @@ public class QuickTick implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private @NotNull BigInteger tick = BigInteger.ZERO;
-    private long cacheTick;
-    private long quickTick;
+    protected @NotNull BigInteger tick = BigInteger.ZERO;
+    protected long cacheTick;
+    protected long quickTick;
 
     public QuickTick() {
         super();
@@ -30,26 +33,33 @@ public class QuickTick implements IDSTBase {
 
     public QuickTick(long tick) {
         super();
-        this.tick = BigInteger.valueOf(tick);
-        this.cacheTick = tick;
+        this.set(tick);
     }
 
-    public QuickTick(BigInteger tick) {
+    public QuickTick(@Nullable BigInteger tick) {
         super();
-        this.tick = Objects.requireNonNullElse(tick, BigInteger.ZERO);
-        this.cacheTick = this.tick.longValue();
+        this.set(tick);
     }
 
-    public QuickTick(String tick) {
+    public QuickTick(@NotNull String tick) {
         super();
-        this.tick = new BigInteger(tick);
-        this.cacheTick = this.tick.longValue();
+        this.set(tick);
     }
 
-    public QuickTick(String tick, int radix) {
+    public QuickTick(@NotNull String tick, int radix) {
         super();
-        this.tick = new BigInteger(tick, radix);
-        this.cacheTick = this.tick.longValue();
+        this.set(tick, radix);
+    }
+
+    public QuickTick(@Nullable QuickTick tick) {
+        super();
+        this.set(tick);
+    }
+
+    public void clear() {
+        this.tick = BigInteger.ZERO;
+        this.cacheTick = 0L;
+        this.quickTick = 0L;
     }
 
     public void set(long tick) {
@@ -58,37 +68,49 @@ public class QuickTick implements IDSTBase {
         this.quickTick = 0;
     }
 
-    public void set(BigInteger tick) {
+    public void set(@Nullable BigInteger tick) {
         this.tick = Objects.requireNonNullElse(tick, BigInteger.ZERO);
         this.cacheTick = this.tick.longValue();
-        this.quickTick = 0;
+        this.quickTick = 0L;
     }
 
-    public void set(String tick) {
+    public void set(@NotNull String tick) {
         this.tick = new BigInteger(tick);
         this.cacheTick = this.tick.longValue();
-        this.quickTick = 0;
+        this.quickTick = 0L;
     }
 
-    public void set(String tick, int radix) {
+    public void set(@NotNull String tick, int radix) {
         this.tick = new BigInteger(tick, radix);
         this.cacheTick = this.tick.longValue();
-        this.quickTick = 0;
+        this.quickTick = 0L;
+    }
+
+    public void set(@Nullable QuickTick tick) {
+        if (tick == null) {
+            this.tick = BigInteger.ZERO;
+            this.cacheTick = 0L;
+        } else {
+            tick.standardized();
+            this.tick = tick.tick;
+            this.cacheTick = this.tick.longValue();
+        }
+        this.quickTick = 0L;
     }
 
     public void standardized() {
-        if (this.quickTick == 0)
+        if (this.quickTick == 0L)
             return;
         this.tick = this.tick.add(BigInteger.valueOf(this.quickTick));
         this.cacheTick = this.tick.longValue();
-        this.quickTick = 0;
+        this.quickTick = 0L;
     }
 
     public long getTick() {
         return this.cacheTick + this.quickTick;
     }
 
-    public BigInteger getFullTick() {
+    public @NotNull BigInteger getFullTick() {
         this.standardized();
         return this.tick;
     }
@@ -137,6 +159,14 @@ public class QuickTick implements IDSTBase {
         return this.cacheTick + this.quickTick - n;
     }
 
+    public @NotNull ImmutableQuickTick toImmutable() {
+        return new ImmutableQuickTick(this);
+    }
+
+    public @NotNull UpdatableQuickTick toUpdatable() {
+        return new UpdatableQuickTick(this);
+    }
+
     @Override
     public void read(@NotNull DataInput input) throws IOException {
         this.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
@@ -153,18 +183,18 @@ public class QuickTick implements IDSTBase {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         this.standardized();
         return this.tick.toString();
     }
 
-    public String toString(int radix) {
+    public @NotNull String toString(int radix) {
         this.standardized();
         return this.tick.toString(radix);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof QuickTick that)) return false;
         this.standardized();
@@ -176,5 +206,263 @@ public class QuickTick implements IDSTBase {
     public int hashCode() {
         this.standardized();
         return Objects.hash(this.tick);
+    }
+
+    public static class ImmutableQuickTick extends QuickTick implements IImmutable {
+        @Serial
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(QuickTick.serialVersionUID);
+
+        public ImmutableQuickTick() {
+            super();
+        }
+
+        public ImmutableQuickTick(long tick) {
+            super();
+            super.set(tick);
+        }
+
+        public ImmutableQuickTick(@Nullable BigInteger tick) {
+            super();
+            super.set(tick);
+        }
+
+        public ImmutableQuickTick(@NotNull String tick) {
+            super();
+            super.set(tick);
+        }
+
+        public ImmutableQuickTick(@NotNull String tick, int radix) {
+            super();
+            super.set(tick, radix);
+        }
+
+        public ImmutableQuickTick(@Nullable QuickTick tick) {
+            super();
+            super.set(tick);
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(long tick) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable BigInteger tick) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@NotNull String tick) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@NotNull String tick, int radix) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(@Nullable QuickTick tick) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void standardized() {
+        }
+
+        @Override
+        public long getTick() {
+            return this.cacheTick;
+        }
+
+        @Override
+        public @NotNull BigInteger getFullTick() {
+            return this.tick;
+        }
+
+        @Override
+        public long aaT() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public long Taa() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public long ssT() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public long Tss() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void aT() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void sT() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public long add(long n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public long sub(long n) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull ImmutableQuickTick toImmutable() {
+            return this;
+        }
+    }
+
+    public static class UpdatableQuickTick extends QuickTick implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = IUpdatable.getSerialVersionUID(QuickTick.serialVersionUID);
+
+        protected boolean updated;
+
+        public UpdatableQuickTick() {
+            super();
+        }
+
+        public UpdatableQuickTick(long tick) {
+            super();
+            super.set(tick);
+        }
+
+        public UpdatableQuickTick(@Nullable BigInteger tick) {
+            super();
+            super.set(tick);
+        }
+
+        public UpdatableQuickTick(@NotNull String tick) {
+            super();
+            super.set(tick);
+        }
+
+        public UpdatableQuickTick(@NotNull String tick, int radix) {
+            super();
+            super.set(tick, radix);
+        }
+
+        public UpdatableQuickTick(@Nullable QuickTick tick) {
+            super();
+            super.set(tick);
+        }
+
+        @Override
+        public void clear() {
+            super.clear();
+            this.updated = true;
+        }
+
+        @Override
+        public void set(long tick) {
+            super.set(tick);
+            this.updated = true;
+        }
+
+        @Override
+        public void set(@Nullable BigInteger tick) {
+            super.set(tick);
+            this.updated = true;
+        }
+
+        @Override
+        public void set(@NotNull String tick) {
+            super.set(tick);
+            this.updated = true;
+        }
+
+        @Override
+        public void set(@NotNull String tick, int radix) {
+            super.set(tick, radix);
+            this.updated = true;
+        }
+
+        @Override
+        public void set(@Nullable QuickTick tick) {
+            super.set(tick);
+            this.updated = true;
+        }
+
+        @Override
+        public long aaT() {
+            this.updated = true;
+            return super.aaT();
+        }
+
+        @Override
+        public long Taa() {
+            this.updated = true;
+            return super.Taa();
+        }
+
+        @Override
+        public long ssT() {
+            this.updated = true;
+            return super.ssT();
+        }
+
+        @Override
+        public long Tss() {
+            this.updated = true;
+            return super.Tss();
+        }
+
+        @Override
+        public void aT() {
+            super.aT();
+            this.updated = true;
+        }
+
+        @Override
+        public void sT() {
+            super.sT();
+            this.updated = true;
+        }
+
+        @Override
+        public long add(long n) {
+            this.updated = true;
+            return super.add(n);
+        }
+
+        @Override
+        public long sub(long n) {
+            this.updated = true;
+            return super.sub(n);
+        }
+
+        @Override
+        public @NotNull UpdatableQuickTick toUpdatable() {
+            return this;
+        }
+
+        @Override
+        public boolean getUpdated() {
+            return this.updated;
+        }
+
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
+        }
     }
 }

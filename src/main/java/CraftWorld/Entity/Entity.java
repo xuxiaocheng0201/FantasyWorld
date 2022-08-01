@@ -1,9 +1,11 @@
 package CraftWorld.Entity;
 
+import CraftWorld.CraftWorld;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.DST.DSTComplexMeta;
+import CraftWorld.Utils.QuickTick;
 import CraftWorld.World.Dimension.Dimension;
 import HeadLibs.Helper.HRandomHelper;
 import HeadLibs.Logger.HLog;
@@ -15,7 +17,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serial;
-import java.math.BigInteger;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,13 +27,13 @@ public class Entity implements IDSTBase {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    protected UUID uuid = HRandomHelper.getRandomUUID();
-    protected Dimension dimension;
-    protected EntityPos pos;
-    protected EntityPos lastTickPos;
-    protected BigInteger tickHasExist;
-    protected BigInteger tickHasUpdated;
-    private IEntityBase instance;
+    protected @NotNull UUID uuid = HRandomHelper.getRandomUUID();
+    protected @NotNull Dimension dimension = new Dimension(CraftWorld.getInstance().getWorld());
+    protected @NotNull EntityPos pos = new EntityPos();
+    protected @NotNull EntityPos lastTickPos = new EntityPos();
+    protected @NotNull QuickTick tickHasExist = new QuickTick();
+    protected @NotNull QuickTick tickHasUpdated = new QuickTick();
+    protected @NotNull IEntityBase instance;
     protected double speedX;
     protected double speedY;
     protected double speedZ;

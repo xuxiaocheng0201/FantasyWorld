@@ -13,7 +13,6 @@ import java.io.Serial;
  * IT IS A RUNTIME EXCEPTION!!!
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ElementNotPairException extends IllegalArgumentException {
     @Serial
     private static final long serialVersionUID = 5443512506937051931L;

@@ -11,5 +11,5 @@ public class EntityLiving extends Entity {
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private IEntityLivingBase instance;
+//    private IEntityLivingBase instance;
 }

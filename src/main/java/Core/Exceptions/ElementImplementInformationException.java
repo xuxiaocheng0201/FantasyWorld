@@ -12,7 +12,6 @@ import java.io.Serial;
  * IT IS A RUNTIME EXCEPTION!!!
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ElementImplementInformationException extends IllegalArgumentException {
     @Serial
     private static final long serialVersionUID = -84232262039498182L;

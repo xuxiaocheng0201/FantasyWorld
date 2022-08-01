@@ -12,7 +12,6 @@ import java.io.Serial;
  * IT IS A RUNTIME EXCEPTION!!!
  * @author xuxiaocheng
  */
-@SuppressWarnings("unused")
 public class ModInformationException extends IllegalArgumentException {
     @Serial
     private static final long serialVersionUID = 9199196940721277887L;
