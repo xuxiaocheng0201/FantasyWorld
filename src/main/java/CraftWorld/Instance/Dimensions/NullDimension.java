@@ -1,74 +1,50 @@
 package CraftWorld.Instance.Dimensions;
 
 import Core.EventBus.EventSubscribe;
-import CraftWorld.DST.DSTUtils;
 import CraftWorld.Events.ChunkGenerateEvent;
-import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Chunk.ChunkPos;
-import CraftWorld.World.Dimension.IDimensionBase;
+import CraftWorld.World.Dimension.DimensionBase;
 import HeadLibs.Registerer.HLinkedSetRegisterer;
 import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
 @EventSubscribe
-public class NullDimension implements IDimensionBase {
+public class NullDimension extends DimensionBase {
     @Serial
     private static final long serialVersionUID = -5202694397165174510L;
-
     public static final String id = "NullDimension";
-    public static final String prefix = DSTUtils.prefix(id);
-    public static final String suffix = DSTUtils.suffix(id);
 
     @Override
-    public String getDimensionId() {
+    public @NotNull String getDimensionId() {
         return id;
     }
 
-    @Override
-    public String getDimensionName() {
-        return "Null";
+    public NullDimension() {
+        super("Null");
     }
 
     @Override
-    public void setDimensionName(String name) {
+    public void setDimensionName(@NotNull String name) {
     }
 
     @Override
-    public HLinkedSetRegisterer<ChunkPos> getPrepareChunkPos() {
+    public @NotNull HLinkedSetRegisterer<ChunkPos> getPrepareChunkPos() {
         return new HLinkedSetRegisterer<>();
     }
 
     @Override
-    public void read(@NotNull DataInput input) throws IOException {
-    }
-
-    @Override
-    public void write(@NotNull DataOutput output) throws IOException {
-        output.writeUTF(prefix);
-    }
-
-    private final DSTComplexMeta dst = new DSTComplexMeta();
-
-    @Override
-    public DSTComplexMeta getDimensionDST() {
-        return this.dst;
-    }
-
-    @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "NullDimension{" +
                 "dst=" + this.dst +
                 '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof NullDimension that)) return false;
         return this.dst.equals(that.dst);
@@ -81,7 +57,7 @@ public class NullDimension implements IDimensionBase {
 
     @SuppressWarnings("MethodMayBeStatic")
     @Subscribe
-    public void generate(ChunkGenerateEvent event) {
+    public void generate(@NotNull ChunkGenerateEvent event) {
         if (event.chunk().getDimension().getInstance().getDimensionId().equals(id))
             event.chunk().clearBlocks();
     }

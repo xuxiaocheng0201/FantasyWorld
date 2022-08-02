@@ -1,13 +1,13 @@
 package CraftWorld.Instance.Blocks;
 
-import CraftWorld.Instance.DST.DSTComplexMeta;
-import CraftWorld.World.Block.IBlockBase;
+import CraftWorld.World.Block.BlockBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.Objects;
 
-public class BlockStone implements IBlockBase {
+public class BlockStone extends BlockBase {
     @Serial
     private static final long serialVersionUID = -1361010945938452870L;
     public static final String id = "BlockStone";
@@ -17,46 +17,16 @@ public class BlockStone implements IBlockBase {
         return id;
     }
 
-    private String name = "Stone";
-    private DSTComplexMeta dst = new DSTComplexMeta();
-
     public BlockStone() {
-        super();
+        super("Stone");
     }
 
     public BlockStone(String name) {
-        super();
-        this.name = name;
-    }
-
-    public BlockStone(DSTComplexMeta dst) {
-        super();
-        this.dst = dst;
-    }
-
-    public BlockStone(String name, DSTComplexMeta dst) {
-        super();
-        this.name = name;
-        this.dst = dst;
+        super(name);
     }
 
     @Override
-    public @NotNull String getBlockName() {
-        return this.name;
-    }
-
-    @Override
-    public void setBlockName(@NotNull String name) {
-        this.name = name;
-    }
-
-    @Override
-    public @NotNull DSTComplexMeta getBlockDST() {
-        return this.dst;
-    }
-
-    @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "BlockStone{" +
                 "name='" + this.name + '\'' +
                 ", dst=" + this.dst +
@@ -64,7 +34,7 @@ public class BlockStone implements IBlockBase {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         BlockStone blockAir = (BlockStone) o;

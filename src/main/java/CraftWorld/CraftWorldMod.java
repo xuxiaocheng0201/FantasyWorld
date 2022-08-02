@@ -96,9 +96,9 @@ public class CraftWorldMod implements ModImplement {
     public void test(ServerStopEvent event) {
         BoundingBoxCuboid bbc = new BoundingBoxCuboid();
         bbc.setWidth(1);
-        bbc.setLength(1);
+//        bbc.setLength(1);
         bbc.setHeight(1);
-        bbc.updatePos();
+        bbc.getRotationZ().setAngleDegree(90);
         logger.log(bbc.toStringUpdated());
         bbc.getRotationX().setAngleDegree(45);
         logger.log(bbc.toStringUpdated());

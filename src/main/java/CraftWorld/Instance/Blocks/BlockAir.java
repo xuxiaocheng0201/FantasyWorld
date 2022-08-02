@@ -1,13 +1,13 @@
 package CraftWorld.Instance.Blocks;
 
-import CraftWorld.Instance.DST.DSTComplexMeta;
-import CraftWorld.World.Block.IBlockBase;
+import CraftWorld.World.Block.BlockBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.util.Objects;
 
-public class BlockAir implements IBlockBase {
+public class BlockAir extends BlockBase {
     @Serial
     private static final long serialVersionUID = -6409986271941288545L;
     public static final String id = "BlockAir";
@@ -17,35 +17,16 @@ public class BlockAir implements IBlockBase {
         return id;
     }
 
-    protected String name = "Air";
-    protected DSTComplexMeta dst = new DSTComplexMeta();
-
     public BlockAir() {
-        super();
+        super("Air");
     }
 
     public BlockAir(@NotNull String name) {
-        super();
-        this.name = name;
+        super(name);
     }
 
     @Override
-    public @NotNull String getBlockName() {
-        return this.name;
-    }
-
-    @Override
-    public void setBlockName(@NotNull String name) {
-        this.name = name;
-    }
-
-    @Override
-    public @NotNull DSTComplexMeta getBlockDST() {
-        return this.dst;
-    }
-
-    @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "BlockAir{" +
                 "name='" + this.name + '\'' +
                 ", dst=" + this.dst +
@@ -53,7 +34,7 @@ public class BlockAir implements IBlockBase {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
         BlockAir blockAir = (BlockAir) o;
