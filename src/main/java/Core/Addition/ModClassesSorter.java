@@ -150,7 +150,7 @@ public class ModClassesSorter {
                     right = Math.max(right, i);
         }
         if (left > right)
-            exceptions.add(new ModInformationException("Mod sort error! left=" + left + ", right=" + right + ", sortedMod=" + sortedMods + ".", modClass));
+            exceptions.add(new ModInformationException("Mod sort error! left=" + left + ", right=" + right + ", sortedMod=" + sortedMods + '.', modClass));
         else
             if (requireAll == BasicModifier.BEFORE)
                 sortedMods.add(left, modClass);

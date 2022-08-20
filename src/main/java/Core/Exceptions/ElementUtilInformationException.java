@@ -25,11 +25,11 @@ public class ElementUtilInformationException extends IllegalArgumentException {
         super(DEFAULT_MESSAGE);
     }
 
-    public ElementUtilInformationException(@Nullable Class<? extends ElementUtil<?>> elementUtilClass) {
+    public ElementUtilInformationException(@Nullable Class<? extends ElementUtil<?, ?>> elementUtilClass) {
         super(DEFAULT_MESSAGE + ModManager.crashClassInformation(elementUtilClass));
     }
 
-    public ElementUtilInformationException(@Nullable Class<? extends ElementUtil<?>> elementUtilClass, @Nullable String moreMessage) {
+    public ElementUtilInformationException(@Nullable Class<? extends ElementUtil<?, ?>> elementUtilClass, @Nullable String moreMessage) {
         super(DEFAULT_MESSAGE + moreMessage + ModManager.crashClassInformation(elementUtilClass));
     }
 
@@ -37,11 +37,11 @@ public class ElementUtilInformationException extends IllegalArgumentException {
         super(getElementUtilInformationMessage(message));
     }
 
-    public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> elementUtilClass) {
+    public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?, ?>> elementUtilClass) {
         super(getElementUtilInformationMessage(message) + ModManager.crashClassInformation(elementUtilClass));
     }
 
-    public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> elementUtilClass, @Nullable String moreMessage) {
+    public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?, ?>> elementUtilClass, @Nullable String moreMessage) {
         super(getElementUtilInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementUtilClass));
     }
 
@@ -49,11 +49,11 @@ public class ElementUtilInformationException extends IllegalArgumentException {
         super(DEFAULT_MESSAGE, throwable);
     }
 
-    public ElementUtilInformationException(@Nullable Class<? extends ElementUtil<?>> elementUtilClass, @Nullable Throwable throwable) {
+    public ElementUtilInformationException(@Nullable Class<? extends ElementUtil<?, ?>> elementUtilClass, @Nullable Throwable throwable) {
         super(DEFAULT_MESSAGE + ModManager.crashClassInformation(elementUtilClass), throwable);
     }
 
-    public ElementUtilInformationException(@Nullable Class<? extends ElementUtil<?>> elementUtilClass, @Nullable String moreMessage, @Nullable Throwable throwable) {
+    public ElementUtilInformationException(@Nullable Class<? extends ElementUtil<?, ?>> elementUtilClass, @Nullable String moreMessage, @Nullable Throwable throwable) {
         super(DEFAULT_MESSAGE + moreMessage + ModManager.crashClassInformation(elementUtilClass), throwable);
     }
 
@@ -61,11 +61,11 @@ public class ElementUtilInformationException extends IllegalArgumentException {
         super(getElementUtilInformationMessage(message), throwable);
     }
 
-    public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> elementUtilClass, @Nullable Throwable throwable) {
+    public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?, ?>> elementUtilClass, @Nullable Throwable throwable) {
         super(getElementUtilInformationMessage(message) + ModManager.crashClassInformation(elementUtilClass), throwable);
     }
 
-    public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> elementUtilClass, @Nullable String moreMessage, @Nullable Throwable throwable) {
+    public ElementUtilInformationException(@Nullable String message, @Nullable Class<? extends ElementUtil<?, ?>> elementUtilClass, @Nullable String moreMessage, @Nullable Throwable throwable) {
         super(getElementUtilInformationMessage(message) + moreMessage + ModManager.crashClassInformation(elementUtilClass), throwable);
     }
 }

@@ -242,7 +242,7 @@ public class ModRequirements {
             @Override
             public String toString() {
                 //return (this.required ? "require-" : "") + this.basic.toString();
-                return this.name + ":";
+                return this.name + ':';
             }
 
             public enum BasicModifier {

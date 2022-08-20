@@ -1,8 +1,9 @@
 package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.BasicInformation.DSTId;
+import CraftWorld.DST.DSTBase;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,20 +13,19 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTBoolean extends PureDSTBase<Boolean> {
+public class DSTBoolean extends DSTBase<Boolean> {
     @Serial
     private static final long serialVersionUID = -2610545773823934027L;
-    public static final String id = "DSTBoolean";
+    public static final DSTId id = DSTId.getDstIdInstance("DSTBoolean");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
     public DSTBoolean() {
-        super();
+        super(false);
     }
 
-    public DSTBoolean(Boolean data) {
-        super();
-        this.setData(data);
+    public DSTBoolean(@NotNull Boolean data) {
+        super(data);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class DSTBoolean extends PureDSTBase<Boolean> {
     }
 
     @Override
-    public void setData(Boolean data) {
+    public void setData(@NotNull Boolean data) {
         this.data = Objects.requireNonNullElse(data, false);
     }
 

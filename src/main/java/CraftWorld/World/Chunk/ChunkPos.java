@@ -1,10 +1,11 @@
 package CraftWorld.World.Chunk;
 
 import CraftWorld.ConstantStorage;
+import CraftWorld.DST.BasicInformation.DSTId;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.World.Block.BlockPos.EFacing;
+import CraftWorld.World.Block.BlockDirection;
 import HeadLibs.DataStructures.IImmutable;
 import HeadLibs.DataStructures.IUpdatable;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ import java.util.Objects;
 public class ChunkPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 1974205833401624407L;
-    public static final String id = "ChunkPos";
+    public static final DSTId id = DSTId.getDstIdInstance("ChunkPos");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
@@ -303,7 +304,7 @@ public class ChunkPos implements IDSTBase {
             this.z = this.z.subtract(n);
     }
 
-    public void offset(@NotNull EFacing facing) {
+    public void offset(@NotNull BlockDirection facing) {
         switch (facing) {
             case UP -> this.up();
             case DOWN -> this.down();
@@ -314,7 +315,7 @@ public class ChunkPos implements IDSTBase {
         }
     }
 
-    public void offset(@NotNull EFacing facing, int n) {
+    public void offset(@NotNull BlockDirection facing, int n) {
         switch (facing) {
             case UP -> this.up(n);
             case DOWN -> this.down(n);
@@ -325,7 +326,7 @@ public class ChunkPos implements IDSTBase {
         }
     }
 
-    public void offset(@NotNull EFacing facing, @Nullable BigInteger n) {
+    public void offset(@NotNull BlockDirection facing, @Nullable BigInteger n) {
         if (n == null)
             return;
         switch (facing) {
@@ -640,17 +641,17 @@ public class ChunkPos implements IDSTBase {
         }
 
         @Override
-        public void offset(@NotNull EFacing facing) {
+        public void offset(@NotNull BlockDirection facing) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void offset(@NotNull EFacing facing, int n) {
+        public void offset(@NotNull BlockDirection facing, int n) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void offset(@NotNull EFacing facing, @Nullable BigInteger n) {
+        public void offset(@NotNull BlockDirection facing, @Nullable BigInteger n) {
             throw new UnsupportedOperationException();
         }
 
@@ -962,19 +963,19 @@ public class ChunkPos implements IDSTBase {
         }
 
         @Override
-        public void offset(@NotNull EFacing facing) {
+        public void offset(@NotNull BlockDirection facing) {
             super.offset(facing);
             this.updated = true;
         }
 
         @Override
-        public void offset(@NotNull EFacing facing, int n) {
+        public void offset(@NotNull BlockDirection facing, int n) {
             super.offset(facing, n);
             this.updated = true;
         }
 
         @Override
-        public void offset(@NotNull EFacing facing, @Nullable BigInteger n) {
+        public void offset(@NotNull BlockDirection facing, @Nullable BigInteger n) {
             super.offset(facing, n);
             this.updated = true;
         }

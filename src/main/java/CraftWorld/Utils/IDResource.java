@@ -1,8 +1,11 @@
 package CraftWorld.Utils;
 
+import CraftWorld.DST.BasicInformation.DSTId;
+import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -13,29 +16,28 @@ import java.util.Objects;
 public class IDResource implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -2821429578891939306L;
-
-    private String mod_id = "CraftWorld";
-    private String assets = "null";
-
-    public static final String id = "IDResource";
+    public static final DSTId id = DSTId.getDstIdInstance("IDResource");
     public static final String prefix = DSTUtils.prefix(id);
+    public static final String suffix = DSTUtils.suffix(id);
 
-    private String name = id;
+    protected @NotNull String mod_id = "CraftWorld";
+    protected @NotNull String assets = "null";
 
-    public String getName() {
+    protected @NotNull String name = id.getId();
+
+    public @NotNull String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(@NotNull String name) {
         this.name = name;
     }
 
     public IDResource() {
         super();
-
     }
 
-    public IDResource(String assets) {
+    public IDResource(@Nullable String assets) {
         super();
         if (assets == null)
             return;
@@ -48,7 +50,7 @@ public class IDResource implements IDSTBase {
         this.assets = assets.substring(s[0].length() + 1);
     }
 
-    public IDResource(String mod_id, String assets) {
+    public IDResource(@Nullable String mod_id, @Nullable String assets) {
         this(assets);
         if (mod_id == null)
             return;
@@ -59,6 +61,8 @@ public class IDResource implements IDSTBase {
     public void read(@NotNull DataInput input) throws IOException {
         this.mod_id = input.readUTF();
         this.assets = input.readUTF();
+        if (!suffix.equals(input.readUTF()))
+                throw new DSTFormatException();
     }
 
     @Override
@@ -66,39 +70,39 @@ public class IDResource implements IDSTBase {
         output.writeUTF(prefix);
         output.writeUTF(this.mod_id);
         output.writeUTF(this.assets);
+        output.writeUTF(suffix);
     }
 
-    public String getMod_id() {
+    public @NotNull String getMod_id() {
         return this.mod_id;
     }
 
-    public void setMod_id(String mod_id) {
+    public void setMod_id(@NotNull String mod_id) {
         this.mod_id = mod_id;
     }
 
-    public String getAssets() {
+    public @NotNull String getAssets() {
         return this.assets;
     }
 
-    public void setAssets(String assets) {
+    public void setAssets(@NotNull String assets) {
         this.assets = assets;
     }
 
     @Override
-    public String toString() {
-        return this.mod_id + ":" + this.assets;
+    public @NotNull String toString() {
+        return this.mod_id + ':' + this.assets;
     }
 
     @Override
-    public boolean equals(Object a) {
-        if (!(a instanceof IDResource))
-            return false;
-        return Objects.equals(this.mod_id, ((IDResource) a).mod_id) &&
-                Objects.equals(this.assets, ((IDResource) a).assets);
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IDResource that)) return false;
+        return this.mod_id.equals(that.mod_id) && this.assets.equals(that.assets) && this.name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return this.assets.hashCode();
+        return Objects.hash(this.mod_id, this.assets, this.name);
     }
 }

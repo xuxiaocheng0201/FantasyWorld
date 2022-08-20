@@ -90,7 +90,7 @@ public class HLog {
             this.name = (name == null) ? "main" : name;
             return;
         }
-        this.name = parent + "/" + ((name == null) ? "main" : name);
+        this.name = parent + '/' + ((name == null) ? "main" : name);
     }
 
     /**
@@ -104,7 +104,7 @@ public class HLog {
             this.name = (name == null) ? "main" : name;
             return;
         }
-        this.name = parent.name + "/" + ((name == null) ? "main" : name);
+        this.name = parent.name + '/' + ((name == null) ? "main" : name);
     }
 
     /**
@@ -133,7 +133,7 @@ public class HLog {
             this.name = (name == null) ? "main" : name;
             return;
         }
-        this.name = parent + "/" + ((name == null) ? "main" : name);
+        this.name = parent + '/' + ((name == null) ? "main" : name);
     }
 
     /**
@@ -146,7 +146,7 @@ public class HLog {
             this.name = (name == null) ? "main" : name;
             return;
         }
-        this.name = parent.name + "/" + ((name == null) ? "main" : name);
+        this.name = parent.name + '/' + ((name == null) ? "main" : name);
     }
 
     public @Nullable PrintStream getOutputStream() {
@@ -197,9 +197,9 @@ public class HLog {
         if (level1 == null)
             level1 = HLogLevel.DEBUG;
         Date date = new Date();
-        String log = "[" + HTimeHelper.getDate(DATE_FORMAT, date) + "]" +
-                "[" + this.name + "]" +
-                "[" + level1.getName() + "]" +
+        String log = '[' + HTimeHelper.getDate(DATE_FORMAT, date) + ']' +
+                '[' + this.name + ']' +
+                '[' + level1.getName() + ']' +
                 (message == null ? "Null message." : message);
         if ("stdErr".equals(this.name)) {
             if (System.console() != null)
@@ -245,7 +245,7 @@ public class HLog {
         builder.append(this.name);
         builder.append("][");
         builder.append(level1.getName());
-        builder.append("]");
+        builder.append(']');
         builder.append(throwable.getClass().getName());
         if (throwable.getMessage() != null) {
             builder.append(": ");

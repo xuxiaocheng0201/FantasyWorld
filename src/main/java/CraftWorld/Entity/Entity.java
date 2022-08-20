@@ -1,10 +1,13 @@
 package CraftWorld.Entity;
 
 import CraftWorld.CraftWorld;
+import CraftWorld.DST.BasicInformation.DSTId;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
+import CraftWorld.Entity.BasicInformation.EntityId;
 import CraftWorld.Instance.DST.DSTComplexMeta;
+import CraftWorld.Instance.Entity.EntityHuman;
 import CraftWorld.Utils.QuickTick;
 import CraftWorld.World.Dimension.Dimension;
 import HeadLibs.Helper.HRandomHelper;
@@ -23,7 +26,7 @@ import java.util.UUID;
 public class Entity implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -1559268221345770411L;
-    public static final String id = "Entity";
+    public static final DSTId id = DSTId.getDstIdInstance("Entity");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
@@ -33,7 +36,7 @@ public class Entity implements IDSTBase {
     protected @NotNull EntityPos lastTickPos = new EntityPos();
     protected @NotNull QuickTick tickHasExist = new QuickTick();
     protected @NotNull QuickTick tickHasUpdated = new QuickTick();
-    protected @NotNull IEntityBase instance;
+    protected @NotNull IEntityBase instance = new EntityHuman();
     protected double speedX;
     protected double speedY;
     protected double speedZ;
@@ -49,8 +52,12 @@ public class Entity implements IDSTBase {
     @Override
     public void read(@NotNull DataInput input) throws IOException {
         this.uuid = new UUID(input.readLong(), input.readLong());
+        EntityId entityId = new EntityId();
+        if (!EntityId.prefix.equals(input.readUTF()))
+            throw new DSTFormatException();
+        entityId.read(input);
         try {
-            this.instance = EntityUtils.getInstance().getElementInstance(input.readUTF(), false);
+            this.instance = EntityUtils.getInstance().getElementInstance(entityId, false);
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
             //this.instance;TODO
@@ -71,7 +78,7 @@ public class Entity implements IDSTBase {
         output.writeUTF(prefix);
         output.writeLong(this.uuid.getMostSignificantBits());
         output.writeLong(this.uuid.getLeastSignificantBits());
-        output.writeUTF(this.instance.getEntityId());
+        this.instance.getEntityId().write(output);
         this.pos.write(output);
         output.writeUTF(this.instance.getEntityName());
         this.instance.getEntityDST().write(output);

@@ -28,7 +28,7 @@ public class HWrongConfigValueException extends IOException {
     }
 
     public HWrongConfigValueException(@NotNull HConfigType type, @Nullable String value) {
-        super(DEFAULT_MESSAGE + "type=" + type.getName() + " value='" + value + "'");
+        super(DEFAULT_MESSAGE + "type=" + type.getName() + " value='" + value + '\'');
     }
 
     public HWrongConfigValueException(@Nullable String message) {

@@ -4,6 +4,7 @@ import Core.Addition.Element.NewElementImplementCore;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.DST.DSTComplexMeta;
+import CraftWorld.World.Block.BasicInformation.BlockId;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -12,7 +13,7 @@ import java.io.IOException;
 
 @NewElementImplementCore(modName = "CraftWorld", elementName = "Block")
 public interface IBlockBase extends IDSTBase {
-    @NotNull String getBlockId();
+    @NotNull BlockId getBlockId();
     @NotNull String getBlockName();
     void setBlockName(@NotNull String name);
     @NotNull DSTComplexMeta getBlockDST();
@@ -27,6 +28,7 @@ public interface IBlockBase extends IDSTBase {
 
     @Override
     default void write(@NotNull DataOutput output) throws IOException {
+        this.getBlockId().write(output);
         output.writeUTF(this.getBlockName());
         this.getBlockDST().write(output);
     }

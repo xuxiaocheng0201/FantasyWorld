@@ -1,5 +1,6 @@
 package CraftWorld.Utils;
 
+import CraftWorld.DST.BasicInformation.DSTId;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -20,7 +21,7 @@ import java.util.Objects;
 public class Angle implements IDSTBase, Comparable<Angle> {
     @Serial
     private static final long serialVersionUID = -7098267381934801986L;
-    public static final String id = "Angle";
+    public static final DSTId id = DSTId.getDstIdInstance("Angle");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 

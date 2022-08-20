@@ -99,7 +99,7 @@ public class HFileHelper {
         if (files == null)
             return;
         for (File file: files) {
-            File newFile = new File(targetFile.getPath() + "\\" + file.getName());
+            File newFile = new File(targetFile.getPath() + '\\' + file.getName());
             copyFiles(file.getPath(), newFile.getPath(), overwrite);
         }
     }

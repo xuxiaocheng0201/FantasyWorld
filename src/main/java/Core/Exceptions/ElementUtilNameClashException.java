@@ -34,11 +34,11 @@ public class ElementUtilNameClashException extends ElementImplementInformationEx
         super(DEFAULT_MESSAGE + "Element util names are '" + ElementUtilName + "'." + moreMessage);
     }
 
-    public ElementUtilNameClashException(@Nullable Class<? extends ElementUtil<?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass2) {
+    public ElementUtilNameClashException(@Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass2) {
         super(DEFAULT_MESSAGE + "Element util names are '" + ElementUtil.getElementNameFromClass(ElementUtilClass1) + "'." + ModManager.crashClassInformation(ElementUtilClass1) + ModManager.crashClassInformation(ElementUtilClass2));
     }
 
-    public ElementUtilNameClashException(@Nullable Class<? extends ElementUtil<?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass2, @Nullable String moreMessage) {
+    public ElementUtilNameClashException(@Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass2, @Nullable String moreMessage) {
         super(DEFAULT_MESSAGE + "Element util names are '" + ElementUtil.getElementNameFromClass(ElementUtilClass1) + "'." + moreMessage + ModManager.crashClassInformation(ElementUtilClass1) + ModManager.crashClassInformation(ElementUtilClass2));
     }
 
@@ -54,11 +54,11 @@ public class ElementUtilNameClashException extends ElementImplementInformationEx
         super(getElementUtilNameClashMessage(message) + "Element util names are '" + ElementUtilName + "'." + moreMessage);
     }
 
-    public ElementUtilNameClashException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass2) {
+    public ElementUtilNameClashException(@Nullable String message, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass2) {
         super(getElementUtilNameClashMessage(message) + "Element util names are '" + ElementUtil.getElementNameFromClass(ElementUtilClass1) + "'." + ModManager.crashClassInformation(ElementUtilClass1) + ModManager.crashClassInformation(ElementUtilClass2));
     }
 
-    public ElementUtilNameClashException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass2, @Nullable String moreMessage) {
+    public ElementUtilNameClashException(@Nullable String message, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass2, @Nullable String moreMessage) {
         super(getElementUtilNameClashMessage(message) + "Element util names are '" + ElementUtil.getElementNameFromClass(ElementUtilClass1) + "'." + moreMessage + ModManager.crashClassInformation(ElementUtilClass1) + ModManager.crashClassInformation(ElementUtilClass2));
     }
 
@@ -74,11 +74,11 @@ public class ElementUtilNameClashException extends ElementImplementInformationEx
         super(DEFAULT_MESSAGE + "Element util names are '" + ElementUtilName + "'." + moreMessage, throwable);
     }
 
-    public ElementUtilNameClashException(@Nullable Class<? extends ElementUtil<?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass2, @Nullable Throwable throwable) {
+    public ElementUtilNameClashException(@Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass2, @Nullable Throwable throwable) {
         super(DEFAULT_MESSAGE + "Element util names are '" + ElementUtil.getElementNameFromClass(ElementUtilClass1) + "'." + ModManager.crashClassInformation(ElementUtilClass1) + ModManager.crashClassInformation(ElementUtilClass2), throwable);
     }
 
-    public ElementUtilNameClashException(@Nullable Class<? extends ElementUtil<?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass2, @Nullable String moreMessage, @Nullable Throwable throwable) {
+    public ElementUtilNameClashException(@Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass2, @Nullable String moreMessage, @Nullable Throwable throwable) {
         super(DEFAULT_MESSAGE + "Element util names are '" + ElementUtil.getElementNameFromClass(ElementUtilClass1) + "'." + moreMessage + ModManager.crashClassInformation(ElementUtilClass1) + ModManager.crashClassInformation(ElementUtilClass2), throwable);
     }
 
@@ -94,11 +94,11 @@ public class ElementUtilNameClashException extends ElementImplementInformationEx
         super(getElementUtilNameClashMessage(message) + "Element util names are '" + ElementUtilName + "'." + moreMessage, throwable);
     }
 
-    public ElementUtilNameClashException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass2, @Nullable Throwable throwable) {
+    public ElementUtilNameClashException(@Nullable String message, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass2, @Nullable Throwable throwable) {
         super(getElementUtilNameClashMessage(message) + "Element util names are '" + ElementUtil.getElementNameFromClass(ElementUtilClass1) + "'." + ModManager.crashClassInformation(ElementUtilClass1) + ModManager.crashClassInformation(ElementUtilClass2), throwable);
     }
 
-    public ElementUtilNameClashException(@Nullable String message, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?>> ElementUtilClass2, @Nullable String moreMessage, @Nullable Throwable throwable) {
+    public ElementUtilNameClashException(@Nullable String message, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass1, @Nullable Class<? extends ElementUtil<?, ?>> ElementUtilClass2, @Nullable String moreMessage, @Nullable Throwable throwable) {
         super(getElementUtilNameClashMessage(message) + "Element util names are '" + ElementUtil.getElementNameFromClass(ElementUtilClass1) + "'." + moreMessage + ModManager.crashClassInformation(ElementUtilClass1) + ModManager.crashClassInformation(ElementUtilClass2), throwable);
     }
 }

@@ -112,7 +112,7 @@ public class HLogLevel {
         super();
         this.name = name;
         this.priority = priority;
-        this.prefix = (prefix == null || prefix.isBlank()) ? "" : "\033[" + prefix.strip() + "m";
+        this.prefix = (prefix == null || prefix.isBlank()) ? "" : "\033[" + prefix.strip() + 'm';
         this.fromLevel = fromLevel;
         this.toLevel = toLevel;
     }

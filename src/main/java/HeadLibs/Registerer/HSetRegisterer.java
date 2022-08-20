@@ -1,14 +1,13 @@
 package HeadLibs.Registerer;
 
+import HeadLibs.DataStructures.IImmutable;
+import HeadLibs.DataStructures.IUpdatable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Elements set registerer.
@@ -119,6 +118,14 @@ public class HSetRegisterer<T> implements Serializable, Iterable<T> {
         return this.set.size();
     }
 
+    public @NotNull ImmutableSetRegisterer<T> toImmutable() {
+        return new ImmutableSetRegisterer<>(this);
+    }
+
+    public @NotNull UpdatableSetRegisterer<T> toUpdatable() {
+        return new UpdatableSetRegisterer<>(this);
+    }
+
     @Override
     public @NotNull String toString() {
         return "HSetRegisterer:" + this.set;
@@ -139,5 +146,159 @@ public class HSetRegisterer<T> implements Serializable, Iterable<T> {
     @Override
     public @NotNull Iterator<T> iterator() {
         return this.set.iterator();
+    }
+
+    public static class ImmutableSetRegisterer<T> extends HSetRegisterer<T> implements IImmutable {
+        @Serial
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(HSetRegisterer.serialVersionUID);
+
+        protected void init() {
+            Collection<T> list = new ArrayList<>(this.set.size());
+            for (T element: this.set) {
+                T immutableElement = null;
+                try {
+                    //noinspection unchecked
+                    immutableElement = (T) IImmutable.getImmutableVersion(element);
+                } catch (ClassCastException ignore) {
+                }
+                if (immutableElement != null)
+                    list.add(immutableElement);
+                else
+                    list.add(element);
+            }
+            this.set.clear();
+            this.set.addAll(list);
+        }
+
+        public ImmutableSetRegisterer() {
+            super();
+        }
+
+        public ImmutableSetRegisterer(boolean nullAllowed) {
+            super(nullAllowed);
+        }
+
+        public ImmutableSetRegisterer(boolean nullAllowed, @NotNull Set<T> set) {
+            super(nullAllowed, set);
+            this.init();
+        }
+
+        public ImmutableSetRegisterer(@NotNull HSetRegisterer<T> setRegisterer) {
+            super(setRegisterer.nullAllowed, setRegisterer.set);
+            this.init();
+        }
+
+        @Override
+        public void register(@Nullable T element) throws HElementRegisteredException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void reset(@Nullable T element) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void deregister(@Nullable T element) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void deregisterAll() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public @NotNull ImmutableSetRegisterer<T> toImmutable() {
+            return this;
+        }
+    }
+
+    public static class UpdatableSetRegisterer<T> extends HSetRegisterer<T> implements IUpdatable {
+        @Serial
+        private static final long serialVersionUID = IImmutable.getSerialVersionUID(HSetRegisterer.serialVersionUID);
+
+        protected boolean updated = true;
+
+        protected void init() {
+            Collection<T> list = new ArrayList<>(this.set.size());
+            for (T element: this.set) {
+                T updatableElement = null;
+                try {
+                    //noinspection unchecked
+                    updatableElement = (T) IUpdatable.getUpdatableVersion(element);
+                } catch (ClassCastException ignore) {
+                }
+                if (updatableElement != null)
+                    list.add(updatableElement);
+                else
+                    list.add(element);
+            }
+            this.set.clear();
+            this.set.addAll(list);
+        }
+
+        public UpdatableSetRegisterer() {
+            super();
+        }
+
+        public UpdatableSetRegisterer(boolean nullAllowed) {
+            super(nullAllowed);
+        }
+
+        public UpdatableSetRegisterer(boolean nullAllowed, @NotNull Set<T> set) {
+            super(nullAllowed, set);
+            this.init();
+        }
+
+        public UpdatableSetRegisterer(@NotNull HSetRegisterer<T> setRegisterer) {
+            super(setRegisterer.nullAllowed, setRegisterer.set);
+            this.init();
+        }
+
+        @Override
+        public void register(@Nullable T element) throws HElementRegisteredException {
+            super.register(element);
+            this.updated = true;
+        }
+
+        @Override
+        public void reset(@Nullable T element) {
+            super.reset(element);
+            this.updated = true;
+        }
+
+        @Override
+        public void deregister(@Nullable T element) {
+            super.deregister(element);
+            this.updated = true;
+        }
+
+        @Override
+        public void deregisterAll() {
+            super.deregisterAll();
+            this.updated = true;
+        }
+
+        @Override
+        public @NotNull UpdatableSetRegisterer<T> toUpdatable() {
+            return this;
+        }
+
+        @Override
+        public boolean getUpdated() {
+            for (T element: this.set)
+                if (element instanceof IUpdatable && ((IUpdatable) element).getUpdated())
+                    return true;
+            return this.updated;
+        }
+
+        @Override
+        public void setUpdated(boolean updated) {
+            this.updated = updated;
+            for (T element: this.set)
+                if (element instanceof IUpdatable)
+                    ((IUpdatable) element).setUpdated(updated);
+        }
     }
 }

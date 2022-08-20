@@ -23,7 +23,7 @@ public class HVersionFormatException extends Exception{
     }
 
     public HVersionFormatException(@Nullable HStringVersion version) {
-        super(DEFAULT_MESSAGE + " Version='" + (version == null ? "null" : version.getVersion()) + "'");
+        super(DEFAULT_MESSAGE + " Version='" + (version == null ? "null" : version.getVersion()) + '\'');
     }
 
     public HVersionFormatException(@Nullable String message) {
@@ -31,10 +31,10 @@ public class HVersionFormatException extends Exception{
     }
 
     public HVersionFormatException(@Nullable String message, @Nullable String version) {
-        super(getVersionFormatMessage(message) + " Version='" + (version == null ? "null" : version) + "'");
+        super(getVersionFormatMessage(message) + " Version='" + (version == null ? "null" : version) + '\'');
     }
 
     public HVersionFormatException(@Nullable String message, @Nullable HStringVersion version) {
-        super(getVersionFormatMessage(message) + " Version='" + (version == null ? "null" : version.getVersion()) + "'");
+        super(getVersionFormatMessage(message) + " Version='" + (version == null ? "null" : version.getVersion()) + '\'');
     }
 }

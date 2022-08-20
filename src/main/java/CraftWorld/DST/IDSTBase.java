@@ -15,6 +15,7 @@ public interface IDSTBase extends ElementImplement, Serializable {
     void write(@NotNull DataOutput output) throws IOException;
 
     default void readShortly(@NotNull DataInput input) throws IOException {
+        input.readUTF();
         this.read(input);
     }
     default void writeShortly(@NotNull DataOutput output) throws IOException {

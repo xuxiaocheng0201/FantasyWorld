@@ -12,7 +12,6 @@ import CraftWorld.Utils.SevenZipUtils;
 import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
-import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.EventBus;
 import org.lwjgl.glfw.GLFW;
@@ -149,10 +148,7 @@ public class CraftWorld {
     public void startServer(Selector selector) throws IOException {
         logger.log(HLogLevel.FINEST, "Loading world...");
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
-        try {
-            this.world.load();
-        } catch (HElementNotRegisteredException | NoSuchMethodException ignore) {
-        }
+        this.world.load();
         CRAFT_WORLD_EVENT_BUS.post(new LoadedWorldEvent());
         while (this.serverRunning) {
             this.world.update();

@@ -334,7 +334,7 @@ public class HClassFinder {
             if (files == null)
                 return;
             for (File file: files) {
-                String subPackageName = packageName.isEmpty() ? "" : packageName + ".";
+                String subPackageName = packageName.isEmpty() ? "" : packageName + '.';
                 String filePath = file.getAbsolutePath().replace('\\', '.').replace('/', '.');
                 String subClassName = filePath.substring(filePath.lastIndexOf('.') + 1);
                 if ("class".equals(subClassName)) {

@@ -1,18 +1,19 @@
 package CraftWorld.World.Dimension;
 
 import CraftWorld.ConstantStorage;
+import CraftWorld.DST.BasicInformation.DSTId;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.Dimensions.NullDimension;
 import CraftWorld.Utils.QuickTick;
+import CraftWorld.Utils.WorldSystemUtils;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
+import CraftWorld.World.Dimension.BasicInformation.DimensionId;
 import CraftWorld.World.World;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HRandomHelper;
-import HeadLibs.Logger.HLog;
-import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
 import HeadLibs.Registerer.HMapRegisterer;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -30,35 +30,45 @@ import java.util.zip.GZIPOutputStream;
 public class Dimension implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -4936855319467494864L;
-    public static final String id = "Dimension";
+    public static final DSTId id = DSTId.getDstIdInstance("Dimension");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private @NotNull File dimensionSavedDirectory;
-    private boolean unloaded;
+    protected final @NotNull World world;
+    protected final @NotNull File dimensionSavedDirectory;
+    protected boolean unloaded = true;
+    protected @NotNull UUID uuid;
+    protected @NotNull IDimensionBase instance = new NullDimension();
+    protected final @NotNull QuickTick tickHasUpdated = new QuickTick();
+    protected @Nullable String randomSeed;
 
-    private final @NotNull World world;
-    private @NotNull UUID uuid;
-    private @NotNull IDimensionBase instance;
-    private final @NotNull QuickTick tickHasUpdated;
-    private @NotNull String randomSeed;
-    private @NotNull Random random;
+    protected final @NotNull HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false, false, false);
 
-    private final @NotNull HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false);
-
-    public Dimension(World world) {
-        this(world, new NullDimension());
-    }
-
-    public Dimension(@NotNull World world, IDimensionBase instance) {
+    public Dimension(@NotNull World world) {
         super();
         this.world = world;
-        this.instance = Objects.requireNonNullElseGet(instance, NullDimension::new);
-        this.randomSeed = HRandomHelper.nextString(this.world.getRandom(), 1, HRandomHelper.nextInt(5, 10));
-        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
-        this.uuid = HRandomHelper.getRandomUUID(this.random);
+        this.uuid = HRandomHelper.getRandomUUID();
+        this.randomSeed = WorldSystemUtils.getDimensionSeed(world.getRandomSeed(), this.uuid);
         this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this.uuid));
-        this.tickHasUpdated = new QuickTick();
+    }
+
+    public Dimension(@NotNull World world, @Nullable IDimensionBase instance) {
+        super();
+        this.world = world;
+        this.uuid = HRandomHelper.getRandomUUID();
+        if (instance != null)
+            this.instance = instance;
+        this.randomSeed = WorldSystemUtils.getDimensionSeed(world.getRandomSeed(), this.uuid);
+        this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this.uuid));
+    }
+
+    public Dimension(@NotNull World world, @Nullable UUID dimensionUUID) throws IOException {
+        super();
+        this.world = world;
+        this.uuid = Objects.requireNonNullElse(dimensionUUID, HRandomHelper.getRandomUUID());
+        this.randomSeed = WorldSystemUtils.getDimensionSeed(world.getRandomSeed(), this.uuid);
+        this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this.uuid));
+        this.readInformation();
     }
 
     public void update() {
@@ -71,17 +81,16 @@ public class Dimension implements IDSTBase {
         return this.dimensionSavedDirectory;
     }
 
-    public void setDimensionSavedDirectory(String dimensionSavedDirectory) throws IOException {
-        HFileHelper.createNewDirectory(dimensionSavedDirectory);
-        this.dimensionSavedDirectory = (new File(dimensionSavedDirectory)).getAbsoluteFile();
-    }
-
-    public String getInformationFile() {
+    public @NotNull String getInformationFile() {
         return this.dimensionSavedDirectory.getPath() + "\\information.dat";
     }
 
-    public String getChunkSaveFile(ChunkPos pos) {
-        return this.dimensionSavedDirectory.getPath() + "\\chunks\\" +
+    public @NotNull String getChunksDirectory() {
+        return this.dimensionSavedDirectory.getPath() + "\\chunks";
+    }
+
+    public @NotNull String getChunkDirectory(@NotNull ChunkPos pos) {
+        return this.getChunksDirectory() + '\\' +
                 pos.getBigX().toString(ConstantStorage.SAVE_NUMBER_RADIX) + '\\' +
                 pos.getBigY().toString(ConstantStorage.SAVE_NUMBER_RADIX) + '\\' +
                 pos.getBigZ().toString(ConstantStorage.SAVE_NUMBER_RADIX) + ".dat";
@@ -95,7 +104,7 @@ public class Dimension implements IDSTBase {
         return this.world;
     }
 
-    public UUID getUUID() {
+    public @NotNull UUID getUUID() {
         return this.uuid;
     }
 
@@ -103,47 +112,27 @@ public class Dimension implements IDSTBase {
         return this.instance;
     }
 
-    public void setInstance(IDimensionBase instance) {
+    public void setInstance(@Nullable IDimensionBase instance) {
         this.instance = Objects.requireNonNullElseGet(instance, NullDimension::new);
-        this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this));
     }
 
     public @NotNull QuickTick getTickHasUpdated() {
         return this.tickHasUpdated;
     }
 
-    public @NotNull String getRandomSeed() {
+    public @Nullable String getRandomSeed() {
         return this.randomSeed;
     }
 
-    public @NotNull Random getRandom() {
-        return this.random;
-    }
-
-    public @Nullable Chunk loadChunk(ChunkPos pos) throws IOException {
+    public @NotNull Chunk loadChunk(@NotNull ChunkPos pos) throws IOException {
+        if (this.unloaded)
+            throw new IllegalStateException("Load chunk in an unloaded dimension.");
         try {
             return this.loadedChunks.getElement(pos);
         } catch (HElementNotRegisteredException ignore) {
         }
-        if (this.unloaded)
-            return null;
-        String chunkSaveFilePath = this.getChunkSaveFile(pos);
-        Chunk chunk = new Chunk(this);
-        if (HFileHelper.checkFileAvailable(chunkSaveFilePath)) {
-            DataInputStream dataInputStream = new DataInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(chunkSaveFilePath))));
-            if (!Chunk.prefix.equals(dataInputStream.readUTF()))
-                throw new DSTFormatException();
-            chunk.read(dataInputStream);
-            dataInputStream.close();
-        }
-        else {
-            HFileHelper.createNewFile(chunkSaveFilePath);
-            chunk.setPos(pos);
-            chunk.regenerate();
-            DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(chunkSaveFilePath))));
-            chunk.write(dataOutputStream);
-            dataOutputStream.close();
-        }
+        Chunk chunk = new Chunk(this, pos);
+        chunk.load();
         try {
             this.loadedChunks.register(pos, chunk);
         } catch (HElementRegisteredException ignore) {
@@ -151,32 +140,15 @@ public class Dimension implements IDSTBase {
         return chunk;
     }
 
-    public void unloadChunk(ChunkPos pos) throws IOException {
+    public void unloadChunk(@Nullable ChunkPos pos) throws IOException {
         Chunk chunk;
         try {
             chunk = this.loadedChunks.getElement(pos);
-        } catch (HElementNotRegisteredException exception) {
+        } catch (HElementNotRegisteredException ignore) {
             return;
         }
         this.loadedChunks.deregisterKey(pos);
-        if (chunk == null)
-            return;
-        String saveFilePath = this.getChunkSaveFile(chunk.getPos());
-        HFileHelper.createNewFile(saveFilePath);
-        DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(saveFilePath))));
-        chunk.write(dataOutputStream);
-        dataOutputStream.close();
-    }
-
-    public void loadPrepareChunks() throws IOException {
-        for (ChunkPos pos: this.instance.getPrepareChunkPos())
-            this.loadChunk(pos);
-    }
-
-    public void load() throws IOException {
-        this.unloaded = false;
-        this.readInformation();
-        this.loadPrepareChunks();
+        chunk.unload();
     }
 
     public void unloadAllChunks() throws IOException {
@@ -185,22 +157,20 @@ public class Dimension implements IDSTBase {
             this.unloadChunk(pos);
     }
 
-    public void unload() throws IOException {
-        this.unloaded = true;
-        this.unloadAllChunks();
-        this.writeInformation();
+    public void loadPrepareChunks() throws IOException {
+        for (ChunkPos pos: this.instance.getPrepareChunkPos())
+            this.loadChunk(pos);
     }
 
     public void readInformation() throws IOException {
         String informationFile = this.getInformationFile();
-        if (!HFileHelper.checkFileAvailable(informationFile))
+        try (DataInputStream dataInputStream = new DataInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(informationFile))))) {
+            if (!prefix.equals(dataInputStream.readUTF()))
+                throw new DSTFormatException();
+            this.read(dataInputStream);
+        } catch (DSTFormatException | FileNotFoundException ignore) {
             this.writeInformation();
-        DataInputStream dataInputStream = new DataInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(informationFile))));
-        if (!prefix.equals(dataInputStream.readUTF()))
-            throw new DSTFormatException();
-        this.read(dataInputStream);
-        dataInputStream.close();
-        this.loadPrepareChunks();
+        }
     }
 
     public void writeInformation() throws IOException {
@@ -209,23 +179,41 @@ public class Dimension implements IDSTBase {
         DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(informationFile))));
         this.write(dataOutputStream);
         dataOutputStream.close();
+    }
+
+    public void load() throws IOException {
+        this.unloaded = false;
+        this.readInformation();
+        this.loadPrepareChunks();
+    }
+
+    public void unload() throws IOException {
         this.unloadAllChunks();
+        this.writeInformation();
+        this.unloaded = true;
     }
 
     @Override
     public void read(@NotNull DataInput input) throws IOException {
         this.unloaded = input.readBoolean();
         this.uuid = new UUID(input.readLong(), input.readLong());
+        DimensionId dimensionId = new DimensionId();
+        if (!DimensionId.prefix.equals(input.readUTF()))
+            throw new DSTFormatException();
+        dimensionId.read(input);
         try {
-            this.setInstance(DimensionUtils.getInstance().getElementInstance(DSTUtils.dePrefix(input.readUTF()), false));
+            this.setInstance(DimensionUtils.getInstance().getElementInstance(dimensionId, false));
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
-            HLog.logger(HLogLevel.ERROR, exception);
-            this.setInstance(new NullDimension());
+            throw new DSTFormatException("Failed to create a new dimension instance.", exception);
         }
         this.instance.read(input);
-        this.tickHasUpdated.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
-        this.randomSeed = input.readUTF();
-        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
+        if (!QuickTick.prefix.equals(input.readUTF()))
+            throw new DSTFormatException();
+        this.tickHasUpdated.read(input);
+        if (input.readBoolean())
+            this.randomSeed = input.readUTF();
+        else
+            this.randomSeed = null;
         if (!suffix.equals(input.readUTF()))
             throw new DSTFormatException();
     }
@@ -237,13 +225,17 @@ public class Dimension implements IDSTBase {
         output.writeLong(this.uuid.getMostSignificantBits());
         output.writeLong(this.uuid.getLeastSignificantBits());
         this.instance.write(output);
-        output.writeUTF(this.tickHasUpdated.toString(ConstantStorage.SAVE_NUMBER_RADIX));
-        output.writeUTF(this.randomSeed);
+        this.tickHasUpdated.write(output);
+        if (this.randomSeed != null) {
+            output.writeBoolean(true);
+            output.writeUTF(this.randomSeed);
+        } else
+            output.writeBoolean(false);
         output.writeUTF(suffix);
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Dimension{" +
                 "uuid=" + this.uuid +
                 ", instance=" + this.instance +
@@ -252,7 +244,7 @@ public class Dimension implements IDSTBase {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof Dimension dimension)) return false;
         return this.uuid.equals(dimension.uuid) && this.instance.equals(dimension.instance) && this.tickHasUpdated.equals(dimension.tickHasUpdated);

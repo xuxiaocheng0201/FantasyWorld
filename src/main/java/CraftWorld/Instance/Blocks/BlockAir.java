@@ -1,5 +1,6 @@
 package CraftWorld.Instance.Blocks;
 
+import CraftWorld.World.Block.BasicInformation.BlockId;
 import CraftWorld.World.Block.BlockBase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,10 +11,10 @@ import java.util.Objects;
 public class BlockAir extends BlockBase {
     @Serial
     private static final long serialVersionUID = -6409986271941288545L;
-    public static final String id = "BlockAir";
+    public static final BlockId id = BlockId.getBlockIdInstance("BlockAir");
 
     @Override
-    public @NotNull String getBlockId() {
+    public @NotNull BlockId getBlockId() {
         return id;
     }
 

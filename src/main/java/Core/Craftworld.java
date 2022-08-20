@@ -133,7 +133,7 @@ public class Craftworld implements ModImplement {
             HLog logger = new HLog(Thread.currentThread().getName());
             logger.log(HLogLevel.FINEST, "Server Thread has started.");
             EventBusManager.getDefaultEventBus().post(new ServerStartEvent());
-            try  {
+            try {
                 Selector selector;
                 try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
                     InetSocketAddress inetSocketAddress = new InetSocketAddress(GlobalConfigurations.HOST, GlobalConfigurations.PORT);

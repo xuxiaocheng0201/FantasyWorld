@@ -277,16 +277,16 @@ public class HVersionComplex implements Serializable {
         this.autoFix();
         StringBuilder builder = new StringBuilder(10);
         for (HVersionRange versionRange : this.versionRanges)
-            builder.append((versionRange.toString())).append("&");
+            builder.append((versionRange.toString())).append('&');
         if (this.versionSingles.isEmpty()) {
             if (builder.isEmpty())
                 return "";
             return builder.deleteCharAt(builder.length() - 1).toString();
         }
-        builder.append("{");
+        builder.append('{');
         for (HStringVersion version: this.versionSingles)
-            builder.append(version.toString()).append(",");
-        builder.deleteCharAt(builder.length() - 1).append("}");
+            builder.append(version.toString()).append(',');
+        builder.deleteCharAt(builder.length() - 1).append('}');
         return builder.toString();
     }
 

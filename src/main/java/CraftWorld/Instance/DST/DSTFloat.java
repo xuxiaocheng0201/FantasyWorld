@@ -1,8 +1,9 @@
 package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.BasicInformation.DSTId;
+import CraftWorld.DST.DSTBase;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,20 +13,19 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTFloat extends PureDSTBase<Float> {
+public class DSTFloat extends DSTBase<Float> {
     @Serial
     private static final long serialVersionUID = -6654553278710532324L;
-    public static final String id = "DSTFloat";
+    public static final DSTId id = DSTId.getDstIdInstance("DSTFloat");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
     public DSTFloat() {
-        super();
+        super(0.0F);
     }
 
-    public DSTFloat(Float data) {
-        super();
-        this.setData(data);
+    public DSTFloat(@NotNull Float data) {
+        super(data);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class DSTFloat extends PureDSTBase<Float> {
     }
 
     @Override
-    public void setData(Float data) {
-        this.data = Objects.requireNonNullElse(data, (float) 0);
+    public void setData(@NotNull Float data) {
+        this.data = Objects.requireNonNullElse(data, 0.0F);
     }
 
     @Override

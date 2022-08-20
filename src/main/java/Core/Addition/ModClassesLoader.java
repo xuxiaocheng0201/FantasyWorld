@@ -54,20 +54,20 @@ public class ModClassesLoader {
     // searched
     private static final Collection<Class<? extends ModImplement>> mods = new ArrayList<>();
     private static final Collection<Class<? extends ElementImplement>> elementImplements = new ArrayList<>();
-    private static final Collection<Class<? extends ElementUtil<?>>> elementUtils = new ArrayList<>();
+    private static final Collection<Class<? extends ElementUtil<?, ?>>> elementUtils = new ArrayList<>();
 
     // checked
     private static final List<Class<? extends ModImplement>> modList = new ArrayList<>();
     private static final Collection<Class<? extends ElementImplement>> implementList = new ArrayList<>();
-    private static final Collection<Class<? extends ElementUtil<?>>> utilList = new ArrayList<>();
-    private static final HMapRegisterer<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> elementPairList = new HMapRegisterer<>();
+    private static final Collection<Class<? extends ElementUtil<?, ?>>> utilList = new ArrayList<>();
+    private static final HMapRegisterer<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?, ?>>>> elementPairList = new HMapRegisterer<>();
 
     private static final List<List<Class<? extends ModImplement>>> sameMods = new ArrayList<>();
     private static final List<List<Class<? extends ElementImplement>>> sameImplements = new ArrayList<>();
-    private static final List<List<Class<? extends ElementUtil<?>>>> sameUtils = new ArrayList<>();
+    private static final List<List<Class<? extends ElementUtil<?, ?>>>> sameUtils = new ArrayList<>();
 
     private static final List<Class<? extends ElementImplement>> singleImplements = new ArrayList<>();
-    private static final List<Class<? extends ElementUtil<?>>> singleUtils = new ArrayList<>();
+    private static final List<Class<? extends ElementUtil<?, ?>>> singleUtils = new ArrayList<>();
 
     private static final List<IllegalArgumentException> exceptions = new ArrayList<>();
 
@@ -75,7 +75,7 @@ public class ModClassesLoader {
         return modList;
     }
 
-    public static @NotNull HMapRegisterer<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+    public static @NotNull HMapRegisterer<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?, ?>>>> getElementPairList() {
         return elementPairList;
     }
 
@@ -87,7 +87,7 @@ public class ModClassesLoader {
         return sameImplements;
     }
 
-    public static @NotNull List<List<Class<? extends ElementUtil<?>>>> getSameUtils() {
+    public static @NotNull List<List<Class<? extends ElementUtil<?, ?>>>> getSameUtils() {
         return sameUtils;
     }
 
@@ -95,7 +95,7 @@ public class ModClassesLoader {
         return singleImplements;
     }
 
-    public static @NotNull List<Class<? extends ElementUtil<?>>> getSingleUtils() {
+    public static @NotNull List<Class<? extends ElementUtil<?, ?>>> getSingleUtils() {
         return singleUtils;
     }
 
@@ -122,7 +122,7 @@ public class ModClassesLoader {
             if (implementFilter.checkAnnotation(aClass) && implementFilter.checkSuper(aClass) && HClassHelper.isInterface(aClass))
                 elementImplements.add((Class<? extends ElementImplement>) aClass);
             if (utilFilter.checkAnnotation(aClass) && utilFilter.checkSuper(aClass) && HClassHelper.isClass(aClass))
-                elementUtils.add((Class<? extends ElementUtil<?>>) aClass);
+                elementUtils.add((Class<? extends ElementUtil<?, ?>>) aClass);
         }
     }
 
@@ -191,16 +191,16 @@ public class ModClassesLoader {
     }
 
     private static void checkSameElementUtils() {
-        for (Class<? extends ElementUtil<?>> classClass: elementUtils) {
+        for (Class<? extends ElementUtil<?, ?>> classClass: elementUtils) {
             ElementName className = ElementUtil.getElementNameFromClass(classClass);
             boolean not_found = true;
-            for (Class<? extends ElementUtil<?>> savedClass: utilList) {
+            for (Class<? extends ElementUtil<?, ?>> savedClass: utilList) {
                 ElementName savedName = ElementUtil.getElementNameFromClass(savedClass);
                 if (className.equals(savedName)) {
                     not_found = false;
                     exceptions.add(new ElementUtilNameClashException(classClass, savedClass));
                     boolean notFound = true;
-                    for (List<Class<? extends ElementUtil<?>>> sameUtilFound: sameUtils) {
+                    for (List<Class<? extends ElementUtil<?, ?>>> sameUtilFound: sameUtils) {
                         ElementName sameName = ElementUtil.getElementNameFromClass(sameUtilFound.get(0));
                         if (className.equals(sameName)) {
                             notFound = false;
@@ -209,7 +209,7 @@ public class ModClassesLoader {
                         }
                     }
                     if (notFound) {
-                        List<Class<? extends ElementUtil<?>>> temp = new ArrayList<>();
+                        List<Class<? extends ElementUtil<?, ?>>> temp = new ArrayList<>();
                         temp.add(classClass);
                         temp.add(savedClass);
                         sameUtils.add(temp);
@@ -225,8 +225,8 @@ public class ModClassesLoader {
     private static void checkElementsPair() {
         for (Class<? extends ElementImplement> implement: elementImplements) {
             ElementName implementName = ElementImplement.getElementNameFromClass(implement);
-            Class<? extends ElementUtil<?>> elementUtil = null;
-            for (Class<? extends ElementUtil<?>> util: elementUtils) {
+            Class<? extends ElementUtil<?, ?>> elementUtil = null;
+            for (Class<? extends ElementUtil<?, ?>> util: elementUtils) {
                 ElementName utilName = ElementUtil.getElementNameFromClass(util);
                 if (implementName.equals(utilName)) {
                     elementUtil = util;
@@ -243,7 +243,7 @@ public class ModClassesLoader {
             } catch (HElementRegisteredException ignore) {
             }
         }
-        for (Class<? extends ElementUtil<?>> util: elementUtils) {
+        for (Class<? extends ElementUtil<?, ?>> util: elementUtils) {
             ElementName utilName = ElementUtil.getElementNameFromClass(util);
             Class<? extends ElementImplement> elementImplement = null;
             for (Class<? extends ElementImplement> implement: elementImplements) {

@@ -2,6 +2,7 @@ package CraftWorld.Instance.Entity.BoundingBox;
 
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
+import CraftWorld.Entity.BoundingBox.BasicInformation.BoundingBoxId;
 import CraftWorld.Entity.BoundingBox.BoundingBoxBase;
 import CraftWorld.Entity.EntityPos;
 import CraftWorld.Entity.EntityPos.UpdatableEntityPos;
@@ -17,7 +18,7 @@ import java.util.Objects;
 public class BoundingBoxSphere extends BoundingBoxBase {
     @Serial
     private static final long serialVersionUID = 4710597949935360512L;
-    public static final String id = "BoundingBoxSphere";
+    public static final BoundingBoxId id = BoundingBoxId.getBoundingBoxIdInstance("BoundingBoxSphere");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 

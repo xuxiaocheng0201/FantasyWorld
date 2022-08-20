@@ -3,6 +3,7 @@ package CraftWorld.Instance.Dimensions;
 import Core.EventBus.EventSubscribe;
 import CraftWorld.Events.ChunkGenerateEvent;
 import CraftWorld.World.Chunk.ChunkPos;
+import CraftWorld.World.Dimension.BasicInformation.DimensionId;
 import CraftWorld.World.Dimension.DimensionBase;
 import HeadLibs.Registerer.HLinkedSetRegisterer;
 import org.greenrobot.eventbus.Subscribe;
@@ -16,10 +17,10 @@ import java.util.Objects;
 public class NullDimension extends DimensionBase {
     @Serial
     private static final long serialVersionUID = -5202694397165174510L;
-    public static final String id = "NullDimension";
+    public static final DimensionId id = DimensionId.getDimensionIdInstance("NullDimension");
 
     @Override
-    public @NotNull String getDimensionId() {
+    public @NotNull DimensionId getDimensionId() {
         return id;
     }
 

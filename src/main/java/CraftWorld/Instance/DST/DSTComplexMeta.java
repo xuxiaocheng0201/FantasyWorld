@@ -1,5 +1,6 @@
 package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.BasicInformation.DSTId;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -16,14 +17,14 @@ import java.io.Serial;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-public final class DSTComplexMeta implements IDSTBase {
+public class DSTComplexMeta implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 5912925151440251840L;
-    public static final String id = "DSTComplexMeta";
+    public static final DSTId id = DSTId.getDstIdInstance("DSTComplexMeta");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
-    private final @NotNull HMapRegisterer<String, IDSTBase> dstMap = new HMapRegisterer<>(true);
+    protected final @NotNull HMapRegisterer<String, IDSTBase> dstMap = new HMapRegisterer<>(true);
 
     @Override
     public void read(@NotNull DataInput input) throws IOException {

@@ -1,6 +1,7 @@
 package CraftWorld.Instance.Dimensions;
 
 import CraftWorld.World.Chunk.ChunkPos;
+import CraftWorld.World.Dimension.BasicInformation.DimensionId;
 import CraftWorld.World.Dimension.DimensionBase;
 import HeadLibs.Registerer.HElementRegisteredException;
 import org.jetbrains.annotations.NotNull;
@@ -12,10 +13,10 @@ import java.util.Objects;
 public class DimensionEarthSurface extends DimensionBase {
     @Serial
     private static final long serialVersionUID = -1129089963710423740L;
-    public static final String id = "DimensionEarthSurface";
+    public static final DimensionId id = DimensionId.getDimensionIdInstance("DimensionEarthSurface");
 
     @Override
-    public @NotNull String getDimensionId() {
+    public @NotNull DimensionId getDimensionId() {
         return id;
     }
 

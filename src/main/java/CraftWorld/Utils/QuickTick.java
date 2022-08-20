@@ -1,6 +1,7 @@
 package CraftWorld.Utils;
 
 import CraftWorld.ConstantStorage;
+import CraftWorld.DST.BasicInformation.DSTId;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
@@ -19,7 +20,7 @@ import java.util.Objects;
 public class QuickTick implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -7856577519248919328L;
-    public static final String id = "QuickTick";
+    public static final DSTId id = DSTId.getDstIdInstance("QuickTick");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 

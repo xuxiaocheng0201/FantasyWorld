@@ -115,7 +115,7 @@ public class EventBusManager {
             return;
         Object instance = HClassHelper.getInstance(aClass, true);
         if (instance == null)
-            throw new NoSuchMethodException("Get instance failed. Can't register class to event bus '" + subscribe.eventBus() + "'."
+            throw new NoSuchMethodException("Failed to create a new instance. Can't register class to event bus '" + subscribe.eventBus() + "'."
                     + ModManager.crashClassInformation(aClass));
         if (registeredClassesFlag.contains(aClass))
             return;

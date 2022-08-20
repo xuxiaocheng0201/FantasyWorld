@@ -1,9 +1,10 @@
 package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.BasicInformation.DSTId;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.DST.PureDSTBase;
+import HeadLibs.Helper.HClassHelper;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,20 +17,36 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-public class DSTMap extends PureDSTBase<Map<IDSTBase, IDSTBase>> {
+public class DSTMap implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 3369986060792813939L;
-    public static final String id = "DSTMap";
+    public static final DSTId id = DSTId.getDstIdInstance("DSTMap");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
+
+    protected @NotNull Map<IDSTBase, IDSTBase> data;
 
     public DSTMap(@NotNull Map<IDSTBase, IDSTBase> map) {
         super();
         this.data = map;
     }
 
+    public @NotNull Map<IDSTBase, IDSTBase> getData() {
+        return this.data;
+    }
+
     @Override
     public void read(@NotNull DataInput input) throws IOException {
+        String type = input.readUTF();
+        try {
+            //noinspection unchecked
+            Map<IDSTBase, IDSTBase> temp = (Map<IDSTBase, IDSTBase>) HClassHelper.getInstance(Class.forName(type), false);
+            if (temp == null)
+                throw new RuntimeException("Failed to create a new instance. [type='" + type + "']");
+            this.data = temp;
+        } catch (ClassNotFoundException | ClassCastException exception) {
+            throw new DSTFormatException(exception);
+        }
         int size = input.readInt();
         for (int i = 0; i < size; ++i) {
             IDSTBase key;
@@ -55,16 +72,13 @@ public class DSTMap extends PureDSTBase<Map<IDSTBase, IDSTBase>> {
     @Override
     public void write(@NotNull DataOutput output) throws IOException {
         output.writeUTF(prefix);
+        output.writeUTF(this.data.getClass().getName());
         output.writeInt(this.data.size());
         for (Entry<IDSTBase, IDSTBase> datum: this.data.entrySet()) {
             datum.getKey().write(output);
             datum.getValue().write(output);
         }
         output.writeUTF(suffix);
-    }
-
-    public @NotNull Map<IDSTBase, IDSTBase> getData() {
-        return this.data;
     }
 
     @Override

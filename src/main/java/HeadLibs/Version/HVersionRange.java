@@ -268,7 +268,7 @@ public class HVersionRange implements Serializable {
         this.autoFix();
         if (this.empty)
             return "empty";
-        return this.leftEquable ? "[" : "(" +
+        return this.leftEquable ? "[" : '(' +
                 this.leftVersion.getVersion() + ',' + this.rightVersion.getVersion() +
                 (this.rightEquable ? ']' : ')');
     }

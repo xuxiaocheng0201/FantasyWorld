@@ -40,6 +40,6 @@ public class PositionTransformationUtils {
     public static @NotNull EntityPos toEntityPos(@Nullable BlockPos blockPos) {
         if (blockPos == null)
             return new EntityPos();
-        return new EntityPos(blockPos.getChunkPos(), blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        return new EntityPos(blockPos.getChunkPos(), blockPos.getOffset().getX(), blockPos.getOffset().getY(), blockPos.getOffset().getZ());
     }
 }

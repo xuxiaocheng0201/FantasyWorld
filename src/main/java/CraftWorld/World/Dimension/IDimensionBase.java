@@ -5,6 +5,7 @@ import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.World.Chunk.ChunkPos;
+import CraftWorld.World.Dimension.BasicInformation.DimensionId;
 import HeadLibs.Registerer.HLinkedSetRegisterer;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +15,7 @@ import java.io.IOException;
 
 @NewElementImplementCore(modName = "CraftWorld", elementName = "Dimension")
 public interface IDimensionBase extends IDSTBase {
-    @NotNull String getDimensionId();
+    @NotNull DimensionId getDimensionId();
     @NotNull HLinkedSetRegisterer<ChunkPos> getPrepareChunkPos();
     @NotNull String getDimensionName();
     void setDimensionName(@NotNull String name);
@@ -30,6 +31,7 @@ public interface IDimensionBase extends IDSTBase {
 
     @Override
     default void write(@NotNull DataOutput output) throws IOException {
+        this.getDimensionId().write(output);
         output.writeUTF(this.getDimensionName());
         this.getDimensionDST().write(output);
     }

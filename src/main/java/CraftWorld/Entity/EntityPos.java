@@ -1,10 +1,11 @@
 package CraftWorld.Entity;
 
 import CraftWorld.CraftWorld;
+import CraftWorld.DST.BasicInformation.DSTId;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
-import CraftWorld.World.Block.BlockPos.EFacing;
+import CraftWorld.World.Block.BlockDirection;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
 import HeadLibs.Annotations.DoubleRange;
@@ -30,7 +31,7 @@ import java.util.Objects;
 public class EntityPos implements IDSTBase {
     @Serial
     private static final long serialVersionUID = 6848352277198863392L;
-    public static final String id = "EntityPos";
+    public static final DSTId id = DSTId.getDstIdInstance("EntityPos");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
@@ -372,7 +373,7 @@ public class EntityPos implements IDSTBase {
         this.subtractX(n);
     }
 
-    public void offset(@NotNull EFacing facing, double n) {
+    public void offset(@NotNull BlockDirection facing, double n) {
         switch (facing) {
             case UP -> this.up(n);
             case DOWN -> this.down(n);
@@ -750,7 +751,7 @@ public class EntityPos implements IDSTBase {
         }
 
         @Override
-        public void offset(@NotNull EFacing facing, double n) {
+        public void offset(@NotNull BlockDirection facing, double n) {
             throw new UnsupportedOperationException();
         }
 
@@ -1088,7 +1089,7 @@ public class EntityPos implements IDSTBase {
         }
 
         @Override
-        public void offset(@NotNull EFacing facing, double n) {
+        public void offset(@NotNull BlockDirection facing, double n) {
             super.offset(facing, n);
             this.updated = true;
         }

@@ -69,7 +69,7 @@ public class ModManager {
      * Get all mod element pairs classes.
      * @return all mod element pairs classes
      */
-    public static @NotNull HMapRegisterer<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?>>>> getElementPairList() {
+    public static @NotNull HMapRegisterer<ElementName, Pair<Class<? extends ElementImplement>, Class<? extends ElementUtil<?, ?>>>> getElementPairList() {
         return ModClassesLoader.getElementPairList();
     }
 

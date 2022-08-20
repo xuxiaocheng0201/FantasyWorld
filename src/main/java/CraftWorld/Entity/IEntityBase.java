@@ -3,6 +3,7 @@ package CraftWorld.Entity;
 import Core.Addition.Element.NewElementImplementCore;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.IDSTBase;
+import CraftWorld.Entity.BasicInformation.EntityId;
 import CraftWorld.Instance.DST.DSTComplexMeta;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +13,7 @@ import java.io.IOException;
 
 @NewElementImplementCore(modName = "CraftWorld", elementName = "Entity")
 public interface IEntityBase extends IDSTBase {
-    @NotNull String getEntityId();
+    @NotNull EntityId getEntityId();
     @NotNull String getEntityName();
     void setEntityName(@NotNull String name);
     @NotNull DSTComplexMeta getEntityDST();

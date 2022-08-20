@@ -1,8 +1,9 @@
 package CraftWorld.Instance.DST;
 
+import CraftWorld.DST.BasicInformation.DSTId;
+import CraftWorld.DST.DSTBase;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
-import CraftWorld.DST.PureDSTBase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,20 +13,19 @@ import java.io.IOException;
 import java.io.Serial;
 import java.util.Objects;
 
-public class DSTShort extends PureDSTBase<Short> {
+public class DSTShort extends DSTBase<Short> {
     @Serial
     private static final long serialVersionUID = 2438260511173385249L;
-    public static final String id = "DSTShort";
+    public static final DSTId id = DSTId.getDstIdInstance("DSTShort");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
     public DSTShort() {
-        super();
+        super((short) 0);
     }
 
-    public DSTShort(Short data) {
-        super();
-        this.setData(data);
+    public DSTShort(@NotNull Short data) {
+        super(data);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class DSTShort extends PureDSTBase<Short> {
     }
 
     @Override
-    public void setData(Short data) {
+    public void setData(@NotNull Short data) {
         this.data = Objects.requireNonNullElse(data, (short) 0);
     }
 

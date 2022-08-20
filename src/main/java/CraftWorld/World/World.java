@@ -1,20 +1,18 @@
 package CraftWorld.World;
 
 import CraftWorld.ConstantStorage;
+import CraftWorld.DST.BasicInformation.DSTId;
 import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.Utils.QuickTick;
+import CraftWorld.World.Dimension.BasicInformation.DimensionId;
 import CraftWorld.World.Dimension.Dimension;
 import CraftWorld.World.Dimension.DimensionUtils;
-import CraftWorld.World.Dimension.IDimensionBase;
 import HeadLibs.Helper.HFileHelper;
-import HeadLibs.Helper.HRandomHelper;
-import HeadLibs.Registerer.HElementNotRegisteredException;
-import HeadLibs.Registerer.HElementRegisteredException;
-import HeadLibs.Registerer.HMapRegisterer;
-import HeadLibs.Registerer.HSetRegisterer;
+import HeadLibs.Registerer.*;
+import HeadLibs.Registerer.HSetRegisterer.ImmutableSetRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +20,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -30,51 +27,58 @@ import java.util.zip.GZIPOutputStream;
 public class World implements IDSTBase {
     @Serial
     private static final long serialVersionUID = -383984335814983830L;
-    public static final String id = "World";
+    public static final DSTId id = DSTId.getDstIdInstance("World");
     public static final String prefix = DSTUtils.prefix(id);
     public static final String suffix = DSTUtils.suffix(id);
 
     protected @NotNull File worldSavedDirectory = (new File(ConstantStorage.WORLD_PATH)).getAbsoluteFile();
     protected boolean unloaded = true;
-
-    protected String worldName = "New world";
+    protected @NotNull String worldName = "New world";
     protected final DSTComplexMeta dst = new DSTComplexMeta();
     protected final @NotNull QuickTick tick = new QuickTick();
-    protected @NotNull String randomSeed;
-    protected @NotNull Random random;
+    protected @Nullable String randomSeed;
 
-    // Load all dimensions whose id is in keys of {@code prepareDimensionsID}.
-    // At least load value dimensions include {@code prepareDimensionsUUID}.
-    protected final HMapRegisterer<String, Integer> prepareDimensionsID = new HMapRegisterer<>(true);
-    protected final HSetRegisterer<UUID> prepareDimensionsUUID = new HSetRegisterer<>();
-    protected final HMapRegisterer<UUID, Dimension> loadedDimensions = new HMapRegisterer<>(false);
-    protected final HMapRegisterer<String, HSetRegisterer<UUID>> generatedDimensions = new HMapRegisterer<>(true);
+    // {@code prepareDimensionsID}:   [Prepare] Load dimensions whose id is {key} {value} times.
+    // {@code prepareDimensionsUUID}: [Prepare] Loaded dimensions last time.
+    // *if {@code prepareDimensionsUUID} is not empty, {@code prepareDimensionsID} will be reduced.
+    protected final @NotNull HMapRegisterer<DimensionId, Integer> prepareDimensionsID = new HMapRegisterer<>(false, false, true);
+    protected final @NotNull HSetRegisterer<UUID> prepareDimensionsUUID = new HSetRegisterer<>(false);
 
-    public World(@NotNull String randomSeed) throws IOException {
+    protected final @NotNull HMapRegisterer<UUID, Dimension> loadedDimensions = new HMapRegisterer<>(false, false, false);
+    protected final @NotNull HMapRegisterer<DimensionId, HSetRegisterer<UUID>> generatedDimensions = new HMapRegisterer<>(false, false, false);
+
+    public World() throws IOException {
         super();
-        HFileHelper.createNewDirectory(ConstantStorage.WORLD_PATH);
-        this.randomSeed = randomSeed;
-        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
     }
 
-    public World(String worldDirectoryPath, @NotNull String randomSeed) throws IOException {
+    public World(@Nullable String randomSeed) throws IOException {
+        super();
+        this.randomSeed = randomSeed;
+    }
+
+    public World(@Nullable String worldDirectoryPath, @Nullable String randomSeed) throws IOException {
         super();
         this.setWorldSavedDirectory(worldDirectoryPath);
         this.randomSeed = randomSeed;
-        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
     }
 
     public void update() {
         this.tick.aT();
         for (Dimension dimension: this.loadedDimensions.values())
             dimension.update();
+        //TODO: tick time optimization.
     }
 
     public @NotNull File getWorldSavedDirectory() {
         return this.worldSavedDirectory;
     }
 
-    public void setWorldSavedDirectory(String worldSavedDirectoryPath) throws IOException {
+    public void setWorldSavedDirectory(@Nullable String worldSavedDirectoryPath) throws IOException {
+        if (worldSavedDirectoryPath == null) {
+            this.worldSavedDirectory = (new File(ConstantStorage.WORLD_PATH)).getAbsoluteFile();
+            HFileHelper.createNewDirectory(this.worldSavedDirectory.getPath());
+            return;
+        }
         HFileHelper.createNewDirectory(worldSavedDirectoryPath);
         this.worldSavedDirectory = (new File(worldSavedDirectoryPath)).getAbsoluteFile();
     }
@@ -87,27 +91,23 @@ public class World implements IDSTBase {
         return this.worldSavedDirectory.getPath() + "\\dimensions";
     }
 
-    public String getDimensionDirectory(UUID dimensionUUID) {
-        return this.getDimensionsDirectory() + '\\' + dimensionUUID.toString();
-    }
-
-    public String getDimensionDirectory(Dimension dimension) {
-        return this.getDimensionsDirectory() + '\\' + dimension.getUUID().toString();
+    public String getDimensionDirectory(@NotNull UUID dimensionUUID) {
+        return this.getDimensionsDirectory() + '\\' + dimensionUUID;
     }
 
     public boolean isUnloaded() {
         return this.unloaded;
     }
 
-    public String getWorldName() {
+    public @NotNull String getWorldName() {
         return this.worldName;
     }
 
-    public void setWorldName(String worldName) {
-        this.worldName = worldName;
+    public void setWorldName(@Nullable String worldName) {
+        this.worldName = Objects.requireNonNullElse(worldName, "New world");
     }
 
-    public DSTComplexMeta getDst() {
+    public @NotNull DSTComplexMeta getDst() {
         return this.dst;
     }
 
@@ -115,44 +115,41 @@ public class World implements IDSTBase {
         return this.tick;
     }
 
-    public @NotNull String getRandomSeed() {
+    public @Nullable String getRandomSeed() {
         return this.randomSeed;
     }
 
-    public @NotNull Random getRandom() {
-        return this.random;
-    }
-
-    public void addPrepareDimension(String dimensionId) {
-        if (this.prepareDimensionsID.isRegisteredKey(dimensionId)) {
+    public void addPrepareDimensionCount(@Nullable DimensionId dimensionId) {
+        if (dimensionId == null)
+            return;
+        try {
+            this.prepareDimensionsID.register(dimensionId, 1);
+        } catch (HElementRegisteredException exception) {
             try {
                 Integer count = this.prepareDimensionsID.getElement(dimensionId);
-                if (count == null)
-                    count = 0;
                 this.prepareDimensionsID.reset(dimensionId, count + 1);
             } catch (HElementNotRegisteredException | HElementRegisteredException ignore) {
             }
         }
-        else
-            try {
-                this.prepareDimensionsID.register(dimensionId, 1);
-            } catch (HElementRegisteredException ignore) {
-            }
     }
 
-    public void subPrepareDimension(String dimensionId) {
+    public void subPrepareDimensionCount(@Nullable DimensionId dimensionId) {
+        if (dimensionId == null)
+            return;
         try {
             Integer count = this.prepareDimensionsID.getElement(dimensionId);
-            if (count == null || count <= 1) {
+            if (count <= 1) {
                 this.prepareDimensionsID.deregisterKey(dimensionId);
                 return;
             }
-            this.prepareDimensionsID.reset(dimensionId, count + 1);
+            this.prepareDimensionsID.reset(dimensionId, count - 1);
         } catch (HElementNotRegisteredException | HElementRegisteredException ignore) {
         }
     }
 
-    public void setPrepareDimension(String dimensionId, int count) {
+    public void setPrepareDimensionCount(@Nullable DimensionId dimensionId, int count) {
+        if (dimensionId == null)
+            return;
         if (count <= 0)
             this.prepareDimensionsID.deregisterKey(dimensionId);
         else {
@@ -163,38 +160,31 @@ public class World implements IDSTBase {
         }
     }
 
-    public void addPrepareDimension(UUID dimensionUUID) {
+    public void addPrepareDimensionUUID(@Nullable UUID dimensionUUID) {
         try {
             this.prepareDimensionsUUID.register(dimensionUUID);
         } catch (HElementRegisteredException ignore) {
         }
     }
 
-    public void subPrepareDimension(UUID dimensionUUID) {
+    public void subPrepareDimensionUUID(@Nullable UUID dimensionUUID) {
         this.prepareDimensionsUUID.deregister(dimensionUUID);
     }
 
-    public @NotNull HSetRegisterer<UUID> getGeneratedDimensionsUUID(String dimensionId) {
+    public @NotNull ImmutableSetRegisterer<UUID> getGeneratedDimensionsUUID(@Nullable DimensionId dimensionId) {
         try {
-            HSetRegisterer<UUID> uuids = this.generatedDimensions.getElement(dimensionId);
-            if (uuids == null)
-                return new HSetRegisterer<>();
-            return uuids;
+            return this.generatedDimensions.getElement(dimensionId).toImmutable();
         } catch (HElementNotRegisteredException exception) {
-            return new HSetRegisterer<>();
+            return new ImmutableSetRegisterer<>();
         }
     }
 
-    public @Nullable Dimension getAndLoadDimension(UUID dimensionUUID) throws IOException {
+    public @NotNull Dimension loadGeneratedDimension(@NotNull UUID dimensionUUID) throws IOException {
         try {
             return this.loadedDimensions.getElement(dimensionUUID);
         } catch (HElementNotRegisteredException ignore) {
         }
-        Dimension dimension = new Dimension(this);
-        String directory = this.getDimensionDirectory(dimensionUUID);
-        if (!HFileHelper.checkDirectoryAvailable(directory))
-            return null;
-        dimension.setDimensionSavedDirectory(directory);
+        Dimension dimension = new Dimension(this, dimensionUUID);
         dimension.load();
         try {
             this.loadedDimensions.register(dimensionUUID, dimension);
@@ -203,49 +193,41 @@ public class World implements IDSTBase {
         return dimension;
     }
 
-    public @NotNull HSetRegisterer<Dimension> getDimensions(String dimensionId) throws IOException {
+    public @NotNull HSetRegisterer<Dimension> loadGeneratedDimensions(@Nullable DimensionId dimensionId) throws IOException {
         HSetRegisterer<UUID> uuids = this.getGeneratedDimensionsUUID(dimensionId);
         HSetRegisterer<Dimension> dimensions = new HSetRegisterer<>();
         for (UUID uuid: uuids) {
-            Dimension dimension = this.getAndLoadDimension(uuid);
-            if (dimension != null) {
-                try {
-                    dimensions.register(dimension);
-                } catch (HElementRegisteredException ignore) {
-                }
+            Dimension dimension = this.loadGeneratedDimension(uuid);
+            try {
+                dimensions.register(dimension);
+            } catch (HElementRegisteredException ignore) {
             }
         }
         return dimensions;
     }
 
-    public @NotNull Dimension getAndLoadNewDimension(String dimensionId) throws HElementNotRegisteredException, NoSuchMethodException, IOException {
-        while (true)
-            try {
-                return this.getAndLoadNewDimension(DimensionUtils.getInstance().getElementInstance(dimensionId, false));
-            } catch (IllegalStateException ignore) {
-            }
-    }
-
-    public @NotNull Dimension getAndLoadNewDimension(IDimensionBase dimensionBase) throws IOException {
-        Dimension dimension = new Dimension(this, dimensionBase);
+    public @NotNull Dimension generateNewDimension(@NotNull DimensionId dimensionId) throws IOException {
+        Dimension dimension;
         try {
-            HSetRegisterer<UUID> uuids = this.generatedDimensions.getElement(dimensionBase.getDimensionId());
-            if (uuids == null)
-                throw new HElementNotRegisteredException();
+            dimension = new Dimension(this, DimensionUtils.getInstance().getElementInstance(dimensionId, false));
+        } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
+            throw new IOException("Failed to get a new dimension instance.", exception);
+        }
+        try {
+            HSetRegisterer<UUID> uuids = this.generatedDimensions.getElement(dimensionId);
             try {
                 uuids.register(dimension.getUUID());
             } catch (HElementRegisteredException exception) {
-                throw new IllegalStateException("Reiterated UUID!", exception);
+                throw new HashCollisionsErrorException("Reiterated UUID!", dimension.getUUID(), null, exception);
             }
         } catch (HElementNotRegisteredException exception) {
             HSetRegisterer<UUID> uuids = new HSetRegisterer<>();
             try {
                 uuids.register(dimension.getUUID());
-                this.generatedDimensions.register(dimensionBase.getDimensionId(), uuids);
+                this.generatedDimensions.register(dimensionId, uuids);
             } catch (HElementRegisteredException ignore) {
             }
         }
-        HFileHelper.createNewDirectory(this.getDimensionDirectory(dimension));
         dimension.load();
         try {
             this.loadedDimensions.register(dimension.getUUID(), dimension);
@@ -254,40 +236,20 @@ public class World implements IDSTBase {
         return dimension;
     }
 
-    public void unloadDimension(UUID dimensionUUID) throws IOException {
+    public void unloadDimension(@Nullable UUID dimensionUUID) throws IOException {
         Dimension dimension;
         try {
             dimension = this.loadedDimensions.getElement(dimensionUUID);
-        } catch (HElementNotRegisteredException exception) {
+        } catch (HElementNotRegisteredException ignore) {
             return;
         }
         this.loadedDimensions.deregisterKey(dimensionUUID);
-        if (dimension == null)
-            return;
         dimension.unload();
     }
 
-    public void loadPrepareDimensions() throws IOException {
-        for (UUID dimensionUUID: this.prepareDimensionsUUID)
-            if (!this.loadedDimensions.isRegisteredKey(dimensionUUID))
-                this.getAndLoadDimension(dimensionUUID);
-        for (Entry<String, Integer> entry: this.prepareDimensionsID) {
-            HSetRegisterer<UUID> uuids = this.getGeneratedDimensionsUUID(entry.getKey());
-            int count = entry.getValue() - uuids.getRegisteredCount();
-            if (count <= 0)
-                continue;
-            try {
-                for (int i = 0; i < count; ++i)
-                    this.getAndLoadNewDimension(entry.getKey());
-            } catch (HElementNotRegisteredException | NoSuchMethodException ignore) {
-            }
-        }
-    }
-
-    public void load() throws IOException, HElementNotRegisteredException, NoSuchMethodException {
-        this.unloaded = false;
-        this.readInformation();
-        this.loadPrepareDimensions();
+    public void unloadDimensions(@Nullable DimensionId dimensionId) throws IOException {
+        for (UUID uuid: this.getGeneratedDimensionsUUID(dimensionId))
+            this.unloadDimension(uuid);
     }
 
     public void unloadAllDimensions() throws IOException {
@@ -296,23 +258,32 @@ public class World implements IDSTBase {
             this.unloadDimension(dimensionUUID);
     }
 
-    public void unload() throws IOException {
-        this.unloaded = true;
-        this.unloadAllDimensions();
-        this.writeInformation();
+    public void loadPrepareDimensions() throws IOException {
+        for (UUID dimensionUUID: this.prepareDimensionsUUID)
+            if (!this.loadedDimensions.isRegisteredKey(dimensionUUID))
+                this.loadGeneratedDimension(dimensionUUID);
+        for (Entry<DimensionId, Integer> entry: this.prepareDimensionsID) {
+            HSetRegisterer<UUID> uuids = this.getGeneratedDimensionsUUID(entry.getKey());
+            for (UUID uuid: uuids)
+                if (!this.loadedDimensions.isRegisteredKey(uuid))
+                    this.loadGeneratedDimension(uuid);
+            int count = entry.getValue() - uuids.getRegisteredCount();
+            if (count <= 0)
+                continue;
+            for (int i = 0; i < count; ++i)
+                this.generateNewDimension(entry.getKey());
+        }
     }
 
     public void readInformation() throws IOException {
-        if (!HFileHelper.checkDirectoryAvailable(this.worldSavedDirectory.getPath()))
-            this.writeInformation();
         String informationFile = this.getInformationFile();
-        if (!HFileHelper.checkFileAvailable(informationFile))
+        try (DataInputStream dataInputStream = new DataInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(informationFile))))) {
+            if (!prefix.equals(dataInputStream.readUTF()))
+                throw new DSTFormatException();
+            this.read(dataInputStream);
+        } catch (DSTFormatException | FileNotFoundException ignore) {
             this.writeInformation();
-        DataInputStream dataInputStream = new DataInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(informationFile))));
-        if (!prefix.equals(dataInputStream.readUTF()))
-            throw new DSTFormatException();
-        this.read(dataInputStream);
-        dataInputStream.close();
+        }
     }
 
     public void writeInformation() throws IOException {
@@ -322,10 +293,18 @@ public class World implements IDSTBase {
         DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(informationFile))));
         this.write(dataOutputStream);
         dataOutputStream.close();
-        String dimensionsDirectory = this.getDimensionsDirectory();
-        HFileHelper.createNewDirectory(dimensionsDirectory);
-        for (Dimension dimension: this.loadedDimensions.values())
-            dimension.writeInformation();
+    }
+
+    public void load() throws IOException {
+        this.unloaded = false;
+        this.readInformation();
+        this.loadPrepareDimensions();
+    }
+
+    public void unload() throws IOException {
+        this.unloadAllDimensions();
+        this.writeInformation();
+        this.unloaded = true;
     }
 
     @Override
@@ -335,40 +314,53 @@ public class World implements IDSTBase {
         if (!DSTComplexMeta.prefix.equals(input.readUTF()))
             throw new DSTFormatException();
         this.dst.read(input);
-        this.tick.set(input.readUTF(), ConstantStorage.SAVE_NUMBER_RADIX);
-        this.randomSeed = input.readUTF();
-        this.random = new Random(HRandomHelper.getSeed(this.randomSeed));
+        if (!QuickTick.prefix.equals(input.readUTF()))
+            throw new DSTFormatException();
+        this.tick.read(input);
+        if (input.readBoolean())
+            this.randomSeed = input.readUTF();
+        else
+            this.randomSeed = null;
         this.prepareDimensionsUUID.deregisterAll();
         int size = input.readInt();
-        for (int i = 0; i < size; ++i) {
+        for (int i = 0; i < size; ++i)
             try {
                 this.prepareDimensionsUUID.register(new UUID(input.readLong(), input.readLong()));
-            } catch (HElementRegisteredException ignore) {
+            } catch (HElementRegisteredException exception) {
+                throw new DSTFormatException(exception);
             }
-        }
         this.prepareDimensionsID.deregisterAll();
         size = input.readInt();
         for (int i = 0; i < size; ++i) {
+            DimensionId dimensionId = new DimensionId();
+            if (!DimensionId.prefix.equals(input.readUTF()))
+                throw new DSTFormatException();
+            dimensionId.read(input);
             try {
-                this.prepareDimensionsID.register(input.readUTF(), input.readInt());
-            } catch (HElementRegisteredException ignore) {
+                this.prepareDimensionsID.register(dimensionId, input.readInt());
+            } catch (HElementRegisteredException exception) {
+                throw new DSTFormatException(exception);
             }
         }
         this.generatedDimensions.deregisterAll();
         size = input.readInt();
         for (int i = 0; i < size; ++i) {
-            String dimensionId = input.readUTF();
+            DimensionId dimensionId = new DimensionId();
+            if (!DimensionId.prefix.equals(input.readUTF()))
+                throw new DSTFormatException();
+            dimensionId.read(input);
             HSetRegisterer<UUID> uuids = new HSetRegisterer<>();
             int size0 = input.readInt();
-            for (int j = 0; j < size0; ++j) {
+            for (int j = 0; j < size0; ++j)
                 try {
                     uuids.register(new UUID(input.readLong(), input.readLong()));
-                } catch (HElementRegisteredException ignore) {
+                } catch (HElementRegisteredException exception) {
+                    throw new DSTFormatException(exception);
                 }
-            }
             try {
                 this.generatedDimensions.register(dimensionId, uuids);
-            } catch (HElementRegisteredException ignore) {
+            } catch (HElementRegisteredException exception) {
+                throw new DSTFormatException(exception);
             }
         }
         if (!suffix.equals(input.readUTF()))
@@ -381,21 +373,25 @@ public class World implements IDSTBase {
         output.writeBoolean(this.unloaded);
         output.writeUTF(this.worldName);
         this.dst.write(output);
-        output.writeUTF(this.tick.getFullTick().toString(ConstantStorage.SAVE_NUMBER_RADIX));
-        output.writeUTF(this.randomSeed);
+        this.tick.write(output);
+        if (this.randomSeed != null) {
+            output.writeBoolean(true);
+            output.writeUTF(this.randomSeed);
+        } else
+            output.writeBoolean(false);
         output.writeInt(this.prepareDimensionsUUID.getRegisteredCount());
         for (UUID uuid: this.prepareDimensionsUUID) {
             output.writeLong(uuid.getMostSignificantBits());
             output.writeLong(uuid.getLeastSignificantBits());
         }
         output.writeInt(this.prepareDimensionsID.getRegisteredCount());
-        for (Entry<String, Integer> entry: this.prepareDimensionsID) {
-            output.writeUTF(entry.getKey());
+        for (Entry<DimensionId, Integer> entry: this.prepareDimensionsID) {
+            entry.getKey().write(output);
             output.writeInt(entry.getValue());
         }
         output.writeInt(this.generatedDimensions.getRegisteredCount());
-        for (Entry<String, HSetRegisterer<UUID>> entries: this.generatedDimensions) {
-            output.writeUTF(entries.getKey());
+        for (Entry<DimensionId, HSetRegisterer<UUID>> entries: this.generatedDimensions) {
+            entries.getKey().write(output);
             output.writeInt(entries.getValue().getRegisteredCount());
             for (UUID uuid: entries.getValue()) {
                 output.writeLong(uuid.getMostSignificantBits());

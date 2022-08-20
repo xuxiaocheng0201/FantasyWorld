@@ -30,7 +30,7 @@ public class ElementNotPairException extends IllegalArgumentException {
         super(DEFAULT_MESSAGE + " Element name: " + ElementImplement.getElementNameFromClass(implementClass) + ". No util for implement '" + ModManager.crashClassInformation(implementClass) + "'.");
     }
 
-    public ElementNotPairException(@Nullable Object NULL, @Nullable Class<? extends ElementUtil<?>> utilClass) {
+    public ElementNotPairException(@Nullable Object NULL, @Nullable Class<? extends ElementUtil<?, ?>> utilClass) {
         super(DEFAULT_MESSAGE + " Element name: " + ElementUtil.getElementNameFromClass(utilClass) + ". No implement for util '" + ModManager.crashClassInformation(utilClass) + "'.");
     }
 
@@ -42,7 +42,7 @@ public class ElementNotPairException extends IllegalArgumentException {
         super(getElementNotPairMessage(message) + " Element name: " + ElementImplement.getElementNameFromClass(implementClass) + ". No util for implement '" + ModManager.crashClassInformation(implementClass) + "'.");
     }
 
-    public ElementNotPairException(@Nullable String message, @Nullable Object NULL, @Nullable Class<? extends ElementUtil<?>> utilClass) {
+    public ElementNotPairException(@Nullable String message, @Nullable Object NULL, @Nullable Class<? extends ElementUtil<?, ?>> utilClass) {
         super(getElementNotPairMessage(message) + " Element name: " + ElementUtil.getElementNameFromClass(utilClass) + ". No implement for util '" + ModManager.crashClassInformation(utilClass) + "'.");
     }
 
@@ -54,7 +54,7 @@ public class ElementNotPairException extends IllegalArgumentException {
         super(DEFAULT_MESSAGE + " Element name: " + ElementImplement.getElementNameFromClass(implementClass) + ". No util for implement '" + ModManager.crashClassInformation(implementClass) + "'.", throwable);
     }
 
-    public ElementNotPairException(@Nullable Object NULL, @Nullable Class<? extends ElementUtil<?>> utilClass, @Nullable Throwable throwable) {
+    public ElementNotPairException(@Nullable Object NULL, @Nullable Class<? extends ElementUtil<?, ?>> utilClass, @Nullable Throwable throwable) {
         super(DEFAULT_MESSAGE + " Element name: " + ElementUtil.getElementNameFromClass(utilClass) + ". No implement for util '" + ModManager.crashClassInformation(utilClass) + "'.", throwable);
     }
 
@@ -66,7 +66,7 @@ public class ElementNotPairException extends IllegalArgumentException {
         super(getElementNotPairMessage(message) + " Element name: " + ElementImplement.getElementNameFromClass(implementClass) + ". No util for implement '" + ModManager.crashClassInformation(implementClass) + "'.", throwable);
     }
 
-    public ElementNotPairException(@Nullable String message, @Nullable Object NULL, @Nullable Class<? extends ElementUtil<?>> utilClass, @Nullable Throwable throwable) {
+    public ElementNotPairException(@Nullable String message, @Nullable Object NULL, @Nullable Class<? extends ElementUtil<?, ?>> utilClass, @Nullable Throwable throwable) {
         super(getElementNotPairMessage(message) + " Element name: " + ElementUtil.getElementNameFromClass(utilClass) + ". No implement for util '" + ModManager.crashClassInformation(utilClass) + "'.", throwable);
     }
 }

@@ -16,7 +16,7 @@ public class ElementName implements Serializable {
     @Serial
     private static final long serialVersionUID = -4421475659404411813L;
 
-    private @NotNull String name = "";
+    protected @NotNull String name = "";
 
     public ElementName() {
         super();

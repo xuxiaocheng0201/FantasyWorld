@@ -13,9 +13,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class FileTreeStorage {
-    public static final String RUNTIME_PATH = (new File("Craftworld\\" + Craftworld.CURRENT_VERSION_STRING)).getAbsolutePath() + "\\";
-    public static final String LIBRARIES_PATH = (new File("Craftworld\\libraries")).getAbsolutePath() + "\\";
-    public static final String DLLS_PATH = (new File("Craftworld\\dll")).getAbsolutePath() + "\\";
+    public static final String RUNTIME_PATH = (new File("Craftworld\\" + Craftworld.CURRENT_VERSION_STRING)).getAbsolutePath() + '\\';
+    public static final String LIBRARIES_PATH = (new File("Craftworld\\libraries")).getAbsolutePath() + '\\';
+    public static final String DLLS_PATH = (new File("Craftworld\\dll")).getAbsolutePath() + '\\';
     public static final String ASSETS_PATH = RUNTIME_PATH + "assets\\";
     public static final String LOG_PATH = RUNTIME_PATH + "logs\\";
     public static final String MOD_PATH = RUNTIME_PATH + "mods\\";
@@ -28,7 +28,7 @@ public class FileTreeStorage {
             File file = new File(log_path);
             if (!file.exists())
                 break;
-            log_path = temp + "_" + (++i) + ".log";
+            log_path = temp + '_' + (++i) + ".log";
         }
         LOG_FILE = log_path;
     }
@@ -51,7 +51,7 @@ public class FileTreeStorage {
         if (System.console() == null) {
             File runtimeFile = new File(RUNTIME_PATH).getAbsoluteFile();
             String srcResourcePath = runtimeFile.getParentFile().getParentFile().getParentFile().getPath() + "\\src\\main\\resources";
-            HFileHelper.copyFiles(srcResourcePath + "\\" + sourcePath, targetFilePath.getPath(), GlobalConfigurations.OVERWRITE_FILES_WHEN_EXTRACTING);
+            HFileHelper.copyFiles(srcResourcePath + '\\' + sourcePath, targetFilePath.getPath(), GlobalConfigurations.OVERWRITE_FILES_WHEN_EXTRACTING);
         } else {
             HZipHelper.extractFilesFromJar(jarFilePath.getPath(), sourcePath, EXTRACT_TEMP_FILE);
             HFileHelper.copyFiles(EXTRACT_TEMP_FILE, targetFilePath.getPath(), GlobalConfigurations.OVERWRITE_FILES_WHEN_EXTRACTING);

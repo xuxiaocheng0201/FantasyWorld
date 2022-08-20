@@ -1,5 +1,6 @@
 package CraftWorld.Instance.Entity;
 
+import CraftWorld.Entity.BasicInformation.EntityId;
 import CraftWorld.Entity.IEntityBase;
 import CraftWorld.Instance.DST.DSTComplexMeta;
 import org.jetbrains.annotations.NotNull;
@@ -9,10 +10,10 @@ import java.io.Serial;
 public class EntityHuman implements IEntityBase {
     @Serial
     private static final long serialVersionUID = 1632442590862972115L;
-    public static final String id = "EntityHuman";
+    public static final EntityId id = EntityId.getEntityIdInstance("EntityHuman");
 
     @Override
-    public @NotNull String getEntityId() {
+    public @NotNull EntityId getEntityId() {
         return id;
     }
 
