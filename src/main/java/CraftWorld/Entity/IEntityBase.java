@@ -14,9 +14,12 @@ import java.io.IOException;
 @NewElementImplementCore(modName = "CraftWorld", elementName = "Entity")
 public interface IEntityBase extends IDSTBase {
     @NotNull EntityId getEntityId();
+    void setExistingEntityInstance(@NotNull Entity entity);
+
     @NotNull String getEntityName();
     void setEntityName(@NotNull String name);
     @NotNull DSTComplexMeta getEntityDST();
+    boolean isDead();
     boolean needDelete();
 
     @Override
@@ -29,6 +32,7 @@ public interface IEntityBase extends IDSTBase {
 
     @Override
     default void write(@NotNull DataOutput output) throws IOException {
+        this.getEntityId().write(output);
         output.writeUTF(this.getEntityName());
         this.getEntityDST().write(output);
     }

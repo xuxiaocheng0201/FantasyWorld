@@ -16,6 +16,8 @@ import java.io.IOException;
 @NewElementImplementCore(modName = "CraftWorld", elementName = "Dimension")
 public interface IDimensionBase extends IDSTBase {
     @NotNull DimensionId getDimensionId();
+    void setExistingDimensionInstance(@NotNull Dimension dimension);
+
     @NotNull HLinkedSetRegisterer<ChunkPos> getPrepareChunkPos();
     @NotNull String getDimensionName();
     void setDimensionName(@NotNull String name);

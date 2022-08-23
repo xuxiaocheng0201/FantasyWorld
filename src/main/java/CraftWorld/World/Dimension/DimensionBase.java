@@ -10,6 +10,12 @@ import java.io.Serial;
 public abstract class DimensionBase implements IDimensionBase {
     @Serial
     private static final long serialVersionUID = 6496633959075347635L;
+    protected /*final @NotNull*/ Dimension dimensionInstance;
+    @Override
+    public void setExistingDimensionInstance(@NotNull Dimension dimension) {
+        this.dimensionInstance = dimension;
+    }
+
     protected String name = "";
     protected final @NotNull DSTComplexMeta dst = new DSTComplexMeta();
     protected final @NotNull HLinkedSetRegisterer<ChunkPos> prepareChunkPos = new HLinkedSetRegisterer<>(false);

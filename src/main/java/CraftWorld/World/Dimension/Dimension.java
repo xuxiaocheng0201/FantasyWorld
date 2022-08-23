@@ -14,9 +14,11 @@ import CraftWorld.World.Dimension.BasicInformation.DimensionId;
 import CraftWorld.World.World;
 import HeadLibs.Helper.HFileHelper;
 import HeadLibs.Helper.HRandomHelper;
+import HeadLibs.Logger.HLog;
+import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementNotRegisteredException;
 import HeadLibs.Registerer.HElementRegisteredException;
-import HeadLibs.Registerer.HMapRegisterer;
+import HeadLibs.Registerer.HNotNullMapRegisterer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,11 +40,11 @@ public class Dimension implements IDSTBase {
     protected final @NotNull File dimensionSavedDirectory;
     protected boolean unloaded = true;
     protected @NotNull UUID uuid;
-    protected @NotNull IDimensionBase instance = new NullDimension();
+    protected @NotNull IDimensionBase instance = new NullDimension(); {this.instance.setExistingDimensionInstance(this);}
     protected final @NotNull QuickTick tickHasUpdated = new QuickTick();
     protected @Nullable String randomSeed;
 
-    protected final @NotNull HMapRegisterer<ChunkPos, Chunk> loadedChunks = new HMapRegisterer<>(false, false, false);
+    protected final @NotNull HNotNullMapRegisterer<ChunkPos, Chunk> loadedChunks = new HNotNullMapRegisterer<>(false);
 
     public Dimension(@NotNull World world) {
         super();
@@ -57,7 +59,7 @@ public class Dimension implements IDSTBase {
         this.world = world;
         this.uuid = HRandomHelper.getRandomUUID();
         if (instance != null)
-            this.instance = instance;
+            this.setInstance(instance);
         this.randomSeed = WorldSystemUtils.getDimensionSeed(world.getRandomSeed(), this.uuid);
         this.dimensionSavedDirectory = new File(this.world.getDimensionDirectory(this.uuid));
     }
@@ -114,6 +116,7 @@ public class Dimension implements IDSTBase {
 
     public void setInstance(@Nullable IDimensionBase instance) {
         this.instance = Objects.requireNonNullElseGet(instance, NullDimension::new);
+        this.instance.setExistingDimensionInstance(this);
     }
 
     public @NotNull QuickTick getTickHasUpdated() {
@@ -204,7 +207,8 @@ public class Dimension implements IDSTBase {
         try {
             this.setInstance(DimensionUtils.getInstance().getElementInstance(dimensionId, false));
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
-            throw new DSTFormatException("Failed to create a new dimension instance.", exception);
+            HLog.logger(HLogLevel.ERROR, exception);
+            this.setInstance(null);
         }
         this.instance.read(input);
         if (!QuickTick.prefix.equals(input.readUTF()))

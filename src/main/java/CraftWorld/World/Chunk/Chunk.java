@@ -6,7 +6,6 @@ import CraftWorld.DST.DSTFormatException;
 import CraftWorld.DST.DSTUtils;
 import CraftWorld.DST.IDSTBase;
 import CraftWorld.Events.ChunkGenerateEvent;
-import CraftWorld.Instance.Blocks.BlockAir;
 import CraftWorld.Instance.DST.DSTComplexMeta;
 import CraftWorld.Utils.QuickTick;
 import CraftWorld.World.Block.Block;
@@ -109,7 +108,7 @@ public class Chunk implements IDSTBase {
             for (int b = 0; b < SIZE; ++b) {
                 List<Block> block_2 = Collections.synchronizedList(new ArrayList<>(SIZE));
                 for (int c = 0; c < SIZE; ++c)
-                    block_2.add(new Block(this, new BlockPosOffset(a, b, c), new BlockAir()));
+                    block_2.add(new Block(this, new BlockPosOffset(a, b, c)));
                 block_1.add(block_2);
             }
             this.blocks.add(block_1);

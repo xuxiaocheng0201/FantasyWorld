@@ -22,7 +22,8 @@ jar {
     //noinspection GroovyAssignabilityCheck
     manifest() {
         attributes "Main-Class": 'Core.Craftworld'
-        attributes "Class-Path": 'Craftworld/libraries/eventbus-java-3.3.1.jar;' +
+        attributes "Class-Path":
+                'Craftworld/libraries/eventbus-java-3.3.1.jar;' +
                 'Crafworld/libraries/commons-compress-1.21.jar;' +
                 'Craftworld/libraries/xz-1.9.jar'
     }
@@ -30,8 +31,8 @@ jar {
 
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 
 //    implementation 'org.greenrobot:eventbus-java:3.3.1'
     implementation fileTree(dir: 'lib', excludes: ['*-javadoc.jar', '*-sources.jar'], includes: ['*.jar'])

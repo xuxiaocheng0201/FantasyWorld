@@ -15,7 +15,6 @@ import CraftWorld.Entity.BoundingBox.BoundingBoxUtils;
 import CraftWorld.Entity.Entity;
 import CraftWorld.Entity.EntityPos;
 import CraftWorld.Entity.EntityUtils;
-import CraftWorld.Entity.Living.EntityLiving;
 import CraftWorld.Instance.Blocks.BlockAir;
 import CraftWorld.Instance.Blocks.BlockStone;
 import CraftWorld.Instance.DST.*;
@@ -24,12 +23,14 @@ import CraftWorld.Instance.Dimensions.NullDimension;
 import CraftWorld.Instance.Entity.BoundingBox.BoundingBoxCuboid;
 import CraftWorld.Instance.Entity.BoundingBox.BoundingBoxSphere;
 import CraftWorld.Instance.Entity.EntityHuman;
+import CraftWorld.Instance.Entity.EntityItem;
 import CraftWorld.Utils.Angle;
 import CraftWorld.Utils.IDResource;
 import CraftWorld.Utils.QuickTick;
 import CraftWorld.World.Block.BasicInformation.BlockId;
 import CraftWorld.World.Block.Block;
 import CraftWorld.World.Block.BlockPos;
+import CraftWorld.World.Block.BlockPosOffset;
 import CraftWorld.World.Block.BlockUtils;
 import CraftWorld.World.Chunk.Chunk;
 import CraftWorld.World.Chunk.ChunkPos;
@@ -74,13 +75,13 @@ public class CraftWorldMod implements ModImplement {
         DSTUtils.getInstance().register(QuickTick.id, QuickTick.class);
         DSTUtils.getInstance().register(Block.id, Block.class);
         DSTUtils.getInstance().register(BlockPos.id, BlockPos.class);
+        DSTUtils.getInstance().register(BlockPosOffset.id, BlockPosOffset.class);
         DSTUtils.getInstance().register(Chunk.id, Chunk.class);
         DSTUtils.getInstance().register(ChunkPos.id, ChunkPos.class);
         DSTUtils.getInstance().register(Dimension.id, Dimension.class);
         DSTUtils.getInstance().register(World.id, World.class);
         DSTUtils.getInstance().register(Entity.id, Entity.class);
         DSTUtils.getInstance().register(EntityPos.id, EntityPos.class);
-        DSTUtils.getInstance().register(EntityLiving.id, EntityLiving.class);
         DSTUtils.getInstance().register(BlockId.id, BlockId.class);
         BlockUtils.getInstance().register(BlockAir.id, BlockAir.class);
         BlockUtils.getInstance().register(BlockStone.id, BlockStone.class);
@@ -91,6 +92,7 @@ public class CraftWorldMod implements ModImplement {
         DimensionUtils.getInstance().register(NullDimension.id, NullDimension.class);
         DimensionUtils.getInstance().register(DimensionEarthSurface.id, DimensionEarthSurface.class);
         DSTUtils.getInstance().register(EntityId.id, EntityId.class);
+        EntityUtils.getInstance().register(EntityItem.id, EntityItem.class);
         EntityUtils.getInstance().register(EntityHuman.id, EntityHuman.class);
     }
 
@@ -104,7 +106,7 @@ public class CraftWorldMod implements ModImplement {
     @Override
     public void mainInitialize() {
         logger.setName("CraftWorldMod", Thread.currentThread().getName());
-        CraftWorld.getInstance().getWorld().addPrepareDimensionCount(DimensionEarthSurface.id);
+        CraftWorld.getInstance().getWorld().atLeastPrepareDimensionCount(DimensionEarthSurface.id, 1);
     }
 
     @SuppressWarnings("MagicNumber")

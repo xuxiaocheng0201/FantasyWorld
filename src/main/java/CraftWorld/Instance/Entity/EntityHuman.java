@@ -1,13 +1,13 @@
 package CraftWorld.Instance.Entity;
 
 import CraftWorld.Entity.BasicInformation.EntityId;
-import CraftWorld.Entity.IEntityBase;
+import CraftWorld.Entity.EntityBase;
 import CraftWorld.Instance.DST.DSTComplexMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
 
-public class EntityHuman implements IEntityBase {
+public class EntityHuman extends EntityBase {
     @Serial
     private static final long serialVersionUID = 1632442590862972115L;
     public static final EntityId id = EntityId.getEntityIdInstance("EntityHuman");
@@ -33,6 +33,11 @@ public class EntityHuman implements IEntityBase {
     @Override
     public @NotNull DSTComplexMeta getEntityDST() {
         return this.dst;
+    }
+
+    @Override
+    public boolean isDead() {
+        return false;
     }
 
     @Override

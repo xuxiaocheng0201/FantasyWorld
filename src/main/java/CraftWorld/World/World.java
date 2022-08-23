@@ -41,11 +41,11 @@ public class World implements IDSTBase {
     // {@code prepareDimensionsID}:   [Prepare] Load dimensions whose id is {key} {value} times.
     // {@code prepareDimensionsUUID}: [Prepare] Loaded dimensions last time.
     // *if {@code prepareDimensionsUUID} is not empty, {@code prepareDimensionsID} will be reduced.
-    protected final @NotNull HMapRegisterer<DimensionId, Integer> prepareDimensionsID = new HMapRegisterer<>(false, false, true);
+    protected final @NotNull HNotNullMapRegisterer<DimensionId, Integer> prepareDimensionsID = new HNotNullMapRegisterer<>(true);
     protected final @NotNull HSetRegisterer<UUID> prepareDimensionsUUID = new HSetRegisterer<>(false);
 
-    protected final @NotNull HMapRegisterer<UUID, Dimension> loadedDimensions = new HMapRegisterer<>(false, false, false);
-    protected final @NotNull HMapRegisterer<DimensionId, HSetRegisterer<UUID>> generatedDimensions = new HMapRegisterer<>(false, false, false);
+    protected final @NotNull HNotNullMapRegisterer<UUID, Dimension> loadedDimensions = new HNotNullMapRegisterer<>(false);
+    protected final @NotNull HNotNullMapRegisterer<DimensionId, HSetRegisterer<UUID>> generatedDimensions = new HNotNullMapRegisterer<>(false);
 
     public World() throws IOException {
         super();
@@ -119,6 +119,18 @@ public class World implements IDSTBase {
         return this.randomSeed;
     }
 
+    public void atLeastPrepareDimensionCount(@Nullable DimensionId dimensionId, int count) {
+        if (dimensionId == null)
+            return;
+        int nowCount = 0;
+        try {
+            nowCount = this.prepareDimensionsID.getElement(dimensionId);
+        } catch (HElementNotRegisteredException ignore) {
+        }
+        if (nowCount < count)
+            this.setPrepareDimensionCount(dimensionId, count);
+    }
+
     public void addPrepareDimensionCount(@Nullable DimensionId dimensionId) {
         if (dimensionId == null)
             return;
@@ -137,7 +149,7 @@ public class World implements IDSTBase {
         if (dimensionId == null)
             return;
         try {
-            Integer count = this.prepareDimensionsID.getElement(dimensionId);
+            int count = this.prepareDimensionsID.getElement(dimensionId);
             if (count <= 1) {
                 this.prepareDimensionsID.deregisterKey(dimensionId);
                 return;
@@ -402,7 +414,7 @@ public class World implements IDSTBase {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "World{" +
                 "worldName='" + this.worldName + '\'' +
                 ", unloaded=" + this.unloaded +
@@ -411,7 +423,7 @@ public class World implements IDSTBase {
                 '}';
     }
 
-    public String toMoreString() {
+    public @NotNull String toStringMore() {
         return "World{" +
                 "worldSavedDirectory=" + this.worldSavedDirectory +
                 ", unloaded=" + this.unloaded +

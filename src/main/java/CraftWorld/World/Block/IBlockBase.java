@@ -14,6 +14,8 @@ import java.io.IOException;
 @NewElementImplementCore(modName = "CraftWorld", elementName = "Block")
 public interface IBlockBase extends IDSTBase {
     @NotNull BlockId getBlockId();
+    void setExistingBlockInstance(@NotNull Block block);
+
     @NotNull String getBlockName();
     void setBlockName(@NotNull String name);
     @NotNull DSTComplexMeta getBlockDST();

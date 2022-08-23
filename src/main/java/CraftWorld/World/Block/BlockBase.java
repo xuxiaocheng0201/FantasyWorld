@@ -8,6 +8,11 @@ import java.io.Serial;
 public abstract class BlockBase implements IBlockBase {
     @Serial
     private static final long serialVersionUID = -5018818557258671495L;
+    protected /*final @NotNull*/ Block blockInstance;
+    @Override
+    public void setExistingBlockInstance(@NotNull Block block) {
+        this.blockInstance = block;
+    }
 
     protected @NotNull String name = "";
     protected final @NotNull DSTComplexMeta dst = new DSTComplexMeta();

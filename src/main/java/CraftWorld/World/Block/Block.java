@@ -28,7 +28,7 @@ public class Block implements IDSTBase {
 
     protected final @NotNull Chunk chunk;
     protected final @NotNull BlockPosOffset posOffset = new BlockPosOffset();
-    protected @NotNull IBlockBase instance = new BlockAir();
+    protected @NotNull IBlockBase instance = new BlockAir(); {this.instance.setExistingBlockInstance(this);}
 
     public Block(@NotNull Chunk chunk) {
         super();
@@ -44,14 +44,16 @@ public class Block implements IDSTBase {
     public Block(@NotNull Chunk chunk, @Nullable IBlockBase instance) {
         super();
         this.chunk = chunk;
-        this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
+        if (instance != null)
+            this.setInstance(instance);
     }
 
     public Block(@NotNull Chunk chunk, @Nullable BlockPosOffset posOffset, @Nullable IBlockBase instance) {
         super();
         this.chunk = chunk;
         this.posOffset.set(posOffset);
-        this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
+        if (instance != null)
+            this.setInstance(instance);
     }
 
     public @NotNull Chunk getChunk() {
@@ -72,6 +74,7 @@ public class Block implements IDSTBase {
 
     public void setInstance(@Nullable IBlockBase instance) {
         this.instance = Objects.requireNonNullElseGet(instance, BlockAir::new);
+        this.instance.setExistingBlockInstance(this);
     }
 
     @Override
@@ -84,10 +87,10 @@ public class Block implements IDSTBase {
             throw new DSTFormatException();
         blockId.read(input);
         try {
-            this.instance = BlockUtils.getInstance().getElementInstance(blockId, false);
+            this.setInstance(BlockUtils.getInstance().getElementInstance(blockId, false));
         } catch (HElementNotRegisteredException | NoSuchMethodException exception) {
             HLog.logger(HLogLevel.ERROR, exception);
-            this.instance = new BlockAir();
+            this.setInstance(null);
         }
         this.instance.read(input);
         if (!suffix.equals(input.readUTF()))
