@@ -22,9 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.util.concurrent.TimeUnit;
 
 public class Craftworld implements ModImplement {
@@ -134,17 +131,10 @@ public class Craftworld implements ModImplement {
             logger.log(HLogLevel.FINEST, "Server Thread has started.");
             EventBusManager.getDefaultEventBus().post(new ServerStartEvent());
             try {
-                Selector selector;
-                try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
-                    InetSocketAddress inetSocketAddress = new InetSocketAddress(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
-                    serverSocketChannel.bind(inetSocketAddress);
-                    serverSocketChannel.configureBlocking(false);
-                    selector = Selector.open();
-                    serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-                }
+                InetSocketAddress inetSocketAddress = new InetSocketAddress(GlobalConfigurations.HOST, GlobalConfigurations.PORT);
                 CraftworldClient.server_binding_flag = false;
                 /* ********** Special Modifier ********** */
-                CraftWorld.CraftWorld.getInstance().startServer(selector);
+                CraftWorld.CraftWorld.getInstance().startServer(inetSocketAddress);
                 /* ********** \Special Modifier ********** */
                 EventBusManager.getDefaultEventBus().post(new ServerStopEvent(true));
             } catch (Exception exception) {
@@ -156,7 +146,7 @@ public class Craftworld implements ModImplement {
     }
 
     public static class CraftworldClient implements Runnable {
-        private static boolean server_binding_flag = true;
+        private static volatile boolean server_binding_flag = true;
         @Override
         public void run() {
             Thread.currentThread().setName("CraftworldClient");

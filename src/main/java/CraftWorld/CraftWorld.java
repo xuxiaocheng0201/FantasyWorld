@@ -9,11 +9,13 @@ import CraftWorld.Events.LoadingWorldEvent;
 import CraftWorld.Instance.Gui.LoadingGui;
 import CraftWorld.Instance.Gui.MenuGui;
 import CraftWorld.Utils.SevenZipUtils;
+import CraftWorld.Utils.WorldSystemUtils;
 import CraftWorld.World.World;
 import HeadLibs.Logger.HLog;
 import HeadLibs.Logger.HLogLevel;
 import HeadLibs.Registerer.HElementRegisteredException;
 import org.greenrobot.eventbus.EventBus;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -23,7 +25,7 @@ import java.io.IOException;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.Socket;
-import java.nio.channels.Selector;
+import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
 
 public class CraftWorld {
@@ -131,8 +133,7 @@ public class CraftWorld {
 
     private final World world; {
         try {
-            //TODO: random seed.
-            this.world = new World("0");
+            this.world = new World(WorldSystemUtils.getRandomSeed(null));
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -145,7 +146,8 @@ public class CraftWorld {
     public boolean serverRunning = true;
     public boolean clientRunning = true;
 
-    public void startServer(Selector selector) throws IOException {
+    public void startServer(@NotNull SocketAddress socketAddress) throws IOException {
+
         logger.log(HLogLevel.FINEST, "Loading world...");
         CRAFT_WORLD_EVENT_BUS.post(new LoadingWorldEvent());
         this.world.load();

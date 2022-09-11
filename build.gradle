@@ -24,8 +24,8 @@ jar {
         attributes "Main-Class": 'Core.Craftworld'
         attributes "Class-Path":
                 'Craftworld/libraries/eventbus-java-3.3.1.jar;' +
-                'Crafworld/libraries/commons-compress-1.21.jar;' +
-                'Craftworld/libraries/xz-1.9.jar'
+                'Craftworld/libraries/xz-1.9.jar;' +
+                'Craftworld/libraries/commons-compress-1.21.jar'
     }
 }
 
@@ -34,8 +34,11 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 
-//    implementation 'org.greenrobot:eventbus-java:3.3.1'
-    implementation fileTree(dir: 'lib', excludes: ['*-javadoc.jar', '*-sources.jar'], includes: ['*.jar'])
+//    implementation fileTree(dir: 'lib', excludes: ['*-javadoc.jar', '*-sources.jar'], includes: ['*.jar'])
+    implementation 'org.greenrobot:eventbus-java:3.3.1'
+    implementation 'org.tukaani:xz:1.9'
+    implementation 'org.apache.commons:commons-compress:1.21'
+//    implementation 'org.lionsoul:ip2region:2.6.5'
 //    implementation 'cn.hutool:hutool-all:5.1.2'
 //    implementation 'javassist:javassist:3.12.1.GA'
 

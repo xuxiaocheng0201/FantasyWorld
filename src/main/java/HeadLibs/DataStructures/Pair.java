@@ -23,8 +23,6 @@ public class Pair<K, V> implements Entry<K, V>, Serializable {
 
     public Pair() {
         super();
-        this.key = null;
-        this.value = null;
     }
 
     public Pair(@Nullable K key, @Nullable V value) {

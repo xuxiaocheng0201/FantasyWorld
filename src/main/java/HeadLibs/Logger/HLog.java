@@ -345,7 +345,8 @@ public class HLog {
         StringBuilder builder = new StringBuilder(3 * objects.length);
         for (Object i: objects)
             if (i instanceof Throwable) {
-                this.log(level, builder.toString());
+                if (appended)
+                    this.log(level, builder.toString());
                 builder.delete(0, builder.length());
                 this.log(level, (Throwable) i);
                 appended = false;
