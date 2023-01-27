@@ -62,7 +62,7 @@ public class JarClassLoader extends ClassLoader {
     @Override
     public @NotNull String toString() {
         return "JarClassLoader{" +
-                "jarFile=" + this.jarFile +
+                "jarFileName=" + this.jarFile.getName() +
                 '}';
     }
 }
