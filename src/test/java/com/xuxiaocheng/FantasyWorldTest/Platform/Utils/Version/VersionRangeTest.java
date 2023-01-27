@@ -1,4 +1,4 @@
-package com.xuxiaocheng.FantasyWorldTest.Platform.Utils;
+package com.xuxiaocheng.FantasyWorldTest.Platform.Utils.Version;
 
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionFormatException;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionRange;

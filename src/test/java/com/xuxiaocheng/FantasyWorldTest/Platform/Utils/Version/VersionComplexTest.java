@@ -1,17 +1,14 @@
-package com.xuxiaocheng.FantasyWorldTest.Platform.Utils;
+package com.xuxiaocheng.FantasyWorldTest.Platform.Utils.Version;
 
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionFormatException;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionRange;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
-import com.xuxiaocheng.HeadLibs.Logger.HLog;
 import com.xuxiaocheng.TestUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
