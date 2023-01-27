@@ -1,0 +1,70 @@
+//file:noinspection GroovyUntypedAccess
+plugins {
+    id 'java'
+}
+
+group 'com.xuxiaocheng'
+version '0.1.0'
+
+jar {
+    baseName('FantasyWorld')
+    version('0.1.0')
+//    manifest() {
+//        attributes "Main-Class": 'Core.Craftworld'
+//        attributes "Class-Path":
+//                'Craftworld/libraries/eventbus-java-3.3.1.jar' +
+//                        ';Craftworld/libraries/xz-1.9.jar' +
+//                        ';Craftworld/libraries/commons-compress-1.21.jar'
+//    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+project.ext.lwjglVersion = '3.3.1'
+switch (org.gradle.internal.os.OperatingSystem.current()) {
+    case org.gradle.internal.os.OperatingSystem.LINUX:
+        project.ext.lwjglNatives = 'natives-linux'
+        break
+    case org.gradle.internal.os.OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = 'natives-macos'
+        break
+    case org.gradle.internal.os.OperatingSystem.WINDOWS:
+        final def osArch = System.getProperty('os.arch')
+        project.ext.lwjglNatives = osArch.contains('64') ?
+                "natives-windows${osArch.startsWith('aarch64') ? '-arm64' : ''}" : 'natives-windows-x86'
+        break
+    default:
+        break
+}
+
+dependencies {
+    // useful
+    implementation 'org.jetbrains:annotations:23.1.0'
+    implementation 'com.google.guava:guava:31.1-jre'
+    // HeadLibs
+    implementation fileTree(dir: 'libs', excludes: ['*-javadoc.jar', '*-sources.jar'], includes: ['*.jar'])
+    testImplementation fileTree(dir: 'libs', excludes: ['*-javadoc.jar', '*-sources.jar'], includes: ['*.jar'])
+    // lwjgl
+    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+    implementation 'org.lwjgl:lwjgl'
+    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+    implementation 'org.lwjgl:lwjgl-assimp'
+    runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
+    implementation 'org.lwjgl:lwjgl-glfw'
+    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    implementation 'org.lwjgl:lwjgl-openal'
+    runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
+    implementation 'org.lwjgl:lwjgl-opengl'
+    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    implementation 'org.lwjgl:lwjgl-stb'
+    runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+    // unit test
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
