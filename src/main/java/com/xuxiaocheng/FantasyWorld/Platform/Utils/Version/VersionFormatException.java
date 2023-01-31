@@ -1,6 +1,5 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Utils.Version;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
@@ -19,7 +18,25 @@ public class VersionFormatException extends Exception {
         super(VersionFormatException.DEFAULT_MESSAGE);
     }
 
+    public VersionFormatException(@Nullable final Throwable cause) {
+        super(VersionFormatException.DEFAULT_MESSAGE, cause);
+    }
+
+    public VersionFormatException(@Nullable final String message) {
+        super(Objects.requireNonNullElse(message, VersionFormatException.DEFAULT_MESSAGE));
+    }
+
+    public VersionFormatException(@Nullable final String message, @Nullable final Throwable cause) {
+        super(Objects.requireNonNullElse(message, VersionFormatException.DEFAULT_MESSAGE), cause);
+    }
+
     public VersionFormatException(@Nullable final String message, @Nullable final String version) {
-        super(Objects.requireNonNullElse(message, VersionFormatException.DEFAULT_MESSAGE) + " Version(string): " + version);
+        super(Objects.requireNonNullElse(message, VersionFormatException.DEFAULT_MESSAGE) +
+                " Version string: " + (version == null ? "null" : '"' + version + '"'));
+    }
+
+    public VersionFormatException(@Nullable final String message, @Nullable final String version, @Nullable final Throwable cause) {
+        super(Objects.requireNonNullElse(message, VersionFormatException.DEFAULT_MESSAGE) +
+                " Version string: " + (version == null ? "null" : '"' + version + '"'), cause);
     }
 }

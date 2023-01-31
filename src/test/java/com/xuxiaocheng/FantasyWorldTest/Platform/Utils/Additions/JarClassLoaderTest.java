@@ -1,6 +1,6 @@
-package com.xuxiaocheng.FantasyWorldTest.Platform.Utils.ClassFinder;
+package com.xuxiaocheng.FantasyWorldTest.Platform.Utils.Additions;
 
-import com.xuxiaocheng.FantasyWorld.Platform.Utils.ClassFinder.JarClassLoader;
+import com.xuxiaocheng.FantasyWorld.Platform.Utils.Additions.JarClassLoader;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;
 import com.xuxiaocheng.HeadLibs.Logger.HLogLevel;
 import com.xuxiaocheng.TestUtil;

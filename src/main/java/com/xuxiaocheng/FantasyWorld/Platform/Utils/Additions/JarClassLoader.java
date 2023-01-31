@@ -1,4 +1,4 @@
-package com.xuxiaocheng.FantasyWorld.Platform.Utils.ClassFinder;
+package com.xuxiaocheng.FantasyWorld.Platform.Utils.Additions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
