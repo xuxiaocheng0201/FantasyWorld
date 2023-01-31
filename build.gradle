@@ -9,13 +9,12 @@ version '0.1.0'
 jar {
     baseName('FantasyWorld')
     version('0.1.0')
-//    manifest() {
-//        attributes "Main-Class": 'Core.Craftworld'
-//        attributes "Class-Path":
-//                'Craftworld/libraries/eventbus-java-3.3.1.jar' +
-//                        ';Craftworld/libraries/xz-1.9.jar' +
-//                        ';Craftworld/libraries/commons-compress-1.21.jar'
-//    }
+    manifest() {
+        attributes "Main-Class": 'com.xuxiaocheng.FantasyWorld.Platform.FantasyWorldPlatform'
+        attributes "Class-Path": '' +
+                ' FantasyWorld/libraries/HeadLibs-0.1.0.jar' +
+                ';FantasyWorld/libraries/guava-31.1.jar'
+    }
 }
 
 repositories {
@@ -43,6 +42,7 @@ dependencies {
     // useful
     implementation 'org.jetbrains:annotations:23.1.0'
     implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'org.joml:joml:1.9.6'
     // HeadLibs
     implementation fileTree(dir: 'libs', excludes: ['*-javadoc.jar', '*-sources.jar'], includes: ['*.jar'])
     testImplementation fileTree(dir: 'libs', excludes: ['*-javadoc.jar', '*-sources.jar'], includes: ['*.jar'])
