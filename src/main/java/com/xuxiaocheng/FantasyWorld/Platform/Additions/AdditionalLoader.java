@@ -1,8 +1,9 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Additions;
 
+import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.ConflictingAdditionIdException;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.IllegalAdditionException;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.MismatchedAdditionAnnouncementException;
-import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.MismatchedAdditionConstructorException;
+import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.AberrantAdditionConstructorException;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Additions.JarClassLoader;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -62,12 +63,14 @@ public final class AdditionalLoader {
                 constructor.setAccessible(true);
                 addition = (Addition) constructor.newInstance();
             } catch (final NoSuchMethodException exception) {
-                exceptions.add(new MismatchedAdditionConstructorException(null, c, exception));
+                exceptions.add(new AberrantAdditionConstructorException("Mismatched the parameterless constructor.", c, exception));
                 continue;
             } catch (final InstantiationException | IllegalAccessException | InvocationTargetException exception) {
-                exceptions.add(new MismatchedAdditionConstructorException("Addition constructor throws exception.", c, exception));
+                exceptions.add(new AberrantAdditionConstructorException("Addition constructor throws exception.", c, exception));
                 continue;
             }
+            if (AdditionalLoader.Modifications.containsKey(additional.id()))
+                exceptions.add(new ConflictingAdditionIdException(null, AdditionalLoader.Modifications.get(additional.id()).getClass(), c));
             AdditionalLoader.Modifications.put(additional.id(), addition);
         }
         return exceptions;
