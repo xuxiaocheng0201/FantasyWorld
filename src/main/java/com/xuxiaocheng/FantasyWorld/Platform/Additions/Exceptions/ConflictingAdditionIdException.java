@@ -13,14 +13,6 @@ public class ConflictingAdditionIdException extends IllegalAdditionException {
 
     private static final String DEFAULT_MESSAGE = "Conflicting addition id.";
 
-    public ConflictingAdditionIdException() {
-        super(ConflictingAdditionIdException.DEFAULT_MESSAGE);
-    }
-
-    public ConflictingAdditionIdException(@Nullable final Throwable cause) {
-        super(ConflictingAdditionIdException.DEFAULT_MESSAGE, cause);
-    }
-
     public ConflictingAdditionIdException(@Nullable final String message) {
         super(Objects.requireNonNullElse(message, ConflictingAdditionIdException.DEFAULT_MESSAGE));
     }
@@ -29,28 +21,13 @@ public class ConflictingAdditionIdException extends IllegalAdditionException {
         super(Objects.requireNonNullElse(message, ConflictingAdditionIdException.DEFAULT_MESSAGE), cause);
     }
 
-    public ConflictingAdditionIdException(@Nullable final String message, @Nullable final String id) {
-        super(Objects.requireNonNullElse(message, ConflictingAdditionIdException.DEFAULT_MESSAGE) +
-                " addition id: " + id);
+    public ConflictingAdditionIdException(@Nullable final String message, @Nullable final String id, @Nullable final Class<?> a, @Nullable final Class<?> b) {
+        super(Objects.requireNonNullElse(message, ConflictingAdditionIdException.DEFAULT_MESSAGE) + " addition id: " + id +
+                ", class a: " + (a == null ? "null" : a.getName()) + ", class b: " + (b == null ? "null" : b.getName()));
     }
 
-    public ConflictingAdditionIdException(@Nullable final String message, @Nullable final String id, @Nullable final Throwable cause) {
-        super(Objects.requireNonNullElse(message, ConflictingAdditionIdException.DEFAULT_MESSAGE) +
-                " addition id: " + id, cause);
-    }
-
-    public ConflictingAdditionIdException(@Nullable final String message, @Nullable final Class<?> a, @Nullable final Class<?> b) {
-        super(Objects.requireNonNullElse(message, ConflictingAdditionIdException.DEFAULT_MESSAGE) +
-                " class a: " + (a == null ? "null" : a.getName()) + ", class b: " + (b == null ? "null" : b.getName()));
-    }
-
-    public ConflictingAdditionIdException(@Nullable final String message, @Nullable final Class<?> a, @Nullable final Class<?> b, @Nullable final Throwable cause) {
-        super(Objects.requireNonNullElse(message, ConflictingAdditionIdException.DEFAULT_MESSAGE) +
-                " class a: " + (a == null ? "null" : a.getName()) + ", class b: " + (b == null ? "null" : b.getName()), cause);
-    }
-
-    @Override
-    public @NotNull HLogLevel getLevel() {
-        return HLogLevel.ERROR;
+    public ConflictingAdditionIdException(@Nullable final String message, @Nullable final String id, @Nullable final Class<?> a, @Nullable final Class<?> b, @Nullable final Throwable cause) {
+        super(Objects.requireNonNullElse(message, ConflictingAdditionIdException.DEFAULT_MESSAGE) + " addition id: " + id +
+                ", class a: " + (a == null ? "null" : a.getName()) + ", class b: " + (b == null ? "null" : b.getName()), cause);
     }
 }

@@ -23,13 +23,13 @@ public interface Addition {
      * After that, the rest methods will be called to determine the loading order and post events.</p>
      * <p>You should register event buses here instead of in the constructor.
      * You can change Cornerstones or Modifications based on {@code Addition} list
-     *   by calling {@link AdditionalLoader#getUnmodifiableModifications()} as well.</p>
+     *   by calling {@link AdditionsLoader#getUnmodifiableModifications()} as well.</p>
      */
-    void entrance();
+    void entrance() throws Exception;
     @NotNull VersionSingle getVersion();
     @NotNull VersionComplex getAcceptPlatformVersion();
-    @NotNull @UnmodifiableView Map<String, VersionComplex> getCornerstones();
-    @NotNull @UnmodifiableView Map<String, VersionComplex> getModifications();
+    @NotNull @UnmodifiableView Map<@NotNull String, @NotNull VersionComplex> getCornerstones(); // after-require (others, this)
+    @NotNull @UnmodifiableView Map<@NotNull String, @NotNull VersionComplex> getModifications(); // before-require (this, others)
 
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

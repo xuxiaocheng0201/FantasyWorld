@@ -13,14 +13,6 @@ public class MismatchedAdditionAnnouncementException extends IllegalAdditionExce
 
     private static final String DEFAULT_MESSAGE = "Mismatched addition class announcement.";
 
-    public MismatchedAdditionAnnouncementException() {
-        super(MismatchedAdditionAnnouncementException.DEFAULT_MESSAGE);
-    }
-
-    public MismatchedAdditionAnnouncementException(@Nullable final Throwable cause) {
-        super(MismatchedAdditionAnnouncementException.DEFAULT_MESSAGE, cause);
-    }
-
     public MismatchedAdditionAnnouncementException(@Nullable final String message) {
         super(Objects.requireNonNullElse(message, MismatchedAdditionAnnouncementException.DEFAULT_MESSAGE));
     }
@@ -31,11 +23,11 @@ public class MismatchedAdditionAnnouncementException extends IllegalAdditionExce
 
     public MismatchedAdditionAnnouncementException(@Nullable final String message, @Nullable final Class<?> aClass) {
         super(Objects.requireNonNullElse(message, MismatchedAdditionAnnouncementException.DEFAULT_MESSAGE) +
-                " class name: " + (aClass == null ? "null" : aClass.getName()));
+                " class: " + (aClass == null ? "null" : aClass.getName()));
     }
 
     public MismatchedAdditionAnnouncementException(@Nullable final String message, @Nullable final Class<?> aClass, @Nullable final Throwable cause) {
         super(Objects.requireNonNullElse(message, MismatchedAdditionAnnouncementException.DEFAULT_MESSAGE) +
-                " class name: " + (aClass == null ? "null" : aClass.getName()), cause);
+                " class: " + (aClass == null ? "null" : aClass.getName()), cause);
     }
 }
