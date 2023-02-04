@@ -5,10 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -83,35 +81,12 @@ public final class VersionComplex implements Serializable {
     public int hashCode() {
         return Objects.hash(this.versionRanges, this.versionSingles);
     }
-/*
-(
-  ( [\\[|(]
-    ((\\w+\\.)*\\w+|)
-    ,
-    ((\\w+\\.)*\\w+|)
-    []|)]
-  )|(
-    \\{
-      ((\\w+\\.)*\\w+,)*(\\w+\\.)*\\w+
-    }
-  )
-  &
-)*
-( [\\[|(]
-  ((\\w+\\.)*\\w+|)
-  ,
-  ((\\w+\\.)*\\w+|)
-  []|)]
-)|(
-  \\{
-    ((\\w+\\.)*\\w+,)*(\\w+\\.)*\\w+
-  }
-)
- */
-    public static final String VersionOrPattern = "(" + VersionRange.VersionRangePattern + ")|(\\{(((" + VersionSingle.VersionPattern + ")|),)*(" + VersionSingle.VersionPattern + "|)})";
-    public static final String VersionComplexPattern = "((" + VersionComplex.VersionOrPattern + ")&)*(" + VersionComplex.VersionOrPattern + ')';
+
+    private static final String VersionRangePattern = "[\\[|(](" + VersionSingle.VersionPattern + "|),(" + VersionSingle.VersionPattern + "|)[]|)]";
+    private static final String VersionOrPattern = "(" + VersionComplex.VersionRangePattern + ")|(\\{(((" + VersionSingle.VersionPattern + ")|),)*(" + VersionSingle.VersionPattern + "|)})";
+    private static final String VersionComplexPattern = "((" + VersionComplex.VersionOrPattern + ")&)*(" + VersionComplex.VersionOrPattern + ')';
     private static final Pattern VersionMatcher = Pattern.compile('^' + VersionComplex.VersionComplexPattern + '$');
-    private static final Pattern VersionExtractor = Pattern.compile("((?<range>" + VersionRange.VersionRangePattern + ")&?)|(\\{(?<singles>(" + VersionSingle.VersionPattern + ",?)*)|}&?)");
+    private static final Pattern VersionExtractor = Pattern.compile("((?<range>" + VersionComplex.VersionRangePattern + ")&?)|(\\{(?<singles>(" + VersionSingle.VersionPattern + ",?)*)|}&?)");
     private static final Pattern SingleExtractor = Pattern.compile("(?<version>" + VersionSingle.VersionPattern + "),?");
     public static @NotNull VersionComplex create(@Nullable final String versionIn) throws VersionFormatException {
         if (versionIn == null || versionIn.isBlank())
@@ -218,5 +193,19 @@ public final class VersionComplex implements Serializable {
             versionComplex.version = builder.toString();
         }
         return versionComplex;
+    }
+
+    public static boolean versionInComplex(@NotNull final VersionSingle version, @NotNull final VersionComplex complex) {
+        if (VersionSingle.EmptyVersion.equals(version))
+            return VersionComplex.EmptyVersionComplex.equals(complex);
+        if (VersionComplex.UniversionVersionComplex.equals(complex))
+            return true;
+        for (final VersionRange range: complex.versionRanges)
+            if (VersionRange.versionInRange(version, range) == 0)
+                return true;
+        for (final VersionSingle single: complex.versionSingles)
+            if (single.equals(version))
+                return true;
+        return false;
     }
 }

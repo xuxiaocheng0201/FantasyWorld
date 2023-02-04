@@ -85,7 +85,6 @@ public final class VersionRange implements Serializable, Comparable<VersionRange
         return VersionRange.compareVersionRange(this, that);
     }
 
-    public static final String VersionRangePattern = "[\\[|(](" + VersionSingle.VersionPattern + "|),(" + VersionSingle.VersionPattern + "|)[]|)]";
     private static final Pattern VersionMatcher = Pattern.compile("^[\\[|(](?<left>(" + VersionSingle.VersionPattern + ")|),(?<right>(" + VersionSingle.VersionPattern + ")|)[]|)]$");
     public static @NotNull VersionRange create(@Nullable final String versionIn) throws VersionFormatException {
         if (versionIn == null || versionIn.isBlank())

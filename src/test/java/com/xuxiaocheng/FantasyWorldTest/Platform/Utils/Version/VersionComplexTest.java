@@ -15,6 +15,15 @@ import java.util.stream.Collectors;
 
 public class VersionComplexTest {
     @Test
+    public void in() throws VersionFormatException {
+        TestUtil.assetsEquals(VersionComplex.versionInComplex(VersionSingle.create("a"), VersionComplex.create("[a,b]")), true);
+        TestUtil.assetsEquals(VersionComplex.versionInComplex(VersionSingle.create("b"), VersionComplex.create("[a,b]")), true);
+        TestUtil.assetsEquals(VersionComplex.versionInComplex(VersionSingle.create("b"), VersionComplex.create("[a,b)")), false);
+        TestUtil.assetsEquals(VersionComplex.versionInComplex(VersionSingle.create("1"), VersionComplex.create("[a,b)&{1}")), true);
+        TestUtil.assetsEquals(VersionComplex.versionInComplex(VersionSingle.create("2"), VersionComplex.create("[a,b)&{1}")), false);
+    }
+
+    @Test
     public void create() throws VersionFormatException {
         VersionComplexTest.checkVersionComplexInside("[a,b]", Set.of("[a,b]"), Set.of());
         VersionComplexTest.checkVersionComplexInside("[0,1]&{2,3}", Set.of("[0,1]"), Set.of("2", "3"));

@@ -65,7 +65,7 @@ public final class VersionSingle implements Serializable, Comparable<VersionSing
         return VersionSingle.compareVersion(this, that);
     }
 
-    public static final String VersionPattern = "(\\w+\\.)*\\w+";
+    static final String VersionPattern = "(\\w+\\.)*\\w+";
     private static final Pattern VersionMatcher = Pattern.compile('^' + VersionSingle.VersionPattern + '$');
     private static final Pattern VersionExtractor = Pattern.compile("(?<code>\\w+)\\.?");
     public static @NotNull VersionSingle create(@Nullable final String versionIn) throws VersionFormatException {
