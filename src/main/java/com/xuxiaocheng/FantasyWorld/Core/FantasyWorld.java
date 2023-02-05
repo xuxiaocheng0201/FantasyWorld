@@ -2,7 +2,6 @@ package com.xuxiaocheng.FantasyWorld.Core;
 
 import com.google.common.collect.ImmutableMap;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Addition;
-import com.xuxiaocheng.FantasyWorld.Platform.Additions.EventBusManager;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionFormatException;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;

@@ -10,8 +10,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class JarClassLoader extends ClassLoader {
-    protected @NotNull JarFile jarFile;
-    protected @NotNull ClassLoader parent;
+    protected final @NotNull JarFile jarFile;
+    protected final @NotNull ClassLoader parent;
 
     public JarClassLoader(@NotNull final JarFile jarFile) {
         super(Thread.currentThread().getContextClassLoader());
