@@ -2,6 +2,7 @@ package com.xuxiaocheng.FantasyWorld.Platform.Utils.Version;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.regex.Matcher;
@@ -29,8 +31,8 @@ public final class VersionComplex implements Serializable {
     public static final @NotNull VersionComplex EmptyVersionComplex = new VersionComplex(false);
     public static final @NotNull VersionComplex UniversionVersionComplex = new VersionComplex(true);
 
-    private final @NotNull Set<VersionRange> versionRanges = new TreeSet<>();
-    private final @NotNull Set<VersionSingle> versionSingles = new ConcurrentSkipListSet<>();
+    private final @NotNull SortedSet<VersionRange> versionRanges = new TreeSet<>();
+    private final @NotNull SortedSet<VersionSingle> versionSingles = new ConcurrentSkipListSet<>();
 
     private @NotNull String version = "";
 
@@ -48,14 +50,14 @@ public final class VersionComplex implements Serializable {
     }
 
     private @Nullable Set<VersionRange> immutableVersionRanges;
-    public Set<VersionRange> getVersionRanges() {
+    public @NotNull @UnmodifiableView Set<VersionRange> getVersionRanges() {
         if (this.immutableVersionRanges == null)
             this.immutableVersionRanges = this.versionRanges.stream().collect(Collectors.toUnmodifiableSet());
         return this.immutableVersionRanges;
     }
 
     private @Nullable Set<VersionSingle> immutableVersionSingles;
-    public Set<VersionSingle> getVersionSingles() {
+    public @NotNull @UnmodifiableView Set<VersionSingle> getVersionSingles() {
         if (this.immutableVersionSingles == null)
             this.immutableVersionSingles = Collections.unmodifiableSet(this.versionSingles);
         return this.immutableVersionSingles;

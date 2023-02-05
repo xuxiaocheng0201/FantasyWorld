@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -33,7 +34,7 @@ public final class VersionSingle implements Serializable, Comparable<VersionSing
     }
 
     private @Nullable List<String> immutableVersionList;
-    public List<String> getVersionLit() {
+    public @NotNull @UnmodifiableView List<String> getVersionLit() {
         if (this.immutableVersionList == null)
             this.immutableVersionList = Collections.unmodifiableList(this.versionList);
         return this.immutableVersionList;

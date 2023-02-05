@@ -1,8 +1,6 @@
 package com.xuxiaocheng.FantasyWorld.Platform;
 
-import com.xuxiaocheng.FantasyWorld.Platform.Additions.Addition;
-import com.xuxiaocheng.FantasyWorld.Platform.Additions.AdditionalLoader;
-import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.IllegalAdditionException;
+import com.xuxiaocheng.FantasyWorld.Platform.Additions.AdditionsLoader;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionFormatException;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;
@@ -19,9 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,8 +32,13 @@ public final class FantasyWorldPlatform {
         super();
     }
 
+    public static final boolean DebugMode = HLog.isDebugMode();
+
     private static @NotNull HLog logger = HLog.DefaultLogger; static {
-        if (!HLog.isDebugMode()) {
+        if (HLog.isDebugMode())
+            FantasyWorldPlatform.logger = HLog.createInstance("DefaultLogger",
+                Integer.MIN_VALUE, false, HLog.DefaultLogger.getWriter());
+        else {
             final File dir = new File("logs");
             final File path = new File(dir, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH.mm.ss")) + ".log");
             try {
@@ -50,7 +52,7 @@ public final class FantasyWorldPlatform {
                 if (!path.createNewFile())
                     throw new IOException("Failed to create log file.");
                 try {
-                    FantasyWorldPlatform.logger = HLog.createInstance("DefaultFileLogger",
+                    FantasyWorldPlatform.logger = HLog.createInstance("DefaultLogger",
                             HLogLevel.FINE.getPriority(), false,
                             new BufferedOutputStream(new FileOutputStream(path, true)));
                 } catch (final FileNotFoundException exception) {
@@ -73,7 +75,7 @@ public final class FantasyWorldPlatform {
     }
     private static boolean runOnClient = false;
     private static boolean showJWindow = false;
-    private static final @NotNull Set<@NotNull File> AdditionSearchPaths = new HashSet<>(); static {
+    private static final @NotNull Collection<@NotNull File> AdditionSearchPaths = new HashSet<>(); static {
         FantasyWorldPlatform.AdditionSearchPaths.add(new File("."));
         FantasyWorldPlatform.AdditionSearchPaths.add(new File("FantasyWorld\\mods"));
         FantasyWorldPlatform.AdditionSearchPaths.add(new File("FantasyWorld\\0.1.0\\additions"));
@@ -86,9 +88,6 @@ public final class FantasyWorldPlatform {
     }
     public static boolean isShowJWindow() {
         return FantasyWorldPlatform.showJWindow;
-    }
-    public static @NotNull Set<@NotNull File> getAdditionSearchPaths() {
-        return FantasyWorldPlatform.AdditionSearchPaths;
     }
 
     @SuppressWarnings("ClassExplicitlyExtendsThread")
@@ -107,7 +106,7 @@ public final class FantasyWorldPlatform {
         HLog.setDebugMode(false);
         Thread.currentThread().setName("FantasyWorldPlatform/main");
         Thread.setDefaultUncaughtExceptionHandler((thread, error) -> FantasyWorldPlatform.logger.log(HLogLevel.FAULT, "An uncaught exception has been thrown in thread '" + thread + "'.", error));
-        Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(Thread.currentThread().getName()));
+        Runtime.getRuntime().addShutdownHook(new ShutdownHookThread("FantasyWorldPlatform/shutdown"));
         FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Hello FantasyWorld platform! version: ", FantasyWorldPlatform.CurrentVersion.getVersion());
         for (final String arg: args) {
             switch (arg.hashCode()) {
@@ -124,44 +123,36 @@ public final class FantasyWorldPlatform {
             // TODO: Show window
         }
         final Collection<JarFile> additionFiles = new HashSet<>();
-        FantasyWorldPlatform.searchAddition(additionFiles);
-        FantasyWorldPlatform.loadAddition(additionFiles);
-        // TODO: Sort additions
-        // TODO: Init additions
-        // TODO: Connect between additions
-    }
-
-    private static void searchAddition(final @NotNull Collection<? super @NotNull JarFile> additionFiles) {
-        FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Searching additions in: ", FantasyWorldPlatform.AdditionSearchPaths);
+        FantasyWorldPlatform.logger.log(HLogLevel.INFO, "Finding additions in: ", FantasyWorldPlatform.AdditionSearchPaths);
         for (final File path: FantasyWorldPlatform.AdditionSearchPaths) {
             if (!path.isDirectory())
                 continue;
-            FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Search in path: ", path.getAbsolutePath());
+            FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Find in path: ", path.getAbsolutePath());
             final String[] jarFiles = path.list((dir, name) -> name.endsWith(".jar"));
             if (jarFiles == null)
                 continue;
             additionFiles.addAll(Stream.of(jarFiles).map((s) -> {
+                FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Found addition file: ", s);
                 try {
-                    FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Found addition: ", s);
                     return new JarFile(new File(path, s));
                 } catch (final IOException exception) {
-                    throw new RuntimeException(exception);
+                    FantasyWorldPlatform.logger.log(HLogLevel.ERROR, "Failed to record addition file: ", s, exception);
                 }
-            }).collect(Collectors.toSet()));
+                //noinspection ReturnOfNull
+                return null;
+            }).filter(Objects::nonNull).collect(Collectors.toSet()));
         }
         FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Found addition files count: ", additionFiles.size());
-    }
-    private static void loadAddition(final @NotNull Iterable<? extends @NotNull JarFile> additionFiles) {
+        final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         final Map<Future<?>, String> futures = new HashMap<>();
-        final ExecutorService executor = Executors.newWorkStealingPool(4);
-        for (final JarFile file: additionFiles)
+        for (final JarFile jarFile: additionFiles)
             futures.put(executor.submit(() -> {
                 final String name = Thread.currentThread().getName();
                 Thread.currentThread().setName("FantasyWorldPlatform/AdditionLoader" + name.substring(name.lastIndexOf('-')));
-                FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Loading addition. file: ", file.getName());
-                final List<IllegalAdditionException> exceptions = AdditionalLoader.loadJar(file);
-                FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Loaded addition. file: ", file.getName());
-            }), file.getName());
+                FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Loading addition. file: ", jarFile.getName());
+                AdditionsLoader.addAddition(jarFile);
+                FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Loaded addition. file: ", jarFile.getName());
+            }), jarFile.getName());
         for (final Map.Entry<Future<?>, String> entry: futures.entrySet())
             try {
                 entry.getKey().get();
@@ -169,21 +160,9 @@ public final class FantasyWorldPlatform {
                 FantasyWorldPlatform.logger.log(HLogLevel.ERROR, "Failed to load addition. file: ", entry.getValue(), exception);
             }
         futures.clear();
-        FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Found additions count: ", AdditionalLoader.getUnmodifiableModifications().size());
-        for (final Map.Entry<String, Addition> entry: AdditionalLoader.getUnmodifiableModifications().entrySet())
-            futures.put(executor.submit(() -> {
-                final String name = Thread.currentThread().getName();
-                Thread.currentThread().setName("FantasyWorldPlatform/AdditionInvoker" + name.substring(name.lastIndexOf('-')));
-                FantasyWorldPlatform.logger.log(HLogLevel.INFO, "Invoking addition. id: ", entry.getKey());
-                entry.getValue().entrance();
-                FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Invoked addition. id: ", entry.getKey());
-            }), entry.getKey());
-        for (final Map.Entry<Future<?>, String> entry: futures.entrySet())
-            try {
-                entry.getKey().get();
-            } catch (final InterruptedException | ExecutionException exception) {
-                FantasyWorldPlatform.logger.log(HLogLevel.ERROR, "Failed to invoke addition. id: ", entry.getValue(), exception);
-            }
-        executor.shutdown();
+//        EventBusManager.get("global");
+        AdditionsLoader.initializeAdditions();
+        // TODO: Post Server/Client start events
+
     }
 }

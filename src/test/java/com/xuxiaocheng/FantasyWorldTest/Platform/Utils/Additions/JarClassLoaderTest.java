@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class JarClassLoaderTest {
     @Test
@@ -30,8 +30,8 @@ public class JarClassLoaderTest {
             method.setAccessible(true);
             final Class<?> c = (Class<?>) method.invoke(jarClassLoader, "com.xuxiaocheng.HeadLibs.Logger.HLog", bytes, 0, bytes.length);
             // Because of different ClassLoader, they cannot equal directly.
-            TestUtil.assetsEquals(List.of(c.getMethods()).stream().map((m) -> m.toString()).collect(Collectors.toList()),
-                    List.of(HLog.class.getMethods()).stream().map((m) -> m.toString()).collect(Collectors.toList()));
+            TestUtil.assetsEquals(Stream.of(c.getMethods()).map(Method::toString).collect(Collectors.toList()),
+                    Stream.of(HLog.class.getMethods()).map(Method::toString).collect(Collectors.toList()));
         }
     }
 
