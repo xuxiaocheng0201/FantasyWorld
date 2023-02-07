@@ -18,7 +18,7 @@ public class FantasyWorld implements Addition {
     protected FantasyWorld() throws VersionFormatException {
         super();
         this.version = VersionSingle.create("0.1.0");
-        this.acceptPlatformVersion = VersionComplex.create("(,)");
+        this.acceptPlatformVersion = VersionComplex.create("[0.1.0,)");
         this.cornerstones = ImmutableMap.of();
         this.modifications = ImmutableMap.of();
     }

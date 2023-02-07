@@ -3,6 +3,7 @@ package com.xuxiaocheng.FantasyWorld.Platform.Additions;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.xuxiaocheng.FantasyWorld.Platform.Additions.Events.AdditionInitializationEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.AberrantAdditionConstructorException;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.AdditionVersionNotSupportException;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.ConflictingAdditionIdException;
@@ -11,7 +12,6 @@ import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.MismatchedAddi
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.MissingAdditionException;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.PlatformVersionNotSupportException;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.SortAdditionsException;
-import com.xuxiaocheng.FantasyWorld.Platform.Events.AdditionInitializationEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.FantasyWorldPlatform;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Additions.DirectedGraph;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Additions.JarClassLoader;
@@ -202,7 +202,7 @@ public final class AdditionsLoader {
             return;
         }
         AdditionsLoader.logger.log(HLogLevel.FINE, "Sorted additions list: ", sortedList);
-        // synchronize with global
+        // synchronize with global graph
         synchronized (AdditionsLoader.directedGraph) {
             for (final Map.Entry<String, Addition> entry: processingMap.entrySet()) {
                 final String id = entry.getKey();

@@ -12,11 +12,11 @@ public final class TestUtil {
     }
 
     public static void assetsEquals(@Nullable final Object real, @Nullable final Object expected) {
-        assert Objects.equals(real, expected) : real;
+        assert Objects.equals(real, expected) : "real: " + real + ", excepted: " + expected;
     }
 
     public static void assetsAt(@Nullable final Object real, @Nullable final Object expected) {
-        assert real == expected : real;
+        assert real == expected : "real: " + real + ", excepted: " + expected;
     }
 
     @FunctionalInterface
