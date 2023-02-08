@@ -13,20 +13,20 @@ public class JarClassLoader extends ClassLoader {
     protected final @NotNull JarFile jarFile;
     protected final @NotNull ClassLoader parent;
 
-    public JarClassLoader(@NotNull final JarFile jarFile) {
+    public JarClassLoader(final @NotNull JarFile jarFile) {
         super(Thread.currentThread().getContextClassLoader());
         this.jarFile = jarFile;
         this.parent = Thread.currentThread().getContextClassLoader();
     }
 
-    public JarClassLoader(@NotNull final JarFile jarFile, @Nullable final ClassLoader parent) {
+    public JarClassLoader(final @NotNull JarFile jarFile, final @Nullable ClassLoader parent) {
         super(Objects.requireNonNullElse(parent, Thread.currentThread().getContextClassLoader()));
         this.jarFile = jarFile;
         this.parent = Objects.requireNonNullElse(parent, Thread.currentThread().getContextClassLoader());
     }
 
     @Override
-    protected @NotNull Class<?> findClass(@Nullable final String name) throws ClassNotFoundException {
+    protected @NotNull Class<?> findClass(final @Nullable String name) throws ClassNotFoundException {
         if (name == null)
             throw new ClassNotFoundException("Null class name.");
         final String path = name.replace('.', '/') + ".class";
@@ -46,7 +46,7 @@ public class JarClassLoader extends ClassLoader {
     }
 
     @Override
-    public @Nullable InputStream getResourceAsStream(@Nullable final String name) {
+    public @Nullable InputStream getResourceAsStream(final @Nullable String name) {
         if (name == null)
             return null;
         final JarEntry entry = this.jarFile.getJarEntry(name);

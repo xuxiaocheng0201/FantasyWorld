@@ -12,20 +12,20 @@ public class SortAdditionsException extends IllegalAdditionErrorException {
 
     private static final String DEFAULT_MESSAGE = "Fail to sort additions.";
 
-    public SortAdditionsException(@Nullable final String message) {
+    public SortAdditionsException(final @Nullable String message) {
         super(Objects.requireNonNullElse(message, SortAdditionsException.DEFAULT_MESSAGE));
     }
 
-    public SortAdditionsException(@Nullable final String message, @Nullable final Throwable cause) {
+    public SortAdditionsException(final @Nullable String message, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, SortAdditionsException.DEFAULT_MESSAGE), cause);
     }
 
-    public SortAdditionsException(@Nullable final String message, @Nullable final DirectedGraph<?> graph) {
+    public SortAdditionsException(final @Nullable String message, final @Nullable DirectedGraph<?> graph) {
         super(Objects.requireNonNullElse(message, SortAdditionsException.DEFAULT_MESSAGE) +
                 " graph: " + graph);
     }
 
-    public SortAdditionsException(@Nullable final String message, @Nullable final DirectedGraph<?> graph, @Nullable final Throwable cause) {
+    public SortAdditionsException(final @Nullable String message, final @Nullable DirectedGraph<?> graph, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, SortAdditionsException.DEFAULT_MESSAGE) +
                 " graph: " + graph, cause);
     }

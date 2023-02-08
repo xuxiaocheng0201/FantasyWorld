@@ -12,21 +12,21 @@ public class MissingAdditionException extends IllegalAdditionErrorException {
 
     private static final String DEFAULT_MESSAGE = "Miss addition.";
 
-    public MissingAdditionException(@Nullable final String message) {
+    public MissingAdditionException(final @Nullable String message) {
         super(Objects.requireNonNullElse(message, MissingAdditionException.DEFAULT_MESSAGE));
     }
 
-    public MissingAdditionException(@Nullable final String message, @Nullable final Throwable cause) {
+    public MissingAdditionException(final @Nullable String message, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, MissingAdditionException.DEFAULT_MESSAGE), cause);
     }
 
-    public MissingAdditionException(@Nullable final String message, @Nullable final String id, @Nullable final String missing, @Nullable final VersionComplex missingVersion) {
+    public MissingAdditionException(final @Nullable String message, final @Nullable String id, final @Nullable String missing, final @Nullable VersionComplex missingVersion) {
         super(Objects.requireNonNullElse(message, MissingAdditionException.DEFAULT_MESSAGE) +
                 " missing: " + missing + (missingVersion == null ? "@null": '@' + missingVersion.getVersion()) +
                 ", require by: " + id);
     }
 
-    public MissingAdditionException(@Nullable final String message, @Nullable final String id, @Nullable final String missing, @Nullable final VersionComplex missingVersion, @Nullable final Throwable cause) {
+    public MissingAdditionException(final @Nullable String message, final @Nullable String id, final @Nullable String missing, final @Nullable VersionComplex missingVersion, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, MissingAdditionException.DEFAULT_MESSAGE) +
                 " missing: " + missing + (missingVersion == null ? "@null": '@' + missingVersion.getVersion()) +
                 ", require by: " + id, cause);

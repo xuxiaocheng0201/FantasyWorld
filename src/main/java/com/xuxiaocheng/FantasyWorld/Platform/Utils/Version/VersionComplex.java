@@ -73,7 +73,7 @@ public final class VersionComplex implements Serializable {
     }
 
     @Override
-    public boolean equals(@Nullable final Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof VersionComplex that)) return false;
         return this.versionRanges.equals(that.versionRanges) && this.versionSingles.equals(that.versionSingles);
@@ -90,7 +90,7 @@ public final class VersionComplex implements Serializable {
     private static final Pattern VersionMatcher = Pattern.compile('^' + VersionComplex.VersionComplexPattern + '$');
     private static final Pattern VersionExtractor = Pattern.compile("((?<range>" + VersionComplex.VersionRangePattern + ")&?)|(\\{(?<singles>(" + VersionSingle.VersionPattern + ",?)*)|}&?)");
     private static final Pattern SingleExtractor = Pattern.compile("(?<version>" + VersionSingle.VersionPattern + "),?");
-    public static @NotNull VersionComplex create(@Nullable final String versionIn) throws VersionFormatException {
+    public static @NotNull VersionComplex create(final @Nullable String versionIn) throws VersionFormatException {
         if (versionIn == null || versionIn.isBlank())
             return VersionComplex.EmptyVersionComplex;
         final String version = versionIn.replace(" ", "");
@@ -197,7 +197,7 @@ public final class VersionComplex implements Serializable {
         return versionComplex;
     }
 
-    public static boolean versionInComplex(@NotNull final VersionSingle version, @NotNull final VersionComplex complex) {
+    public static boolean versionInComplex(final @NotNull VersionSingle version, final @NotNull VersionComplex complex) {
         if (VersionSingle.EmptyVersion.equals(version))
             return VersionComplex.EmptyVersionComplex.equals(complex);
         if (VersionComplex.UniversionVersionComplex.equals(complex))

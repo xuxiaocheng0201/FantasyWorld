@@ -108,7 +108,7 @@ public class PacketOutputStream extends OutputStream {
         this.writeLong(Double.doubleToLongBits(d));
     }
 
-    public void writeUTF(@Nullable final String s) throws IOException {
+    public void writeUTF(final @Nullable String s) throws IOException {
         if (s == null) {
             this.writeVariableLenInt(-1);
             return;
@@ -118,7 +118,7 @@ public class PacketOutputStream extends OutputStream {
         this.writeByteArray(bytes);
     }
 
-    public void writeSerializable(@Nullable final Serializable serializable) throws IOException {
+    public void writeSerializable(final @Nullable Serializable serializable) throws IOException {
         try (final ObjectOutput objectOutputStream = new ObjectOutputStream(this.bufferedOutputStream)) {
             objectOutputStream.writeObject(serializable);
         }

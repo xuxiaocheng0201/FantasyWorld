@@ -90,7 +90,7 @@ public final class FantasyWorldPlatform {
         return FantasyWorldPlatform.showJWindow;
     }
 
-    public static void main(@NotNull final String @NotNull [] args) {
+    public static void main(final @NotNull String @NotNull [] args) {
         HLog.setDebugMode(false);
         Thread.currentThread().setName("FantasyWorldPlatform/main");
         Thread.setDefaultUncaughtExceptionHandler((thread, error) -> FantasyWorldPlatform.logger.log(HLogLevel.FAULT, "An uncaught exception has been thrown in thread '" + thread + "'.", error));

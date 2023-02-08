@@ -18,24 +18,24 @@ public class VersionFormatException extends Exception {
         super(VersionFormatException.DEFAULT_MESSAGE);
     }
 
-    public VersionFormatException(@Nullable final Throwable cause) {
+    public VersionFormatException(final @Nullable Throwable cause) {
         super(VersionFormatException.DEFAULT_MESSAGE, cause);
     }
 
-    public VersionFormatException(@Nullable final String message) {
+    public VersionFormatException(final @Nullable String message) {
         super(Objects.requireNonNullElse(message, VersionFormatException.DEFAULT_MESSAGE));
     }
 
-    public VersionFormatException(@Nullable final String message, @Nullable final Throwable cause) {
+    public VersionFormatException(final @Nullable String message, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, VersionFormatException.DEFAULT_MESSAGE), cause);
     }
 
-    public VersionFormatException(@Nullable final String message, @Nullable final String version) {
+    public VersionFormatException(final @Nullable String message, final @Nullable String version) {
         super(Objects.requireNonNullElse(message, VersionFormatException.DEFAULT_MESSAGE) +
                 " Version string: " + (version == null ? "null" : '"' + version + '"'));
     }
 
-    public VersionFormatException(@Nullable final String message, @Nullable final String version, @Nullable final Throwable cause) {
+    public VersionFormatException(final @Nullable String message, final @Nullable String version, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, VersionFormatException.DEFAULT_MESSAGE) +
                 " Version string: " + (version == null ? "null" : '"' + version + '"'), cause);
     }

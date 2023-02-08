@@ -66,10 +66,10 @@ public class VersionRangeTest {
         TestUtil.assetsAt(VersionRange.create("[0,0)"), VersionRange.EmptyVersionRange);
     }
 
-    public static void checkVersionRangeInside(@NotNull final String version, final boolean empty, final boolean lE, final boolean rE, @Nullable final String l, @Nullable final String r) throws VersionFormatException {
+    public static void checkVersionRangeInside(final @NotNull String version, final boolean empty, final boolean lE, final boolean rE, final @Nullable String l, final @Nullable String r) throws VersionFormatException {
         VersionRangeTest.checkVersionRangeInside(version, empty, lE, rE, l, r, version);
     }
-    public static void checkVersionRangeInside(@NotNull final String version, final boolean empty, final boolean lE, final boolean rE, @Nullable final String l, @Nullable final String r, @NotNull final String string) throws VersionFormatException {
+    public static void checkVersionRangeInside(final @NotNull String version, final boolean empty, final boolean lE, final boolean rE, final @Nullable String l, final @Nullable String r, final @NotNull String string) throws VersionFormatException {
         final VersionRange versionRange = VersionRange.create(version);
         TestUtil.assetsEquals(TestUtil.getField(VersionRange.class, "empty", versionRange), empty);
         TestUtil.assetsEquals(TestUtil.getField(VersionRange.class, "leftEquable", versionRange), lE);

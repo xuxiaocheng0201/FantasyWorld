@@ -69,7 +69,7 @@ public final class VersionRange implements Serializable, Comparable<VersionRange
     }
 
     @Override
-    public boolean equals(@Nullable final Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof VersionRange that)) return false;
         return this.empty == that.empty && this.leftEquable == that.leftEquable && this.rightEquable == that.rightEquable && this.leftVersion.equals(that.leftVersion) && this.rightVersion.equals(that.rightVersion);
@@ -81,12 +81,12 @@ public final class VersionRange implements Serializable, Comparable<VersionRange
     }
 
     @Override
-    public int compareTo(@Nullable final VersionRange that) {
+    public int compareTo(final @Nullable VersionRange that) {
         return VersionRange.compareVersionRange(this, that);
     }
 
     private static final Pattern VersionMatcher = Pattern.compile("^[\\[|(](?<left>(" + VersionSingle.VersionPattern + ")|),(?<right>(" + VersionSingle.VersionPattern + ")|)[]|)]$");
-    public static @NotNull VersionRange create(@Nullable final String versionIn) throws VersionFormatException {
+    public static @NotNull VersionRange create(final @Nullable String versionIn) throws VersionFormatException {
         if (versionIn == null || versionIn.isBlank())
             return VersionRange.EmptyVersionRange;
         final String version = versionIn.replace(" ", "");
@@ -105,7 +105,7 @@ public final class VersionRange implements Serializable, Comparable<VersionRange
         );
     }
 
-    static VersionRange create(final boolean leftEquable, @Nullable final VersionSingle left, @Nullable final VersionSingle right, final boolean rightEquable) {
+    static VersionRange create(final boolean leftEquable, final @Nullable VersionSingle left, final @Nullable VersionSingle right, final boolean rightEquable) {
         // fix
         final boolean leftEmpty = left == null || VersionSingle.EmptyVersion.equals(left);
         final boolean rightEmpty = right == null || VersionSingle.EmptyVersion.equals(right);
@@ -141,7 +141,7 @@ public final class VersionRange implements Serializable, Comparable<VersionRange
         return versionRange;
     }
 
-    public static VersionRange create(@Nullable final VersionSingle versionSingle) {
+    public static VersionRange create(final @Nullable VersionSingle versionSingle) {
         if (versionSingle == null || VersionSingle.EmptyVersion.equals(versionSingle))
             return VersionRange.EmptyVersionRange;
         final VersionRange versionRange = new VersionRange(false);
@@ -159,7 +159,7 @@ public final class VersionRange implements Serializable, Comparable<VersionRange
      * -1: {@code a} is at the left of {@code b} (a<b)
      * -2: Incomparable (==empty|universion)
      */
-    public static int compareVersionRange(@Nullable final VersionRange a, @Nullable final VersionRange b) {
+    public static int compareVersionRange(final @Nullable VersionRange a, final @Nullable VersionRange b) {
         if (Objects.requireNonNullElse(a, VersionRange.EmptyVersionRange) == Objects.requireNonNullElse(b, VersionRange.EmptyVersionRange))
             return 0;
         if (a == null || b == null
@@ -205,7 +205,7 @@ public final class VersionRange implements Serializable, Comparable<VersionRange
      *  -1  0   1
      * -2: Incomparable
      */
-    public static int versionInRange(@NotNull final VersionSingle version, @NotNull final VersionRange range) {
+    public static int versionInRange(final @NotNull VersionSingle version, final @NotNull VersionRange range) {
         if (VersionSingle.EmptyVersion.equals(version) || VersionRange.EmptyVersionRange.equals(range))
             return -2;
         if (VersionRange.UniversionVersionRange.equals(range))

@@ -1,8 +1,6 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Additions;
 
 import com.google.common.collect.Sets;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Events.AdditionInitializationEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.AberrantAdditionConstructorException;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.AdditionVersionNotSupportException;
@@ -15,10 +13,13 @@ import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.SortAdditionsE
 import com.xuxiaocheng.FantasyWorld.Platform.FantasyWorldPlatform;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Additions.DirectedGraph;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Additions.JarClassLoader;
+import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBusManager;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;
 import com.xuxiaocheng.HeadLibs.Logger.HLogLevel;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,24 +53,32 @@ public final class AdditionsLoader {
         return AdditionsLoader.unmodifiableModifications;
     }
 
-    public static boolean deleteAddition(@Nullable final String id) {
+    public static boolean deleteAddition(final @Nullable String id) {
         if (id == null)
             return false;
         AdditionsLoader.logger.log(HLogLevel.WARN, "Delete addition: ", id, new Throwable());
         return AdditionsLoader.Modifications.remove(id) != null;
     }
 
-    public static final @NotNull EventBus AdditionsLoaderExceptionEventBus = EventBusManager.get("AdditionsLoader/Exceptions");
+    private static final @NotNull EventBus AdditionsLoaderExceptionEventBus = EventBusManager.createInstance("AdditionsLoader/Exceptions",
+            EventBus.builder().logNoSubscriberMessages(false).sendNoSubscriberEvent(false) // A default log event has been registered.
+                    .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true).throwSubscriberException(false));
+    private static final @NotNull EventBus PerGlobalAdditionsInitEventBus = EventBusManager.createInstance("AdditionsLoader/Initialization-0",
+            EventBus.builder().logNoSubscriberMessages(true).sendNoSubscriberEvent(false)
+                    .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true).throwSubscriberException(false));
+    private static final @NotNull EventBus PostGlobalAdditionsInitEventBus = EventBusManager.createInstance("AdditionsLoader/Initialization-1",
+            EventBus.builder().logNoSubscriberMessages(true).sendNoSubscriberEvent(false)
+                    .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true).throwSubscriberException(false));
     static {
         AdditionsLoader.AdditionsLoaderExceptionEventBus.register(new Object() {
             @Subscribe
-            public void handle(@NotNull final IllegalAdditionException exception) {
+            public void handle(final @NotNull IllegalAdditionException exception) {
                 AdditionsLoader.logger.log(exception.getLevel(), exception);
             }
         });
     }
 
-    public static void addAddition(@Nullable final JarFile jarFile) {
+    public static void addAddition(final @Nullable JarFile jarFile) {
         if (jarFile == null) {
             AdditionsLoader.logger.log(HLogLevel.MISTAKE, "Add additions in a null jar file.");
             return;
@@ -214,19 +223,15 @@ public final class AdditionsLoader {
             }
         }
         // Post events.
-        final EventBus pre = EventBusManager.get("AdditionInitialization-0");
-        final EventBus post = EventBusManager.get("AdditionInitialization-1");
         for (final String id: sortedList) {
+            if (!processingMap.containsKey(id))
+                continue;
             AdditionsLoader.logger.log(HLogLevel.VERBOSE, "Initializing addition: ", id);
             final AdditionInitializationEvent event = new AdditionInitializationEvent(id);
-            pre.post(event);
-            final EventBus eventBus = EventBusManager.getExist(id);
-            if (eventBus == null) {
-                post.post(event);
-                continue;
-            }
-            eventBus.post(event);
-            post.post(event);
+            AdditionsLoader.PerGlobalAdditionsInitEventBus.post(event);
+            final EventBus eventBus = Addition.getEventbusById(id);
+            eventBus.postSticky(event);
+            AdditionsLoader.PostGlobalAdditionsInitEventBus.post(event);
         }
     }
 }

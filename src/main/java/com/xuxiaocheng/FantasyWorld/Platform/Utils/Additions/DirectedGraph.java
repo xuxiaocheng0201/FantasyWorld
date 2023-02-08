@@ -28,7 +28,7 @@ public class DirectedGraph<T> implements Iterable<T> {
         super();
     }
 
-    public DirectedGraph(@Nullable final DirectedGraph<T> graph) {
+    public DirectedGraph(final @Nullable DirectedGraph<T> graph) {
         super();
         if (graph == null)
             return;
@@ -36,17 +36,17 @@ public class DirectedGraph<T> implements Iterable<T> {
         this.inDegree.putAll(graph.inDegree);
     }
 
-    public void addNode(@NotNull final T node) {
+    public void addNode(final @NotNull T node) {
         if (this.inDegree.containsKey(node))
             return;
         this.inDegree.put(node, 0);
     }
 
-    public boolean isNodeExists(@NotNull final T node) {
+    public boolean isNodeExists(final @NotNull T node) {
         return this.inDegree.containsKey(node);
     }
 
-    public void addEdge(@NotNull final T from, @NotNull final T to) {
+    public void addEdge(final @NotNull T from, final @NotNull T to) {
         this.addNode(from);
         this.addNode(to);
         this.graph.put(from, to);
@@ -54,13 +54,13 @@ public class DirectedGraph<T> implements Iterable<T> {
         this.inDegree.put(to, in);
     }
 
-    public boolean isEdgeExists(@NotNull final T from, @NotNull final T to) {
+    public boolean isEdgeExists(final @NotNull T from, final @NotNull T to) {
         if (!this.graph.containsKey(from))
             return false;
         return this.graph.get(from).contains(to);
     }
 
-    public @NotNull @UnmodifiableView Set<T> listEdgesFrom(@NotNull final T from) {
+    public @NotNull @UnmodifiableView Set<T> listEdgesFrom(final @NotNull T from) {
         if (!this.graph.containsKey(from))
             return Set.of();
         return Collections.unmodifiableSet((Set<T>) this.graph.get(from));
@@ -89,7 +89,7 @@ public class DirectedGraph<T> implements Iterable<T> {
     }
 
     @Override
-    public boolean equals(@Nullable final Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof final DirectedGraph<?> that)) return false;
         return this.graph.equals(that.graph) && this.inDegree.equals(that.inDegree);

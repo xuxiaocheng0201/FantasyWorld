@@ -13,21 +13,21 @@ public class AdditionVersionNotSupportException extends IllegalAdditionErrorExce
 
     private static final String DEFAULT_MESSAGE = "Addition version is not support.";
 
-    public AdditionVersionNotSupportException(@Nullable final String message) {
+    public AdditionVersionNotSupportException(final @Nullable String message) {
         super(Objects.requireNonNullElse(message, AdditionVersionNotSupportException.DEFAULT_MESSAGE));
     }
 
-    public AdditionVersionNotSupportException(@Nullable final String message, @Nullable final Throwable cause) {
+    public AdditionVersionNotSupportException(final @Nullable String message, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, AdditionVersionNotSupportException.DEFAULT_MESSAGE), cause);
     }
 
-    public AdditionVersionNotSupportException(@Nullable final String message, @Nullable final String id, @Nullable final String missing, @Nullable final VersionComplex missingVersion, @Nullable final VersionSingle version) {
+    public AdditionVersionNotSupportException(final @Nullable String message, final @Nullable String id, final @Nullable String missing, final @Nullable VersionComplex missingVersion, final @Nullable VersionSingle version) {
         super(Objects.requireNonNullElse(message, AdditionVersionNotSupportException.DEFAULT_MESSAGE) +
                 " missing: " + missing + (missingVersion == null ? "@null": '@' + missingVersion.getVersion()) +
                 ", current: " + (version == null ? "null": version.getVersion()) + ", require by: " + id);
     }
 
-    public AdditionVersionNotSupportException(@Nullable final String message, @Nullable final String id, @Nullable final String missing, @Nullable final VersionComplex missingVersion, @Nullable final VersionSingle version, @Nullable final Throwable cause) {
+    public AdditionVersionNotSupportException(final @Nullable String message, final @Nullable String id, final @Nullable String missing, final @Nullable VersionComplex missingVersion, final @Nullable VersionSingle version, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, AdditionVersionNotSupportException.DEFAULT_MESSAGE) +
                 " missing: " + missing + (missingVersion == null ? "@null": '@' + missingVersion.getVersion()) +
                 ", current: " + (version == null ? "null": version.getVersion()) + ", require by: " + id, cause);

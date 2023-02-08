@@ -53,10 +53,10 @@ public class VersionSingleTest {
         TestUtil.assetsAt(VersionSingle.create(""), VersionSingle.EmptyVersion);
     }
 
-    public static void checkVersionSingleInside(@NotNull final String version, @NotNull final List<String> list) throws VersionFormatException {
+    public static void checkVersionSingleInside(final @NotNull String version, final @NotNull List<String> list) throws VersionFormatException {
         VersionSingleTest.checkVersionSingleInside(version, list, version);
     }
-    public static void checkVersionSingleInside(@NotNull final String version, @NotNull final List<String> list, @NotNull final String string) throws VersionFormatException {
+    public static void checkVersionSingleInside(final @NotNull String version, final @NotNull List<String> list, final @NotNull String string) throws VersionFormatException {
         final VersionSingle versionSingle = VersionSingle.create(version);
         TestUtil.assetsEquals(TestUtil.getField(VersionSingle.class, "versionList", versionSingle), list);
         TestUtil.assetsEquals(TestUtil.getField(VersionSingle.class, "version", versionSingle), string);

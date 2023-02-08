@@ -50,7 +50,7 @@ public final class VersionSingle implements Serializable, Comparable<VersionSing
     }
 
     @Override
-    public boolean equals(@Nullable final Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof VersionSingle that)) return false;
         return this.versionList.equals(that.versionList);
@@ -62,14 +62,14 @@ public final class VersionSingle implements Serializable, Comparable<VersionSing
     }
 
     @Override
-    public int compareTo(@Nullable final VersionSingle that) {
+    public int compareTo(final @Nullable VersionSingle that) {
         return VersionSingle.compareVersion(this, that);
     }
 
     static final String VersionPattern = "(\\w+\\.)*\\w+";
     private static final Pattern VersionMatcher = Pattern.compile('^' + VersionSingle.VersionPattern + '$');
     private static final Pattern VersionExtractor = Pattern.compile("(?<code>\\w+)\\.?");
-    public static @NotNull VersionSingle create(@Nullable final String versionIn) throws VersionFormatException {
+    public static @NotNull VersionSingle create(final @Nullable String versionIn) throws VersionFormatException {
         if (versionIn == null || versionIn.isBlank())
             return VersionSingle.EmptyVersion;
         final String version = versionIn.replace(" ", "");
@@ -93,7 +93,7 @@ public final class VersionSingle implements Serializable, Comparable<VersionSing
      * -1: {@code a} is older than {@code b} (a<b)
      * -2: Incomparable (==empty)
      */
-    public static int compareVersion(@Nullable final VersionSingle a, @Nullable final VersionSingle b) {
+    public static int compareVersion(final @Nullable VersionSingle a, final @Nullable VersionSingle b) {
         if (Objects.requireNonNullElse(a, VersionSingle.EmptyVersion) == Objects.requireNonNullElse(b, VersionSingle.EmptyVersion))
             return 0;
         if (a == null || b == null || VersionSingle.EmptyVersion.equals(a) || VersionSingle.EmptyVersion.equals(b))

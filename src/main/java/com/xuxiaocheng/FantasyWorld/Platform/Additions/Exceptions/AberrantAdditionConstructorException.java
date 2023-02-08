@@ -11,20 +11,20 @@ public class AberrantAdditionConstructorException extends IllegalAdditionErrorEx
 
     private static final String DEFAULT_MESSAGE = "The parameterless constructor is aberrant.";
 
-    public AberrantAdditionConstructorException(@Nullable final String message) {
+    public AberrantAdditionConstructorException(final @Nullable String message) {
         super(Objects.requireNonNullElse(message, AberrantAdditionConstructorException.DEFAULT_MESSAGE));
     }
 
-    public AberrantAdditionConstructorException(@Nullable final String message, @Nullable final Throwable cause) {
+    public AberrantAdditionConstructorException(final @Nullable String message, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, AberrantAdditionConstructorException.DEFAULT_MESSAGE), cause);
     }
 
-    public AberrantAdditionConstructorException(@Nullable final String message, @Nullable final Class<?> aClass) {
+    public AberrantAdditionConstructorException(final @Nullable String message, final @Nullable Class<?> aClass) {
         super(Objects.requireNonNullElse(message, AberrantAdditionConstructorException.DEFAULT_MESSAGE) +
                 " class: " + (aClass == null ? "null" : aClass.getName()));
     }
 
-    public AberrantAdditionConstructorException(@Nullable final String message, @Nullable final Class<?> aClass, @Nullable final Throwable cause) {
+    public AberrantAdditionConstructorException(final @Nullable String message, final @Nullable Class<?> aClass, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, AberrantAdditionConstructorException.DEFAULT_MESSAGE) +
                 " class: " + (aClass == null ? "null" : aClass.getName()), cause);
     }

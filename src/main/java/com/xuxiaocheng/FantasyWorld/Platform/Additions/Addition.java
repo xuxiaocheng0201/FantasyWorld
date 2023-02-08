@@ -1,8 +1,11 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Additions;
 
+import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBusManager;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.lang.annotation.Documented;
@@ -30,6 +33,12 @@ public interface Addition {
     @NotNull VersionComplex getAcceptPlatformVersion();
     @NotNull @UnmodifiableView Map<@NotNull String, @NotNull VersionComplex> getCornerstones(); // after-require (others, this)
     @NotNull @UnmodifiableView Map<@NotNull String, @NotNull VersionComplex> getModifications(); // before-require (this, others)
+
+    static @NotNull EventBus getEventbusById(final @Nullable String id) {
+        return EventBusManager.createInstance("AdditionsLoader/" + id,
+                EventBus.builder().logNoSubscriberMessages(true).sendNoSubscriberEvent(true)
+                        .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true).throwSubscriberException(false));
+    }
 
     @Documented
     @Retention(RetentionPolicy.RUNTIME)

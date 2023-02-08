@@ -13,11 +13,11 @@ public class IllegalAdditionException extends Exception {
 
     private static final String DEFAULT_MESSAGE = "Illegal addition information.";
 
-    public IllegalAdditionException(@Nullable final String message) {
+    public IllegalAdditionException(final @Nullable String message) {
         super(Objects.requireNonNullElse(message, IllegalAdditionException.DEFAULT_MESSAGE));
     }
 
-    public IllegalAdditionException(@Nullable final String message, @Nullable final Throwable cause) {
+    public IllegalAdditionException(final @Nullable String message, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, IllegalAdditionException.DEFAULT_MESSAGE), cause);
     }
 

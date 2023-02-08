@@ -12,20 +12,20 @@ public class PlatformVersionNotSupportException extends IllegalAdditionErrorExce
 
     private static final String DEFAULT_MESSAGE = "Platform version is not support.";
 
-    public PlatformVersionNotSupportException(@Nullable final String message) {
+    public PlatformVersionNotSupportException(final @Nullable String message) {
         super(Objects.requireNonNullElse(message, PlatformVersionNotSupportException.DEFAULT_MESSAGE));
     }
 
-    public PlatformVersionNotSupportException(@Nullable final String message, @Nullable final Throwable cause) {
+    public PlatformVersionNotSupportException(final @Nullable String message, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, PlatformVersionNotSupportException.DEFAULT_MESSAGE), cause);
     }
 
-    public PlatformVersionNotSupportException(@Nullable final String message, @Nullable final String id, @Nullable final VersionComplex version) {
+    public PlatformVersionNotSupportException(final @Nullable String message, final @Nullable String id, final @Nullable VersionComplex version) {
         super(Objects.requireNonNullElse(message, PlatformVersionNotSupportException.DEFAULT_MESSAGE) +
                 " addition id: " + id + ", accept platform version: " + (version == null ? "null" : version.getVersion()));
     }
 
-    public PlatformVersionNotSupportException(@Nullable final String message, @Nullable final String id, @Nullable final VersionComplex version, @Nullable final Throwable cause) {
+    public PlatformVersionNotSupportException(final @Nullable String message, final @Nullable String id, final @Nullable VersionComplex version, final @Nullable Throwable cause) {
         super(Objects.requireNonNullElse(message, PlatformVersionNotSupportException.DEFAULT_MESSAGE) +
                 " addition id: " + id + ", accept platform version: " + (version == null ? "null" : version.getVersion()), cause);
     }

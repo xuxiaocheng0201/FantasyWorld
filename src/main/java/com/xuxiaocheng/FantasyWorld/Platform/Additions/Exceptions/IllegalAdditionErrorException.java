@@ -10,11 +10,11 @@ public class IllegalAdditionErrorException extends IllegalAdditionException {
     @Serial
     private static final long serialVersionUID = -7501409732731868727L;
 
-    public IllegalAdditionErrorException(@Nullable final String message) {
+    public IllegalAdditionErrorException(final @Nullable String message) {
         super(message);
     }
 
-    public IllegalAdditionErrorException(@Nullable final String message, @Nullable final Throwable cause) {
+    public IllegalAdditionErrorException(final @Nullable String message, final @Nullable Throwable cause) {
         super(message, cause);
     }
 

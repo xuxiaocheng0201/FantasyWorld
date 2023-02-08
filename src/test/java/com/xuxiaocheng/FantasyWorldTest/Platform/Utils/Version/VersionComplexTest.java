@@ -49,10 +49,10 @@ public class VersionComplexTest {
         TestUtil.assertThrow(() -> VersionComplex.create("(1,2"), VersionFormatException.class);
     }
 
-    public static void checkVersionComplexInside(@NotNull final String version, @NotNull final Collection<String> ranges, @NotNull final Collection<String> singles) throws VersionFormatException {
+    public static void checkVersionComplexInside(final @NotNull String version, final @NotNull Collection<String> ranges, final @NotNull Collection<String> singles) throws VersionFormatException {
         VersionComplexTest.checkVersionComplexInside(version, ranges, singles, version);
     }
-    public static void checkVersionComplexInside(@NotNull final String version, @NotNull final Collection<String> ranges, @NotNull final Collection<String> singles, @NotNull final String string) throws VersionFormatException {
+    public static void checkVersionComplexInside(final @NotNull String version, final @NotNull Collection<String> ranges, final @NotNull Collection<String> singles, final @NotNull String string) throws VersionFormatException {
         final VersionComplex versionComplex = VersionComplex.create(version);
         TestUtil.assetsEquals(
                 TestUtil.getField(VersionComplex.class, "versionRanges", versionComplex),

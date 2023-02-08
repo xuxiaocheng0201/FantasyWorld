@@ -11,11 +11,11 @@ public final class TestUtil {
         super();
     }
 
-    public static void assetsEquals(@Nullable final Object real, @Nullable final Object expected) {
+    public static void assetsEquals(final @Nullable Object real, final @Nullable Object expected) {
         assert Objects.equals(real, expected) : "real: " + real + ", excepted: " + expected;
     }
 
-    public static void assetsAt(@Nullable final Object real, @Nullable final Object expected) {
+    public static void assetsAt(final @Nullable Object real, final @Nullable Object expected) {
         assert real == expected : "real: " + real + ", excepted: " + expected;
     }
 
@@ -24,7 +24,7 @@ public final class TestUtil {
         void run() throws Throwable;
     }
 
-    public static void assertThrow(@NotNull final ThrowableFunction function, @NotNull final Class<? extends Throwable> exception) {
+    public static void assertThrow(final @NotNull ThrowableFunction function, final @NotNull Class<? extends Throwable> exception) {
         try {
             function.run();
             assert false : "Not throw.";
@@ -36,7 +36,7 @@ public final class TestUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getField(@NotNull final Class<?> clazz, @NotNull final String fieldName, @Nullable final Object invoker) {
+    public static <T> T getField(final @NotNull Class<?> clazz, final @NotNull String fieldName, final @Nullable Object invoker) {
         try {
             final Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
