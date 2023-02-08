@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -14,25 +15,22 @@ import java.nio.charset.StandardCharsets;
 public class PacketOutputStream extends OutputStream {
     protected final @NotNull ByteArrayOutputStream byteArrayOutputStream;
     protected final @NotNull BufferedOutputStream bufferedOutputStream;
-    protected final @NotNull ObjectOutputStream objectOutputStream;
 
-    public PacketOutputStream() throws IOException {
+    public PacketOutputStream() {
         super();
         this.byteArrayOutputStream = new ByteArrayOutputStream();
         this.bufferedOutputStream = new BufferedOutputStream(this.byteArrayOutputStream);
-        this.objectOutputStream = new ObjectOutputStream(this.bufferedOutputStream);
     }
 
-    public PacketOutputStream(final int size) throws IOException {
+    public PacketOutputStream(final int size) {
         super();
         this.byteArrayOutputStream = new ByteArrayOutputStream(size);
         this.bufferedOutputStream = new BufferedOutputStream(this.byteArrayOutputStream);
-        this.objectOutputStream = new ObjectOutputStream(this.bufferedOutputStream);
     }
 
     @Override
     public void close() throws IOException {
-        this.objectOutputStream.close();
+        this.bufferedOutputStream.close();
     }
 
     @Override
@@ -121,12 +119,19 @@ public class PacketOutputStream extends OutputStream {
     }
 
     public void writeSerializable(@Nullable final Serializable serializable) throws IOException {
-        this.objectOutputStream.writeObject(serializable);
+        try (final ObjectOutput objectOutputStream = new ObjectOutputStream(this.bufferedOutputStream)) {
+            objectOutputStream.writeObject(serializable);
+        }
     }
 
     public byte[] toBytes() throws IOException {
-        this.objectOutputStream.flush();
+        this.bufferedOutputStream.flush();
         return this.byteArrayOutputStream.toByteArray();
+    }
+
+    public void clear() throws IOException {
+        this.bufferedOutputStream.flush();
+        this.byteArrayOutputStream.reset();
     }
 
     @Override

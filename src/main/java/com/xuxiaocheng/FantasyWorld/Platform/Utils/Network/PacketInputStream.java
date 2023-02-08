@@ -12,29 +12,20 @@ import java.nio.charset.StandardCharsets;
 
 public class PacketInputStream extends InputStream {
     protected final @NotNull ByteArrayInputStream byteArrayInputStream;
-    protected final @NotNull ObjectInputStream objectInputStream;
 
-    public PacketInputStream(final @NotNull PacketOutputStream outputStream) throws IOException {
-        super();
-        this.byteArrayInputStream = new ByteArrayInputStream(outputStream.toBytes());
-        this.objectInputStream = new ObjectInputStream(this.byteArrayInputStream);
-    }
-
-    public PacketInputStream(final byte @NotNull [] bs) throws IOException {
+    public PacketInputStream(final byte @NotNull [] bs) {
         super();
         this.byteArrayInputStream = new ByteArrayInputStream(bs);
-        this.objectInputStream = new ObjectInputStream(this.byteArrayInputStream);
     }
 
-    public PacketInputStream(final byte @NotNull [] bs, final int offset, final int length) throws IOException {
+    public PacketInputStream(final byte @NotNull [] bs, final int offset, final int length) {
         super();
         this.byteArrayInputStream = new ByteArrayInputStream(bs, offset, length);
-        this.objectInputStream = new ObjectInputStream(this.byteArrayInputStream);
     }
 
     @Override
     public void close() throws IOException {
-        this.objectInputStream.close();
+        this.byteArrayInputStream.close();
     }
 
     @Override
@@ -133,8 +124,8 @@ public class PacketInputStream extends InputStream {
 
     @SuppressWarnings("unchecked")
     public @Nullable <T extends Serializable> T readSerializable() throws IOException {
-        try {
-            return (T) this.objectInputStream.readObject();
+        try (final ObjectInputStream objectInputStream = new ObjectInputStream(this.byteArrayInputStream)) {
+            return (T) objectInputStream.readObject();
         } catch (final ClassNotFoundException | ClassCastException exception) {
             throw new IOException(exception);
         }

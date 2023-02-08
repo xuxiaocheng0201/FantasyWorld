@@ -90,23 +90,13 @@ public final class FantasyWorldPlatform {
         return FantasyWorldPlatform.showJWindow;
     }
 
-    @SuppressWarnings("ClassExplicitlyExtendsThread")
-    private static class ShutdownHookThread extends Thread {
-        private ShutdownHookThread(@NotNull final String name) {
-            super(name);
-        }
-
-        @Override
-        public void run() {
-            FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Welcome to play again!");
-        }
-    }
-
     public static void main(@NotNull final String @NotNull [] args) {
         HLog.setDebugMode(false);
         Thread.currentThread().setName("FantasyWorldPlatform/main");
         Thread.setDefaultUncaughtExceptionHandler((thread, error) -> FantasyWorldPlatform.logger.log(HLogLevel.FAULT, "An uncaught exception has been thrown in thread '" + thread + "'.", error));
-        Runtime.getRuntime().addShutdownHook(new ShutdownHookThread("FantasyWorldPlatform/shutdown"));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Welcome to play again!");
+        }, "FantasyWorldPlatform/shutdown"));
         FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Hello FantasyWorld platform! version: ", FantasyWorldPlatform.CurrentVersion.getVersion());
         for (final String arg: args) {
             switch (arg.hashCode()) {
