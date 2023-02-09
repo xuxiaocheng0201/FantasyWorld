@@ -1,4 +1,4 @@
-package com.xuxiaocheng.FantasyWorld.Platform.Utils;
+package com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBus;
 
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Events.AdditionInitializationEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.FantasyWorldPlatform;
@@ -6,6 +6,7 @@ import com.xuxiaocheng.HeadLibs.Logger.HLog;
 import com.xuxiaocheng.HeadLibs.Logger.HLogLevel;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.EventBusBuilder;
+import org.greenrobot.eventbus.EventBusEnhance;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.SubscriberExceptionEvent;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,7 @@ public final class EventBusManager {
 
     private static final @NotNull Map<String, EventBus> AdditionsEventBuses = new ConcurrentHashMap<>();
 
-    private static final @NotNull EventBus DefaultEventBus = EventBus.getDefault();
+    private static final @NotNull EventBus DefaultEventBus = new EventBusEnhance();
     static {
         EventBusManager.AdditionsEventBuses.put("default", EventBusManager.DefaultEventBus);
         if (FantasyWorldPlatform.DebugMode)
@@ -51,9 +52,9 @@ public final class EventBusManager {
             return eventBus;
         final EventBus build;
         if (builder == null)
-            build = new EventBus();
+            build = new EventBusEnhance();
         else
-            build = builder.build();
+            build = new EventBusEnhance(builder);
         if (FantasyWorldPlatform.DebugMode)
             build.register(new DebugEventLogger(id));
         EventBusManager.AdditionsEventBuses.put(id, build);

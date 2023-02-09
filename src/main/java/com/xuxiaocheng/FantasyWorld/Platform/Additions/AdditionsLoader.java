@@ -13,7 +13,7 @@ import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.SortAdditionsE
 import com.xuxiaocheng.FantasyWorld.Platform.FantasyWorldPlatform;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Additions.DirectedGraph;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Additions.JarClassLoader;
-import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBusManager;
+import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBus.EventBusManager;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;

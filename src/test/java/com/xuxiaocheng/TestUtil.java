@@ -2,6 +2,7 @@ package com.xuxiaocheng;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -9,6 +10,10 @@ import java.util.Objects;
 public final class TestUtil {
     private TestUtil() {
         super();
+    }
+
+    @Test
+    public void test() {
     }
 
     public static void assetsEquals(final @Nullable Object real, final @Nullable Object expected) {

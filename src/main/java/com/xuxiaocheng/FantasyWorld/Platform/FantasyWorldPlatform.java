@@ -32,12 +32,12 @@ public final class FantasyWorldPlatform {
         super();
     }
 
-    public static final boolean DebugMode = HLog.isDebugMode();
+    public static final boolean DebugMode = true;
 
     private static @NotNull HLog logger = HLog.DefaultLogger; static {
-        if (HLog.isDebugMode())
+        if (FantasyWorldPlatform.DebugMode)
             FantasyWorldPlatform.logger = HLog.createInstance("DefaultLogger",
-                Integer.MIN_VALUE, false, HLog.DefaultLogger.getWriter());
+                Integer.MIN_VALUE, true, HLog.DefaultLogger.getWriter());
         else {
             final File dir = new File("logs");
             final File path = new File(dir, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH.mm.ss")) + ".log");
@@ -53,7 +53,7 @@ public final class FantasyWorldPlatform {
                     throw new IOException("Failed to create log file.");
                 try {
                     FantasyWorldPlatform.logger = HLog.createInstance("DefaultLogger",
-                            HLogLevel.FINE.getPriority(), false,
+                            HLogLevel.DEBUG.getPriority() + 1, false,
                             new BufferedOutputStream(new FileOutputStream(path, true)));
                 } catch (final FileNotFoundException exception) {
                     throw new IOException("Failed to get log file.", exception);
@@ -91,13 +91,15 @@ public final class FantasyWorldPlatform {
     }
 
     public static void main(final @NotNull String @NotNull [] args) {
-        HLog.setDebugMode(false);
+        HLog.setDebugMode(FantasyWorldPlatform.DebugMode);
         Thread.currentThread().setName("FantasyWorldPlatform/main");
         Thread.setDefaultUncaughtExceptionHandler((thread, error) -> FantasyWorldPlatform.logger.log(HLogLevel.FAULT, "An uncaught exception has been thrown in thread '" + thread + "'.", error));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Welcome to play again!");
+            FantasyWorldPlatform.logger.getPrinter().flush();
         }, "FantasyWorldPlatform/shutdown"));
         FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Hello FantasyWorld platform! version: ", FantasyWorldPlatform.CurrentVersion.getVersion());
+        FantasyWorldPlatform.logger.log(HLogLevel.DEBUG, "Working path: ", System.getProperty("user.dir"));
         for (final String arg: args) {
             switch (arg.hashCode()) {
                 case -826834514 -> FantasyWorldPlatform.runOnClient = false; //"runServer"

@@ -26,7 +26,7 @@ public class FantasyWorld implements Addition {
     @Override
     public void entrance() {
         //TODO: Register event buses.
-        Addition.getEventbusById("FantasyWorld").register(this);
+//        Addition.getEventbusById("FantasyWorld").register(this);
     }
 
     @Override

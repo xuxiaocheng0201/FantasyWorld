@@ -1,6 +1,6 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Additions;
 
-import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBusManager;
+import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBus.EventBusManager;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
 import org.greenrobot.eventbus.EventBus;
