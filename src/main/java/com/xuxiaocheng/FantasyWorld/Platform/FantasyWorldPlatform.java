@@ -91,7 +91,8 @@ public final class FantasyWorldPlatform {
     }
 
     public static void main(final @NotNull String @NotNull [] args) {
-        HLog.setDebugMode(FantasyWorldPlatform.DebugMode);
+//        HLog.setDebugMode(FantasyWorldPlatform.DebugMode);
+        HLog.setDebugMode(false);
         Thread.currentThread().setName("FantasyWorldPlatform/main");
         Thread.setDefaultUncaughtExceptionHandler((thread, error) -> FantasyWorldPlatform.logger.log(HLogLevel.FAULT, "An uncaught exception has been thrown in thread '" + thread + "'.", error));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -152,7 +153,7 @@ public final class FantasyWorldPlatform {
                 FantasyWorldPlatform.logger.log(HLogLevel.ERROR, "Failed to load addition. file: ", entry.getValue(), exception);
             }
         futures.clear();
-//        EventBusManager.get("global");
+        executor.shutdown();
         AdditionsLoader.initializeAdditions();
         // TODO: Post Server/Client start events
 

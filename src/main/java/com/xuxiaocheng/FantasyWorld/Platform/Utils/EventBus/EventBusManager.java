@@ -17,14 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>{@code AdditionsLoader/Exceptions}
- *   Post {@link com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.IllegalAdditionException}</p>
- *
- * <p>{@code AdditionsLoader/Initialization-0}
- *   Post {@link AdditionInitializationEvent} before addition load.</p>
+ *   Post {@link com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.IllegalAdditionException} when something went wrong during addition loading.</p>
  * <p>{@code AdditionsLoader/%AdditionId%}
  *   Post {@link AdditionInitializationEvent} when this addition loads.</p>
- * <p>{@code AdditionsLoader/Initialization-1}
- *   Post {@link AdditionInitializationEvent} after addition load.</p>
  */
 public final class EventBusManager {
     private EventBusManager() {

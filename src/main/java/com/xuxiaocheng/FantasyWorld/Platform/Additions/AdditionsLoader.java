@@ -63,12 +63,6 @@ public final class AdditionsLoader {
     private static final @NotNull EventBus AdditionsLoaderExceptionEventBus = EventBusManager.createInstance("AdditionsLoader/Exceptions",
             EventBus.builder().logNoSubscriberMessages(false).sendNoSubscriberEvent(false) // A default log event has been registered.
                     .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true).throwSubscriberException(false));
-    private static final @NotNull EventBus PerGlobalAdditionsInitEventBus = EventBusManager.createInstance("AdditionsLoader/Initialization-0",
-            EventBus.builder().logNoSubscriberMessages(true).sendNoSubscriberEvent(false)
-                    .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true).throwSubscriberException(false));
-    private static final @NotNull EventBus PostGlobalAdditionsInitEventBus = EventBusManager.createInstance("AdditionsLoader/Initialization-1",
-            EventBus.builder().logNoSubscriberMessages(true).sendNoSubscriberEvent(false)
-                    .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true).throwSubscriberException(false));
     static {
         AdditionsLoader.AdditionsLoaderExceptionEventBus.register(new Object() {
             @Subscribe
@@ -227,11 +221,8 @@ public final class AdditionsLoader {
             if (!processingMap.containsKey(id))
                 continue;
             AdditionsLoader.logger.log(HLogLevel.VERBOSE, "Initializing addition: ", id);
-            final AdditionInitializationEvent event = new AdditionInitializationEvent(id);
-            AdditionsLoader.PerGlobalAdditionsInitEventBus.post(event);
             final EventBus eventBus = Addition.getEventbusById(id);
-            eventBus.postSticky(event);
-            AdditionsLoader.PostGlobalAdditionsInitEventBus.post(event);
+            eventBus.postSticky(new AdditionInitializationEvent(id));
         }
     }
 }
