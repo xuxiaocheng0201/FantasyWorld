@@ -41,7 +41,7 @@ public final class TestUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getField(final @NotNull Class<?> clazz, final @NotNull String fieldName, final @Nullable Object invoker) {
+    public static <T, C> T getField(final @NotNull Class<C> clazz, final @NotNull String fieldName, final @Nullable C invoker) {
         try {
             final Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);

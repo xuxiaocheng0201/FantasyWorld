@@ -1,11 +1,15 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Utils.Version;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,23 +90,36 @@ public final class VersionRange implements Serializable, Comparable<VersionRange
     }
 
     private static final Pattern VersionMatcher = Pattern.compile("^[\\[|(](?<left>(" + VersionSingle.VersionPattern + ")|),(?<right>(" + VersionSingle.VersionPattern + ")|)[]|)]$");
+
+    private static final @NotNull LoadingCache<String, VersionRange> VersionRangeCache = CacheBuilder.newBuilder()
+            .maximumSize(100).weakValues().build(new CacheLoader<String, VersionRange>() {
+                @Override
+                public @NotNull VersionRange load(final @NotNull String version) throws VersionFormatException {
+                    // match
+                    final Matcher matcher = VersionRange.VersionMatcher.matcher(version);
+                    if (!matcher.matches())
+                        throw new VersionFormatException("Invalid version range format.", version);
+                    // extract
+                    return VersionRange.create(
+                            version.charAt(0) == '[',
+                            VersionSingle.create(matcher.group("left")),
+                            VersionSingle.create(matcher.group("right")),
+                            version.charAt(version.length() - 1) == ']'
+                    );
+                }
+            });
+
     public static @NotNull VersionRange create(final @Nullable String versionIn) throws VersionFormatException {
         if (versionIn == null || versionIn.isBlank())
             return VersionRange.EmptyVersionRange;
         final String version = versionIn.replace(" ", "");
         if ("(,)".equals(version)) // Quick response
             return VersionRange.UniversionVersionRange;
-        // match
-        final Matcher matcher = VersionRange.VersionMatcher.matcher(version);
-        if (!matcher.matches())
-            throw new VersionFormatException("Invalid version range format.", versionIn);
-        // extract
-        return VersionRange.create(
-                version.charAt(0) == '[',
-                VersionSingle.create(matcher.group("left")),
-                VersionSingle.create(matcher.group("right")),
-                version.charAt(version.length() - 1) == ']'
-        );
+        try {
+            return VersionRange.VersionRangeCache.get(version);
+        } catch (final ExecutionException exception) {
+            throw new VersionFormatException(null, versionIn, exception);
+        }
     }
 
     static VersionRange create(final boolean leftEquable, final @Nullable VersionSingle left, final @Nullable VersionSingle right, final boolean rightEquable) {

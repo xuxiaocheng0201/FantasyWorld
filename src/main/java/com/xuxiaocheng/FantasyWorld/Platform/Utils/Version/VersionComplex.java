@@ -1,5 +1,8 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Utils.Version;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -14,6 +17,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -90,111 +94,124 @@ public final class VersionComplex implements Serializable {
     private static final Pattern VersionMatcher = Pattern.compile('^' + VersionComplex.VersionComplexPattern + '$');
     private static final Pattern VersionExtractor = Pattern.compile("((?<range>" + VersionComplex.VersionRangePattern + ")&?)|(\\{(?<singles>(" + VersionSingle.VersionPattern + ",?)*)|}&?)");
     private static final Pattern SingleExtractor = Pattern.compile("(?<version>" + VersionSingle.VersionPattern + "),?");
+
+    private static final @NotNull LoadingCache<String, VersionComplex> VersionComplexCache = CacheBuilder.newBuilder()
+            .maximumSize(100).weakValues().build(new CacheLoader<>() {
+                @Override
+                public @NotNull VersionComplex load(final @NotNull String key) throws VersionFormatException {
+                    // match
+                    final Matcher matcher = VersionComplex.VersionMatcher.matcher(key);
+                    if (!matcher.matches())
+                        throw new VersionFormatException("Invalid version complex format.", key);
+                    // extract and pretreat
+                    final Collection<VersionRange> versionComplexRanges = new TreeSet<>();
+                    boolean leftLimitless = false;
+                    boolean rightLimitless = false;
+                    final Matcher extractor = VersionComplex.VersionExtractor.matcher(key);
+                    while (extractor.find()) {
+                        final String range = extractor.group("range");
+                        if (range != null) {
+                            final VersionRange versionRange = VersionRange.create(range);
+                            if (VersionRange.UniversionVersionRange.equals(versionRange))
+                                return VersionComplex.UniversionVersionComplex;
+                            if (!VersionRange.EmptyVersionRange.equals(versionRange)) {
+                                versionComplexRanges.add(versionRange);
+                                if (VersionSingle.EmptyVersion.equals(versionRange.getLeftVersion()))
+                                    leftLimitless = true;
+                                if (VersionSingle.EmptyVersion.equals(versionRange.getRightVersion()))
+                                    rightLimitless = true;
+                                if (leftLimitless && rightLimitless)
+                                    return VersionComplex.UniversionVersionComplex;
+                            }
+                        } else {
+                            final String singles = extractor.group("singles");
+                            if (singles != null) {
+                                final Matcher singleMatcher = VersionComplex.SingleExtractor.matcher(singles);
+                                while (singleMatcher.find()) {
+                                    final VersionSingle versionSingle = VersionSingle.create(singleMatcher.group("version"));
+                                    if (!VersionSingle.EmptyVersion.equals(versionSingle))
+                                        versionComplexRanges.add(VersionRange.create(versionSingle));
+                                }
+                            }
+                        }
+                    }
+                    if (versionComplexRanges.isEmpty())
+                        return VersionComplex.EmptyVersionComplex;
+                    // fix
+                    final Collection<VersionRange> versionRanges = new HashSet<>();
+                    VersionSingle lastVersionRangeLeft = null;
+                    boolean lastVersionRangeLeftEquable = false;
+                    VersionSingle lastVersionRangeRight = null;
+                    boolean lastVersionRangeRightEquable = false;
+                    for (final VersionRange versionRange: versionComplexRanges) {
+                        if (lastVersionRangeLeft == null) {
+                            lastVersionRangeLeft = versionRange.getLeftVersion();
+                            lastVersionRangeLeftEquable = versionRange.isLeftEquable();
+                            lastVersionRangeRight = versionRange.getRightVersion();
+                            lastVersionRangeRightEquable = versionRange.isRightEquable();
+                            continue;
+                        }
+                        // if current.left <= last.right:
+                        //   last.right = max(current.right, last.right)
+                        // else
+                        //   ADD(last)
+                        //   last = current
+                        final int cmp = VersionSingle.compareVersion(versionRange.getLeftVersion(), lastVersionRangeRight);
+                        if (cmp < 0 || (cmp == 0 && (versionRange.isLeftEquable() || lastVersionRangeRightEquable))) {
+                            final int right = VersionSingle.compareVersion(versionRange.getRightVersion(), lastVersionRangeRight);
+                            if (right == 0)
+                                lastVersionRangeRightEquable |= versionRange.isRightEquable();
+                            if (right > 0) {
+                                lastVersionRangeRight = versionRange.getRightVersion();
+                                lastVersionRangeRightEquable = versionRange.isRightEquable();
+                            }
+                        } else {
+                            versionRanges.add(VersionRange.create(lastVersionRangeLeftEquable, lastVersionRangeLeft, lastVersionRangeRight, lastVersionRangeRightEquable));
+                            lastVersionRangeLeft = versionRange.getLeftVersion();
+                            lastVersionRangeLeftEquable = versionRange.isLeftEquable();
+                            lastVersionRangeRight = versionRange.getRightVersion();
+                            lastVersionRangeRightEquable = versionRange.isRightEquable();
+                        }
+                    }
+                    versionRanges.add(VersionRange.create(lastVersionRangeLeftEquable, lastVersionRangeLeft, lastVersionRangeRight, lastVersionRangeRightEquable));
+                    final VersionComplex versionComplex = new VersionComplex();
+                    versionComplex.versionRanges.addAll(versionRanges.stream().filter((v) -> {
+                        if (v.isLeftEquable() && v.isRightEquable() && Objects.equals(v.getLeftVersion(), v.getRightVersion())) {
+                            versionComplex.versionSingles.add(v.getLeftVersion());
+                            return false;
+                        }
+                        return true;
+                    }).collect(Collectors.toSet()));
+                    // toString
+                    final StringBuilder builder = new StringBuilder();
+                    for (final VersionRange versionRange: versionComplex.versionRanges)
+                        builder.append((versionRange.getVersion())).append('&');
+                    if (versionComplex.versionSingles.isEmpty()) {
+                        if (builder.isEmpty())
+                            return VersionComplex.EmptyVersionComplex;
+                        versionComplex.version = builder.deleteCharAt(builder.length() - 1).toString();
+                    } else {
+                        builder.append('{');
+                        for (final VersionSingle versionSingle: versionComplex.versionSingles)
+                            builder.append(versionSingle.getVersion()).append(',');
+                        builder.deleteCharAt(builder.length() - 1).append('}');
+                        versionComplex.version = builder.toString();
+                    }
+                    return versionComplex;
+                }
+            });
+
     public static @NotNull VersionComplex create(final @Nullable String versionIn) throws VersionFormatException {
         if (versionIn == null || versionIn.isBlank())
             return VersionComplex.EmptyVersionComplex;
         final String version = versionIn.replace(" ", "");
         if ("(,)".equals(version)) // Quick response
             return VersionComplex.UniversionVersionComplex;
-        // match
-        final Matcher matcher = VersionComplex.VersionMatcher.matcher(version);
-        if (!matcher.matches())
-            throw new VersionFormatException("Invalid version complex format.", versionIn);
-        // extract and pretreat
-        final Collection<VersionRange> versionComplexRanges = new TreeSet<>();
-        boolean leftLimitless = false;
-        boolean rightLimitless = false;
-        final Matcher extractor = VersionComplex.VersionExtractor.matcher(version);
-        while (extractor.find()) {
-            final String range = extractor.group("range");
-            if (range != null) {
-                final VersionRange versionRange = VersionRange.create(range);
-                if (VersionRange.UniversionVersionRange.equals(versionRange))
-                    return VersionComplex.UniversionVersionComplex;
-                if (!VersionRange.EmptyVersionRange.equals(versionRange)) {
-                    versionComplexRanges.add(versionRange);
-                    if (VersionSingle.EmptyVersion.equals(versionRange.getLeftVersion()))
-                        leftLimitless = true;
-                    if (VersionSingle.EmptyVersion.equals(versionRange.getRightVersion()))
-                        rightLimitless = true;
-                    if (leftLimitless && rightLimitless)
-                        return VersionComplex.UniversionVersionComplex;
-                }
-            } else {
-                final String singles = extractor.group("singles");
-                if (singles != null) {
-                    final Matcher singleMatcher = VersionComplex.SingleExtractor.matcher(singles);
-                    while (singleMatcher.find()) {
-                        final VersionSingle versionSingle = VersionSingle.create(singleMatcher.group("version"));
-                        if (!VersionSingle.EmptyVersion.equals(versionSingle))
-                            versionComplexRanges.add(VersionRange.create(versionSingle));
-                    }
-                }
-            }
+        try {
+            return VersionComplex.VersionComplexCache.get(version);
+        } catch (final ExecutionException exception) {
+            throw new VersionFormatException(null, versionIn, exception);
         }
-        if (versionComplexRanges.isEmpty())
-            return VersionComplex.EmptyVersionComplex;
-        // fix
-        final Collection<VersionRange> versionRanges = new HashSet<>();
-        VersionSingle lastVersionRangeLeft = null;
-        boolean lastVersionRangeLeftEquable = false;
-        VersionSingle lastVersionRangeRight = null;
-        boolean lastVersionRangeRightEquable = false;
-        for (final VersionRange versionRange: versionComplexRanges) {
-            if (lastVersionRangeLeft == null) {
-                lastVersionRangeLeft = versionRange.getLeftVersion();
-                lastVersionRangeLeftEquable = versionRange.isLeftEquable();
-                lastVersionRangeRight = versionRange.getRightVersion();
-                lastVersionRangeRightEquable = versionRange.isRightEquable();
-                continue;
-            }
-            // if current.left <= last.right:
-            //   last.right = max(current.right, last.right)
-            // else
-            //   ADD(last)
-            //   last = current
-            final int cmp = VersionSingle.compareVersion(versionRange.getLeftVersion(), lastVersionRangeRight);
-            if (cmp < 0 || (cmp == 0 && (versionRange.isLeftEquable() || lastVersionRangeRightEquable))) {
-                final int right = VersionSingle.compareVersion(versionRange.getRightVersion(), lastVersionRangeRight);
-                if (right == 0)
-                    lastVersionRangeRightEquable |= versionRange.isRightEquable();
-                if (right > 0) {
-                    lastVersionRangeRight = versionRange.getRightVersion();
-                    lastVersionRangeRightEquable = versionRange.isRightEquable();
-                }
-            } else {
-                versionRanges.add(VersionRange.create(lastVersionRangeLeftEquable, lastVersionRangeLeft, lastVersionRangeRight, lastVersionRangeRightEquable));
-                lastVersionRangeLeft = versionRange.getLeftVersion();
-                lastVersionRangeLeftEquable = versionRange.isLeftEquable();
-                lastVersionRangeRight = versionRange.getRightVersion();
-                lastVersionRangeRightEquable = versionRange.isRightEquable();
-            }
-        }
-        versionRanges.add(VersionRange.create(lastVersionRangeLeftEquable, lastVersionRangeLeft, lastVersionRangeRight, lastVersionRangeRightEquable));
-        final VersionComplex versionComplex = new VersionComplex();
-        versionComplex.versionRanges.addAll(versionRanges.stream().filter((v) -> {
-            if (v.isLeftEquable() && v.isRightEquable() && Objects.equals(v.getLeftVersion(), v.getRightVersion())) {
-                versionComplex.versionSingles.add(v.getLeftVersion());
-                return false;
-            }
-            return true;
-        }).collect(Collectors.toSet()));
-        // toString
-        final StringBuilder builder = new StringBuilder();
-        for (final VersionRange versionRange: versionComplex.versionRanges)
-            builder.append((versionRange.getVersion())).append('&');
-        if (versionComplex.versionSingles.isEmpty()) {
-            if (builder.isEmpty())
-                return VersionComplex.EmptyVersionComplex;
-            versionComplex.version = builder.deleteCharAt(builder.length() - 1).toString();
-        } else {
-            builder.append('{');
-            for (final VersionSingle versionSingle: versionComplex.versionSingles)
-                builder.append(versionSingle.getVersion()).append(',');
-            builder.deleteCharAt(builder.length() - 1).append('}');
-            versionComplex.version = builder.toString();
-        }
-        return versionComplex;
     }
 
     public static boolean versionInComplex(final @NotNull VersionSingle version, final @NotNull VersionComplex complex) {

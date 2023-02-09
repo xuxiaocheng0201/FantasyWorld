@@ -12,7 +12,7 @@ import java.util.Objects;
 public class VersionFormatException extends Exception {
     @Serial
     private static final long serialVersionUID = -2079369912007846357L;
-    private static final String DEFAULT_MESSAGE = "Wrong formation of version.";
+    private static final String DEFAULT_MESSAGE = "Invalid formation of version.";
 
     public VersionFormatException() {
         super(VersionFormatException.DEFAULT_MESSAGE);

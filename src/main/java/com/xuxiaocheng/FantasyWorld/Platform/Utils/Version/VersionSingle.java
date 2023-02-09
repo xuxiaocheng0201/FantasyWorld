@@ -1,6 +1,9 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Utils.Version;
 
 import com.google.common.base.Joiner;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.primitives.Ints;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,22 +73,35 @@ public final class VersionSingle implements Serializable, Comparable<VersionSing
     static final String VersionPattern = "(\\w+\\.)*\\w+";
     private static final Pattern VersionMatcher = Pattern.compile('^' + VersionSingle.VersionPattern + '$');
     private static final Pattern VersionExtractor = Pattern.compile("(?<code>\\w+)\\.?");
+
+    private static final @NotNull LoadingCache<String, VersionSingle> VersionSingleCache = CacheBuilder.newBuilder()
+            .maximumSize(100).weakValues().build(new CacheLoader<>() {
+                @Override
+                public @NotNull VersionSingle load(final @NotNull String key) throws VersionFormatException {
+                    // match
+                    final Matcher matcher = VersionSingle.VersionMatcher.matcher(key);
+                    if (!matcher.matches())
+                        throw new VersionFormatException("Invalid version format.", key);
+                    // extract
+                    final VersionSingle versionSingle = new VersionSingle();
+                    final Matcher extractor = VersionSingle.VersionExtractor.matcher(key);
+                    while (extractor.find())
+                        versionSingle.versionList.add(extractor.group("code"));
+                    // to string
+                    versionSingle.version = Joiner.on('.').join(versionSingle.versionList);
+                    return versionSingle;
+                }
+            });
+
     public static @NotNull VersionSingle create(final @Nullable String versionIn) throws VersionFormatException {
         if (versionIn == null || versionIn.isBlank())
             return VersionSingle.EmptyVersion;
         final String version = versionIn.replace(" ", "");
-        // match
-        final Matcher matcher = VersionSingle.VersionMatcher.matcher(version);
-        if (!matcher.matches())
-            throw new VersionFormatException("Invalid version format.", version);
-        // extract
-        final VersionSingle versionSingle = new VersionSingle();
-        final Matcher extractor = VersionSingle.VersionExtractor.matcher(version);
-        while (extractor.find())
-            versionSingle.versionList.add(extractor.group("code"));
-        // to string
-        versionSingle.version = Joiner.on('.').join(versionSingle.versionList);
-        return versionSingle;
+        try {
+            return VersionSingle.VersionSingleCache.get(version);
+        } catch (final ExecutionException exception) {
+            throw new VersionFormatException(null, versionIn, exception);
+        }
     }
 
     /*
