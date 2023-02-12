@@ -4,7 +4,6 @@ import com.xuxiaocheng.HeadLibs.Annotations.Range.IntRange;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
@@ -13,7 +12,7 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 public class PacketOutputStream extends OutputStream {
-    protected final @NotNull ByteArrayOutputStream bufferedByteArrayOutputStream;
+    protected final @NotNull BufferedByteArrayOutputStream bufferedByteArrayOutputStream;
 
     public PacketOutputStream() {
         super();
@@ -26,12 +25,12 @@ public class PacketOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(final int b) {
+    public void write(@IntRange(minimum = Byte.MIN_VALUE, maximum = Byte.MAX_VALUE) final int b) {
         this.bufferedByteArrayOutputStream.write(b);
     }
 
     @Override
-    public void write(final byte @NotNull [] b, final int off, final int len) {
+    public void write(final byte @NotNull [] b, @IntRange(minimum = 0) final int off, @IntRange(minimum = 0) final int len) {
         this.bufferedByteArrayOutputStream.write(b, off, len);
     }
 
@@ -39,7 +38,7 @@ public class PacketOutputStream extends OutputStream {
         this.write(b);
     }
 
-    public void writeByteArray(final byte[] b) throws IOException {
+    public void writeByteArray(final byte @NotNull [] b) throws IOException {
         this.write(b);
     }
 
@@ -96,8 +95,16 @@ public class PacketOutputStream extends OutputStream {
         this.writeInt(Float.floatToIntBits(f));
     }
 
+    public void writeVariableLenFloat(final float f) {
+        this.writeVariableLenInt(Float.floatToIntBits(f));
+    }
+
     public void writeDouble(final double d) {
         this.writeLong(Double.doubleToLongBits(d));
+    }
+
+    public void writeVariableLenDouble(final double d) {
+        this.writeVariableLenLong(Double.doubleToLongBits(d));
     }
 
     public void writeUTF(final @Nullable String s) throws IOException {
@@ -116,7 +123,7 @@ public class PacketOutputStream extends OutputStream {
         }
     }
 
-    public byte[] toBytes() {
+    public byte @NotNull [] toBytes() {
         return this.bufferedByteArrayOutputStream.toByteArray();
     }
 

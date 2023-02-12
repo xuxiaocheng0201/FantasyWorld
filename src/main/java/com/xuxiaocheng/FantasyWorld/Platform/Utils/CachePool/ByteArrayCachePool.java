@@ -2,12 +2,14 @@ package com.xuxiaocheng.FantasyWorld.Platform.Utils.CachePool;
 
 import com.xuxiaocheng.HeadLibs.Annotations.Range.IntRange;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class ByteArrayCachePool implements ICachePool<byte[]> {
-    protected final BlockingQueue<byte[]> queue;
+    protected final @NotNull BlockingQueue<byte @NotNull []> queue;
+    @IntRange(minimum = 0)
     protected final int arrayLength;
 
     public ByteArrayCachePool(@IntRange(minimum = 0) final int arrayLength, @IntRange(minimum = 0) final int capacity) {
@@ -36,7 +38,7 @@ public class ByteArrayCachePool implements ICachePool<byte[]> {
     }
 
     @Override
-    public void recycle(final byte[] e) {
+    public void recycle(final byte @Nullable [] e) {
         if (e == null || e.length != this.arrayLength)
             return;
         //noinspection ResultOfMethodCallIgnored
@@ -45,6 +47,6 @@ public class ByteArrayCachePool implements ICachePool<byte[]> {
 
     @Override
     public @NotNull String toString() {
-        return "ByteArrayCachePool{" + this.hashCode() + '}';
+        return "ByteArrayCachePool@" + this.hashCode();
     }
 }

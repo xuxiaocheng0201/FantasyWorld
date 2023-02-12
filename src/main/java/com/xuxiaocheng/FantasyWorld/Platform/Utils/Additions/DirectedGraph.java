@@ -6,23 +6,23 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
 Note that {@code DirectedGraph} is not synchronized.
  */
-public class DirectedGraph<T> implements Iterable<T> {
-    private final @NotNull Multimap<@NotNull T, @NotNull T> graph = HashMultimap.create();
-    private final @NotNull Map<@NotNull T, @NotNull Integer> inDegree = new HashMap<>();
+public class DirectedGraph<T> {
+    protected final @NotNull Multimap<@NotNull T, @NotNull T> graph = HashMultimap.create();
+    protected final @NotNull Map<@NotNull T, @NotNull Integer> inDegree = new HashMap<>();
 
     public DirectedGraph() {
         super();
@@ -50,8 +50,7 @@ public class DirectedGraph<T> implements Iterable<T> {
         this.addNode(from);
         this.addNode(to);
         this.graph.put(from, to);
-        final int in = this.inDegree.get(to).intValue() + 1;
-        this.inDegree.put(to, in);
+        this.inDegree.put(to, this.inDegree.get(to).intValue() + 1);
     }
 
     public boolean isEdgeExists(final @NotNull T from, final @NotNull T to) {
@@ -60,7 +59,8 @@ public class DirectedGraph<T> implements Iterable<T> {
         return this.graph.get(from).contains(to);
     }
 
-    public @NotNull @UnmodifiableView Set<T> listEdgesFrom(final @NotNull T from) {
+    @NotNull
+    public @UnmodifiableView Set<T> listEdgesFrom(final @NotNull T from) {
         if (!this.graph.containsKey(from))
             return Set.of();
         return Collections.unmodifiableSet((Set<T>) this.graph.get(from));
@@ -83,9 +83,25 @@ public class DirectedGraph<T> implements Iterable<T> {
         return that;
     }
 
-    @Override
-    public @NotNull Iterator<T> iterator() {
-        return this.inDegree.keySet().iterator();
+    // BFS
+    public @NotNull List<T> sort() {
+        final Map<T, Integer> inDegree = new HashMap<>(this.inDegree);
+        final List<T> result = new ArrayList<>(this.inDegree.size());
+        final Deque<T> queue = new LinkedList<>(inDegree.entrySet().stream()
+                .filter(entry -> entry.getValue().intValue() == 0)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toUnmodifiableSet()));
+        while (!queue.isEmpty()) {
+            final T node = queue.poll();
+            result.add(node);
+            for (final T to: this.graph.get(node)) {
+                final int in = inDegree.get(to).intValue() - 1;
+                inDegree.put(to, in);
+                if (in == 0)
+                    queue.add(to);
+            }
+        }
+        return this.inDegree.size() == result.size() ? result : List.of();
     }
 
     @Override
@@ -103,29 +119,8 @@ public class DirectedGraph<T> implements Iterable<T> {
     @Override
     public @NotNull String toString() {
         return "DirectedGraph{" +
-                "graph=" + this.graph +
-                ", inDegree=" + this.inDegree +
+                "node=" + this.inDegree.keySet() +
+                ", edge=" + this.graph +
                 '}';
-    }
-
-    // BFS
-    public @NotNull List<T> sort() {
-        final Map<T, Integer> inDegree = new HashMap<>(this.inDegree);
-        final List<T> result = new ArrayList<>(this.inDegree.size());
-        final Deque<T> queue = new ArrayDeque<>();
-        for (final Map.Entry<T, Integer> entry: inDegree.entrySet())
-            if (entry.getValue().intValue() == 0)
-                queue.add(entry.getKey());
-        while (!queue.isEmpty()) {
-            final T node = queue.poll();
-            result.add(node);
-            for (final T to: this.graph.get(node)) {
-                final int in = inDegree.get(to).intValue() - 1;
-                inDegree.put(to, in);
-                if (in == 0)
-                    queue.add(to);
-            }
-        }
-        return this.inDegree.size() == result.size() ? result : List.of();
     }
 }

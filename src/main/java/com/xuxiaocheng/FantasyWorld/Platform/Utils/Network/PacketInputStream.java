@@ -1,5 +1,6 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Utils.Network;
 
+import com.xuxiaocheng.HeadLibs.Annotations.Range.IntRange;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,14 +14,14 @@ import java.nio.charset.StandardCharsets;
 public class PacketInputStream extends InputStream {
     protected final @NotNull ByteArrayInputStream byteArrayInputStream;
 
-    public PacketInputStream(final byte @NotNull [] bs) {
+    public PacketInputStream(final byte @NotNull [] b) {
         super();
-        this.byteArrayInputStream = new ByteArrayInputStream(bs);
+        this.byteArrayInputStream = new ByteArrayInputStream(b);
     }
 
-    public PacketInputStream(final byte @NotNull [] bs, final int offset, final int length) {
+    public PacketInputStream(final byte @NotNull [] b, @IntRange(minimum = 0) final int off, @IntRange(minimum = 0) final int len) {
         super();
-        this.byteArrayInputStream = new ByteArrayInputStream(bs, offset, length);
+        this.byteArrayInputStream = new ByteArrayInputStream(b, off, len);
     }
 
     @Override
@@ -29,12 +30,14 @@ public class PacketInputStream extends InputStream {
     }
 
     @Override
+    @IntRange(minimum = Byte.MIN_VALUE, maximum = Byte.MAX_VALUE)
     public int read() {
         return this.byteArrayInputStream.read();
     }
 
     @Override
-    public int read(final byte @NotNull [] b, final int off, final int len) {
+    @IntRange(minimum = 0)
+    public int read(final byte @NotNull [] b, @IntRange(minimum = 0) final int off, @IntRange(minimum = 0) final int len) {
         return this.byteArrayInputStream.read(b, off, len);
     }
 
@@ -42,7 +45,8 @@ public class PacketInputStream extends InputStream {
         return (byte) this.read();
     }
 
-    public int readByteArray(final byte[] b) throws IOException {
+    @IntRange(minimum = 0)
+    public int readByteArray(final byte @NotNull [] b) throws IOException {
         return this.read(b);
     }
 
@@ -108,8 +112,16 @@ public class PacketInputStream extends InputStream {
         return Float.intBitsToFloat(this.readInt());
     }
 
+    public float readVariableLenFloat() throws IOException {
+        return Float.intBitsToFloat(this.readVariableLenInt());
+    }
+
     public double readDouble() {
         return Double.longBitsToDouble(this.readLong());
+    }
+
+    public double readVariableLenDouble() throws IOException {
+        return Double.longBitsToDouble(this.readVariableLenLong());
     }
 
     public @Nullable String readUTF() throws IOException {

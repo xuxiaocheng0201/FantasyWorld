@@ -10,19 +10,20 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class JarClassLoader extends ClassLoader {
+    public static final @NotNull ClassLoader ThreadContextClassLoader = Thread.currentThread().getContextClassLoader();
     protected final @NotNull JarFile jarFile;
     protected final @NotNull ClassLoader parent;
 
     public JarClassLoader(final @NotNull JarFile jarFile) {
-        super(Thread.currentThread().getContextClassLoader());
+        super(JarClassLoader.ThreadContextClassLoader);
         this.jarFile = jarFile;
-        this.parent = Thread.currentThread().getContextClassLoader();
+        this.parent = JarClassLoader.ThreadContextClassLoader;
     }
 
     public JarClassLoader(final @NotNull JarFile jarFile, final @Nullable ClassLoader parent) {
-        super(Objects.requireNonNullElse(parent, Thread.currentThread().getContextClassLoader()));
+        super(Objects.requireNonNullElse(parent, JarClassLoader.ThreadContextClassLoader));
         this.jarFile = jarFile;
-        this.parent = Objects.requireNonNullElse(parent, Thread.currentThread().getContextClassLoader());
+        this.parent = Objects.requireNonNullElse(parent, JarClassLoader.ThreadContextClassLoader);
     }
 
     @Override

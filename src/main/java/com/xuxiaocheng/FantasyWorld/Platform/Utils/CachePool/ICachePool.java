@@ -1,6 +1,9 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Utils.CachePool;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public interface ICachePool<T> {
-    T allocate();
-    void recycle(final T e);
+    @NotNull T allocate();
+    void recycle(final @Nullable T e);
 }

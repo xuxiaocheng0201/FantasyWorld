@@ -76,6 +76,16 @@ public class PacketStreamTest {
     }
 
     @Test
+    public void ioVariableLenDouble() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        final int doubles = PacketStreamTest.doublesTest.length;
+        final Double[] doublesTest = new Double[doubles + PacketStreamTest.extraLen];
+        System.arraycopy(PacketStreamTest.doublesTest, 0, doublesTest, 0, doubles);
+        PacketStreamTest.checkIO(doublesTest, doubles, HRandomHelper.RANDOM::nextDouble,
+                PacketOutputStream.class.getDeclaredMethod("writeVariableLenDouble", double.class),
+                PacketInputStream.class.getDeclaredMethod("readVariableLenDouble"));
+    }
+
+    @Test
     public void ioDouble() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         final int doubles = PacketStreamTest.doublesTest.length;
         final Double[] doublesTest = new Double[doubles + PacketStreamTest.extraLen];
@@ -83,6 +93,16 @@ public class PacketStreamTest {
         PacketStreamTest.checkIO(doublesTest, doubles, HRandomHelper.RANDOM::nextDouble,
                 PacketOutputStream.class.getDeclaredMethod("writeDouble", double.class),
                 PacketInputStream.class.getDeclaredMethod("readDouble"));
+    }
+
+    @Test
+    public void ioVariableLenFloat() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        final int floats = PacketStreamTest.floatsTest.length;
+        final Float[] floatsTest = new Float[floats + PacketStreamTest.extraLen];
+        System.arraycopy(PacketStreamTest.floatsTest, 0, floatsTest, 0, floats);
+        PacketStreamTest.checkIO(floatsTest, floats, HRandomHelper.RANDOM::nextFloat,
+                PacketOutputStream.class.getDeclaredMethod("writeVariableLenFloat", float.class),
+                PacketInputStream.class.getDeclaredMethod("readVariableLenFloat"));
     }
 
     @Test

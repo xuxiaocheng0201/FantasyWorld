@@ -9,60 +9,55 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings({"NonPrivateFieldAccessedInSynchronizedContext", "AccessToStaticFieldLockedOnInstance"})
+@SuppressWarnings("NonPrivateFieldAccessedInSynchronizedContext")
 public class BufferedByteArrayOutputStream extends ByteArrayOutputStream {
     @IntRange(minimum = 0)
-    public static final int MaxLengthPerByteArrayNBit = 2;
-    private static final int MaxLengthPerByteArray = 1 << BufferedByteArrayOutputStream.MaxLengthPerByteArrayNBit;
-    protected static final ByteArrayCachePool cachePool = new ByteArrayCachePool(BufferedByteArrayOutputStream.MaxLengthPerByteArray, 1024); // Max: 1M
+    public static final int MaxLengthPerByteArrayNBit = 10;
+    protected static final int MaxLengthPerByteArray = 1 << BufferedByteArrayOutputStream.MaxLengthPerByteArrayNBit;
+    protected static final @NotNull ByteArrayCachePool cachePool = new ByteArrayCachePool(BufferedByteArrayOutputStream.MaxLengthPerByteArray, 1024); // Max: 1M
 
-    protected final List<byte[]> outputted = new ArrayList<>();
+    protected final @NotNull List<byte @NotNull []> outputted = new LinkedList<>();
 
     public BufferedByteArrayOutputStream() {
         super(BufferedByteArrayOutputStream.MaxLengthPerByteArray);
     }
 
-    @Override
-    public synchronized void write(final int b) {
-        this.buf[this.count] = (byte) b;
-        this.count += 1;
-        if (this.count >= BufferedByteArrayOutputStream.MaxLengthPerByteArray) {
-            this.outputted.add(this.buf);
-            this.buf = BufferedByteArrayOutputStream.cachePool.allocate();
-            this.count = 0;
-        }
+    protected synchronized void flushBuf() {
+        this.outputted.add(this.buf);
+        this.buf = BufferedByteArrayOutputStream.cachePool.allocate();
+        this.count = 0;
     }
 
     @Override
-    public synchronized void write(final byte[] b, final int off, final int len) {
+    public synchronized void write(@IntRange(minimum = Byte.MIN_VALUE, maximum = Byte.MAX_VALUE) final int b) {
+        this.buf[this.count++] = (byte) b;
+        if (this.count >= BufferedByteArrayOutputStream.MaxLengthPerByteArray)
+            this.flushBuf();
+    }
+
+    @Override
+    public synchronized void write(final byte @NotNull [] b, @IntRange(minimum = 0) final int off, @IntRange(minimum = 0) final int len) {
         Objects.checkFromIndexSize(off, len, b.length);
         int copiedLen = Math.min(BufferedByteArrayOutputStream.MaxLengthPerByteArray - this.count, len);
         System.arraycopy(b, off, this.buf, this.count, copiedLen);
         this.count += copiedLen;
-        int leftLen = len - copiedLen;
-        while (leftLen > 0) {
-            this.outputted.add(this.buf);
-            this.buf = BufferedByteArrayOutputStream.cachePool.allocate();
-            this.count = 0;
-            final int copyLen = Math.min(BufferedByteArrayOutputStream.MaxLengthPerByteArray, leftLen);
-            System.arraycopy(b, off + copiedLen, this.buf, 0, copyLen);
+        while (len - copiedLen > 0) {
+            this.flushBuf();
+            final int copyLen = Math.min(BufferedByteArrayOutputStream.MaxLengthPerByteArray, len - copiedLen);
+            System.arraycopy(b, off + copiedLen, this.buf, this.count, copyLen);
             this.count += copyLen;
             copiedLen += copyLen;
-            leftLen -= copyLen;
         }
-        if (this.count >= BufferedByteArrayOutputStream.MaxLengthPerByteArray) {
-            this.outputted.add(this.buf);
-            this.buf = BufferedByteArrayOutputStream.cachePool.allocate();
-            this.count = 0;
-        }
+        if (this.count >= BufferedByteArrayOutputStream.MaxLengthPerByteArray)
+            this.flushBuf();
     }
 
     @Override
-    public synchronized void writeTo(final OutputStream out) throws IOException {
+    public synchronized void writeTo(final @NotNull OutputStream out) throws IOException {
         for (final byte[] bytes: this.outputted)
             out.write(bytes);
         out.write(this.buf, 0, this.count);
@@ -79,16 +74,16 @@ public class BufferedByteArrayOutputStream extends ByteArrayOutputStream {
     @Override
     public synchronized byte @NotNull [] toByteArray() {
         final byte[] bytes = new byte[this.size()];
-        int c = 0;
+        int pos = 0;
         for (final byte[] b: this.outputted) {
-            System.arraycopy(b, 0, bytes, c, b.length);
-            c += b.length;
+            System.arraycopy(b, 0, bytes, pos, BufferedByteArrayOutputStream.MaxLengthPerByteArray);
+            pos += BufferedByteArrayOutputStream.MaxLengthPerByteArray;
         }
-        System.arraycopy(this.buf, 0, bytes, c, this.count);
+        System.arraycopy(this.buf, 0, bytes, pos, this.count);
         return bytes;
     }
 
-    public synchronized byte @NotNull [] toByteArray(final int off, final int len) {
+    public synchronized byte @NotNull [] toByteArray(@IntRange(minimum = 0) final int off, @IntRange(minimum = 0) final int len) {
         Objects.checkFromIndexSize(off, len, this.size());
         final byte[] bytes = new byte[len];
         int m = off >>> BufferedByteArrayOutputStream.MaxLengthPerByteArrayNBit;
@@ -100,8 +95,7 @@ public class BufferedByteArrayOutputStream extends ByteArrayOutputStream {
                 return bytes;
             }
             final int copiedLen = Math.min(BufferedByteArrayOutputStream.MaxLengthPerByteArray - n, leftLen);
-            System.arraycopy(this.outputted.get(m), n, bytes, len - leftLen, copiedLen);
-            ++m;
+            System.arraycopy(this.outputted.get(m++), n, bytes, len - leftLen, copiedLen);
             n = 0;
             leftLen -= copiedLen;
         }
