@@ -1,9 +1,9 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Utils.Network;
 
+import com.xuxiaocheng.HeadLibs.Annotations.Range.IntRange;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -13,37 +13,29 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 public class PacketOutputStream extends OutputStream {
-    protected final @NotNull ByteArrayOutputStream byteArrayOutputStream;
-    protected final @NotNull BufferedOutputStream bufferedOutputStream;
+    protected final @NotNull ByteArrayOutputStream bufferedByteArrayOutputStream;
 
     public PacketOutputStream() {
         super();
-        this.byteArrayOutputStream = new ByteArrayOutputStream();
-        this.bufferedOutputStream = new BufferedOutputStream(this.byteArrayOutputStream);
-    }
-
-    public PacketOutputStream(final int size) {
-        super();
-        this.byteArrayOutputStream = new ByteArrayOutputStream(size);
-        this.bufferedOutputStream = new BufferedOutputStream(this.byteArrayOutputStream);
+        this.bufferedByteArrayOutputStream = new BufferedByteArrayOutputStream();
     }
 
     @Override
     public void close() throws IOException {
-        this.bufferedOutputStream.close();
+        this.bufferedByteArrayOutputStream.close();
     }
 
     @Override
-    public void write(final int b) throws IOException {
-        this.bufferedOutputStream.write(b);
+    public void write(final int b) {
+        this.bufferedByteArrayOutputStream.write(b);
     }
 
     @Override
-    public void write(final byte @NotNull [] b, final int off, final int len) throws IOException {
-        this.bufferedOutputStream.write(b, off, len);
+    public void write(final byte @NotNull [] b, final int off, final int len) {
+        this.bufferedByteArrayOutputStream.write(b, off, len);
     }
 
-    public void writeByte(final byte b) throws IOException {
+    public void writeByte(final byte b) {
         this.write(b);
     }
 
@@ -51,27 +43,27 @@ public class PacketOutputStream extends OutputStream {
         this.write(b);
     }
 
-    public void writeBoolean(final boolean f) throws IOException {
+    public void writeBoolean(final boolean f) {
         this.write(f ? 1 : 0);
     }
 
-    public void writeShort(final short s) throws IOException {
+    public void writeShort(final short s) {
         this.writeByte((byte) s);
         this.writeByte((byte) (s >>> 8));
     }
 
-    public void writeVariableLenShort(final short s) throws IOException {
+    public void writeVariableLenShort(final short s) {
         this.writeVariableLenInt(s);
     }
 
-    public void writeInt(final int i) throws IOException {
+    public void writeInt(final int i) {
         this.writeByte((byte) i);
         this.writeByte((byte) (i >>> 8));
         this.writeByte((byte) (i >>> 16));
         this.writeByte((byte) (i >>> 24));
     }
 
-    public void writeVariableLenInt(final int i) throws IOException {
+    public void writeVariableLenInt(final int i) {
         int value = i;
         while (true) {
             if ((value & ~0x7F) == 0) {
@@ -83,12 +75,12 @@ public class PacketOutputStream extends OutputStream {
         }
     }
 
-    public void writeLong(final long l) throws IOException {
+    public void writeLong(final long l) {
         this.writeInt((int) l);
         this.writeInt((int) (l >>> 32));
     }
 
-    public void writeVariableLenLong(final long l) throws IOException {
+    public void writeVariableLenLong(final long l) {
         long value = l;
         while (true) {
             if ((value & ~0x7FL) == 0) {
@@ -100,11 +92,11 @@ public class PacketOutputStream extends OutputStream {
         }
     }
 
-    public void writeFloat(final float f) throws IOException {
+    public void writeFloat(final float f) {
         this.writeInt(Float.floatToIntBits(f));
     }
 
-    public void writeDouble(final double d) throws IOException {
+    public void writeDouble(final double d) {
         this.writeLong(Double.doubleToLongBits(d));
     }
 
@@ -119,23 +111,26 @@ public class PacketOutputStream extends OutputStream {
     }
 
     public void writeSerializable(final @Nullable Serializable serializable) throws IOException {
-        try (final ObjectOutput objectOutputStream = new ObjectOutputStream(this.bufferedOutputStream)) {
+        try (final ObjectOutput objectOutputStream = new ObjectOutputStream(this.bufferedByteArrayOutputStream)) {
             objectOutputStream.writeObject(serializable);
         }
     }
 
-    public byte[] toBytes() throws IOException {
-        this.bufferedOutputStream.flush();
-        return this.byteArrayOutputStream.toByteArray();
+    public byte[] toBytes() {
+        return this.bufferedByteArrayOutputStream.toByteArray();
     }
 
-    public void clear() throws IOException {
-        this.bufferedOutputStream.flush();
-        this.byteArrayOutputStream.reset();
+    @IntRange(minimum = 0)
+    public int size() {
+        return this.bufferedByteArrayOutputStream.size();
+    }
+
+    public void clear() {
+        this.bufferedByteArrayOutputStream.reset();
     }
 
     @Override
     public @NotNull String toString() {
-        return "PacketOutputStream{" + this.bufferedOutputStream + '}';
+        return "PacketOutputStream{" + this.bufferedByteArrayOutputStream + '}';
     }
 }

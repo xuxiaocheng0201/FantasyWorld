@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
@@ -17,6 +18,15 @@ public final class TestUtil {
     }
 
     public static void assetsEquals(final @Nullable Object real, final @Nullable Object expected) {
+        if (expected != null && expected.getClass().isArray()) {
+            assert real != null : "real: null";
+            assert real.getClass().isArray() : "Not array!";
+            final int len = Array.getLength(real);
+            assert Array.getLength(expected) == len : "real array len: " + len;
+            for (int i = 0; i < len; ++i)
+                assert Objects.equals(Array.get(real, i), Array.get(expected, i)) : "i: " + i + ", real: " + Array.get(real, i);
+            return;
+        }
         assert Objects.equals(real, expected) : "real: " + real + ", excepted: " + expected;
     }
 
