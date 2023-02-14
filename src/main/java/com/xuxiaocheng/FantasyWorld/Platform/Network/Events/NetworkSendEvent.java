@@ -1,7 +1,8 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Network.Events;
 
 import com.xuxiaocheng.FantasyWorld.Platform.Network.ServerNetwork;
-import com.xuxiaocheng.FantasyWorld.Platform.Utils.Network.PacketOutputStream;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public record NetworkSendEvent(PacketOutputStream stream, ServerNetwork.ChannelIdMatcher matcher) {
+public record NetworkSendEvent<T>(@NotNull T packet, @Nullable ServerNetwork.ChannelIdMatcher matcher) {
 }

@@ -37,9 +37,7 @@ public class DirectedGraph<T> {
     }
 
     public void addNode(final @NotNull T node) {
-        if (this.inDegree.containsKey(node))
-            return;
-        this.inDegree.put(node, 0);
+        this.inDegree.putIfAbsent(node, 0);
     }
 
     public boolean isNodeExists(final @NotNull T node) {

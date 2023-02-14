@@ -5,8 +5,6 @@ import com.xuxiaocheng.FantasyWorld.Platform.Network.Events.ClientActiveEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Network.Events.NetworkReceiveEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Network.Events.NetworkSendEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBus.EventBusManager;
-import com.xuxiaocheng.FantasyWorld.Platform.Utils.Network.PacketInputStream;
-import com.xuxiaocheng.FantasyWorld.Platform.Utils.Network.PacketOutputStream;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;
 import com.xuxiaocheng.HeadLibs.Logger.HLogLevel;
 import io.netty.bootstrap.ServerBootstrap;
@@ -27,6 +25,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,8 +33,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.SocketAddress;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implements AutoCloseable {
     protected static @NotNull HLog logger = HLog.createInstance("NetworkLogger",
@@ -45,10 +45,10 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
     protected final @NotNull SocketAddress address;
     protected final @NotNull String id;
     protected final @NotNull EventBus eventBus;
-    protected final @NotNull Map<@NotNull ChannelId, @NotNull PacketOutputStream> readBuffer = new HashMap<>();
+    protected final @NotNull Map<@NotNull ChannelId, @NotNull ByteBuf> readBuffer = new ConcurrentHashMap<>();
 
-    protected final @NotNull EventLoopGroup bossGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() << 1);
-    protected final @NotNull EventLoopGroup workerGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() >>> 1);
+    protected final @NotNull EventLoopGroup bossGroup;
+    protected final @NotNull EventLoopGroup workerGroup;
     protected final @NotNull ChannelFuture channelFuture;
     protected final @NotNull ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
@@ -57,6 +57,8 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
         this.address = address;
         this.id = id;
         this.eventBus = EventBusManager.getInstance(id);
+        this.bossGroup = new NioEventLoopGroup(Math.max(1, Runtime.getRuntime().availableProcessors() >>> 2), new DefaultThreadFactory("Server/" + id + "(Boss)"));
+        this.workerGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() << 1, new DefaultThreadFactory("Server/" + id + "(Worker)"));
         final ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(this.bossGroup, this.workerGroup);
         serverBootstrap.channel(NioServerSocketChannel.class);
@@ -78,6 +80,10 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
         this.channelFuture.channel().close().sync();
         this.workerGroup.shutdownGracefully().sync();
         this.bossGroup.shutdownGracefully().sync();
+        // Confirm this.readBuffer is always empty here.
+        for (final ByteBuf buf: this.readBuffer.values())
+            buf.release();
+        this.readBuffer.clear();
     }
 
     public @NotNull String getId() {
@@ -88,14 +94,11 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
         return this.address;
     }
 
-    public @NotNull ChannelGroupFuture send(final byte @NotNull [] bytes, final @NotNull ChannelIdMatcher matcher) {
-        final ByteBuf buf = PooledByteBufAllocator.DEFAULT.directBuffer(4 + bytes.length).writeInt(bytes.length).writeBytes(bytes);
-        return this.channelGroup.writeAndFlush(buf, channel -> matcher.matches(channel.id()));
-    }
-
-    public @NotNull ChannelFuture send(final byte @NotNull [] bytes, final @NotNull ChannelId id) {
-        final ByteBuf buf = PooledByteBufAllocator.DEFAULT.directBuffer(4 + bytes.length).writeInt(bytes.length).writeBytes(bytes);
-        return this.channelGroup.find(id).writeAndFlush(buf);
+    public @NotNull ChannelGroupFuture send(final @NotNull ByteBuf buffer) {
+        final int len = buffer.readableBytes();
+        final ByteBuf buf = PooledByteBufAllocator.DEFAULT.directBuffer(4 + len, 4 + len);
+        buf.writeInt(len).writeBytes(buffer);
+        return this.channelGroup.writeAndFlush(buf);
     }
 
     @FunctionalInterface
@@ -103,9 +106,30 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
         boolean matches(ChannelId id);
     }
 
+    public @NotNull ChannelGroupFuture send(final @NotNull ByteBuf buffer, final @NotNull ChannelIdMatcher matcher) {
+        final int len = buffer.readableBytes();
+        final ByteBuf buf = PooledByteBufAllocator.DEFAULT.directBuffer(4 + len, 4 + len);
+        buf.writeInt(len).writeBytes(buffer);
+        return this.channelGroup.writeAndFlush(buf, channel -> matcher.matches(channel.id()));
+    }
+
+    public @NotNull ChannelFuture send(final @NotNull ByteBuf buffer, final @NotNull ChannelId id) {
+        final int len = buffer.readableBytes();
+        final ByteBuf buf = PooledByteBufAllocator.DEFAULT.directBuffer(4 + len, 4 + len);
+        buf.writeInt(len).writeBytes(buffer);
+        return this.channelGroup.find(id).writeAndFlush(buf);
+    }
+
     @Subscribe
-    public void onSendEvent(final @NotNull NetworkSendEvent event) throws InterruptedException {
-        this.send(event.stream().toBytes(), event.matcher()).sync();
+    public void onSendEvent(final @NotNull NetworkSendEvent<?> event) throws IOException, InterruptedException {
+        final ByteBuf buf = PacketManager.allocateWriteBuffer();
+        buf.writeInt(0);
+        PacketManager.toBytes(buf, event.packet());
+        buf.setInt(0, buf.readableBytes() - 4);
+        if (event.matcher() == null)
+            this.channelGroup.writeAndFlush(buf).sync();
+        else
+            this.channelGroup.writeAndFlush(buf, channel -> event.matcher().matches(channel.id())).sync();
     }
 
     @Override
@@ -114,6 +138,8 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
         this.channelGroup.add(channel);
         ServerNetwork.logger.log(HLogLevel.FINE, "Server \"", this.id, "\": channel active: ", channel.remoteAddress(), ", id: ", channel.id());
         this.eventBus.post(new ClientActiveEvent(channel.id(), true));
+        if (this.readBuffer.put(channel.id(), PacketManager.allocateReadBuffer()) != null)
+            throw new IllegalStateException("Server \"" + this.id + "\": Existed channel. id: " + channel.id());
     }
 
     @Override
@@ -122,6 +148,39 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
         this.channelGroup.remove(channel);
         ServerNetwork.logger.log(HLogLevel.FINE, "Server \"", this.id, "\": channel inactive: ", channel.remoteAddress(), ", id: ", channel.id());
         this.eventBus.post(new ClientActiveEvent(channel.id(), false));
+        final ByteBuf buf = this.readBuffer.remove(channel.id());
+        if (buf == null)
+            throw new IllegalStateException("Server \"" + this.id + "\": Channel not existed. id: " + channel.id());
+        buf.release();
+    }
+
+    @Override
+    protected void channelRead0(final @NotNull ChannelHandlerContext ctx, final @NotNull ByteBuf msg) throws IOException {
+        final Channel channel = ctx.channel();
+        ServerNetwork.logger.log(HLogLevel.DEBUG, "Server \"", this.id, "\": channel read: ", channel.remoteAddress(), ", id: ", channel.id(), ", length: ", msg.readableBytes());
+        ServerNetwork.logger.log(HLogLevel.VERBOSE, (Supplier<byte[]>) () -> {
+            final byte[] received = new byte[msg.readableBytes()];
+            msg.markReaderIndex().readBytes(received).resetReaderIndex();
+            return received;
+        });
+        final ByteBuf buffer = this.readBuffer.get(channel.id());
+        if (buffer == null)
+            throw new IllegalStateException("Server \"" + this.id + "\": Channel not existed. id: " + channel.id());
+        buffer.writeBytes(msg);
+        this.handleReadBuf(buffer, channel.id());
+    }
+
+    protected void handleReadBuf(final @NotNull ByteBuf buffer, final @NotNull ChannelId id) throws IOException {
+        if (buffer.readableBytes() >= 4) {
+            final int length = buffer.markReaderIndex().readInt();
+            if (buffer.readableBytes() >= length) {
+                this.eventBus.post(new NetworkReceiveEvent<>(PacketManager.fromBytes(buffer), id));
+                this.handleReadBuf(buffer, id);
+                return;
+            }
+            buffer.resetReaderIndex();
+        }
+        buffer.discardReadBytes();
     }
 
     @Override
@@ -129,36 +188,6 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
         final Channel channel = ctx.channel();
         ServerNetwork.logger.log(HLogLevel.ERROR, "Server \"", this.id, "\": channel throws: ", channel.remoteAddress(), ", id: ", channel.id(), cause);
         ctx.close();
-    }
-
-    @Override
-    protected void channelRead0(final @NotNull ChannelHandlerContext ctx, final @NotNull ByteBuf msg) throws IOException {
-        final Channel channel = ctx.channel();
-        final byte[] bytes = new byte[msg.readableBytes()];
-        msg.readBytes(bytes);
-        ServerNetwork.logger.log(HLogLevel.DEBUG, "Server \"", this.id, "\": channel read: ", channel.remoteAddress(), ", id: ", channel.id(), ", length: ", bytes.length);
-        ServerNetwork.logger.log(HLogLevel.VERBOSE, "Read bytes: ", bytes);
-        PacketOutputStream stream;
-        synchronized (this.readBuffer) {
-            stream = this.readBuffer.get(channel.id());
-            if (stream == null) {
-                stream = new PacketOutputStream();
-                this.readBuffer.put(channel.id(), stream);
-            }
-        }
-        stream.writeByteArray(bytes);
-        if (stream.size() >= 4) {
-            final ByteBuf buf = PooledByteBufAllocator.DEFAULT.heapBuffer(4, 4);
-            final int length = buf
-                    .writeByte(stream.getByte(0)).writeByte(stream.getByte(1))
-                    .writeByte(stream.getByte(2)).writeByte(stream.getByte(3))
-                    .readInt();
-            buf.release();
-            if (stream.size() - 4 >= length) {
-                this.eventBus.post(new NetworkReceiveEvent(PacketManager.handleInput(new PacketInputStream(stream.toBytes(4, length))), channel.id()));
-                stream.clear(length + 4);
-            }
-        }
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Network;
 
-import com.xuxiaocheng.FantasyWorld.Platform.Utils.Network.PacketInputStream;
-import com.xuxiaocheng.FantasyWorld.Platform.Utils.Network.PacketOutputStream;
-import com.xuxiaocheng.HeadLibs.DataStructures.Pair;
-import com.xuxiaocheng.HeadLibs.Logger.HLog;
+import com.xuxiaocheng.FantasyWorld.Platform.Utils.Network.ByteBufIOUtil;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Map;
@@ -16,46 +16,60 @@ public final class PacketManager {
         super();
     }
 
-    private static final @NotNull Map<@NotNull Class<?>, Pair.@NotNull ImmutablePair<@NotNull PacketFromBytes<?>, @NotNull PacketToBytes>> map = new ConcurrentHashMap<>();
-
-    public static <T> void registerPacket(final @NotNull Class<T> id, final @NotNull PacketFromBytes<T> fromMethod, final @NotNull PacketToBytes toMethod) {
-        if (PacketManager.map.containsKey(id))
-            return;
-        PacketManager.map.put(id, new Pair.ImmutablePair<>(fromMethod, toMethod));
+    public static final int InitPacketBufferSize = 1 << 20; // 1 MB
+    public static final int MaxPacketBufferSize = 1 << 26; // 64 MB
+    public static @NotNull ByteBuf allocateReadBuffer() {
+        return ByteBufAllocator.DEFAULT.buffer(PacketManager.InitPacketBufferSize, PacketManager.MaxPacketBufferSize);
+    }
+    public static @NotNull ByteBuf allocateWriteBuffer() {
+        return ByteBufAllocator.DEFAULT.buffer(PacketManager.InitPacketBufferSize, PacketManager.MaxPacketBufferSize);
     }
 
-    public static boolean isPacketRegistered(final @NotNull Class<?> id) {
-        return PacketManager.map.containsKey(id);
+    private static final @NotNull Map<@NotNull Class<?>, @NotNull String> classMap = new ConcurrentHashMap<>();
+    private static final @NotNull Map<@NotNull String, @NotNull PacketNode<?>> packetMap = new ConcurrentHashMap<>();
+
+    public static <T> void registerPacket(final @NotNull String id, final @NotNull Class<T> type, final @NotNull PacketFromBytes<T> fromMethod, final @NotNull PacketToBytes<T> toMethod) {
+        PacketManager.classMap.putIfAbsent(type, id);
+        PacketManager.packetMap.putIfAbsent(id, new PacketNode<>(fromMethod, toMethod));
+    }
+
+    public static boolean isPacketRegistered(final @Nullable String id) {
+        return PacketManager.packetMap.containsKey(id);
+    }
+
+    public static boolean isPacketRegistered(final @Nullable Class<?> type) {
+        return PacketManager.packetMap.containsKey(PacketManager.classMap.get(type));
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> @NotNull PacketFromBytes<T> getFromMethod(final @NotNull Class<T> id) {
-        final Pair.ImmutablePair<PacketFromBytes<?>, PacketToBytes> pair = PacketManager.map.get(id);
-        if (pair == null)
-            throw new NoSuchElementException("Packet " + id + " is not registered.");
-        return (PacketFromBytes<T>) pair.getFirst();
+    public static <T> @NotNull T fromBytes(final @NotNull ByteBuf buffer) throws IOException {
+        final String id = ByteBufIOUtil.readUTF(buffer);
+        final PacketNode<T> node = (PacketNode<T>) PacketManager.packetMap.get(id);
+        if (node == null)
+            throw new NoSuchElementException("Packet id(" + id + ") is not registered.");
+        return node.fromMethod.fromBytes(buffer);
     }
 
-    public static <T> @NotNull PacketToBytes getToMethod(final @NotNull Class<T> id) {
-        final Pair.ImmutablePair<PacketFromBytes<?>, PacketToBytes> pair = PacketManager.map.get(id);
-        if (pair == null)
-            throw new NoSuchElementException("Packet " + id + " is not registered.");
-        return pair.getSecond();
+    @SuppressWarnings("unchecked")
+    public static <T> void toBytes(final @NotNull ByteBuf buffer, final @NotNull T packet) throws IOException {
+        final String id = PacketManager.classMap.get(packet.getClass());
+        if (id == null)
+            throw new NoSuchElementException("Packet type(" + packet.getClass() + ") is not registered.");
+        ByteBufIOUtil.writeUTF(buffer, id);
+        final PacketNode<T> node = (PacketNode<T>) PacketManager.packetMap.get(id);
+        node.toMethod.toBytes(buffer, packet);
     }
 
     @FunctionalInterface
     public interface PacketFromBytes<T> {
-        T fromBytes(final @NotNull PacketInputStream inputStream);
+        T fromBytes(final @NotNull ByteBuf buffer) throws IOException;
     }
 
     @FunctionalInterface
-    public interface PacketToBytes {
-        byte @NotNull [] toBytes(final @NotNull PacketOutputStream outputStream);
+    public interface PacketToBytes<T> {
+        void toBytes(final @NotNull ByteBuf buffer, final @NotNull T packet) throws IOException;
     }
 
-    public static <T> @NotNull T handleInput(final @NotNull PacketInputStream inputStream) throws IOException {
-        HLog.DefaultLogger.log("DEBUG", inputStream.readUTF());
-//        inputStream.readSerializable();
-        return (T) inputStream;
+    protected record PacketNode<T>(@NotNull PacketFromBytes<T> fromMethod, @NotNull PacketToBytes<T> toMethod) {
     }
 }
