@@ -11,8 +11,9 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
+@SuppressWarnings("NonPrivateFieldAccessedInSynchronizedContext")
 public class PacketOutputStream extends OutputStream {
-    protected final @NotNull BufferedByteArrayOutputStream bufferedByteArrayOutputStream;
+    protected @NotNull BufferedByteArrayOutputStream bufferedByteArrayOutputStream;
 
     public PacketOutputStream() {
         super();
@@ -20,17 +21,16 @@ public class PacketOutputStream extends OutputStream {
     }
 
     @Override
-    public void close() throws IOException {
-        this.bufferedByteArrayOutputStream.close();
+    public void close() {
     }
 
     @Override
-    public void write(@IntRange(minimum = Byte.MIN_VALUE, maximum = Byte.MAX_VALUE) final int b) {
+    public synchronized void write(@IntRange(minimum = Byte.MIN_VALUE, maximum = Byte.MAX_VALUE) final int b) {
         this.bufferedByteArrayOutputStream.write(b);
     }
 
     @Override
-    public void write(final byte @NotNull [] b, @IntRange(minimum = 0) final int off, @IntRange(minimum = 0) final int len) {
+    public synchronized void write(final byte @NotNull [] b, @IntRange(minimum = 0) final int off, @IntRange(minimum = 0) final int len) {
         this.bufferedByteArrayOutputStream.write(b, off, len);
     }
 
@@ -46,7 +46,7 @@ public class PacketOutputStream extends OutputStream {
         this.write(f ? 1 : 0);
     }
 
-    public void writeShort(final short s) {
+    public synchronized void writeShort(final short s) {
         this.writeByte((byte) s);
         this.writeByte((byte) (s >>> 8));
     }
@@ -55,14 +55,14 @@ public class PacketOutputStream extends OutputStream {
         this.writeVariableLenInt(s);
     }
 
-    public void writeInt(final int i) {
+    public synchronized void writeInt(final int i) {
         this.writeByte((byte) i);
         this.writeByte((byte) (i >>> 8));
         this.writeByte((byte) (i >>> 16));
         this.writeByte((byte) (i >>> 24));
     }
 
-    public void writeVariableLenInt(final int i) {
+    public synchronized void writeVariableLenInt(final int i) {
         int value = i;
         while (true) {
             if ((value & ~0x7F) == 0) {
@@ -74,12 +74,12 @@ public class PacketOutputStream extends OutputStream {
         }
     }
 
-    public void writeLong(final long l) {
+    public synchronized void writeLong(final long l) {
         this.writeInt((int) l);
         this.writeInt((int) (l >>> 32));
     }
 
-    public void writeVariableLenLong(final long l) {
+    public synchronized void writeVariableLenLong(final long l) {
         long value = l;
         while (true) {
             if ((value & ~0x7FL) == 0) {
@@ -107,7 +107,7 @@ public class PacketOutputStream extends OutputStream {
         this.writeVariableLenLong(Double.doubleToLongBits(d));
     }
 
-    public void writeUTF(final @Nullable String s) throws IOException {
+    public synchronized void writeUTF(final @Nullable String s) throws IOException {
         if (s == null) {
             this.writeVariableLenInt(-1);
             return;
@@ -117,27 +117,44 @@ public class PacketOutputStream extends OutputStream {
         this.writeByteArray(bytes);
     }
 
-    public void writeSerializable(final @Nullable Serializable serializable) throws IOException {
+    public synchronized void writeSerializable(final @Nullable Serializable serializable) throws IOException {
         try (final ObjectOutput objectOutputStream = new ObjectOutputStream(this.bufferedByteArrayOutputStream)) {
             objectOutputStream.writeObject(serializable);
         }
     }
 
-    public byte @NotNull [] toBytes() {
+    public synchronized byte @NotNull [] toBytes() {
         return this.bufferedByteArrayOutputStream.toByteArray();
     }
 
+    public synchronized byte @NotNull [] toBytes(@IntRange(minimum = 0) final int off, @IntRange(minimum = 0) final int len) {
+        return this.bufferedByteArrayOutputStream.toByteArray(off, len);
+    }
+
+    public synchronized int getByte(@IntRange(minimum = 0) final int index) {
+        return this.bufferedByteArrayOutputStream.get(index);
+    }
+
+    public synchronized void clear(final int len) {
+        final BufferedByteArrayOutputStream stream = new BufferedByteArrayOutputStream();
+        try {
+            this.bufferedByteArrayOutputStream.writeTo(stream, len, this.bufferedByteArrayOutputStream.size() - len);
+        } catch (final IOException ignored) {
+        }
+        this.bufferedByteArrayOutputStream = stream;
+    }
+
     @IntRange(minimum = 0)
-    public int size() {
+    public synchronized int size() {
         return this.bufferedByteArrayOutputStream.size();
     }
 
-    public void clear() {
+    public synchronized void clear() {
         this.bufferedByteArrayOutputStream.reset();
     }
 
     @Override
-    public @NotNull String toString() {
+    public synchronized @NotNull String toString() {
         return "PacketOutputStream{" + this.bufferedByteArrayOutputStream + '}';
     }
 }

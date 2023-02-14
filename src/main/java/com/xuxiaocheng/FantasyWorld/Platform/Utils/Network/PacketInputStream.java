@@ -41,12 +41,12 @@ public class PacketInputStream extends InputStream {
         return this.byteArrayInputStream.read(b, off, len);
     }
 
-    public byte readByte() {
+    public synchronized byte readByte() {
         return (byte) this.read();
     }
 
     @IntRange(minimum = 0)
-    public int readByteArray(final byte @NotNull [] b) throws IOException {
+    public synchronized int readByteArray(final byte @NotNull [] b) throws IOException {
         return this.read(b);
     }
 
@@ -59,7 +59,7 @@ public class PacketInputStream extends InputStream {
         throw new IOException("Boolean in stream is invalid.");
     }
 
-    public short readShort() {
+    public synchronized short readShort() {
         return (short) ((this.readByte() & 0x0FF) | (this.readByte() << 8));
     }
 
@@ -67,14 +67,14 @@ public class PacketInputStream extends InputStream {
         return (short) this.readVariableLenInt();
     }
 
-    public int readInt() {
+    public synchronized int readInt() {
         return ((this.readByte() & 0x0FF)
                 | ((this.readByte() << 8) & 0x0FF00)
                 | ((this.readByte() << 16) & 0x0FF0000)
                 | (this.readByte() << 24));
     }
 
-    public int readVariableLenInt() throws IOException {
+    public synchronized int readVariableLenInt() throws IOException {
         int value = 0;
         int position = 0;
         while (true) {
@@ -89,11 +89,11 @@ public class PacketInputStream extends InputStream {
         return value;
     }
 
-    public long readLong() {
+    public synchronized long readLong() {
         return ((this.readInt() & 0x0FFFFFFFFL) | ((long) this.readInt() << 32));
     }
 
-    public long readVariableLenLong() throws IOException {
+    public synchronized long readVariableLenLong() throws IOException {
         long value = 0;
         int position = 0;
         while (true) {
@@ -124,7 +124,7 @@ public class PacketInputStream extends InputStream {
         return Double.longBitsToDouble(this.readVariableLenLong());
     }
 
-    public @Nullable String readUTF() throws IOException {
+    public synchronized @Nullable String readUTF() throws IOException {
         final int length = this.readVariableLenInt();
         if (length < 0)
             return null;
@@ -135,7 +135,7 @@ public class PacketInputStream extends InputStream {
     }
 
     @SuppressWarnings("unchecked")
-    public @Nullable <T extends Serializable> T readSerializable() throws IOException {
+    public synchronized @Nullable <T extends Serializable> T readSerializable() throws IOException {
         try (final ObjectInputStream objectInputStream = new ObjectInputStream(this.byteArrayInputStream)) {
             return (T) objectInputStream.readObject();
         } catch (final ClassNotFoundException | ClassCastException exception) {
@@ -144,7 +144,7 @@ public class PacketInputStream extends InputStream {
     }
 
     @Override
-    public @NotNull String toString() {
+    public synchronized @NotNull String toString() {
         return "PacketInputStream{" + this.byteArrayInputStream + '}';
     }
 }

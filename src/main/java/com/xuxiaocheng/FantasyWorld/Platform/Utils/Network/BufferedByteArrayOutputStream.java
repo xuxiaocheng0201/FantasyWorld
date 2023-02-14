@@ -26,6 +26,10 @@ public class BufferedByteArrayOutputStream extends ByteArrayOutputStream {
         super(BufferedByteArrayOutputStream.MaxLengthPerByteArray);
     }
 
+    @Override
+    public void close() {
+    }
+
     protected synchronized void flushBuf() {
         this.outputted.add(this.buf);
         this.buf = BufferedByteArrayOutputStream.cachePool.allocate();
@@ -61,6 +65,23 @@ public class BufferedByteArrayOutputStream extends ByteArrayOutputStream {
         for (final byte[] bytes: this.outputted)
             out.write(bytes);
         out.write(this.buf, 0, this.count);
+    }
+
+    public synchronized void writeTo(final @NotNull OutputStream out, @IntRange(minimum = 0) final int off, @IntRange(minimum = 0) final int len) throws IOException {
+        Objects.checkFromIndexSize(off, len, this.size());
+        int m = off >>> BufferedByteArrayOutputStream.MaxLengthPerByteArrayNBit;
+        int n = off & (BufferedByteArrayOutputStream.MaxLengthPerByteArray - 1);
+        int leftLen = len;
+        while (leftLen > 0) {
+            if (m == this.outputted.size()) {
+                out.write(this.buf, n, leftLen);
+                return;
+            }
+            final int copiedLen = Math.min(BufferedByteArrayOutputStream.MaxLengthPerByteArray - n, leftLen);
+            out.write(this.outputted.get(m++), n, copiedLen);
+            n = 0;
+            leftLen -= copiedLen;
+        }
     }
 
     @Override
