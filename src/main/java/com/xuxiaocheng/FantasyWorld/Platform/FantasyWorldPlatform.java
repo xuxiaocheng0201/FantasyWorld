@@ -1,10 +1,16 @@
 package com.xuxiaocheng.FantasyWorld.Platform;
 
+import com.xuxiaocheng.FantasyWorld.Core.FantasyWorld;
+import com.xuxiaocheng.FantasyWorld.Platform.Additions.Addition;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.AdditionsLoader;
+import com.xuxiaocheng.FantasyWorld.Platform.Events.CoreShutdownEvent;
+import com.xuxiaocheng.FantasyWorld.Platform.Events.CoreStartEvent;
+import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBus.EventBusManager;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionFormatException;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;
 import com.xuxiaocheng.HeadLibs.Logger.HLogLevel;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedOutputStream;
@@ -12,6 +18,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -23,6 +31,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,7 +43,7 @@ public final class FantasyWorldPlatform {
         super();
     }
 
-    public static final boolean DebugMode = true;
+    public static final boolean DebugMode = !new File(FantasyWorldPlatform.class.getProtectionDomain().getCodeSource().getLocation().getPath()).isFile();
 
     private static @NotNull HLog logger = HLog.DefaultLogger; static {
         if (FantasyWorldPlatform.DebugMode)
@@ -90,8 +101,17 @@ public final class FantasyWorldPlatform {
         return FantasyWorldPlatform.showJWindow;
     }
 
-    public static void main(final @NotNull String @NotNull [] args) {
-//        HLog.setDebugMode(FantasyWorldPlatform.DebugMode);
+    @SuppressWarnings("NonFinalStaticVariableUsedInClassInitialization")
+    public static final @NotNull ExecutorService DefaultThreadPool = new ThreadPoolExecutor(
+            Runtime.getRuntime().availableProcessors() << 1, Runtime.getRuntime().availableProcessors() << 3,
+            30, TimeUnit.SECONDS, new LinkedBlockingDeque<>(64),
+            new DefaultThreadFactory(FantasyWorldPlatform.class), ((r, executor) -> {
+                FantasyWorldPlatform.logger.log(HLogLevel.ERROR, "The main Thread Pool is full. Runnable class: ", r.getClass());
+                r.run();
+            }));
+
+    @SuppressWarnings("unchecked")
+    public static void main(final @NotNull String @NotNull [] args) throws InterruptedException {
         HLog.setDebugMode(false);
         Thread.currentThread().setName("FantasyWorldPlatform/main");
         Thread.setDefaultUncaughtExceptionHandler((thread, error) -> FantasyWorldPlatform.logger.log(HLogLevel.FAULT, "An uncaught exception has been thrown in thread '" + thread + "'.", error));
@@ -114,6 +134,23 @@ public final class FantasyWorldPlatform {
         if (FantasyWorldPlatform.showJWindow) {
             FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Showing window.");
             // TODO: Show window
+        }
+        // Fix when Run in idea.
+        if (FantasyWorldPlatform.DebugMode) {
+            try {
+                final Field field = AdditionsLoader.class.getDeclaredField("Modifications");
+                final Constructor<?> constructor = FantasyWorld.class.getDeclaredConstructor();
+                field.setAccessible(true);
+                constructor.setAccessible(true);
+                final Object o = field.get(null);
+                if (o instanceof Map<?, ?>) {
+                    final Map<String, Addition> modifications = (Map<String, Addition>) o;
+                    final Addition addition = (Addition) constructor.newInstance();
+                    addition.entrance();
+                    modifications.put("FantasyWorld", addition);
+                }
+            } catch (@SuppressWarnings("OverlyBroadCatchBlock") final Exception ignored) {
+            }
         }
         final Collection<JarFile> additionFiles = new HashSet<>();
         FantasyWorldPlatform.logger.log(HLogLevel.INFO, "Finding additions in: ", FantasyWorldPlatform.AdditionSearchPaths);
@@ -155,7 +192,8 @@ public final class FantasyWorldPlatform {
         futures.clear();
         executor.shutdown();
         AdditionsLoader.initializeAdditions();
-        // TODO: Post Server/Client start events
-
+        EventBusManager.getInstance(null).post(new CoreStartEvent());
+        EventBusManager.getInstance(null).post(new CoreShutdownEvent());
+        ((ThreadPoolExecutor) FantasyWorldPlatform.DefaultThreadPool).allowCoreThreadTimeOut(true);
     }
 }

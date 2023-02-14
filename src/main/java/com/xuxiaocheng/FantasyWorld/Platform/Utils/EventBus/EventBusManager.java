@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -28,7 +29,7 @@ public final class EventBusManager {
 
     private static final @NotNull Map<String, EventBus> AdditionsEventBuses = new ConcurrentHashMap<>();
 
-    private static final @NotNull EventBus DefaultEventBus = new EventBusEnhance();
+    private static final @NotNull EventBus DefaultEventBus = new EventBusEnhance(EventBus.builder().executorService(FantasyWorldPlatform.DefaultThreadPool));
     static {
         EventBusManager.AdditionsEventBuses.put("default", EventBusManager.DefaultEventBus);
         if (FantasyWorldPlatform.DebugMode)
@@ -46,10 +47,7 @@ public final class EventBusManager {
         if (eventBus != null)
             return eventBus;
         final EventBus build;
-        if (builder == null)
-            build = new EventBusEnhance();
-        else
-            build = new EventBusEnhance(builder);
+        build = new EventBusEnhance(Objects.requireNonNullElseGet(builder, EventBus::builder).executorService(FantasyWorldPlatform.DefaultThreadPool));
         if (FantasyWorldPlatform.DebugMode)
             build.register(new DebugEventLogger(id));
         EventBusManager.AdditionsEventBuses.put(id, build);

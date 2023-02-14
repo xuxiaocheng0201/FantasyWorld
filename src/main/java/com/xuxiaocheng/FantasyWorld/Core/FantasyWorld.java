@@ -2,11 +2,19 @@ package com.xuxiaocheng.FantasyWorld.Core;
 
 import com.google.common.collect.ImmutableMap;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Addition;
+import com.xuxiaocheng.FantasyWorld.Platform.Events.CoreShutdownEvent;
+import com.xuxiaocheng.FantasyWorld.Platform.Events.CoreStartEvent;
+import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBus.EventBusManager;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionFormatException;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
+import com.xuxiaocheng.HeadLibs.Logger.HLog;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
+
+import java.util.concurrent.TimeUnit;
 
 @Addition.Additional(id = "FantasyWorld")
 public class FantasyWorld implements Addition {
@@ -26,7 +34,8 @@ public class FantasyWorld implements Addition {
     @Override
     public void entrance() {
         //TODO: Register event buses.
-//        Addition.getEventbusById("FantasyWorld").register(this);
+        EventBusManager.getInstance(null).register(this);
+        Addition.getEventbusById("FantasyWorld").register(this);
     }
 
     @Override
@@ -52,5 +61,16 @@ public class FantasyWorld implements Addition {
     @Override
     public @NotNull String toString() {
         return "FantasyWorld(" + this.version.getVersion() + ')';
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onStartEvent(final @NotNull CoreStartEvent event) throws InterruptedException {
+        HLog.DefaultLogger.log("", "null");
+        TimeUnit.SECONDS.sleep(3);
+        System.exit(0);
+    }
+
+    @Subscribe
+    public void onShutdownEvent(final @NotNull CoreShutdownEvent event) {
     }
 }

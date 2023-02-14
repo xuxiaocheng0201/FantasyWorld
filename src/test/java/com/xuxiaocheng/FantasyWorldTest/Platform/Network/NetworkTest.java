@@ -33,6 +33,12 @@ public class NetworkTest {
         serverNetwork.close();
     }
 
+    @Test
+    public void memory() {
+
+
+    }
+
     public static class StringPacket {
         protected final @NotNull String string;
 
