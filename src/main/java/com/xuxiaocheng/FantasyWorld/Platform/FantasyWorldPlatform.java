@@ -13,15 +13,10 @@ import com.xuxiaocheng.HeadLibs.Logger.HLogLevel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -45,35 +39,9 @@ public final class FantasyWorldPlatform {
 
     public static final boolean DebugMode = !new File(FantasyWorldPlatform.class.getProtectionDomain().getCodeSource().getLocation().getPath()).isFile();
 
-    private static @NotNull HLog logger = HLog.DefaultLogger; static {
-        if (FantasyWorldPlatform.DebugMode)
-            FantasyWorldPlatform.logger = HLog.createInstance("DefaultLogger",
-                Integer.MIN_VALUE, true, HLog.DefaultLogger.getWriter());
-        else {
-            final File dir = new File("logs");
-            final File path = new File(dir, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH.mm.ss")) + ".log");
-            try {
-                if (!dir.exists()) {
-                    if (!dir.mkdirs())
-                        throw new IOException("Failed to create log directory.");
-                } else if (!dir.isDirectory())
-                    throw new IOException("Not a log directory.");
-                if (path.exists() && !path.isFile())
-                    throw new IOException("Not a log file.");
-                if (!path.createNewFile())
-                    throw new IOException("Failed to create log file.");
-                try {
-                    FantasyWorldPlatform.logger = HLog.createInstance("DefaultLogger",
-                            HLogLevel.DEBUG.getPriority() + 1, false,
-                            new BufferedOutputStream(new FileOutputStream(path, true)));
-                } catch (final FileNotFoundException exception) {
-                    throw new IOException("Failed to get log file.", exception);
-                }
-            } catch (final IOException exception) {
-                HLog.DefaultLogger.log(HLogLevel.FAULT, "Fail to create log file.", exception);
-            }
-        }
-    }
+    private static final @NotNull HLog logger = HLog.createInstance("DefaultLogger",
+            FantasyWorldPlatform.DebugMode ? Integer.MIN_VALUE : HLogLevel.DEBUG.getPriority() + 1,
+            true, new LoggerOutputStream(true, !FantasyWorldPlatform.DebugMode));
     public static @NotNull HLog getLogger() {
         return FantasyWorldPlatform.logger;
     }
@@ -101,18 +69,17 @@ public final class FantasyWorldPlatform {
         return FantasyWorldPlatform.showJWindow;
     }
 
-    @SuppressWarnings("NonFinalStaticVariableUsedInClassInitialization")
     public static final @NotNull ExecutorService DefaultThreadPool = new ThreadPoolExecutor(
             Runtime.getRuntime().availableProcessors() << 1, Runtime.getRuntime().availableProcessors() << 3,
-            30, TimeUnit.SECONDS, new LinkedBlockingDeque<>(64),
+            30, TimeUnit.SECONDS, new LinkedBlockingDeque<>(128),
             new DefaultThreadFactory(FantasyWorldPlatform.class), ((r, executor) -> {
                 FantasyWorldPlatform.logger.log(HLogLevel.ERROR, "The main Thread Pool is full. Runnable class: ", r.getClass());
                 r.run();
             }));
 
     @SuppressWarnings("unchecked")
-    public static void main(final @NotNull String @NotNull [] args) throws InterruptedException {
-        HLog.setDebugMode(false);
+    public static void main(final @NotNull String @NotNull [] args) {
+//        HLog.setDebugMode(false);
         Thread.currentThread().setName("FantasyWorldPlatform/main");
         Thread.setDefaultUncaughtExceptionHandler((thread, error) -> FantasyWorldPlatform.logger.log(HLogLevel.FAULT, "An uncaught exception has been thrown in thread '" + thread + "'.", error));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -173,12 +140,9 @@ public final class FantasyWorldPlatform {
             }).filter(Objects::nonNull).collect(Collectors.toSet()));
         }
         FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Found addition files count: ", additionFiles.size());
-        final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         final Map<Future<?>, String> futures = new HashMap<>();
         for (final JarFile jarFile: additionFiles)
-            futures.put(executor.submit(() -> {
-                final String name = Thread.currentThread().getName();
-                Thread.currentThread().setName("FantasyWorldPlatform/AdditionLoader" + name.substring(name.lastIndexOf('-')));
+            futures.put(FantasyWorldPlatform.DefaultThreadPool.submit(() -> {
                 FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Loading addition. file: ", jarFile.getName());
                 AdditionsLoader.addAddition(jarFile);
                 FantasyWorldPlatform.logger.log(HLogLevel.VERBOSE, "Loaded addition. file: ", jarFile.getName());
@@ -190,7 +154,6 @@ public final class FantasyWorldPlatform {
                 FantasyWorldPlatform.logger.log(HLogLevel.ERROR, "Failed to load addition. file: ", entry.getValue(), exception);
             }
         futures.clear();
-        executor.shutdown();
         AdditionsLoader.initializeAdditions();
         EventBusManager.getInstance(null).post(new CoreStartEvent());
         EventBusManager.getInstance(null).post(new CoreShutdownEvent());

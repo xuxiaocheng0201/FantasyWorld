@@ -125,7 +125,7 @@ public final class AdditionsLoader {
                 }
                 additions.put(id, addition);
             }
-            AdditionsLoader.logger.log(HLogLevel.FINE, "Found additions count: ", additions.size());
+            AdditionsLoader.logger.log(HLogLevel.FINE, "Found additions in ", jarFile.getName(), ", count: ", additions.size());
         }
         // Invoke additions.
         {

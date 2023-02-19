@@ -64,13 +64,13 @@ public class FantasyWorld implements Addition {
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onStartEvent(final @NotNull CoreStartEvent event) throws InterruptedException {
+    public void onStartEvent(final @NotNull CoreStartEvent event) {
         HLog.DefaultLogger.log("", "null");
-        TimeUnit.SECONDS.sleep(3);
-        System.exit(0);
     }
 
-    @Subscribe
-    public void onShutdownEvent(final @NotNull CoreShutdownEvent event) {
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onShutdownEvent(final @NotNull CoreShutdownEvent event) throws InterruptedException {
+        TimeUnit.SECONDS.sleep(3);
+        System.exit(0);
     }
 }
