@@ -1,6 +1,7 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Network;
 
 import com.xuxiaocheng.FantasyWorld.Platform.FantasyWorldPlatform;
+import com.xuxiaocheng.FantasyWorld.Platform.LoggerOutputStream;
 import com.xuxiaocheng.FantasyWorld.Platform.Network.Events.ClientActiveEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Network.Events.NetworkReceiveEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Network.Events.NetworkSendEvent;
@@ -25,8 +26,8 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import io.netty.util.concurrent.GlobalEventExecutor;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,7 @@ import java.util.function.Supplier;
 public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implements AutoCloseable {
     protected static @NotNull HLog logger = HLog.createInstance("NetworkLogger",
             FantasyWorldPlatform.DebugMode ? Integer.MIN_VALUE : HLogLevel.DEBUG.getPriority() + 1,
-            true, HLog.DefaultLogger.getWriter());
+            true, new LoggerOutputStream(true, false));
 
     protected final @NotNull SocketAddress address;
     protected final @NotNull String id;
@@ -50,7 +51,7 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
     protected final @NotNull EventLoopGroup bossGroup;
     protected final @NotNull EventLoopGroup workerGroup;
     protected final @NotNull ChannelFuture channelFuture;
-    protected final @NotNull ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    protected final @NotNull ChannelGroup channelGroup;
 
     public ServerNetwork(final @NotNull SocketAddress address, final @NotNull String id) {
         super(true);
@@ -59,6 +60,11 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
         this.eventBus = EventBusManager.getInstance(id);
         this.bossGroup = new NioEventLoopGroup(Math.max(1, Runtime.getRuntime().availableProcessors() >>> 2), new DefaultThreadFactory("Server/" + id + "(Boss)"));
         this.workerGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() << 1, new DefaultThreadFactory("Server/" + id + "(Worker)"));
+        this.channelGroup = new DefaultChannelGroup(new DefaultEventExecutor(null, new DefaultThreadFactory("Server/" + id + "(Channel)"), 1,
+                (r, executor) -> {
+                    ServerNetwork.logger.log(HLogLevel.ERROR, "The Server Network (id: ", id, ") Channel Thread Pool is full. Runnable class: ", r.getClass());
+                    r.run();
+                }));
         final ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(this.bossGroup, this.workerGroup);
         serverBootstrap.channel(NioServerSocketChannel.class);
@@ -77,6 +83,7 @@ public class ServerNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
 
     @Override
     public void close() throws InterruptedException {
+        this.eventBus.unregister(this);
         this.channelFuture.channel().close().sync();
         this.workerGroup.shutdownGracefully().sync();
         this.bossGroup.shutdownGracefully().sync();

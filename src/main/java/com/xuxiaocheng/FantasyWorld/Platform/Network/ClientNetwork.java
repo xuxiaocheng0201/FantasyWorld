@@ -1,6 +1,7 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Network;
 
 import com.xuxiaocheng.FantasyWorld.Platform.FantasyWorldPlatform;
+import com.xuxiaocheng.FantasyWorld.Platform.LoggerOutputStream;
 import com.xuxiaocheng.FantasyWorld.Platform.Network.Events.NetworkReceiveEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Network.Events.NetworkSendEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBus.EventBusManager;
@@ -31,7 +32,7 @@ import java.util.function.Supplier;
 public class ClientNetwork extends SimpleChannelInboundHandler<ByteBuf> implements AutoCloseable {
     protected static @NotNull HLog logger = HLog.createInstance("NetworkLogger",
             FantasyWorldPlatform.DebugMode ? Integer.MIN_VALUE : HLogLevel.DEBUG.getPriority() + 1,
-            true, HLog.DefaultLogger.getWriter());
+            true, new LoggerOutputStream(true, false));
 
     protected final @NotNull SocketAddress address;
     protected final @NotNull String id;
@@ -63,6 +64,7 @@ public class ClientNetwork extends SimpleChannelInboundHandler<ByteBuf> implemen
 
     @Override
     public void close() throws InterruptedException {
+        this.eventBus.unregister(this);
         this.channel.close().sync();
         this.group.shutdownGracefully().sync();
         this.readBuffer.release();

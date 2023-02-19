@@ -17,7 +17,7 @@ import java.net.InetSocketAddress;
 public class NetworkTest {
     @Test
     public void server() throws InterruptedException {
-        HLog.setDebugMode(false);
+//        HLog.setDebugMode(false);
         PacketManager.registerPacket("UTF", StringPacket.class, StringPacket::from, StringPacket::to);
         final ServerNetwork serverNetwork = new ServerNetwork(new InetSocketAddress(25564), "Server");
         final Thread client = new Thread(() -> {
@@ -34,9 +34,11 @@ public class NetworkTest {
     }
 
     @Test
-    public void memory() {
-
-
+    public void memory() throws InterruptedException {
+        for (int i = 0; i < 100000; ++i) {
+            this.server();
+            HLog.DefaultLogger.log("", "");
+        }
     }
 
     public static class StringPacket {
