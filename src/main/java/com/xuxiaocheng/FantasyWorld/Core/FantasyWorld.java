@@ -1,6 +1,7 @@
 package com.xuxiaocheng.FantasyWorld.Core;
 
 import com.google.common.collect.ImmutableMap;
+import com.xuxiaocheng.EventBus.Subscribe;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Addition;
 import com.xuxiaocheng.FantasyWorld.Platform.Events.CoreShutdownEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Events.CoreStartEvent;
@@ -9,7 +10,6 @@ import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionFormatException;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;
-import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
