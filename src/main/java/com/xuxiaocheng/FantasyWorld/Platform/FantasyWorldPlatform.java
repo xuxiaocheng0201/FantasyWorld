@@ -89,11 +89,11 @@ public final class FantasyWorldPlatform {
         FantasyWorldPlatform.logger.log(HLogLevel.FINE, "Hello FantasyWorld platform! version: ", FantasyWorldPlatform.CurrentVersion.getVersion());
         FantasyWorldPlatform.logger.log(HLogLevel.DEBUG, "Working path: ", System.getProperty("user.dir"));
         for (final String arg: args) {
-            switch (arg.hashCode()) {
-                case -826834514 -> FantasyWorldPlatform.runOnClient = false; //"runServer"
-                case -1278720458 -> FantasyWorldPlatform.runOnClient = true; //"runClient"
-                case 455289810 -> FantasyWorldPlatform.showJWindow = false; //"hideWindow"
-                case 887337293  -> FantasyWorldPlatform.showJWindow = true; //"showWindow"
+            switch (arg) {
+                case "runServer" -> FantasyWorldPlatform.runOnClient = false;
+                case "runClient" -> FantasyWorldPlatform.runOnClient = true;
+                case "hideWindow" -> FantasyWorldPlatform.showJWindow = false;
+                case "showWindow" -> FantasyWorldPlatform.showJWindow = true;
                 default -> FantasyWorldPlatform.logger.log(HLogLevel.WARN, "Unrecognized arg: ", arg);
             }
         }

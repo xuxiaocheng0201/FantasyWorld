@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
@@ -186,9 +187,30 @@ public class EventBus {
     }
 
     protected void handleInvokeException(final @NotNull SubscriberExceptionEvent exception) {
+        if (exception.causingEvent() instanceof SubscriberExceptionEvent)
+            return;
         if (this.logSubscriberExceptions && this.logger != null)
             this.logger.log(HLogLevel.ERROR, "An exception was thrown when posting event.", exception, exception.throwable());
         if (this.sendSubscriberExceptionEvent)
             this.post(exception);
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventBus eventBus)) return false;
+        return this.logSubscriberExceptions == eventBus.logSubscriberExceptions && this.logNoSubscriberMessages == eventBus.logNoSubscriberMessages && this.sendSubscriberExceptionEvent == eventBus.sendSubscriberExceptionEvent && this.sendNoSubscriberEvent == eventBus.sendNoSubscriberEvent && this.eventInheritance == eventBus.eventInheritance && this.executorService.equals(eventBus.executorService) && Objects.equals(this.logger, eventBus.logger) && this.methodSubscriberMap.equals(eventBus.methodSubscriberMap) && this.eventMethodMap.equals(eventBus.eventMethodMap) && this.stickyEventsMap.equals(eventBus.stickyEventsMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.executorService, this.logger, this.methodSubscriberMap, this.eventMethodMap, this.stickyEventsMap);
+    }
+
+    @Override
+    public String toString() {
+        return "EventBus{" +
+                "executorService=" + this.executorService +
+                '}';
     }
 }

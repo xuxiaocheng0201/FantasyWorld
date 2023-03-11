@@ -29,7 +29,7 @@ public final class EventBusManager {
 
     private static final @NotNull Map<@NotNull String, @NotNull EventBus> AdditionsEventBuses = new ConcurrentHashMap<>();
 
-    private static final @NotNull EventBus DefaultEventBus = new EventBus(EventBus.builder().executorService(FantasyWorldPlatform.DefaultThreadPool));
+    private static final @NotNull EventBus DefaultEventBus = new EventBus(EventBus.builder().executorService(FantasyWorldPlatform.DefaultThreadPool).logger(HLog.DefaultLogger));
     static {
         EventBusManager.AdditionsEventBuses.put("default", EventBusManager.DefaultEventBus);
         if (FantasyWorldPlatform.DebugMode)
@@ -61,7 +61,7 @@ public final class EventBusManager {
         return EventBusManager.createInstance(id, null);
     }
 
-    private record DebugEventLogger(@NotNull String name) {
+    public record DebugEventLogger(@NotNull String name) {
         @Subscribe(priority = Integer.MAX_VALUE)
         public void log(final Object event) {
             if (event instanceof SubscriberExceptionEvent)
