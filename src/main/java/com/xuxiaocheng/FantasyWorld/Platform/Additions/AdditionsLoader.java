@@ -1,6 +1,8 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Additions;
 
 import com.google.common.collect.Sets;
+import com.xuxiaocheng.EventBus.EventBus;
+import com.xuxiaocheng.EventBus.Subscribe;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Events.AdditionInitializationEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.AberrantAdditionConstructorException;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Exceptions.AdditionVersionNotSupportException;
@@ -18,8 +20,6 @@ import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;
 import com.xuxiaocheng.HeadLibs.Logger.HLogLevel;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,7 +62,7 @@ public final class AdditionsLoader {
 
     private static final @NotNull EventBus AdditionsLoaderExceptionEventBus = EventBusManager.createInstance("AdditionsLoader/Exceptions",
             EventBus.builder().logNoSubscriberMessages(false).sendNoSubscriberEvent(false) // A default log event has been registered.
-                    .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true).throwSubscriberException(false));
+                    .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true));
     static {
         AdditionsLoader.AdditionsLoaderExceptionEventBus.register(new Object() {
             @Subscribe

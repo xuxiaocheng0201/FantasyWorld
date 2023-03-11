@@ -1,5 +1,7 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Network;
 
+import com.xuxiaocheng.EventBus.EventBus;
+import com.xuxiaocheng.EventBus.Subscribe;
 import com.xuxiaocheng.FantasyWorld.Platform.FantasyWorldPlatform;
 import com.xuxiaocheng.FantasyWorld.Platform.LoggerOutputStream;
 import com.xuxiaocheng.FantasyWorld.Platform.Network.Events.NetworkReceiveEvent;
@@ -21,8 +23,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

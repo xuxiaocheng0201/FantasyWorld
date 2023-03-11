@@ -1,23 +1,20 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBus;
 
+import com.xuxiaocheng.EventBus.EventBus;
+import com.xuxiaocheng.EventBus.EventBusBuilder;
+import com.xuxiaocheng.EventBus.Events.SubscriberExceptionEvent;
+import com.xuxiaocheng.EventBus.Subscribe;
 import com.xuxiaocheng.FantasyWorld.Platform.Additions.Events.AdditionInitializationEvent;
 import com.xuxiaocheng.FantasyWorld.Platform.FantasyWorldPlatform;
 import com.xuxiaocheng.FantasyWorld.Platform.LoggerOutputStream;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;
 import com.xuxiaocheng.HeadLibs.Logger.HLogLevel;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.EventBusBuilder;
-import org.greenrobot.eventbus.EventBusEnhance;
-import org.greenrobot.eventbus.Logger;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.SubscriberExceptionEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 /**
  * <p>{@code AdditionsLoader/Exceptions}
@@ -30,9 +27,9 @@ public final class EventBusManager {
         super();
     }
 
-    private static final @NotNull Map<String, EventBus> AdditionsEventBuses = new ConcurrentHashMap<>();
+    private static final @NotNull Map<@NotNull String, @NotNull EventBus> AdditionsEventBuses = new ConcurrentHashMap<>();
 
-    private static final @NotNull EventBus DefaultEventBus = new EventBusEnhance(EventBus.builder().executorService(FantasyWorldPlatform.DefaultThreadPool));
+    private static final @NotNull EventBus DefaultEventBus = new EventBus(EventBus.builder().executorService(FantasyWorldPlatform.DefaultThreadPool));
     static {
         EventBusManager.AdditionsEventBuses.put("default", EventBusManager.DefaultEventBus);
         if (FantasyWorldPlatform.DebugMode)
@@ -50,21 +47,10 @@ public final class EventBusManager {
         if (eventBus != null)
             return eventBus;
         final EventBus build;
-        build = new EventBusEnhance(Objects.requireNonNullElseGet(builder, EventBus::builder)
-                .executorService(FantasyWorldPlatform.DefaultThreadPool).logger(new Logger() {
-                    private final @NotNull HLog logger = HLog.createInstance("EventbusLogger/" + id, Integer.MIN_VALUE,
-                            true, new LoggerOutputStream(true, !FantasyWorldPlatform.DebugMode));
-
-                    @Override
-                    public void log(final Level level, final String msg) {
-                        this.logger.log(HLogLevel.WARN, '[', level.toString(), ']', msg);
-                    }
-
-                    @Override
-                    public void log(final Level level, final String msg, final Throwable th) {
-                        this.logger.log(HLogLevel.ERROR, '[', level.toString(), ']', msg, th);
-                    }
-                }));
+        build = new EventBus(Objects.requireNonNullElseGet(builder, EventBus::builder)
+                .executorService(FantasyWorldPlatform.DefaultThreadPool)
+                .logger(HLog.createInstance("EventbusLogger/" + id, Integer.MIN_VALUE,
+                        true, new LoggerOutputStream(true, !FantasyWorldPlatform.DebugMode))));
         if (FantasyWorldPlatform.DebugMode)
             build.register(new DebugEventLogger(id));
         EventBusManager.AdditionsEventBuses.put(id, build);
@@ -85,7 +71,7 @@ public final class EventBusManager {
 
         @Subscribe(priority = Integer.MAX_VALUE)
         public void exception(final @NotNull SubscriberExceptionEvent event) {
-            HLog.DefaultLogger.log(HLogLevel.ERROR, "DebugEventLogger exception log: At EventBus id: ", this.name, ", CausingEvent: ", event.causingEvent, ", Caused: ", event.throwable);
+            HLog.DefaultLogger.log(HLogLevel.ERROR, "DebugEventLogger exception log: At EventBus id: ", this.name, ", exception: ", event, event.throwable());
         }
     }
 }

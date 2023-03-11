@@ -10,7 +10,6 @@ import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionFormatExceptio
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
 import com.xuxiaocheng.HeadLibs.Logger.HLog;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -63,14 +62,14 @@ public class FantasyWorld implements Addition {
         return "FantasyWorld(" + this.version.getVersion() + ')';
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe
     public void onStartEvent(final @NotNull CoreStartEvent event) {
         HLog.DefaultLogger.log("", "null");
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe
     public void onShutdownEvent(final @NotNull CoreShutdownEvent event) throws InterruptedException {
         TimeUnit.SECONDS.sleep(3);
-        System.exit(0);
+        HLog.DefaultLogger.log("", "CoreShutdownEvent");
     }
 }

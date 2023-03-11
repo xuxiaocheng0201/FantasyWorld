@@ -158,5 +158,6 @@ public final class FantasyWorldPlatform {
         EventBusManager.getInstance(null).post(new CoreStartEvent());
         EventBusManager.getInstance(null).post(new CoreShutdownEvent());
         ((ThreadPoolExecutor) FantasyWorldPlatform.DefaultThreadPool).allowCoreThreadTimeOut(true);
+        ((ThreadPoolExecutor) FantasyWorldPlatform.DefaultThreadPool).setKeepAliveTime(1L, TimeUnit.SECONDS);
     }
 }

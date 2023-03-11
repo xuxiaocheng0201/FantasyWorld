@@ -1,9 +1,9 @@
 package com.xuxiaocheng.FantasyWorld.Platform.Additions;
 
+import com.xuxiaocheng.EventBus.EventBus;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.EventBus.EventBusManager;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionComplex;
 import com.xuxiaocheng.FantasyWorld.Platform.Utils.Version.VersionSingle;
-import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -37,7 +37,7 @@ public interface Addition {
     static @NotNull EventBus getEventbusById(final @Nullable String id) {
         return EventBusManager.createInstance("AdditionsLoader/" + id,
                 EventBus.builder().logNoSubscriberMessages(true).sendNoSubscriberEvent(true)
-                        .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true).throwSubscriberException(false));
+                        .logSubscriberExceptions(true).sendSubscriberExceptionEvent(true));
     }
 
     @Documented
